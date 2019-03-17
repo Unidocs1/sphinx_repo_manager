@@ -1,0 +1,11 @@
+baseURL = "https://acceleratxr.io"
+languageCode = "en-us"
+title = "AcceleratXR"
+theme = "hugo-theme-learn"
+
+# Theme config
+chapter = true
+
+# For search functionality
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
