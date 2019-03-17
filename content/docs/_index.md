@@ -1,7 +1,6 @@
 ---
 title: "AcceleratXR Core"
 date: 2019-03-15T20:09:14-07:00
-draft: true
 ---
 
 _AcceleratXR Core_ is a modern and robust framework and set of services for building massively scalable back-end services for real-time interactive products and services. Also featuring great client SDK support (provided in several languages) for building online capabilities into products.
