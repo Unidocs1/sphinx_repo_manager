@@ -1,6 +1,6 @@
 ---
 title: "Role Routes"
-date: 2019-03-18T05:50:55.822Z
+date: 2019-03-18T21:15:14.179Z
 chapter: true
 ---
 
@@ -66,9 +66,9 @@ Authorization: jwt <token>
 Content-Type: application/json
 
 {
-    "uid": "5b1e31a2-e046-4b43-93c8-393c1bca7e46",
-    "dateCreated": "2019-03-18T05:50:56.001Z",
-    "dateModified": "2019-03-18T05:50:56.001Z",
+    "uid": "aaa35ebc-e9cf-430b-8b67-8e50106330e6",
+    "dateCreated": "2019-03-18T21:15:14.322Z",
+    "dateModified": "2019-03-18T21:15:14.322Z",
     "version": 0,
     "name": "string",
     "description": "string",
@@ -151,9 +151,9 @@ GET /roles/{id}
 Content-Type: application/json
 
 {
-    "uid": "19c3193a-a430-42a8-976a-c721175bc9e8",
-    "dateCreated": "2019-03-18T05:50:56.001Z",
-    "dateModified": "2019-03-18T05:50:56.001Z",
+    "uid": "a13773dd-605d-426e-9ffb-b5f73c7ee366",
+    "dateCreated": "2019-03-18T21:15:14.322Z",
+    "dateModified": "2019-03-18T21:15:14.322Z",
     "version": 0,
     "name": "string",
     "description": "string",
@@ -202,9 +202,9 @@ Authorization: jwt <token>
 Content-Type: application/json
 
 {
-    "uid": "d36f651d-af5f-4d5c-888a-a02b9a96deb5",
-    "dateCreated": "2019-03-18T05:50:56.002Z",
-    "dateModified": "2019-03-18T05:50:56.002Z",
+    "uid": "fdd2c2f8-c4ac-4e43-ae93-b11c5d53b259",
+    "dateCreated": "2019-03-18T21:15:14.322Z",
+    "dateModified": "2019-03-18T21:15:14.323Z",
     "version": 0,
     "name": "string",
     "description": "string",

@@ -1,6 +1,6 @@
 ---
 title: "UserSecret"
-date: 2019-03-18T05:50:55.822Z
+date: 2019-03-18T21:15:14.179Z
 chapter: true
 ---
 
@@ -23,7 +23,7 @@ The following is the list of all members included in the data model.
 
 ```json
 {
-    "userId": "ec5db9ce-f094-4ff9-bc42-f0e96fbaaa2c",
+    "userId": "78b8373f-dc12-43c7-bec6-a74946b02425",
     "type": "string",
     "secret": "string"
 }
@@ -33,11 +33,11 @@ The following is the list of all members included in the data model.
 
 ```json
 {
-    "uid": "6127e30f-f94e-4858-abe5-689270f79e6e",
-    "dateCreated": "2019-03-18T05:50:55.984Z",
-    "dateModified": "2019-03-18T05:50:55.984Z",
+    "uid": "e62511c3-3e9b-4917-abc2-642c122f71cf",
+    "dateCreated": "2019-03-18T21:15:14.310Z",
+    "dateModified": "2019-03-18T21:15:14.310Z",
     "version": 0,
-    "userId": "ec5db9ce-f094-4ff9-bc42-f0e96fbaaa2c",
+    "userId": "78b8373f-dc12-43c7-bec6-a74946b02425",
     "type": "string",
     "secret": "string"
 }

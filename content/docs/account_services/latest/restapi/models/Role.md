@@ -1,6 +1,6 @@
 ---
 title: "Role"
-date: 2019-03-18T05:50:55.822Z
+date: 2019-03-18T21:15:14.179Z
 chapter: true
 ---
 
@@ -39,9 +39,9 @@ The following is the list of all members included in the data model.
 
 ```json
 {
-    "uid": "477faa95-75e4-4b03-a46b-4d68960f601a",
-    "dateCreated": "2019-03-18T05:50:55.951Z",
-    "dateModified": "2019-03-18T05:50:55.951Z",
+    "uid": "aba9f433-ec7f-4a8c-9d59-b4ee407f974e",
+    "dateCreated": "2019-03-18T21:15:14.281Z",
+    "dateModified": "2019-03-18T21:15:14.281Z",
     "version": 0,
     "name": "string",
     "description": "string",

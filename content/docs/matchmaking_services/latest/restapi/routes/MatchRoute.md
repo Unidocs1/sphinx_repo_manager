@@ -1,29 +1,19 @@
 ---
-title: "UserSecret Routes"
-date: 2019-03-18T21:15:14.179Z
+title: "Match Routes"
+date: 2019-03-18T21:19:59.093Z
 chapter: true
 ---
 
 
 
-## Parameters
-| Name       | Description                           |  Type |
-| ---------- | ------------------------------------- | ----- |
-|  |  |  |
-
 ## Routes
 
 ### FindAll
-`GET /users/{userId}/secrets`
+`GET /matchmaking/matches`
 
 Authentication: **Required**
 
-Returns all secrets for a given user.
-
-#### Parameters
-| Name       |
-| ---------- |
-| userId |
+Returns all matches from the system that the user has access to
 
 #### Query
 | Name       | Description | Type | Default Value |
@@ -34,7 +24,7 @@ Returns all secrets for a given user.
 
 #### Request
 ```http
-GET /users/{userId}/secrets
+GET /matchmaking/matches
 Authorization: jwt <token>
 ```
 
@@ -46,58 +36,30 @@ Content-Type: application/json
 {}
 ```
 
-### Create
-`POST /users/{userId}/secrets`
+### Truncate
+`DELETE /matchmaking/matches`
 
 Authentication: **Required**
 
-Create a new user secret.
-
-#### Parameters
-| Name       |
-| ---------- |
-| userId |
+Removes all matches from the datastore.
 
 #### Request
 ```http
-POST /users/{userId}/secrets
-Content-Type: application/json
+DELETE /matchmaking/matches
 Authorization: jwt <token>
-
-{
-    "userId": "8259c15f-aba2-491f-9dcf-52fce542afbe",
-    "type": "string",
-    "secret": "string"
-}
 ```
 
 #### Response
 ```http
-201 CREATED
-Content-Type: application/json
-
-{
-    "uid": "0e87f167-fb17-43c9-b73d-16d8776cf6c3",
-    "dateCreated": "2019-03-18T21:15:14.323Z",
-    "dateModified": "2019-03-18T21:15:14.323Z",
-    "version": 0,
-    "userId": "8406c84a-ae04-4a1e-a782-eed9fd0edae7",
-    "type": "string",
-    "secret": "string"
-}
+200 OK
 ```
 
 ### Count
-`GET /users/{userId}/secrets/count`
+`GET /matchmaking/matches/count`
 
 Authentication: **Required**
 
-Returns the count of UserSecret objects for a given user.
-
-#### Parameters
-| Name       |
-| ---------- |
-| userId |
+Returns the count of matches
 
 #### Query
 | Name       | Description | Type | Default Value |
@@ -108,7 +70,7 @@ Returns the count of UserSecret objects for a given user.
 
 #### Request
 ```http
-GET /users/{userId}/secrets/count
+GET /matchmaking/matches/count
 Authorization: jwt <token>
 ```
 
@@ -123,16 +85,11 @@ Content-Type: application/json
 ```
 
 ### FindById
-`GET /users/{userId}/secrets/{id}`
+`GET /matchmaking/matches/{id}`
 
 Authentication: **Required**
 
-Returns a single UserSecret for a specified user.
-
-#### Parameters
-| Name       |
-| ---------- |
-| userId |
+Returns a single match from the system that the user has access to
 
 #### Parameters
 | Name       |
@@ -141,7 +98,7 @@ Returns a single UserSecret for a specified user.
 
 #### Request
 ```http
-GET /users/{userId}/secrets/{id}
+GET /matchmaking/matches/{id}
 Authorization: jwt <token>
 ```
 
@@ -151,27 +108,32 @@ Authorization: jwt <token>
 Content-Type: application/json
 
 {
-    "uid": "d2033237-c8cb-47de-915b-515a7717f339",
-    "dateCreated": "2019-03-18T21:15:14.323Z",
-    "dateModified": "2019-03-18T21:15:14.323Z",
+    "uid": "33b67789-7783-4b3c-88a8-46554e228d13",
+    "dateCreated": "2019-03-18T21:19:59.319Z",
+    "dateModified": "2019-03-18T21:19:59.319Z",
     "version": 0,
-    "userId": "d6a0bf93-98ce-4214-8a0f-e0c289f98026",
-    "type": "string",
-    "secret": "string"
+    "criteria": [
+        "Criteria"
+    ],
+    "hostUid": "71641c65-0080-4ed1-aa66-31b7cb052093",
+    "numTeams": 0,
+    "serverUid": "811557d9-ecdf-4685-b4ce-5e737d0f4def",
+    "teams": [
+        "Team"
+    ],
+    "teamSize": 0,
+    "users": [
+        "string"
+    ]
 }
 ```
 
 ### Update
-`PUT /users/{userId}/secrets/{id}`
+`PUT /matchmaking/matches/{id}`
 
 Authentication: **Required**
 
-Updates a single UserSecret
-
-#### Parameters
-| Name       |
-| ---------- |
-| userId |
+Updates a single match
 
 #### Parameters
 | Name       |
@@ -180,14 +142,22 @@ Updates a single UserSecret
 
 #### Request
 ```http
-PUT /users/{userId}/secrets/{id}
+PUT /matchmaking/matches/{id}
 Content-Type: application/json
 Authorization: jwt <token>
 
 {
-    "userId": "feb17038-33f2-4f3e-9d74-44dd3e00e8bb",
-    "type": "string",
-    "secret": "string"
+    "criteria": [
+        "Criteria"
+    ],
+    "numTeams": 0,
+    "teams": [
+        "Team"
+    ],
+    "teamSize": 0,
+    "users": [
+        "string"
+    ]
 }
 ```
 
@@ -197,27 +167,32 @@ Authorization: jwt <token>
 Content-Type: application/json
 
 {
-    "uid": "28b8488b-51cb-4e9d-8426-d4e22aae4da1",
-    "dateCreated": "2019-03-18T21:15:14.323Z",
-    "dateModified": "2019-03-18T21:15:14.323Z",
+    "uid": "f896b780-c6e0-429f-80cf-ca6212db8098",
+    "dateCreated": "2019-03-18T21:19:59.320Z",
+    "dateModified": "2019-03-18T21:19:59.320Z",
     "version": 0,
-    "userId": "1ddd2eea-5b43-4135-8596-efab8b7c731f",
-    "type": "string",
-    "secret": "string"
+    "criteria": [
+        "Criteria"
+    ],
+    "hostUid": "507b7f12-d828-400f-a9fd-bf4b63b4556b",
+    "numTeams": 0,
+    "serverUid": "98e66366-042c-4f46-b10a-8f17d8079628",
+    "teams": [
+        "Team"
+    ],
+    "teamSize": 0,
+    "users": [
+        "string"
+    ]
 }
 ```
 
 ### Delete
-`DELETE /users/{userId}/secrets/{id}`
+`DELETE /matchmaking/matches/{id}`
 
 Authentication: **Required**
 
-Deletes the UserSecret
-
-#### Parameters
-| Name       |
-| ---------- |
-| userId |
+Deletes the match
 
 #### Parameters
 | Name       |
@@ -226,7 +201,7 @@ Deletes the UserSecret
 
 #### Request
 ```http
-DELETE /users/{userId}/secrets/{id}
+DELETE /matchmaking/matches/{id}
 Authorization: jwt <token>
 ```
 

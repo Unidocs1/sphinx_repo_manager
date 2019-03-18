@@ -1,6 +1,6 @@
 ---
 title: "User"
-date: 2019-03-18T05:50:55.822Z
+date: 2019-03-18T21:15:14.179Z
 chapter: true
 ---
 
@@ -45,9 +45,9 @@ The following is the list of all members included in the data model.
 
 ```json
 {
-    "uid": "0bd740bb-3e68-4b28-8f91-1588f7f8eec6",
-    "dateCreated": "2019-03-18T05:50:55.933Z",
-    "dateModified": "2019-03-18T05:50:55.933Z",
+    "uid": "48c26c15-46ac-4303-a11e-661ca47daa0d",
+    "dateCreated": "2019-03-18T21:15:14.264Z",
+    "dateModified": "2019-03-18T21:15:14.264Z",
     "version": 0,
     "name": "string",
     "email": "jsmith@gmail.com",

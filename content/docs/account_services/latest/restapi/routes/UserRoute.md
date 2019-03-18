@@ -1,6 +1,6 @@
 ---
 title: "User Routes"
-date: 2019-03-18T05:50:55.822Z
+date: 2019-03-18T21:15:14.179Z
 chapter: true
 ---
 
@@ -143,9 +143,9 @@ GET /users/{id}
 Content-Type: application/json
 
 {
-    "uid": "d1415b81-d008-4451-b1ef-b8237e6fd4f7",
-    "dateCreated": "2019-03-18T05:50:56.000Z",
-    "dateModified": "2019-03-18T05:50:56.000Z",
+    "uid": "a49bf3f9-1417-43c8-bdd4-e59a09ba0874",
+    "dateCreated": "2019-03-18T21:15:14.322Z",
+    "dateModified": "2019-03-18T21:15:14.322Z",
     "version": 0,
     "name": "string",
     "email": "jsmith@gmail.com",
@@ -200,9 +200,9 @@ Authorization: jwt <token>
 Content-Type: application/json
 
 {
-    "uid": "cc57fc31-e9b4-4c15-91a3-a47dec124547",
-    "dateCreated": "2019-03-18T05:50:56.001Z",
-    "dateModified": "2019-03-18T05:50:56.001Z",
+    "uid": "cda300e0-fb4d-43c0-8ece-755f9dcf5bbf",
+    "dateCreated": "2019-03-18T21:15:14.322Z",
+    "dateModified": "2019-03-18T21:15:14.322Z",
     "version": 0,
     "name": "string",
     "email": "jsmith@gmail.com",
