@@ -6,6 +6,9 @@ theme = "hugo-theme-learn"
 # Theme config
 chapter = true
 
+[params]
+themeVariant = "mine"
+
 # For search functionality
 [outputs]
 home = [ "HTML", "RSS", "JSON"]

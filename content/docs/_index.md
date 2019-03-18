@@ -1,96 +1,36 @@
 ---
-title: "AcceleratXR Core"
-date: 2019-03-15T20:09:14-07:00
+title: "Documentation"
+date: 2019-03-17T19:49:18-07:00
+weight: 2
 ---
 
-_AcceleratXR Core_ is a modern and robust framework and set of services for building massively scalable back-end services for real-time interactive products and services. Also featuring great client SDK support (provided in several languages) for building online capabilities into products.
+Since _AcceleratXR_ is a suite of many libraries and services the documentation is organized per system. Also note that not all systems may have all types of documentation available.
 
-# Why AcceleratXR Core?
+Each system features several types of documentation available:
 
-_AcceleratXR Core_ technology is designed to enable ground-breaking solutions for the upcoming wave of Extended Reality products and services while also being able to meet and exceed the needs of developers of more traditional games and entertainment products. Our technology is the only production-ready open source solution on the market today and provides a robust set of out-of-the-box features developers need and want.
+-   API reference documentation
+-   REST API reference documentation
+-   Guides
 
-Bolstered further by our micro-services based architecture AcceleratXR is a perfect fit for any organization, whether small or large, to integrate only the features needed to ship a product. Complete customization is our top priority and every effort has been made to create and expose a simple API to extend and customize every aspect of each system and feature.
+### API Reference Documentation
 
-As veteran game developers we understand the requirement to be able to handle millions of active simultaneous users. Our team has vast experience building online technology for some of the biggest titles in the gaming industry. We are bringing this knowledge and experience into every part of AcceleratXR Core so that developers can focus on what matters most; building a high quality experience for their customers. This is why we've chosen proven standards and technologies to ensure that our code will perform at massive scale with grace and speed.
+The API reference documentation provides detailed information about the classes, interfaces, data models and functions for a particular library or service.
 
-We also understand that consumers and enterprise users demand high availability for their products. That's why a core part of our approach is to provide zero down-time for patches and maintenance. We utilize enterprise industry proven best practices and standards in order to give AcceleratXR Core technology the ability to maintain near perfect up-time while supporting capabilities such as in-place updates, blue-green deployments and concurrent API versioning for backwards compatibility.
+### REST API Reference Documentation
 
-Whether you need only a single feature like our revolutionary matchmaking system or you are starting from scratch and need a complete back-end solution AcceleratXR Core can provide the tools you need to ship product. Take a look at our growing list of features below.
+The REST API reference documentation describes how to interact with a particular service over HTTP. Documentation is typically broken up into two main sections; _models_ and _routes_. The _models_ documentation details the individual data models managed by the service that may be sent or received from any given REST API route. The _routes_ documentation details the specific request and response interaction for any given HTTP endpoint.
 
-# Architecture & Design
+### Guides
 
-_AcceleratXR Core_ is a micro-services architecture. That means each system exists as a standalone unit containing all the information it needs to perform its work. This structure makes it possible to scale to millions of concurrent users simply and efficiently. It also allows developers to easily integrate individual systems and features into new or existing back-end infrastructure without wasting time and resources. The combination of one or more of these micro-services used together is referred to as an AcceleratXR Core cluster.
+The guides section provides long-form, in-depth articles about each system such as technical explanations and white papers.
 
-All systems and features provide a complete API for a single purpose such as user management, matchmaking, character and inventory management, etc. All data transmitted to and from each micro-service is encoded as _JavaScript Object Notation (JSON)_ with transmission occurring via either the HTTP or WebSocket protocol.
+### Systems & Features
 
-Authentication is implemented using the _[JSON Web Token (JWT)](http://jwt.io)_ standard where the payload includes all relevant user information for a service to be able to perform operations on that user's behalf. Due to the decentralized nature of JWT tokens it is therefore not required for any micro-service to negotiate or validate a token against a central authoritative server. This eliminates an important bottleneck with the cluster's architecture and design over other methodologies.
-
-As _AcceleratXR Core_ is a feature first technology solution each micro-service is focused on providing a complete feature or system implementation that can be custom tailored to meet any desired scenario. This means that each micro-service should provide complete out-of-the-box functionality for the average use case, while also providing the necessary hooks and customization paths in order to easily extend and customize that system for any desired use case.
-
-Cluster deployment, auto-scaling and management is handled using the Kubernetes orchestration system. In addition, each micro-service implements the OpenAPI Specification standard allowing the cluster to perform automatic service discovery and routing via the Envoy Proxy load balancer. This powerful combination of cloud infrastructure technologies gives _AcceleratXR Core_ it's ability to seamlessly scale while providing a single consistent API to connected clients.
-
-![Architecture Overview](/images/overview_architecture_diagram.png)
-
-# Systems & Features
-
-The following is a list of systems and features that are available as individual micro-services to be incorporated into any given cluster.
-
--   [**User Account Management Services**](account_services)
-
-    This service provides user account access and authentication as well as support for Single Sign-On authentication via popular OAuth2 compatible providers (Facebook, Google, Twitter et al).
-
--   [**Asset Services**](asset_services)
-
-    Provides localized text and binary asset management making it possible for projects to have simple patch-less updates and localization built-in.
-
--   [**Avatar Services**](avatar_services)
-
-    This service provides storage and management for player data information such as avatars, characters, skills, and abilities.
-
--   [**Matchmaking Services**](matchmaking_services)
-
-    The matchmaking services allows projects to bring users together quickly and efficiently. Our revolutionary approach to matchmaking uses a region-less, bucket-less, search algorithm that provides incredible performance and scale capable of matching millions of users in mere seconds instead of minutes.
-
--   [**Server Management Services**](server_manager_services)
-
-    This service provides a system for the management and automatic scaling of session based real-time game servers and applications. Our solution can efficiently run and scale session servers across any cloud provider and coordinate them all from a single cluster.
-
--   [**Real-Time Communication Server**](rtc_server)
-
-    The real-time communication server is our custom server technology for implementing session based real-time games and applications. The server has features such as state replication, remote-procedure calls and event based messaging. The server provides a great alternative to game engines that don't have native server networking capability or when a simple lightweight solution is desired.
-
--   [**Notification Services**](notification_services)
-
-    This service provides push notification support allowing micro-services within a cluster to send messages to connected clients in real-time. Great for providing real-time updates to modified data and events without requiring clients to constantly poll services.
-
--   **Achievements Services** [coming soon]
-
-    The achievements service provides a way for titles to give users targets and goals to strive for. The system allows for the definition of any arbitrary goal as an achievement and provides a mechanism for tracking a user's progress.
-
--   **Friend Services** [coming soon]
-
-    The friend services allows for the implementation of social constructs such as friends, enemies and recently played with users.
-
--   **Party Services** [coming soon]
-
-    This service provides the ability for users to group together using a dedicated real-time chat and communication system.
-
--   **Guild Services** [coming soon]
-
-    This service provides a way for users to come together into a permanent social group with social ranks and positions and special communication channels.
-
--   **Economy Services** [coming soon]
-
-    The economy services provides a virtual economy system enabling products to build rich experiences where users can buy and trade items amongst eachother and/or Non-Player Characters (NPCs).
-
--   **Rewards Services** [coming soon]
-
-    The rewards services system provides functionality for the automatic distributing of items, virtual currency and other rewards to users based upon customizeable criteria and conditions.
-
--   **Leaderboards** [coming soon]
-
-    This service provides a system for creating and managing user ranking tables and goal tracking.
-
--   **Analytics & Telemetry** [coming soon]
-
-    This template allows for data tracking with deferred processing. It is useful when needing to track user metrics and telemetry data of various systems that can be later analyzed.
+-   [**Client SDK**](/docs/client_sdk)
+-   [**User Account Management Services**](/docs/account_services)
+-   [**Asset Services**](/docs/asset_services)
+-   [**Avatar Services**](/docs/avatar_services)
+-   [**Matchmaking Services**](/docs/matchmaking_services)
+-   [**Server Management Services**](/docs/server_manager_services)
+-   [**Real-Time Communication Server**](/docs/rtc_server)
+-   [**Notification Services**](/docs/notification_services)
