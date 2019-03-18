@@ -23,4 +23,4 @@ Get up and running quickly with our Unreal and Unity Engine plug-ins or use our 
 
 _AcceleratXR_ powers some of the best products from these companies:
 
-![Super Bit Machine](/images/Super_Bit_Machine_Logo_Full.png?height=125) ![TurboPlay](https://turboplay.com/TurboPlay4_transparent.png?height=125)
+![Super Bit Machine](/images/Super_Bit_Machine_Logo_Full.png?height=125) ![TurboPlay](/images/TurboPlay4_transparent.png?height=125)
