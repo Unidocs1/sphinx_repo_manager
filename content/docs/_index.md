@@ -29,37 +29,37 @@ As _AcceleratXR Core_ is a feature first technology solution each micro-service 
 
 Cluster deployment, auto-scaling and management is handled using the Kubernetes orchestration system. In addition, each micro-service implements the OpenAPI Specification standard allowing the cluster to perform automatic service discovery and routing via the Envoy Proxy load balancer. This powerful combination of cloud infrastructure technologies gives _AcceleratXR Core_ it's ability to seamlessly scale while providing a single consistent API to connected clients.
 
-![Architecture Overview](images/overview_architecture_diagram.png)
+![Architecture Overview](/images/overview_architecture_diagram.png)
 
 # Systems & Features
 
 The following is a list of systems and features that are available as individual micro-services to be incorporated into any given cluster.
 
--   **User Account Management Services**
+-   [**User Account Management Services**](account_services)
 
     This service provides user account access and authentication as well as support for Single Sign-On authentication via popular OAuth2 compatible providers (Facebook, Google, Twitter et al).
 
--   **Asset Services**
+-   [**Asset Services**](asset_services)
 
     Provides localized text and binary asset management making it possible for projects to have simple patch-less updates and localization built-in.
 
--   **Avatar Services**
+-   [**Avatar Services**](avatar_services)
 
     This service provides storage and management for player data information such as avatars, characters, skills, and abilities.
 
--   **Matchmaking Services**
+-   [**Matchmaking Services**](matchmaking_services)
 
     The matchmaking services allows projects to bring users together quickly and efficiently. Our revolutionary approach to matchmaking uses a region-less, bucket-less, search algorithm that provides incredible performance and scale capable of matching millions of users in mere seconds instead of minutes.
 
--   **Server Management Services**
+-   [**Server Management Services**](server_manager_services)
 
     This service provides a system for the management and automatic scaling of session based real-time game servers and applications. Our solution can efficiently run and scale session servers across any cloud provider and coordinate them all from a single cluster.
 
--   **Real-Time Communication Server**
+-   [**Real-Time Communication Server**](rtc_server)
 
     The real-time communication server is our custom server technology for implementing session based real-time games and applications. The server has features such as state replication, remote-procedure calls and event based messaging. The server provides a great alternative to game engines that don't have native server networking capability or when a simple lightweight solution is desired.
 
--   **Notification Services**
+-   [**Notification Services**](notification_services)
 
     This service provides push notification support allowing micro-services within a cluster to send messages to connected clients in real-time. Great for providing real-time updates to modified data and events without requiring clients to constantly poll services.
 
