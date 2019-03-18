@@ -18,4 +18,4 @@ We have a [Discord](https://discord.gg/wrfBR2Q) server! If you have a question o
 
 ### Premium Support
 
-Sometimes we all need a little help from our friends. The AcceleratXR team is here to help. We provide paid premium support and consulting services for those who need more personalized help or want help building something custom. Please visit our [website](https://acceleratxr.com) and [contact us](mailto:info@acceleratxr.com?subject=AcceleratXR Core) for more information.
+Sometimes we all need a little help from our friends. The AcceleratXR team is here to help. We provide paid premium support and consulting services for those who need more personalized help or want help building something custom. Please visit our [website](https://acceleratxr.com) and [contact us](mailto:info@acceleratxr.com?subject=Premium Support) for more information.
