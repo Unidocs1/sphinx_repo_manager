@@ -40,11 +40,11 @@ The following is a list of systems and features that are available as individual
 
     This service provides user account access and authentication as well as support for Single Sign-On authentication via popular OAuth2 compatible providers (Facebook, Google, Twitter et al).
 
--   [**Asset Services**](/docs/asset_services)
+-   **Asset Services**
 
     Provides localized text and binary asset management making it possible for projects to have simple patch-less updates and localization built-in.
 
--   [**Avatar Services**](/docs/avatar_services)
+-   **Avatar Services**
 
     This service provides storage and management for player data information such as avatars, characters, skills, and abilities.
 
