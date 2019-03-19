@@ -26,10 +26,10 @@ The guides section provides long-form, in-depth articles about each system such 
 
 ### Systems & Features
 
--   [**Client SDK**](/docs/client_sdk)
+-   **Client SDK**
 -   [**User Account Management Services**](/docs/account_services)
--   [**Asset Services**](/docs/asset_services)
--   [**Avatar Services**](/docs/avatar_services)
+-   **Asset Services**
+-   **Avatar Services**
 -   [**Matchmaking Services**](/docs/matchmaking_services)
 -   [**Server Management Services**](/docs/server_manager_services)
 -   [**Real-Time Communication Server**](/docs/rtc_server)

@@ -1,6 +1,7 @@
 ---
 title: "Getting Started"
 date: 2019-03-17T20:47:48-07:00
+weight: 1
 ---
 
 ## Client Integrations

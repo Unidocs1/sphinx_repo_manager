@@ -1,6 +1,7 @@
 ---
 title: "Open API"
 date: 2019-03-18T17:01:42-07:00
+weight: 1
 ---
 
 _AcceleratXR_ makes extensive use of the [OpenAPI Specification](https://www.openapis.org/) standard. All services start with an OpenAPI specification file that is processed by our custom [code generator](/docs/axr-generator). The output that the generator produces is a nearly complete micro-service implementation based on the specification provided. In order to make this possible we have added several custom extensions.

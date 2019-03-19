@@ -1,6 +1,7 @@
 ---
 title: "Security"
 date: 2019-03-18T16:34:43-07:00
+weight: 2
 ---
 
 In order to provide a common system for authentication [JSON Web Token (JWT)](http://jwt.io) access tokens are used in order to establish the identity and privileges of a user within the system. By default, all services automatically authenticate clients that provide a JWT token in the request. If a user has been properly identified you can add a `@User` decorated argument to any route handler to inject the authenticated user object.
