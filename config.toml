@@ -2,6 +2,7 @@ baseURL = "https://acceleratxr.io"
 languageCode = "en-us"
 title = "AcceleratXR"
 theme = "hugo-theme-learn"
+googleAnalytics = "UA-136672390-2"
 
 # Theme config
 chapter = true
