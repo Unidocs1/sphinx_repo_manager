@@ -31,6 +31,8 @@ The guides section provides long-form, in-depth articles about each system such 
 -   **Asset Services**
 -   [**Persona Services**](/docs/persona_services)
 -   [**Matchmaking Services**](/docs/matchmaking_services)
+-	[**Session Services**](/docs/session_services)
 -   [**Server Management Services**](/docs/server_manager_services)
 -   [**Real-Time Communication Server**](/docs/rtc_server)
 -   [**Notification Services**](/docs/notification_services)
+-	[**Telemetry Services**](/docs/telemetry_services)
