@@ -29,7 +29,7 @@ The guides section provides long-form, in-depth articles about each system such 
 -   **Client SDK**
 -   [**User Account Management Services**](/docs/account_services)
 -   **Asset Services**
--   **Avatar Services**
+-   [**Persona Services**](/docs/persona_services)
 -   [**Matchmaking Services**](/docs/matchmaking_services)
 -   [**Server Management Services**](/docs/server_manager_services)
 -   [**Real-Time Communication Server**](/docs/rtc_server)
