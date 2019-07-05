@@ -28,8 +28,9 @@ The guides section provides long-form, in-depth articles about each system such 
 
 -   **Client SDK**
 -   [**User Account Management Services**](/docs/account_services)
--   **Asset Services**
+-   [**Asset Services**](/docs/asset_services)
 -   [**Persona Services**](/docs/persona_services)
+- 	[**Social Services**](/docs/social_services)
 -   [**Matchmaking Services**](/docs/matchmaking_services)
 -	[**Session Services**](/docs/session_services)
 -   [**Server Management Services**](/docs/server_manager_services)
