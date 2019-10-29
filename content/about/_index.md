@@ -36,62 +36,62 @@ Cluster deployment, auto-scaling and management is handled using the Kubernetes 
 
 The following is a list of systems and features that are available as individual micro-services to be incorporated into any given cluster.
 
--   [**User Account Management Services**](/docs/account_services)
+- [**User Account Management Services**](/docs/account_services)
 
-    This service provides user account access and authentication as well as support for Single Sign-On authentication via popular OAuth2 compatible providers (Facebook, Google, Twitter et al).
+  This service provides user account access and authentication as well as support for Single Sign-On authentication via popular OAuth2 compatible providers (Facebook, Google, Twitter et al).
 
--   **Asset Services**
+- [**Asset Services**](/docs/asset_services)
 
-    Provides localized text and binary asset management making it possible for projects to have simple patch-less updates and localization built-in.
+  Provides localized text and binary asset management making it possible for projects to have simple patch-less updates and localization built-in.
 
--   **Avatar Services**
+- [**Persona Services**](/docs/persona_services)
 
-    This service provides storage and management for player data information such as avatars, characters, skills, and abilities.
+  This service provides storage and management for player data information such as avatars, characters, skills, and abilities.
 
--   [**Matchmaking Services**](/docs/matchmaking_services)
+- [**Matchmaking Services**](/docs/matchmaking_services)
 
-    The matchmaking services allows projects to bring users together quickly and efficiently. Our revolutionary approach to matchmaking uses a region-less, bucket-less, search algorithm that provides incredible performance and scale capable of matching millions of users in mere seconds instead of minutes.
+  The matchmaking services allows projects to bring users together quickly and efficiently. Our revolutionary approach to matchmaking uses a region-less, bucket-less, search algorithm that provides incredible performance and scale capable of matching millions of users in mere seconds instead of minutes.
 
--   [**Server Management Services**](/docs/server_manager_services)
+- [**Server Management Services**](/docs/server_manager_services)
 
-    This service provides a system for the management and automatic scaling of session based real-time game servers and applications. Our solution can efficiently run and scale session servers across any cloud provider and coordinate them all from a single cluster.
+  This service provides a system for the management and automatic scaling of session based real-time game servers and applications. Our solution can efficiently run and scale session servers across any cloud provider and coordinate them all from a single cluster.
 
--   [**Real-Time Communication Server**](/docs/rtc_server)
+- [**Real-Time Communication Server**](/docs/rtc_server)
 
-    The real-time communication server is our custom server technology for implementing session based real-time games and applications. The server has features such as state replication, remote-procedure calls and event based messaging. The server provides a great alternative to game engines that don't have native server networking capability or when a simple lightweight solution is desired.
+  The real-time communication server is our custom server technology for implementing session based real-time games and applications. The server has features such as state replication, remote-procedure calls and event based messaging. The server provides a great alternative to game engines that don't have native server networking capability or when a simple lightweight solution is desired.
 
--   [**Notification Services**](/docs/notification_services)
+- [**Notification Services**](/docs/notification_services)
 
-    This service provides push notification support allowing micro-services within a cluster to send messages to connected clients in real-time. Great for providing real-time updates to modified data and events without requiring clients to constantly poll services.
+  This service provides push notification support allowing micro-services within a cluster to send messages to connected clients in real-time. Great for providing real-time updates to modified data and events without requiring clients to constantly poll services.
 
--   **Achievements Services** [coming soon]
+- [**Achievements Services**](/docs/achievements_services)
 
-    The achievements service provides a way for titles to give users targets and goals to strive for. The system allows for the definition of any arbitrary goal as an achievement and provides a mechanism for tracking a user's progress.
+  The achievements service provides a way for titles to give users targets and goals to strive for. The system allows for the definition of any arbitrary goal as an achievement and provides a mechanism for tracking a user's progress.
 
--   **Friend Services** [coming soon]
+- [**Leaderboards**](/docs/leaderboard_services)
 
-    The friend services allows for the implementation of social constructs such as friends, enemies and recently played with users.
+  This service provides a system for creating and managing user ranking tables and goal tracking.
 
--   **Party Services** [coming soon]
+- [**Social Services**](/docs/social_services)
 
-    This service provides the ability for users to group together using a dedicated real-time chat and communication system.
+  The social services allows for the implementation of social constructs such as friends, player messaging and online presence.
 
--   **Guild Services** [coming soon]
+- [**Analytics & Telemetry**](/docs/telemetry_services)
 
-    This service provides a way for users to come together into a permanent social group with social ranks and positions and special communication channels.
+  This template allows for data tracking with deferred processing. It is useful when needing to track user metrics and telemetry data of various systems that can be later analyzed.
 
--   **Economy Services** [coming soon]
+- **Party Services** [coming soon]
 
-    The economy services provides a virtual economy system enabling products to build rich experiences where users can buy and trade items amongst eachother and/or Non-Player Characters (NPCs).
+  This service provides the ability for users to group together using a dedicated real-time chat and communication system.
 
--   **Rewards Services** [coming soon]
+- **Guild Services** [coming soon]
 
-    The rewards services system provides functionality for the automatic distributing of items, virtual currency and other rewards to users based upon customizeable criteria and conditions.
+  This service provides a way for users to come together into a permanent social group with social ranks and positions and special communication channels.
 
--   **Leaderboards** [coming soon]
+- **Economy Services** [coming soon]
 
-    This service provides a system for creating and managing user ranking tables and goal tracking.
+  The economy services provides a virtual economy system enabling products to build rich experiences where users can buy and trade items amongst eachother and/or Non-Player Characters (NPCs).
 
--   **Analytics & Telemetry** [coming soon]
+- **Rewards Services** [coming soon]
 
-    This template allows for data tracking with deferred processing. It is useful when needing to track user metrics and telemetry data of various systems that can be later analyzed.
+  The rewards services system provides functionality for the automatic distributing of items, virtual currency and other rewards to users based upon customizeable criteria and conditions.
