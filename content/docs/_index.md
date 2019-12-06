@@ -30,6 +30,7 @@ The guides section provides long-form, in-depth articles about each system such 
 - [**Account Management Services**](/docs/account_services)
 - [**Achievement Services**](/docs/achievements_services)
 - [**Asset Services**](/docs/asset_services)
+- [**Economy Services**](/docs/economy_services)
 - [**Leaderboard Services**](/docs/leaderboard_services)
 - [**Matchmaking Services**](/docs/matchmaking_services)
 - [**Notification Services**](/docs/notification_services)

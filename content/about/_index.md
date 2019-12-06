@@ -48,6 +48,10 @@ The following is a list of systems and features that are available as individual
 
   Provides localized text and binary asset management making it possible for projects to have simple patch-less updates and localization built-in.
 
+- [**Economy Services**](/docs/economy_services)
+
+  The economy services provides a virtual economy system enabling products to build rich experiences where users can buy and trade items amongst eachother and/or Non-Player Characters (NPCs).
+
 - [**Leaderboards**](/docs/leaderboard_services)
 
   This service provides a system for creating and managing user ranking tables and goal tracking.
@@ -95,7 +99,3 @@ The following is a list of systems and features that are available as individual
 * **Guild Services** [coming soon]
 
   This service provides a way for users to come together into a permanent social group with social ranks and positions and special communication channels.
-
-* **Economy Services** [coming soon]
-
-  The economy services provides a virtual economy system enabling products to build rich experiences where users can buy and trade items amongst eachother and/or Non-Player Characters (NPCs).
