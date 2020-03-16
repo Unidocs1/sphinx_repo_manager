@@ -23,6 +23,6 @@ Get up and running quickly with our Unreal and Unity Engine plug-ins or use our 
 
 _AcceleratXR_ powers some of the best products from these companies:
 
-![Redpill VR](/images/redpill-logo.png)
+![Redpill VR](/images/redpill-logo.png?height=125)
 ![Super Bit Machine](/images/Super_Bit_Machine_Logo_Full.png?height=125)
 ![TurboPlay](/images/TurboPlay4_transparent.png?height=125)
