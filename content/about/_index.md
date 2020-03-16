@@ -8,7 +8,7 @@ _AcceleratXR_ is a modern and robust framework and set of services for building 
 
 ## Why AcceleratXR?
 
-_AcceleratXR_ technology is designed to enable ground-breaking solutions for the upcoming wave of Extended Reality products and services while also being able to meet and exceed the needs of developers of more traditional games and entertainment products. Our technology is the only production-ready open source solution on the market today and provides a robust set of out-of-the-box features developers need and want.
+_AcceleratXR_ technology is designed to enable ground-breaking solutions for the upcoming wave of Extended Reality products and services while also being able to meet and exceed the needs of developers of more traditional games and entertainment products. Our technology is the only production-ready free and source available solution on the market today and provides a robust set of out-of-the-box features developers need and want.
 
 Bolstered further by our micro-services based architecture AcceleratXR is a perfect fit for any organization, whether small or large, to integrate only the features needed to ship a product. Complete customization is our top priority and every effort has been made to create and expose a simple API to extend and customize every aspect of each system and feature.
 
