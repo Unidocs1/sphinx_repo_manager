@@ -8,6 +8,7 @@ A user link is a relationship of one user to another. A user can have any number
 -   User Follow
 -   Friends
 -   Blocked Users
+-   Recently Met Users
 
 The structure of the UserLink appears as follows:
 
@@ -22,6 +23,10 @@ The structure of the UserLink appears as follows:
     type: "FOLLOW"
 }
 ```
+
+## Encountering Users (`ENCOUNTER`)
+
+When players encounter one another while interacting in the product it is possible to create an `ENCOUNTER` user link. This link is intended to track all players that a user may have recently met and desire to see again in the future.
 
 ## Following Users (`FOLLOW`)
 
