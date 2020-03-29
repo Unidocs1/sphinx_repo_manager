@@ -10,7 +10,8 @@ Each system features several types of documentation available:
 
 - API reference documentation
 - REST API reference documentation
-- Guides
+- Concepts
+- Tutorials
 
 ### API Reference Documentation
 
@@ -20,9 +21,13 @@ The API reference documentation provides detailed information about the classes,
 
 The REST API reference documentation describes how to interact with a particular service over HTTP. Documentation is typically broken up into two main sections; _models_ and _routes_. The _models_ documentation details the individual data models managed by the service that may be sent or received from any given REST API route. The _routes_ documentation details the specific request and response interaction for any given HTTP endpoint.
 
-### Guides
+### Concepts
 
-The guides section provides long-form, in-depth articles about each system such as technical explanations and white papers.
+The concepts section provides long-form, in-depth articles about each system such as technical explanations and white papers.
+
+### Tutorials
+
+The tutorials section provides guided explanation of how to perform specific tasks and implement specific features using a given system.
 
 ### Systems & Features
 
