@@ -68,6 +68,10 @@ The following is a list of systems and features that are available as individual
 
   This service provides storage and management for player data information such as avatars, characters, skills, and abilities.
 
+- [**Progression Services**](/docs/progression_services)
+
+  The progression service offers a system that can manage and track persona progression data such as levels, skill trees, etc.
+
 - [**Quest Services**](/docs/quest_services)
 
   The quest service provides a robust system for defining and tracking progress of player goals.
