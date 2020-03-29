@@ -63,3 +63,6 @@ All of the service classes are located in the `src/services` folder.
 ### Service Factory
 
 The _ServiceFactory_ is a special class that manages the instances of each _Service_ class. It is a singleton class that can be accessed from anywhere in your application and provides a convenvient interface for retrieving _Service_ class instances for a given data model.
+
+### EntityWatchdog
+The _EntityWatchdog_ is a utility class that makes it easy to monitor changes to a particular data model that occur on the backend. It is implemented as a static class that allows for the binding of multiple callback functions associated with a given entity object. The watchdog will then listen to the backend for any changes to the data model and execute the callback function with the updated data.
