@@ -12,4 +12,4 @@ publish:
         - git submodule update --progress --init --recursive -- "themes/hugo-theme-learn"
         - hugo
         - aws s3 cp ./public/ s3://acceleratxr.io/ --recursive
-        - aws cloudfront create-invalidation --distribution-id E3AMYPS4CSHEU7 --paths "*"
+        - aws cloudfront create-invalidation --distribution-id E3AMYPS4CSHEU7 --paths "/*"
