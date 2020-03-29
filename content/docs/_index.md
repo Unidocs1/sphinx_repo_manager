@@ -31,7 +31,7 @@ The tutorials section provides guided explanation of how to perform specific tas
 
 ### Systems & Features
 
-- **Client SDK**
+- [Client SDK](/docs/install/sdk
 - [**Account Management Services**](/docs/account_services)
 - [**Achievement Services**](/docs/achievements_services)
 - [**Asset Services**](/docs/asset_services)
