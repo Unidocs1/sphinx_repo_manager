@@ -4,11 +4,11 @@ date: 2019-03-15T20:09:14-07:00
 weight: 1
 ---
 
-_AcceleratXR_ is a modern and robust framework and set of services for building massively scalable back-end services for real-time interactive products and services. Also featuring great client SDK support (provided in several languages) for building online capabilities into products.
+_AcceleratXR_ is a modern and robust framework and set of online services for building massively scalable back-end platforms for use in real-time interactive products.
 
 ## Why AcceleratXR?
 
-_AcceleratXR_ technology is designed to enable ground-breaking solutions for the upcoming wave of Extended Reality products and services while also being able to meet and exceed the needs of developers of more traditional games and entertainment products. Our technology is the only production-ready free and source available solution on the market today and provides a robust set of out-of-the-box features developers need and want.
+_AcceleratXR_ technology is designed to enable ground-breaking solutions for the upcoming wave of Extended Reality products and services while also being able to meet and exceed the needs of developers of more traditional games and entertainment products. Our technology is the most complete backend solution available with more than 15 unique systems and features. Complete source code is available for downloaded directly on our company website [goaxr.com](https://www.acceleratxr.com). The cost is _free_ for all products with less than $100K in gross revenue or 4% royalty for products that exceed $100K in revenue.
 
 Bolstered further by our micro-services based architecture AcceleratXR is a perfect fit for any organization, whether small or large, to integrate only the features needed to ship a product. Complete customization is our top priority and every effort has been made to create and expose a simple API to extend and customize every aspect of each system and feature.
 
@@ -20,15 +20,15 @@ Whether you need only a single feature like our revolutionary matchmaking system
 
 ## Architecture & Design
 
-_AcceleratXR_ is a micro-services architecture. That means each system exists as a standalone unit containing all the information it needs to perform its work. This structure makes it possible to scale to millions of concurrent users simply and efficiently. It also allows developers to easily integrate individual systems and features into new or existing back-end infrastructure without wasting time and resources. The combination of one or more of these micro-services used together is referred to as an AcceleratXR cluster.
+_AcceleratXR_ is a micro-services architecture. That means each system exists as a standalone unit containing all the information it needs to perform its work. This structure makes it possible to scale to millions of concurrent users simply and efficiently. It also allows developers to easily integrate individual systems and features into new or existing back-end infrastructure without wasting time and resources. The combination of one or more of these micro-services used together is referred to as an _AcceleratXR Cluster_.
 
 All systems and features provide a complete API for a single purpose such as user management, matchmaking, character and inventory management, etc. All data transmitted to and from each micro-service is encoded as _JavaScript Object Notation (JSON)_ with transmission occurring via either the HTTP or WebSocket protocol.
 
-Authentication is implemented using the _[JSON Web Token (JWT)](http://jwt.io)_ standard where the payload includes all relevant user information for a service to be able to perform operations on that user's behalf. Due to the decentralized nature of JWT tokens it is therefore not required for any micro-service to negotiate or validate a token against a central authoritative server. This eliminates an important bottleneck with the cluster's architecture and design over other methodologies.
+Authentication is implemented using the _[JSON Web Token (JWT)](http://jwt.io)_ standard where the payload includes all relevant user information for a service to be able to perform operations on that user's behalf. Due to the decentralized nature of JWT tokens it is therefore not required for any micro-service to negotiate or validate a token against a central authoritative server. This eliminates a critical bottleneck with the platform's architecture and design, making it possible to easily scale to millions of users.
 
-As _AcceleratXR_ is a feature first technology solution each micro-service is focused on providing a complete feature or system implementation that can be custom tailored to meet any desired scenario. This means that each micro-service should provide complete out-of-the-box functionality for the average use case, while also providing the necessary hooks and customization paths in order to easily extend and customize that system for any desired use case.
+As _AcceleratXR_ is a feature first technology solution each micro-service is focused on providing a complete feature or system implementation that can be custom tailored to meet any desired scenario. This means that each micro-service should provide complete out-of-the-box functionality for the average use case, while also providing the necessary hooks and customization paths in order to easily extend and customize that system for any additional use case.
 
-Cluster deployment, auto-scaling and management is handled using the Kubernetes orchestration system. In addition, each micro-service implements the OpenAPI Specification standard allowing the cluster to perform automatic service discovery and routing via the Envoy Proxy load balancer. This powerful combination of cloud infrastructure technologies gives _AcceleratXR_ it's ability to seamlessly scale while providing a single consistent API to connected clients.
+_AcceleratXR_ is a container based solution with deployment, auto-scaling and management handled by the Kubernetes orchestration system. HTTP/WebSocket load balancing and TLS termination are handled by nginx. TLS certificates are automatically generated using Let's Encrypt to ensure all data transmitted in and out of the cluster is secured with the latest cryptographic standards. This powerful combination of cloud infrastructure technologies gives _AcceleratXR_ it's ability to seamlessly scale while providing a single consistent API to connected clients.
 
 ![Architecture Overview](/images/overview_architecture_diagram.png)
 
