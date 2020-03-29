@@ -14,7 +14,7 @@ The _AcceleratXR_ client SDK is available for the following languages and engine
 -   [C#](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_csharp)
 -   [Unity Engine](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_unity)
 -   [Unreal Engine](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_unreal)
--   [NodeJS / JavaScript](https://gitlab.com/AcceleratXR/Core/sdk/client_sdk_nodejs)
+-   [JavaScript / TypeScript](https://gitlab.com/AcceleratXR/Core/sdk/client_sdk_nodejs)
 
 ## Common Structure
 

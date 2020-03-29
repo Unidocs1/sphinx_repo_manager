@@ -5,19 +5,19 @@ date: 2019-05-28T17:50:05-07:00
 
 The 'AcceleratXR Core Software Development Kit (AXRCoreSDK)' is intended to be used by game clients and applications that wish to access AcceleratXR powered services. The SDK comes in five flavors.
 
-- C++ Library
-- C# Library
-- JavaScript/TypeScript Library
-- Unity Plug-in
-- Unreal Plug-in
+-   [C++](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_cpp)
+-   [C#](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_csharp)
+-   [Unity Engine](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_unity)
+-   [Unreal Engine](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_unreal)
+-   [JavaScript / TypeScript](https://gitlab.com/AcceleratXR/Core/sdk/client_sdk_nodejs)
 
 ## Concepts
 
-All of the SDK libraries have a similar structure and set of features. Each uses heavy asynchronous programming models to simplify development and reduce boilerplate code. In C++, this is accomplished using the powerful Microsoft Parallel Patterns Library. In C#, this is handled using the built-in `Task` patterns API. In JavaScript/TypeScript this is handled using the `Promises` API.
+All of the SDK libraries have a similar structure and set of features. Each uses heavy asynchronous programming models to simplify development and reduce boilerplate code. In C++, this is accomplished using the powerful [Microsoft Parallel Patterns Library (PPL)](https://docs.microsoft.com/en-us/cpp/parallel/concrt/parallel-patterns-library-ppl?view=vs-2019). In C#, this is handled using the built-in [Task Parallel Library (TPL)](https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/task-parallel-library-tpl). In JavaScript/TypeScript this is handled using the `Promises` API.
 
 ### Models
 
-Every AcceleratXR service exposes a series of endpoints that all map to a particular data model. Each represented data model contains information related to the task or job that the service manages. In the case of account management, the data models `User` and `Role` objects. In the case of `matchmaking_services` the system deals with `Ticket` objects. For each data model of each system there is a corresponding class in the SDK library of the same name.
+Every AcceleratXR service exposes a series of endpoints that all map to a particular data model. Each represented data model contains information related to the task or job that the service manages. In the case of account management, there are data models `User` and `Role`. The `matchmaking_services` system deals with `Ticket` objects. For each data model of each system there is a corresponding class in the SDK library of the same name.
 
 When working with the SDK it is important to note that you will primarily be working with these data model structures. Data contained in these structures will automatically be serialized and deserialized when communicating between an AcceleratXR powered services cluster and the client SDK. It is therefore not neceessary to decode or unpack messages on your own.
 
