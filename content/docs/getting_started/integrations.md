@@ -10,28 +10,38 @@ Integrating _AcceleratXR_ into your game client or application is easy. A client
 
 The _AcceleratXR_ client SDK is available for the following languages and engines:
 
--   [C++](https://gitlab.com/AcceleratXR/Core/client_sdk_cpp)
--   [Unreal Engine](https://gitlab.com/AcceleratXR/Core/client_sdk_unreal)
--   C# [Coming Soon]
--   Unity Engine [Coming Soon]
+-   [C++](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_cpp)
+-   [C#](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_csharp)
+-   [Unity Engine](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_unity)
+-   [Unreal Engine](https://gitlab.com/AcceleratXR/Core/SDK/client_sdk_unreal)
+-   [NodeJS / JavaScript](https://gitlab.com/AcceleratXR/Core/sdk/client_sdk_nodejs)
 
 ## Common Structure
 
-All of the SDKs share a common directory structure.
+All of the SDKs share a common structure.
 
 ```
-/- client_sdk
-    /- src
-        /- models
-            - User
-            ...
-        /- services
-            - UserService
-            ...
-        /- utils
-        - ClientSDK
-        - Configuration
-        - ServiceFactory
+namespace axr::sdk
+{
+    namespace models
+    {
+        User
+        ...
+    }
+    namespace services
+    {
+        UserService
+        ...
+    }
+    namespace utils
+    {
+        EntityWatchdog
+        ...
+    }
+    ClientSDK
+    Configuration
+    ServiceFactory
+}
 ```
 
 ### ClientSDK

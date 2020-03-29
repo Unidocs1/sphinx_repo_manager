@@ -35,6 +35,7 @@ The guides section provides long-form, in-depth articles about each system such 
 - [**Matchmaking Services**](/docs/matchmaking_services)
 - [**Notification Services**](/docs/notification_services)
 - [**Persona Services**](/docs/persona_services)
+- [**Progression Services**](/docs/progression_services)
 - [**Quest Services**](/docs/quest_services)
 - [**Real-Time Communication Server**](/docs/rtc_server)
 - [**Session Services**](/docs/session_services)
