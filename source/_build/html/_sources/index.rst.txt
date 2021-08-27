@@ -1,0 +1,111 @@
+===========
+AcceleratXR
+===========
+
+.. image:: https://gitlab.com/AcceleratXR/composerjs/cli/badges/master/pipeline.svg
+.. image:: https://gitlab.com/AcceleratXR/composerjs/cli/badges/master/coverage.svg
+
+.. toctree::
+   :hidden:
+
+   about
+   features
+
+.. toctree::
+   :hidden:
+   :caption: Getting Started
+
+   install
+   openapi
+   authentication
+
+.. toctree::
+   :hidden:
+   :caption: Composer Server
+
+   server/create
+   server/structure
+   server/routes
+   server/builtins
+   server/default_routes
+   server/debug
+
+.. toctree::
+   :hidden:
+   :caption: Server: Advanced Topics
+   server/configuration
+   server/authorization
+   server/caching
+   server/jobs
+
+.. toctree::
+   :hidden:
+   :caption: Reference Docs
+
+   :doc:`Core Library <core:/>`
+   :doc:`Service Core Library <service-core:/>`
+
+.. toctree::
+   :hidden:
+   :caption: Get Involved
+
+   Discord <https://discord.gg/wrfBR2Q>
+   GitLab <https://gitlab.com/AcceleratXR/Core>
+
+Composer is a simple, light-weight and opinionated framework for rapidly developing scalable REST API services for NodeJS, written in TypeScript.
+
+The framework combines the OpenAPI specification with a simple functional programming model to provide a highly expressive and powerful system for developing REST API services.
+
+Features
+========
+
+* Built on OpenAPI
+* HTTP 1.x/2.x Web Server
+* WebSocket Support
+* Global Configuration
+* Dependency Injection
+* Built-in behaviors for common REST API actions
+* Built-in ORM layer
+* Document Version Tracking
+* MongoDB support
+* Redis support
+* 2nd Level Caching
+* Authentication
+* Role Based Access Control
+* Prometheseus metrics
+
+Getting Started
+===============
+
+Using Composer is as simple as 1-2-3.
+
+Step 1
+******
+
+Define the REST API service using `OpenAPI <openapi.html>`_ and save it as ``service.yaml``.
+
+`Click here for an example <https://gitlab.com/AcceleratXR/composerjs/cli/-/raw/master/test/petstore.yaml>`_.
+
+.. image:: images/petstore_example.png
+
+Step 2
+******
+
+Generate the project using the Composer CLI.
+
+.. code-block:: bash
+   :linenos:
+
+   yarn global add @composer-js/cli
+   composer -i ./service.yaml -o . -t server -l nodejs
+
+Step 3
+******
+
+Start the server!
+
+.. code-block:: bash
+   :linenos:
+
+   yarn install
+   yarn start

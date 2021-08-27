@@ -1,0 +1,33 @@
+======================
+Installing AcceleratXR
+======================
+
+This article details the steps to install the AcceleratXR platform to Kubernetes. Before you begin make sure that all
+`pre-requisites <prerequisites>` have been installed and configured correctly.
+
+Clone the Helm Chart
+====================
+
+A Helm chart capable of deploying the platform including all supported micro-services, databases and stats servers is
+available at https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy. First clone this repository locally. If you are a
+subcriber at the `Professional <https://gitlab.com/AcceleratXR/professional/tools/k8s_deploy>`,
+`Studio <https://gitlab.com/AcceleratXR/studio/tools/k8s_deploy>` or
+`Enterprise <https://gitlab.com/AcceleratXR/enterprise/tools/k8s_deploy>`
+tier there is a matching helm chart for each respective tier.
+
+.. code-block:: bash
+   :linenos:
+
+   git clone git@gitlab.acceleratxr.com:Core/tools/k8s_deploy.git
+
+Chart Dependencies
+==================
+
+Before the helm chart can be used the dependencies must be locally downloaded and initialized. This is done with the
+following command.
+
+.. code-block:: bash
+   :linenos:
+
+   helm dep up
+

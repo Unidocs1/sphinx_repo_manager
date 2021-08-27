@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Platform Installation using Helm &#8212; AcceleratXR  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://www.acceleratxr.ioplatform/install_helm.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="platform-installation-using-helm">
+<h1>Platform Installation using Helm<a class="headerlink" href="#platform-installation-using-helm" title="Permalink to this headline">¶</a></h1>
+<p>This article details the steps to install the AcceleratXR platform to Kubernetes using Helm. Before you begin make sure
+that all <cite>pre-requisites &lt;prerequisites&gt;</cite> have been installed and configured correctly.</p>
+<section id="clone-the-helm-chart">
+<h2>Clone the Helm Chart<a class="headerlink" href="#clone-the-helm-chart" title="Permalink to this headline">¶</a></h2>
+<p>A Helm chart capable of deploying the platform including all supported micro-services, databases and stats servers is
+available in GitLab. Select the URL of the repository for the subscription plan you have below.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Subscription</p></th>
+<th class="head"><p>URL</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Core</p></td>
+<td><p><a class="reference external" href="https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy">https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Professional</p></td>
+<td><p><a class="reference external" href="https://gitlab.com/AcceleratXR/professional/tools/k8s_deploy">https://gitlab.com/AcceleratXR/professional/tools/k8s_deploy</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Studio</p></td>
+<td><p><a class="reference external" href="https://gitlab.com/AcceleratXR/studio/tools/k8s_deploy">https://gitlab.com/AcceleratXR/studio/tools/k8s_deploy</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Enterprise</p></td>
+<td><p><a class="reference external" href="https://gitlab.com/AcceleratXR/enterprise/tools/k8s_deploy">https://gitlab.com/AcceleratXR/enterprise/tools/k8s_deploy</a></p></td>
+</tr>
+</tbody>
+</table>
+<p>Next clone the repository to your local machine.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>git clone git@gitlab.acceleratxr.com:Core/tools/k8s_deploy.git
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Before the helm chart can be used the dependencies must be locally downloaded and initialized. This is done with the
+following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>helm dep up
+</pre></div>
+</div>
+</section>
+<section id="create-a-namespace">
+<h2>Create a Namespace<a class="headerlink" href="#create-a-namespace" title="Permalink to this headline">¶</a></h2>
+<p>It is recommended that AcceleratXR be installed within a dedicated namespace within Kubernetes.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>kubectl create axr-demo-v1
+</pre></div>
+</div>
+<p>In the above example we create a namespace called <cite>axr-demo-v1</cite>.  This namespace will contain all of the platform’s
+resources.</p>
+</section>
+<section id="install-command">
+<h2>Install Command<a class="headerlink" href="#install-command" title="Permalink to this headline">¶</a></h2>
+<p>The helm chart has a number of required properties that must be set in order to install correctly. These are:</p>
+<p>For details on all available configuration options please consult the repository’s
+<cite>README &lt;https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy/-/blob/master/README.md&gt;</cite>.</p>
+<section id="utilizing-in-cluster-database-servers">
+<h3>Utilizing In-Cluster Database Servers<a class="headerlink" href="#utilizing-in-cluster-database-servers" title="Permalink to this headline">¶</a></h3>
+<p>The following command will install the AcceleratXR platform and set up all necessary database
+servers within the running cluster. This is the <strong>RECOMMENDED</strong> install method.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>helm install axr-demo-v1 . <span class="se">\</span>
+<span class="linenos"> 2</span>--namespace axr-demo-v1 <span class="se">\</span>
+<span class="linenos"> 3</span>--set <span class="nv">title</span><span class="o">=</span>AXR-Demo <span class="se">\</span>
+<span class="linenos"> 4</span>--set <span class="nv">domain</span><span class="o">=</span>demo.goaxr.cloud <span class="se">\</span>
+<span class="linenos"> 5</span>--set ingress.hosts<span class="o">[</span><span class="m">0</span><span class="o">]</span>.host<span class="o">=</span>api.demo.goaxr.cloud <span class="se">\</span>
+<span class="linenos"> 6</span>--set mongodb.create<span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
+<span class="linenos"> 7</span>--set mongodb.architecture<span class="o">=</span>standalone <span class="se">\</span>
+<span class="linenos"> 8</span>--set mongodb.auth.enabled<span class="o">=</span><span class="nb">false</span> <span class="se">\</span>
+<span class="linenos"> 9</span>--set mongodb.auth.username<span class="o">=</span><span class="s2">&quot;admin&quot;</span> <span class="se">\</span>
+<span class="linenos">10</span>--set mongodb.auth.password<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span> <span class="se">\</span>
+<span class="linenos">11</span>--set mongodb.auth.rootPassword<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span> <span class="se">\</span>
+<span class="linenos">12</span>--set postgresql.create<span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
+<span class="linenos">13</span>--set postgresql.postgresqlPassword<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span> <span class="se">\</span>
+<span class="linenos">14</span>--set admin.password<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="utilizing-external-database-servers">
+<h3>Utilizing External Database Servers<a class="headerlink" href="#utilizing-external-database-servers" title="Permalink to this headline">¶</a></h3>
+<p>If external database providers are desired, such as using DocumentDB/RDS/Elasticache when running in AWS,
+the following command should be used.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>helm install axr-demo-v1 . <span class="se">\</span>
+<span class="linenos"> 2</span>--namespace axr-demo-v1 <span class="se">\</span>
+<span class="linenos"> 3</span>--set <span class="nv">title</span><span class="o">=</span>AXR-Demo <span class="se">\</span>
+<span class="linenos"> 4</span>--set <span class="nv">domain</span><span class="o">=</span>demo.goaxr.cloud <span class="se">\</span>
+<span class="linenos"> 5</span>--set ingress.hosts<span class="o">[</span><span class="m">0</span><span class="o">]</span>.host<span class="o">=</span>api.demo.goaxr.cloud <span class="se">\</span>
+<span class="linenos"> 6</span>--set mongodb.create<span class="o">=</span><span class="nb">false</span> <span class="se">\</span>
+<span class="linenos"> 7</span>--set mongodb.url<span class="o">=</span>mongodb://admin:&lt;PASSWORD&gt;@ext.hosted.mongodb <span class="se">\</span>
+<span class="linenos"> 8</span>--set mongodb.auth.username<span class="o">=</span><span class="s2">&quot;admin&quot;</span> <span class="se">\</span>
+<span class="linenos"> 9</span>--set mongodb.auth.password<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span> <span class="se">\</span>
+<span class="linenos">10</span>--set mongodb.auth.rootPassword<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span> <span class="se">\</span>
+<span class="linenos">11</span>--set postgresql.create<span class="o">=</span><span class="nb">false</span> <span class="se">\</span>
+<span class="linenos">12</span>--set postgresql.url<span class="o">=</span>postgres://admin:&lt;PASSWORD&gt;@ext.hosted.postgresql <span class="se">\</span>
+<span class="linenos">13</span>--set postgresql.postgresqlPassword<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span> <span class="se">\</span>
+<span class="linenos">14</span>--set admin.password<span class="o">=</span><span class="s2">&quot;&lt;PASSWORD&gt;&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="output">
+<h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Once you’ve successfully installed the platform with Helm you will see output from the command like the following.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>NAME: axr-demo-v1
+LAST DEPLOYED: Thu May <span class="m">13</span> <span class="m">12</span>:11:31 <span class="m">2021</span>
+NAMESPACE: axr-demo-v1
+STATUS: deployed
+REVISION: <span class="m">1</span>
+NOTES:
+<span class="c1">###############################################################################</span>
+<span class="c1"># !!!IMPORTANT!!! WRITE DOWN THE FOLLOWING INFORMATION                        #</span>
+<span class="c1">###############################################################################</span>
+Cluster Addresses:
+
+   https://api.demo.goaxr.cloud/v1
+
+Admin Account:
+Username: admin
+Password: &lt;PASSWORD&gt;
+
+Authentication Configuration:
+Audience: demo.goaxr.cloud
+Issuer: api.demo.goaxr.cloud
+ExpiresIn: <span class="m">1</span> hour
+Secret: <span class="s2">&quot;&lt;SECRET&gt;&quot;</span>
+
+Databases:
+MongoDB:
+   Root Password: &lt;PASSWORD&gt;
+   Username: admin
+   Password: &lt;PASSWORD&gt;
+   URL: mongodb://mongodb
+PostgreSQL:
+   Username: postgres
+   Password: &lt;PASSWORD&gt;
+</pre></div>
+</div>
+</section>
+<section id="validating-the-installation">
+<h2>Validating the Installation<a class="headerlink" href="#validating-the-installation" title="Permalink to this headline">¶</a></h2>
+<p>To validate that the platform was successfuly installed and running correctly you can run <cite>kubectl get all</cite> on your
+cluster. The output should look similar to the following.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ kubectl -n axr-demo-v1 get all
+NAME                                                  READY   STATUS    RESTARTS   AGE
+pod/account-services-84d5497c6c-lm55l                 <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/achievement-services-dc5cddfbb-bd8rh              <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/axr-demo-v1-kube-state-metrics-7bb547d5bf-p4gps   <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/axr-demo-v1-prometheus-server-6dd5bb84bf-b2hgl    <span class="m">0</span>/2     Running   <span class="m">0</span>          18d
+pod/cache-db-master-0                                 <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/cache-db-slave-0                                  <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/cache-db-slave-1                                  <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/events-db-master-0                                <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/events-db-slave-0                                 <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/events-db-slave-1                                 <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/leaderboard-services-b6f47b9d-fsqg5               <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/mongodb-7bf99647dd-wlfmm                          <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/notification-services-58f58cf469-846fd            <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/persona-services-5b56d644ff-vmlbl                 <span class="m">1</span>/1     Running   <span class="m">0</span>          10d
+pod/progression-services-cb5d57b74-vzsgk              <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/quest-services-7f8c8fdf74-q98pz                   <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/redis-master-0                                    <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/redis-slave-0                                     <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/redis-slave-1                                     <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/scripting-services-664d6c58c-kmw5p                <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/server-instance-services-ddfbf87f-6bb4p           <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/session-services-7776455cc5-t547j                 <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/social-services-59b49d6759-f9n86                  <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/telemetry-services-c964b9f68-vvc5c                <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+pod/world-services-7966478747-7cvkr                   <span class="m">1</span>/1     Running   <span class="m">0</span>          18d
+
+NAME                                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>        AGE
+service/account-services                 NodePort    <span class="m">172</span>.23.24.95     &lt;none&gt;        <span class="m">80</span>:31973/TCP   18d
+service/achievement-services             NodePort    <span class="m">172</span>.23.83.121    &lt;none&gt;        <span class="m">80</span>:32680/TCP   18d
+service/asset-services                   NodePort    <span class="m">172</span>.23.99.69     &lt;none&gt;        <span class="m">80</span>:31164/TCP   18d
+service/axr-demo-v1-kube-state-metrics   ClusterIP   <span class="m">172</span>.23.44.249    &lt;none&gt;        <span class="m">8080</span>/TCP       18d
+service/axr-demo-v1-prometheus-server    ClusterIP   <span class="m">172</span>.23.113.23    &lt;none&gt;        <span class="m">80</span>/TCP         18d
+service/cache-db-headless                ClusterIP   None             &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/cache-db-master                  ClusterIP   <span class="m">172</span>.23.26.101    &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/cache-db-slave                   ClusterIP   <span class="m">172</span>.23.47.30     &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/events-db-headless               ClusterIP   None             &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/events-db-master                 ClusterIP   <span class="m">172</span>.23.137.208   &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/events-db-slave                  ClusterIP   <span class="m">172</span>.23.124.235   &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/leaderboard-services             NodePort    <span class="m">172</span>.23.195.9     &lt;none&gt;        <span class="m">80</span>:32514/TCP   18d
+service/matchmaking-services             NodePort    <span class="m">172</span>.23.203.156   &lt;none&gt;        <span class="m">80</span>:31485/TCP   18d
+service/mongodb                          ClusterIP   <span class="m">172</span>.23.128.149   &lt;none&gt;        <span class="m">27017</span>/TCP      18d
+service/notification-services            NodePort    <span class="m">172</span>.23.17.68     &lt;none&gt;        <span class="m">80</span>:31633/TCP   18d
+service/persona-services                 NodePort    <span class="m">172</span>.23.182.245   &lt;none&gt;        <span class="m">80</span>:30153/TCP   18d
+service/progression-services             NodePort    <span class="m">172</span>.23.154.102   &lt;none&gt;        <span class="m">80</span>:30574/TCP   18d
+service/purchasing-services              NodePort    <span class="m">172</span>.23.3.25      &lt;none&gt;        <span class="m">80</span>:31819/TCP   18d
+service/quest-services                   NodePort    <span class="m">172</span>.23.95.212    &lt;none&gt;        <span class="m">80</span>:32669/TCP   18d
+service/redis-headless                   ClusterIP   None             &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/redis-master                     ClusterIP   <span class="m">172</span>.23.83.112    &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/redis-slave                      ClusterIP   <span class="m">172</span>.23.236.230   &lt;none&gt;        <span class="m">6379</span>/TCP       18d
+service/scripting-services               NodePort    <span class="m">172</span>.23.212.20    &lt;none&gt;        <span class="m">80</span>:32317/TCP   18d
+service/server-instance-services         NodePort    <span class="m">172</span>.23.221.3     &lt;none&gt;        <span class="m">80</span>:31630/TCP   18d
+service/server-manager-services          NodePort    <span class="m">172</span>.23.126.73    &lt;none&gt;        <span class="m">80</span>:30269/TCP   18d
+service/session-services                 NodePort    <span class="m">172</span>.23.116.217   &lt;none&gt;        <span class="m">80</span>:31285/TCP   18d
+service/social-services                  NodePort    <span class="m">172</span>.23.119.29    &lt;none&gt;        <span class="m">80</span>:31150/TCP   18d
+service/telemetry-services               NodePort    <span class="m">172</span>.23.202.100   &lt;none&gt;        <span class="m">80</span>:30828/TCP   18d
+service/validation-services              NodePort    <span class="m">172</span>.23.199.234   &lt;none&gt;        <span class="m">80</span>:31972/TCP   18d
+service/world-services                   NodePort    <span class="m">172</span>.23.93.253    &lt;none&gt;        <span class="m">80</span>:31589/TCP   18d
+
+NAME                                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/account-services                 <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/achievement-services             <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/axr-demo-v1-kube-state-metrics   <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/axr-demo-v1-prometheus-server    <span class="m">0</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/leaderboard-services             <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/mongodb                          <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/notification-services            <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/persona-services                 <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/progression-services             <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/quest-services                   <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/scripting-services               <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/server-instance-services         <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/session-services                 <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/social-services                  <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/telemetry-services               <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+deployment.apps/world-services                   <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           18d
+
+NAME                                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/account-services-84d5497c6c                 <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/achievement-services-dc5cddfbb              <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/axr-demo-v1-kube-state-metrics-7bb547d5bf   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/axr-demo-v1-prometheus-server-6dd5bb84bf    <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/leaderboard-services-b6f47b9d               <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/mongodb-7bf99647dd                          <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/notification-services-58f58cf469            <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/persona-services-5b56d644ff                 <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/progression-services-cb5d57b74              <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/quest-services-7f8c8fdf74                   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/scripting-services-664d6c58c                <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/server-instance-services-ddfbf87f           <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/session-services-7776455cc5                 <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/social-services-59b49d6759                  <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/telemetry-services-c964b9f68                <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+replicaset.apps/world-services-7966478747                   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       18d
+
+NAME                                READY   AGE
+statefulset.apps/cache-db-master    <span class="m">1</span>/1     18d
+statefulset.apps/cache-db-slave     <span class="m">2</span>/2     18d
+statefulset.apps/events-db-master   <span class="m">1</span>/1     18d
+statefulset.apps/events-db-slave    <span class="m">2</span>/2     18d
+statefulset.apps/redis-master       <span class="m">1</span>/1     18d
+statefulset.apps/redis-slave        <span class="m">2</span>/2     18d
+</pre></div>
+</div>
+<p>Lastly you can check that the platform is correctly responding to API requests using the following test.
+The URL is obtained using the Cluster Address reported from the installation command and adding
+<cite>/status/accounts</cite> to the end.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<p>$ curl <a class="reference external" href="https://api.demo.goaxr.cloud/v1/status/accounts">https://api.demo.goaxr.cloud/v1/status/accounts</a>
+{“name”:”account_services”,”time”:”2021-06-08T00:50:25.786Z”,”version”:”1.0.0”}</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">AcceleratXR</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Get Involved</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://discord.gg/wrfBR2Q">Discord</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://gitlab.com/AcceleratXR/Core">GitLab</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;AcceleratXR, Inc. All rights reserved..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/platform/install_helm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-136672390-3']);
+      _gaq.push(['_setDomainName', 'none']);
+      _gaq.push(['_setAllowLinker', true]);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    
+  </body>
+</html>

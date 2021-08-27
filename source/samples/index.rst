@@ -1,0 +1,8 @@
+=======
+Samples
+=======
+
+.. toctree::
+    :hidden:
+ 
+    shootergame

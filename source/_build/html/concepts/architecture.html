@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Architecture &#8212; AcceleratXR  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://www.acceleratxr.ioconcepts/architecture.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="architecture">
+<h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h1>
+<img alt="../_images/overview_architecture_diagram.png" src="../_images/overview_architecture_diagram.png" />
+<p>The AcceleratXR platform utilizes a <cite>micro-services &lt;https://en.wikipedia.org/wiki/Microservices&gt;</cite> based architecture
+composed of more than 15 unique services. Each of these services provides a singularly focused set of functionality within
+the platform. Functionality such as user account management (<cite>acount-services &lt;https://gitlab.com/AcceleratXR/Core/account_services&gt;</cite>),
+player achievements (<cite>achievement-services &lt;https://gitlab.com/AcceleratXR/Core/achievements_services&gt;</cite>), virtual
+economy (<cite>economy-services &lt;https://gitlab.com/AcceleratXR/Core/economy_services&gt;</cite>), matchmaking
+(<cite>matchmaking-services &lt;https://gitlab.com/AcceleratXR/Core/matchmaking_services&gt;</cite>) and more.</p>
+<p>True to micro-service principles each service within the platform maintains strict database access isolation and uses
+a post/push methodology for performing write operations and delivering changes. As a result, no two services will have
+access to the same database content. All write operations must be performed through a service’s REST API. Data changes
+are then distributed either via REST API polling or via push messaging. Push data is sent to other services via a common
+messaging bus such as <cite>redis &lt;https://redis.io/&gt;</cite> while clients can optionally register for notifications to be
+delivered via a secured <cite>websocket &lt;https://en.wikipedia.org/wiki/WebSocket&gt;</cite> connection.</p>
+<p>Authentication is managed using a distributed <cite>JSON Web Token &lt;https://jwt.io/&gt;</cite> with each service having the capability to
+decode and verify any given access token. The JWT access token contains all relevant information for a service to be
+able to perform work on behalf of a given user including any relevant permissions and roles.</p>
+<p>While the platform can be deployed using a variety of different methods <cite>Kubernetes &lt;https://kubernetes.io/&gt;</cite> has been
+selected as the preferred orchestration system due to its powerful features, simplicity and ability to run in virtually
+any environment.</p>
+<p>In order to provide a unified set of endpoints for communicating with the platform <cite>nginx &lt;https://www.nginx.com/&gt;</cite> is
+utilized as the primary load balancer and reverse proxy for all of AcceleratXR’s backend services.</p>
+<p>Lastly, the <cite>Prometheus &lt;https://prometheus.io/&gt;</cite> server is leveraged for gathering real-time statistics as well as
+providing Kubernetes with the necessary metrics for performing automatic scaling of individual services.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">AcceleratXR</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Get Involved</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://discord.gg/wrfBR2Q">Discord</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://gitlab.com/AcceleratXR/Core">GitLab</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;AcceleratXR, Inc. All rights reserved..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/concepts/architecture.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-136672390-3']);
+      _gaq.push(['_setDomainName', 'none']);
+      _gaq.push(['_setAllowLinker', true]);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    
+  </body>
+</html>

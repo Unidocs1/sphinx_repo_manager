@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>AcceleratXR &#8212; AcceleratXR  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Features" href="features.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://www.acceleratxr.ioindex.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="acceleratxr">
+<h1>AcceleratXR<a class="headerlink" href="#acceleratxr" title="Permalink to this headline">¶</a></h1>
+<img alt="https://gitlab.com/AcceleratXR/composerjs/cli/badges/master/pipeline.svg" src="https://gitlab.com/AcceleratXR/composerjs/cli/badges/master/pipeline.svg" /><img alt="https://gitlab.com/AcceleratXR/composerjs/cli/badges/master/coverage.svg" src="https://gitlab.com/AcceleratXR/composerjs/cli/badges/master/coverage.svg" /><div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<p>Composer is a simple, light-weight and opinionated framework for rapidly developing scalable REST API services for NodeJS, written in TypeScript.</p>
+<p>The framework combines the OpenAPI specification with a simple functional programming model to provide a highly expressive and powerful system for developing REST API services.</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Built on OpenAPI</p></li>
+<li><p>HTTP 1.x/2.x Web Server</p></li>
+<li><p>WebSocket Support</p></li>
+<li><p>Global Configuration</p></li>
+<li><p>Dependency Injection</p></li>
+<li><p>Built-in behaviors for common REST API actions</p></li>
+<li><p>Built-in ORM layer</p></li>
+<li><p>Document Version Tracking</p></li>
+<li><p>MongoDB support</p></li>
+<li><p>Redis support</p></li>
+<li><p>2nd Level Caching</p></li>
+<li><p>Authentication</p></li>
+<li><p>Role Based Access Control</p></li>
+<li><p>Prometheseus metrics</p></li>
+</ul>
+</section>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>Using Composer is as simple as 1-2-3.</p>
+<section id="step-1">
+<h3>Step 1<a class="headerlink" href="#step-1" title="Permalink to this headline">¶</a></h3>
+<p>Define the REST API service using <a class="reference external" href="openapi.html">OpenAPI</a> and save it as <code class="docutils literal notranslate"><span class="pre">service.yaml</span></code>.</p>
+<p><a class="reference external" href="https://gitlab.com/AcceleratXR/composerjs/cli/-/raw/master/test/petstore.yaml">Click here for an example</a>.</p>
+<img alt="images/petstore_example.png" src="images/petstore_example.png" />
+</section>
+<section id="step-2">
+<h3>Step 2<a class="headerlink" href="#step-2" title="Permalink to this headline">¶</a></h3>
+<p>Generate the project using the Composer CLI.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>yarn global add @composer-js/cli
+<span class="linenos">2</span>composer -i ./service.yaml -o . -t server -l nodejs
+</pre></div>
+</div>
+</section>
+<section id="step-3">
+<h3>Step 3<a class="headerlink" href="#step-3" title="Permalink to this headline">¶</a></h3>
+<p>Start the server!</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>yarn install
+<span class="linenos">2</span>yarn start
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="#">AcceleratXR</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Get Involved</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://discord.gg/wrfBR2Q">Discord</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://gitlab.com/AcceleratXR/Core">GitLab</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="features.html" title="next chapter">Features</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;AcceleratXR, Inc. All rights reserved..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-136672390-3']);
+      _gaq.push(['_setDomainName', 'none']);
+      _gaq.push(['_setAllowLinker', true]);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    
+  </body>
+</html>

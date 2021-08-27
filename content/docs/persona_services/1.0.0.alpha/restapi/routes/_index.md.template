@@ -1,8 +1,0 @@
----
-title: "Routes"
-date: 2019-05-24T20:03:52.354Z
----
-
-{{#each routes}}
-- [{{this.Name}}]({{this._name}}route)
-{{/each}}
