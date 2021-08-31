@@ -263,7 +263,7 @@ is used to create the new password secret.
         .. code-block::
 
             auto secret = std::make_shared<axr::sdk::models::UserSecret>();
-            secret->SetType(PASSWORD);
+            secret->SetType(axr::sdk::models::UserSecret::Type::TYPE_PASSWORD);
             secret->SetSecret(_XPLATSTR("<PASSWORD>"));
             secret->SetUserId(CoreSDK->GetLoggedInUser()->GetUid());
 
@@ -343,7 +343,7 @@ is used to create the new password secret.
             check(OnlineSub != nullptr);
             
             auto secret = std::make_shared<axr::sdk::models::UserSecret>();
-            secret->SetType(PASSWORD);
+            secret->SetType(axr::sdk::models::UserSecret::Type::TYPE_PASSWORD);
             secret->SetSecret(_XPLATSTR(password));
             secret->SetUserId(CoreSDK->GetLoggedInUser()->GetUid());
 
