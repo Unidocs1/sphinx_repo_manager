@@ -13,12 +13,14 @@ AcceleratXR
    sdks/index
    systems/index
    tutorials/index
+   tools
 
 .. toctree::
    :hidden:
-   :caption: samples
+   :caption: examples
 
-   samples/shootergame
+   examples/shootergame
+   examples/unitysample
 
 .. toctree::
    :hidden:
@@ -34,7 +36,7 @@ AcceleratXR
 
 .. toctree::
    :hidden:
-   :caption: More Info
+   :caption: Other Links
 
    Admin Console <https://console.goaxr.cloud>
    AcceleratXR Cloud <https://acceleratxr.com/pricing>
