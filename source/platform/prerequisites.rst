@@ -17,15 +17,15 @@ For Linux based installations we recommend consulting the official `documentatio
 Docker for Windows/Mac
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Once Docker is installed you can enable Kubernetes by following this `guide <https://docs.docker.com/desktop/kubernetes/>`.
+Once Docker is installed you can enable Kubernetes by following this `guide <https://docs.docker.com/desktop/kubernetes/>`_.
 
 Command Line Tools
 ==================
 
 There are two commadn line tools that are required for installation. They are:
 
-* `kubectl <https://kubernetes.io/docs/reference/kubectl/overview/>`
-* `helm <https://helm.sh/>`
+* `kubectl <https://kubernetes.io/docs/reference/kubectl/overview/>`_
+* `helm <https://helm.sh/>`_
 
 The `kubectl` will automatically be installed to your local machine if you are using Docker for Windows/Mac. If you've set up
 Kubernetes on a dedicated Linux server you likely already installed this tool during that installation process.
@@ -49,9 +49,9 @@ nginx
 =====
 
 The platform requires an ingress load balancer capable of coordinating HTTP/HTTPS traffic and routing to the necessary
-microservice pods. For this `nginx <https://www.nginx.com/>` is recommended. There are two versions of the nginx load
+microservice pods. For this `nginx <https://www.nginx.com/>`_ is recommended. There are two versions of the nginx load
 balancer for Kubernetes; a community supported module named ingress-nginx and an official supported module named
-nginx-ingress. We recommend the use of the community support module `ingress-nginx <https://kubernetes.github.io/ingress-nginx/>`.
+nginx-ingress. We recommend the use of the community support module `ingress-nginx <https://kubernetes.github.io/ingress-nginx/>`_.
 
 To install ingress-nginx run the following set of commands.
 

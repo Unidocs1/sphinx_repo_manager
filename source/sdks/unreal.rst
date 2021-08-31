@@ -84,7 +84,7 @@ Installation of the Unreal SDK is simple.
 
 4. Set `AXR` as the default OnlineSubsytem in `DefaultEngine.ini`.
 
-   .. code-block:: json
+   .. code-block:: ini
 
     [OnlineSubsystem]
     DefaultPlatformService=AXR

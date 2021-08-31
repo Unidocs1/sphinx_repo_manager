@@ -1,4 +1,4 @@
-**End User License Agreement**
+# End User License Agreement
 
 Version: 1.0.1, Updated: 2021-08-06
 

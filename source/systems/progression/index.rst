@@ -109,7 +109,7 @@ The skill definition is the developer created concept of an individual skill wit
      - The list of requirements that the persona must fulfill to unlock the skill.
      - ``array``
      - 
-     - ``
+     - 
      - false
      - false
      - true
@@ -275,7 +275,7 @@ The archetype definition is a developer created concept that allows for the grou
      - The list of all root skill uid's that define this archetype. A root skill is the first skill in a tree that has few to no requirements.
      - ``array``
      - 
-     - ``
+     - 
      - false
      - false
      - true
@@ -389,7 +389,7 @@ The skill is the persona owned instance for a given skill definition and archety
      - The persona's curent progress towards unlocking the skill.
      - ``array``
      - 
-     - ``
+     - 
      - false
      - false
      - true

@@ -1,6 +1,6 @@
-==================
-Systems & Features
-==================
+=======
+Systems
+=======
 
 .. toctree::
    :hidden:

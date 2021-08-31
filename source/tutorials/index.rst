@@ -3,14 +3,12 @@ Tutorials
 =========
 
 .. toctree::
-   :hidden:
    :caption: IAM
 
    accounts_register_user
    accounts_mfa_setup
 
-   .. toctree::
-   :hidden:
+.. toctree::
    :caption: Progress System
 
    progression_levels

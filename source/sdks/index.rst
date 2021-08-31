@@ -1,6 +1,6 @@
-================
-AcceleratXR SDKs
-================
+==================
+Integration (SDKs)
+==================
 
 .. toctree::
     :hidden:
@@ -17,7 +17,6 @@ AcceleratXR SDKs
     unity
     unreal
 
-
 There are a number of Software Development Kits available enabling integration with the AcceleratXR platform. They are
 separated into two different types: general purpose and game engine SDKs.
 
@@ -30,9 +29,9 @@ platform into your application or service.
 Supported Languages
 ~~~~~~~~~~~~~~~~~~~
 
-* `C++ <cpp>`
-* `C# <csharp>`
-* `JavaScript/TypeScript <nodejs>`
+* `C++ <cpp>`_
+* `C# <csharp>`_
+* `JavaScript/TypeScript <nodejs>`_
 
 Game Engine SDKs
 ================
@@ -44,5 +43,5 @@ provide additional functionality to make the integration process simpler for dev
 Supported Engines
 ~~~~~~~~~~~~~~~~~
 
-* `Unity Engine <unity>`
-* `Unreal Engine <unreal>`
+* `Unity Engine <unity>`_
+* `Unreal Engine <unreal>`_

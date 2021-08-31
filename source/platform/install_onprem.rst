@@ -1,9 +1,9 @@
-================================
-Platform Installation using Helm
-================================
+========================
+Installation On-Premises
+========================
 
-This article details the steps to install the AcceleratXR platform to Kubernetes using Helm. Before you begin make sure
-that all `pre-requisites <prerequisites>` have been installed and configured correctly.
+This article details the steps to install the AcceleratXR platform to an on-premises Kubernetes cluster using Helm.
+Before you begin make sure that all `pre-requisites <prerequisites>` have been installed and configured correctly.
 
 Clone the Helm Chart
 ====================
@@ -86,9 +86,10 @@ The helm chart has a number of required properties that must be set in order to 
      - 
    * - `admin.password`
      - The password to the adminstrator account that will have superuser access to the platform.
+     - 
 
 For details on all available configuration options please consult the repository's
-`README <https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy/-/blob/master/README.md>`.
+`README <https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
 
 Utilizing In-Cluster Database Servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -289,3 +290,12 @@ cluster. The output should look similar to the following.
    statefulset.apps/events-db-slave    2/2     18d
    statefulset.apps/redis-master       1/1     18d
    statefulset.apps/redis-slave        2/2     18d
+
+Lastly you can check that the platform is correctly responding to API requests using the following test.
+The URL is obtained using the Cluster Address reported from the installation command and adding
+`/status/accounts` to the end.
+
+.. code-block:: bash
+
+$ curl https://api.demo.goaxr.cloud/v1/status/accounts
+{"name":"account_services","time":"2021-06-08T00:50:25.786Z","version":"1.0.0"}

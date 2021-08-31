@@ -3,8 +3,8 @@ Unreal ShooterGame
 ==================
 
 The **ShooterGame** project provides an example implementation of integrating the
-`AcceleratXR SDK for Unreal <../sdks/unreal>` in Unreal Engine. It is based upon Epic's standard
-`ShooterGame <https://docs.unrealengine.com/4.26/en-US/Resources/SampleGames/ShooterGame/>` sample project. The project
+`AcceleratXR SDK for Unreal <../sdks/unreal>`_ in Unreal Engine. It is based upon Epic's standard
+`ShooterGame <https://docs.unrealengine.com/4.26/en-US/Resources/SampleGames/ShooterGame/>`_ sample project. The project
 is compatible with Unreal Engine 4.25 and can be downloaded using git.
 
 .. code-block:: bash
