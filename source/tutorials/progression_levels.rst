@@ -27,7 +27,7 @@ This can be implemented as a server side feature (recommended) or by the client 
 Sending events from a service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: javascript
+.. code-block:: typescript
 
    const data: any = {
        type: "GainXP",
@@ -52,7 +52,7 @@ Sending events from the SDK
    EventService eventService = ServiceFactory.GetService<EventService>();
    await eventService.Create(eventObj);
 
-.. code-block:: cplusplus
+.. code-block:: cpp
 
    std::shared_ptr<models::Event> eventObj(new models::Event);
    eventObj->SetType("GainXP");
@@ -69,7 +69,7 @@ Now that we have a mechanism to track experience we can define our levels. Each 
 
 The first level in our system is very simple as it has no requirements. All players must start at level 1. Thus the skill definition looks as follows.
 
-.. code-block:: javascript
+.. code-block:: typescript
 
    {
        uid: "e744aba4-e07e-43aa-bfb2-5ffe8cf064eb",
@@ -98,7 +98,7 @@ In order to create this definition with the service we send a ``POST`` request t
 
 For level two we will add some experience as the sole requirement. We will choose a value of ``1000`` which means that at ten of the aforementioned events would need to be created in order to unlock the level.
 
-.. code-block:: javascript
+.. code-block:: typescript
 
    {
        uid: "1ea968f3-ca97-4d8c-8c9d-63d183942be0",
@@ -144,7 +144,7 @@ Just like the level 1 we create this definition by ``POST``\ ing to the ``/skill
 
 For level 3 we will set an experience requirement as well as a ``SkillUnlocked`` requirement chaining it to level 2. Note that the ``value`` of the requiremnt will be the ``uid`` of the level two skill definition which in the above example is ``1ea968f3-ca97-4d8c-8c9d-63d183942be0``. This level will require ``5000`` experience points to achieve.
 
-.. code-block:: javascript
+.. code-block:: typescript
 
    {
        uid: "1ea968f3-ca97-4d8c-8c9d-63d183942be0",
@@ -172,7 +172,7 @@ For level 3 we will set an experience requirement as well as a ``SkillUnlocked``
 
 We can now create the remaining levels the same way as level 3, where the ``SkillUnlocked`` requirement references the level before it. Our final level, level 10 will thus look like the following.
 
-.. code-block:: javascript
+.. code-block:: typescript
 
    {
        uid: "d0e030c7-c6c1-489f-9096-2c17285b4961",
@@ -203,7 +203,7 @@ Creating the Archetype Definition
 
 It is necessary to create an archetype for our set of levels. The archetype contains descriptive information about it as well as a list of the root skills in the tree. In this case, our root skills are level 1 and level 2. The system automatically traverses these root skills for children referenced as requirements to build the large tree(s).
 
-.. code-block:: javascript
+.. code-block:: typescript
 
    {
        name: "levels",
@@ -271,7 +271,7 @@ For our above example this request would look like.
 
 The response of the above request will look like the following.
 
-.. code-block:: javascript
+.. code-block:: typescript
 
    {
        uid: "a3708071-cd11-498c-a886-29e089d859c0",

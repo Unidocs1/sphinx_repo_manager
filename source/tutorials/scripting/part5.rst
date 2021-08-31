@@ -20,7 +20,7 @@ Let’s get to the code. To get started you’ll need to open up your test works
 
 In order for event handlers to be properly constructed and registered your script file must export a default class that the service will instantiate automatically. Like our background service that we created in last week’s article the class also has a repo property which will be automatically injected for us.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    export default class CharacterEvents {
@@ -30,7 +30,7 @@ In order for event handlers to be properly constructed and registered your scrip
 
 In AcceleratXR, an event handler is any function decorated with the @OnEvent decorator. The function must always take a single argument containing the data of type Event. Since this example is interested only in user logins the event type that the handler will be registered for is UserLogin. There are no limitations to how many event handler functions you can define in a class. If you define multiple functions that respond to the same event note that there is no guarantee in which order they will execute in and you should assume they will execute in parallel.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    @OnEvent(“UserLogin”)
@@ -55,7 +55,7 @@ So let’s quickly expand this example to support any UserLogin event as well as
 
 As a matter of convenience so that you don’t have to duplicate your code multiple times for each event handler the OnEvent decorator can take either a single string or a list of strings for the event types to handle. Therefore the only change we need to make for this to work is to convert the name of the event type to an array containing both UserLogin and QuestComplete.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    @OnEvent([“UserLogin”, “QuestComplete”])
@@ -80,7 +80,7 @@ While it is also possible to define a catch all @OnEvent(".*") that would respon
 
 Your final code should look like the following.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import { MongoRepository, OnEvent } from “@acceleratxr/service-core”;

@@ -27,7 +27,7 @@ The following example shows how to perform a device login.
 
     .. tab:: C++
     
-        .. code-block::
+        .. code-block:: cpp
 
             CoreSDK->LoginDevice().then([](pplx::task<void> task)
             {
@@ -44,7 +44,7 @@ The following example shows how to perform a device login.
 
     .. tab:: C#
 
-        .. code-block::
+        .. code-block:: csharp
 
             try
             {
@@ -57,7 +57,7 @@ The following example shows how to perform a device login.
 
     .. tab:: TypeScript
 
-        .. code-block::
+        .. code-block:: typescript
 
             try
             {
@@ -70,7 +70,7 @@ The following example shows how to perform a device login.
 
     .. tab:: Unity
 
-        .. code-block::
+        .. code-block:: csharp
 
             try
             {
@@ -84,7 +84,7 @@ The following example shows how to perform a device login.
 
     .. tab:: Unreal
 
-        .. code-block::
+        .. code-block:: cpp
 
             const IOnlineSubsystem* OnlineSub = Online::GetSubsystem(GetWorld());
             check(OnlineSub != nullptr);
@@ -128,7 +128,7 @@ the user must already be logged in.
 
     .. tab:: C++
     
-        .. code-block::
+        .. code-block:: cpp
 
             auto user = CoreSDK->GetLoggedInUser();
             user->SetFirstName(_XPLATSTR("John"));
@@ -152,7 +152,7 @@ the user must already be logged in.
 
     .. tab:: C#
 
-        .. code-block::
+        .. code-block:: csharp
 
             User user = CoreSDK.LoggedInUser;
             user.FirstName = "John";
@@ -173,7 +173,7 @@ the user must already be logged in.
 
     .. tab:: TypeScript
 
-        .. code-block::
+        .. code-block:: typescript
 
             const user: User = CoreSDK.LoggedInUser;
             user.FirstName = "John";
@@ -194,7 +194,7 @@ the user must already be logged in.
 
     .. tab:: Unity
 
-        .. code-block::
+        .. code-block:: csharp
 
             AXRCoreSDK SDK = AXRCoreSDK.GetInstance();
             User user = SDK.Instance.LoggedInUser;
@@ -216,7 +216,7 @@ the user must already be logged in.
 
     .. tab:: Unreal
 
-        .. code-block::
+        .. code-block:: cpp
 
             const FOnlineSubsystemAXR* OnlineSub = (FOnlineSubsystemAXR*)Online::GetSubsystem(GetWorld());
             check(OnlineSub != nullptr);
@@ -260,7 +260,7 @@ is used to create the new password secret.
 
     .. tab:: C++
     
-        .. code-block::
+        .. code-block:: cpp
 
             auto secret = std::make_shared<axr::sdk::models::UserSecret>();
             secret->SetType(axr::sdk::models::UserSecret::Type::TYPE_PASSWORD);
@@ -282,7 +282,7 @@ is used to create the new password secret.
 
     .. tab:: C#
 
-        .. code-block::
+        .. code-block:: csharp
 
             UserSecret secret = new UserSecret();
             secret.Type = UserSecret.TYPE_MFA;
@@ -300,7 +300,7 @@ is used to create the new password secret.
 
     .. tab:: TypeScript
 
-        .. code-block::
+        .. code-block:: typescript
 
             const secret: UserSecret = new UserSecret();
             secret.Type = UserSecret.TYPE_MFA;
@@ -318,7 +318,7 @@ is used to create the new password secret.
 
     .. tab:: Unity
 
-        .. code-block::
+        .. code-block:: csharp
 
             AXRCoreSDK SDK = AXRCoreSDK.GetInstance();
             UserSecret secret = new UserSecret();
@@ -337,7 +337,7 @@ is used to create the new password secret.
 
     .. tab:: Unreal
 
-        .. code-block::
+        .. code-block:: cpp
 
             const FOnlineSubsystemAXR* OnlineSub = (FOnlineSubsystemAXR*)Online::GetSubsystem(GetWorld());
             check(OnlineSub != nullptr);

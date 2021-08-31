@@ -29,7 +29,7 @@ In the case of our MetricsCollector class you’ll notice that the only thing de
 
 Following on from part three we are going to create a new metric called total_characters that will report the current total number of characters stored by the service. In order to do that however we will need access to the Character repository. We can easily get access to this by creating a new variable that uses the @MongoRepository(Character) decorator. This decorator will ensure that the correct repository is injected on creation of the background job.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    @MongoRepository(Character)
@@ -37,7 +37,7 @@ Following on from part three we are going to create a new metric called total_ch
 
 We’ll also need to define a metric container that will store the information we are going to expose through Prometheus. For this instance the Gauge is a suitable data type as it tracks a single value that changes over time (up or down). This works perfectly for tracking something like the character count.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    private totalCharacters: prom.Gauge = new prom.Gauge({
@@ -47,7 +47,7 @@ We’ll also need to define a metric container that will store the information w
 
 Now it’s to implement the main logic of our job. Each time the job is run we will retrieve the total number of characters in the database and set the value of our metric. It’s as simple as that.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    public async run(): Promise<void> {
@@ -61,7 +61,7 @@ Now let’s try writing a background service from scratch. For our example we’
 
 Let’s start by creating a new file in the jobs folder called CharacterRegen.ts. Copy and paste the following stub code into your file.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import { BackgroundService, MongoRepository } from “@acceleratxr/service-core”;
@@ -84,7 +84,7 @@ Let’s start by creating a new file in the jobs folder called CharacterRegen.ts
 
 You’ll first notice that the schedule has been defined as */10 * * * * *. This means that the job will execute once every ten seconds. That means every ten seconds we’ll regenerate a bit of each character’s health and mana. We’ll need a few variables to know exactly how much and what the max should be.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    const REGEN_HEALTH: number = 5;
@@ -94,7 +94,7 @@ You’ll first notice that the schedule has been defined as */10 * * * * *. This
 
 Now to the heart of the job. We want to regenerate 5 health and 10 mana of each character in the game every 10 seconds. To do this we’ll need to pull a list of all characters and then update their values accordingly, making sure not to exceed the maximum value of 100 for each.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    public async run(): Promise<void> {
@@ -114,7 +114,7 @@ While this solution is perfectly suitable its far from optimized. The problem is
 
 To reduce the number of characters we’re processing let’s add search criteria. This search criteria will return only those characters whose health or mana values are less than the maximum, as they are the only records we actually care about.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    const chars: Character[] = await this.repo.find({

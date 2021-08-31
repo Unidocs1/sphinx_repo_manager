@@ -14,7 +14,7 @@ First create a new file called Character.ts. Like routes, it’s recommended pra
 
 Now paste the following contents into your file.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import { Column, Entity, Index } from “typeorm”;
@@ -108,7 +108,7 @@ Now that we’ve created our data structure let’s look at how to write a route
 
 .. image:: /images/tutorials/scripting/part3_diagram2.png
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import {

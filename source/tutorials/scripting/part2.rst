@@ -23,7 +23,7 @@ For this example we will make a simple route handler that responds to the HTTP r
 
 The first thing we need to do is define the class structure of the route handler. This will look like the following.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import { RouteDecorators } from “@acceleratxr/service-core”;
@@ -37,7 +37,7 @@ The first thing we need to do is define the class structure of the route handler
 
 Next we need to define the actual handler function that will process GET requests. This is done by creating any function with the @GET decorator.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import { RouteDecorators } from “@acceleratxr/service-core”;
@@ -60,7 +60,7 @@ In the above example you’ll notice that we return a string as the function res
 
 Congratulations! You’ve just created your first new REST API endpoint in AcceleratXR. Now let’s try something a bit more complicated. What if we want to greet the user instead, based on an id passed in via a URL parameter. Let’s say something like GET /hello/sam. We can do this by modifying our route handler as follows.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import {
@@ -86,7 +86,7 @@ The first thing to notice is that we changed the path from /helloworld to just /
 
 The next thing you may be wondering is how you identify users making requests. This is as simple as adding a new function parameter decorated with @User. For example, let’s create a new function that uses the authenticated user’s first name instead.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import {
@@ -126,7 +126,7 @@ Next let’s try it with an authenticated user. We’ll pass in the authenticati
 
 The last item we’ll cover here is how to deal with a content body. This is handled pretty simply by adding a single argument to the function parameter of type any. Since ComposerJS is a JSON based framework, HTTP requests that send in JSON objects will already be parsed once passed into the function, saving you time and difficulty. Similarly, if you return an object back from your route handler function the server will automatically encode the result as JSON when returning to the client.
 
-.. code-block:: javascript
+.. code-block:: typescript
    :linenos:
 
    import {
