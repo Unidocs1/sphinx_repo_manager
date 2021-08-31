@@ -9,3 +9,11 @@ The Unity Sample project integrates the AcceleratXR Unity SDK and provides an ex
 * Account registration
 * User login
 * Device login
+* Personas
+* Matchmaking
+* Sessions
+* Social Profiles
+* Friends List
+* Player Messaging
+* Achievements
+* Leaderboards
