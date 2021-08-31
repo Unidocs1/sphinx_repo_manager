@@ -1,14 +1,13 @@
-===============
-Getting Started
-===============
+====================
+AcceleratXR Platform
+====================
 
 .. toctree::
     :hidden:
  
     prerequisites
     install_onprem
-    scripting
-    security
+    systems/index
 
 .. image:: /images/overview_architecture_diagram.png
 

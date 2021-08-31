@@ -6,30 +6,23 @@ AcceleratXR
 
 .. toctree::
    :hidden:
-   :caption: Platform
+   :caption: About
 
-   platform/index
    features
-   systems/index
-   tutorials/index
    tools
 
 .. toctree::
    :hidden:
-   :caption: Integration
+   :caption: learn
 
+   platform/index
    sdks/cpp
    sdks/csharp
    sdks/nodejs
    sdks/unity
    sdks/unreal
-
-.. toctree::
-   :hidden:
-   :caption: examples
-
-   examples/shootergame
-   examples/unityexample
+   tutorials/index
+   examples/index
 
 .. toctree::
    :hidden:
