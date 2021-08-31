@@ -5,8 +5,7 @@ AcceleratXR Platform
 .. toctree::
     :hidden:
  
-    prerequisites
-    install_onprem
+    install/index
     systems/index
 
 .. image:: /images/overview_architecture_diagram.png
