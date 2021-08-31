@@ -3,13 +3,13 @@ Matchmaking
 ===========
 
 .. toctree::
-    :hidden:
 
     architecture
     program_flow
     ticket_processor
 
-The following key concepts and terminology will be used throughout the rest of this documentation.
+Key Concepts
+============
 
 Tickets
 -------

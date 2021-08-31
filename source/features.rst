@@ -19,7 +19,7 @@ Manage all of your user data and provide simple account management with ease usi
   - Facebook
   - Google
   - Twitter
-* Organizations & Teams **[PREMIUM]**
+* Organizations & Teams **[ENTERPRISE]**
 
 Player Data
 ~~~~~~~~~~~
@@ -145,8 +145,8 @@ Manage and automatically scale your game server instances from anywhere in the w
 * Auto assignment in less than 5 seconds
 * Fail-over protection
 
-Global Network Engine [PREMIUM]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Global Network Engine **[PROFESSIONAL]**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build ultra-scalable real-time multi-player using our ground breaking server-less Global Network Engine. The GNE gives developers the tools to build powerful server authoritative or peer-based real-time networked games and applications using a one of a kind cloud-centric approach. [PREMIUM]
 
@@ -166,13 +166,13 @@ Create a virtual world of infinite size! Easily define your virtual world topolo
 * Automatically scale Shard instances by population demand
 * Apply custom auto-scaling policies
 * Find the closest shards by geolocation
-* Find the best suited shards by social connections **[PREMIUM]**
+* Find the best suited shards by social connections **[STUDIO]**
 
 Monetization
 ============
 
-Purchasing [PREMIUM]
-~~~~~~~~~~~~~~~~~~~~
+Purchasing **[STUDIO]**
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Our Purchasing Servies system provides all the necessary tools you want and need to monetize your game including subscriptions, entitlements and more. The system integrates with common processing payment providers such as Stripe for dead simple business operations.
 

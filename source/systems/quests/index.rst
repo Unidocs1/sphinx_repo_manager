@@ -3,7 +3,6 @@ Questing System
 ===============
 
 .. toctree::
-  :hidden:
 
   processor
 
@@ -18,8 +17,8 @@ The `\ ``EventScraper`` <scraper>`_ is a background service used to retrieve tel
 
 Once an event is placed in the global queue, the `\ ``EventProcessor`` <processor>`_ pops it and begins processing the event. The processor first identifies all quests that reference the event type as a requirement and then uses it to update either the unlock progress or the primary progress of the quest for the given player.
 
-Data Structures
----------------
+Key Concepts
+============
 
 There are two primary data structures used in the quest system, ``Quest`` and ``QuestDefinition``. The ``QuestDefinition`` is a class that designers use to create the structure of what a quest is and what is requirements are. The ``Quest`` is the class that tracks an individual player's progress for a particular ``QuestDefinition``\ , including whether or not the player has unlocked it.
 

@@ -75,3 +75,13 @@ html_theme_options = {
     'includehidden': True,
     'titles_only': False
 }
+
+html_context = {
+    # Edit on GitLab
+    "display_gitlab": True, # Integrate Gitlab
+    "gitlab_host": "gitlab.acceleratxr.com",
+    "gitlab_user": "Core", # Group
+    "gitlab_repo": "acceleratxr.io", # Repo name
+    "gitlab_version": "master", # Version
+    "conf_py_path": "/source/", # Path in the checkout to the docs root
+}
