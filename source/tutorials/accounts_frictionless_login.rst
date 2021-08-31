@@ -221,7 +221,7 @@ the user must already be logged in.
             const FOnlineSubsystemAXR* OnlineSub = (FOnlineSubsystemAXR*)Online::GetSubsystem(GetWorld());
             check(OnlineSub != nullptr);
             
-            auto user = CoreSDK->GetLoggedInUser();
+            auto user = OnlineSub->CoreSDK->GetLoggedInUser();
             user->SetFirstName(_XPLATSTR("John"));
             user->SetLastName(_XPLATSTR("Smith"));
             user->SetEmail(_XPLATSTR("john.smith@gmail.com"));
