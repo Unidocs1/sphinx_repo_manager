@@ -3,7 +3,7 @@ Installation On-Premises
 ========================
 
 This article details the steps to install the AcceleratXR platform to an on-premises Kubernetes cluster using Helm.
-Before you begin make sure that all `pre-requisites <prerequisites>` have been installed and configured correctly.
+Before you begin make sure that all `pre-requisites <prerequisites>`_ have been installed and configured correctly.
 
 Clone the Helm Chart
 ====================
@@ -29,7 +29,6 @@ available in GitLab. Select the URL of the repository for the subscription plan 
 Next clone the repository to your local machine.
 
 .. code-block:: bash
-   :linenos:
 
    git clone git@gitlab.acceleratxr.com:Core/tools/k8s_deploy.git
 
@@ -40,7 +39,6 @@ Before the helm chart can be used the dependencies must be locally downloaded an
 following command.
 
 .. code-block:: bash
-   :linenos:
 
    helm dep up
 
@@ -50,11 +48,10 @@ Create a Namespace
 It is recommended that AcceleratXR be installed within a dedicated namespace within Kubernetes.
 
 .. code-block:: bash
-   :linenos:
 
    kubectl create axr-demo-v1
 
-In the above example we create a namespace called `axr-demo-v1`.  This namespace will contain all of the platform's
+In the above example we create a namespace called ``axr-demo-v1``.  This namespace will contain all of the platform's
 resources.
 
 Install Command
@@ -69,22 +66,22 @@ The helm chart has a number of required properties that must be set in order to 
    * - Setting
      - Description
      - Example
-   * - `title`
+   * - ``title``
      - The title of the product being deployed.
      - AXR Demo
-   * - `domain`
+   * - ``domain``
      - The primary domain that the platform will be deployed to.
-     - `demo.goaxr.cloud`
-   * - `ingress.hosts[0].host`
+     - ``demo.goaxr.cloud``
+   * - ``ingress.hosts[0].host``
      - The exact hostname that the platform's REST API will be served from.
-     - `api.demo.goaxr.cloud`
-   * - `mongodb.auth.password`
+     - ``api.demo.goaxr.cloud``
+   * - ``mongodb.auth.password``
      - The password to the MongoDB database server that each service will use to connect.
      - 
-   * - `postgresql.postgresqlPassword`
+   * - ``postgresql.postgresqlPassword``
      - The password to the MongoDB database server that each service will use to connect.
      - 
-   * - `admin.password`
+   * - ``admin.password``
      - The password to the adminstrator account that will have superuser access to the platform.
      - 
 
@@ -98,9 +95,8 @@ The following command will install the AcceleratXR platform and set up all neces
 servers within the running cluster. This is the **RECOMMENDED** install method.
 
 .. code-block:: bash
-   :linenos:
 
-   helm install axr-demo-v1 . \
+   helm upgrade --install axr-demo-v1 . \
    --namespace axr-demo-v1 \
    --set title=AXR-Demo \
    --set domain=demo.goaxr.cloud \
@@ -122,9 +118,8 @@ If external database providers are desired, such as using DocumentDB/RDS/Elastic
 the following command should be used.
 
 .. code-block:: bash
-   :linenos:
 
-   helm install axr-demo-v1 . \
+   helm upgrade --install axr-demo-v1 . \
    --namespace axr-demo-v1 \
    --set title=AXR-Demo \
    --set domain=demo.goaxr.cloud \
@@ -138,6 +133,17 @@ the following command should be used.
    --set postgresql.url=postgres://admin:<PASSWORD>@ext.hosted.postgresql \
    --set postgresql.postgresqlPassword="<PASSWORD>" \
    --set admin.password="<PASSWORD>"
+
+Utilizing Custom ``values.yaml``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes our default configuration is not the most desirable option. In such scenarios you can freely edit the ``values.yaml`` file
+included in the helm chart repository and deploy using that method instead. Be sure to fill in any of values marked as **Required**.
+Then you can install your cluster with the following simple command.
+
+.. code-block:: bash
+
+   helm upgrade --install axr-demo-v1 . --namespace axr-demo-v1
 
 Output
 ======
@@ -182,12 +188,15 @@ Once you've successfully installed the platform with Helm you will see output fr
 Validating the Installation
 ===========================
 
-To validate that the platform was successfuly installed and running correctly you can run `kubectl get all` on your
+To validate that the platform was successfuly installed and running correctly you can run ``kubectl get all`` on your
 cluster. The output should look similar to the following.
 
 .. code-block:: bash
 
-   $ kubectl -n axr-demo-v1 get all
+   kubectl -n axr-demo-v1 get all
+
+.. code-block:: bash
+
    NAME                                                  READY   STATUS    RESTARTS   AGE
    pod/account-services-84d5497c6c-lm55l                 1/1     Running   0          18d
    pod/achievement-services-dc5cddfbb-bd8rh              1/1     Running   0          18d
@@ -293,9 +302,12 @@ cluster. The output should look similar to the following.
 
 Lastly you can check that the platform is correctly responding to API requests using the following test.
 The URL is obtained using the Cluster Address reported from the installation command and adding
-`/status/accounts` to the end.
+``/status/accounts`` to the end.
 
 .. code-block:: bash
 
-$ curl https://api.demo.goaxr.cloud/v1/status/accounts
-{"name":"account_services","time":"2021-06-08T00:50:25.786Z","version":"1.0.0"}
+   curl https://api.demo.goaxr.cloud/v1/status/accounts
+
+.. code-block:: json
+
+   {"name":"account_services","time":"2021-06-08T00:50:25.786Z","version":"1.0.0"}
