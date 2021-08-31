@@ -5,7 +5,7 @@ Tutorials
 .. toctree::
    :caption: IAM
 
-   accounts_register_user
+   accounts_frictionless_login
    accounts_mfa_setup
 
 .. toctree::
