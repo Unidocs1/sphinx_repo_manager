@@ -62,7 +62,7 @@ html_favicon = 'images/favicon.png'
 #
 html_theme_options = {
     'canonical_url': 'https://acceleratxr.io',
-    'analytics_id': '',  #  Provided by Google in your dashboard
+    'analytics_id': 'UA-136672390-2',  #  Provided by Google in your dashboard
     'logo_only': True,
     'display_version': True,
     'prev_next_buttons_location': 'bottom',
