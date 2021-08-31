@@ -20,7 +20,7 @@ AcceleratXR
    :caption: examples
 
    examples/shootergame
-   examples/unitysample
+   examples/unityexample
 
 .. toctree::
    :hidden:
