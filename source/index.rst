@@ -9,7 +9,9 @@ AcceleratXR
    :caption: About
 
    features
-   tools
+   Case Studies <https://www.acceleratxr.com/case-studies/>
+   eula
+   Press <https://www.acceleratxr.com/press/>
 
 .. toctree::
    :hidden:
@@ -42,7 +44,6 @@ AcceleratXR
 
    Admin Console <https://console.goaxr.cloud>
    AcceleratXR Cloud <https://acceleratxr.com/pricing>
-   eula
 
 **AcceleratXR** is a powerful technology platform for building highly-scalable online games and entertainment products.
 Started in 2018 by veteran developers of the gaming industry with over fifty years combined experience, AcceleratXR
