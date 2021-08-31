@@ -6,14 +6,23 @@ AcceleratXR
 
 .. toctree::
    :hidden:
-   :caption: Documentation
+   :caption: Platform
 
    platform/index
    features
-   sdks/index
    systems/index
    tutorials/index
    tools
+
+.. toctree::
+   :hidden:
+   :caption: Integration
+
+   sdks/cpp
+   sdks/csharp
+   sdks/nodejs
+   sdks/unity
+   sdks/unreal
 
 .. toctree::
    :hidden:
@@ -24,15 +33,15 @@ AcceleratXR
 
 .. toctree::
    :hidden:
-   :caption: Get Involved
-
-   Discord <https://discord.gg/wrfBR2Q>
-
-.. toctree::
-   :hidden:
    :caption: Get the Code
 
    GitLab <https://gitlab.acceleratxr.com>
+
+.. toctree::
+   :hidden:
+   :caption: Get Involved
+
+   Discord <https://discord.gg/wrfBR2Q>
 
 .. toctree::
    :hidden:
