@@ -46,29 +46,32 @@ AcceleratXR
    AcceleratXR Cloud <https://acceleratxr.com/pricing>
 
 **AcceleratXR** is a powerful technology platform for building highly-scalable online games and entertainment products.
-Started in 2018 by veteran developers of the gaming industry with over fifty years combined experience, AcceleratXR
-builds upon open source technology, such as `Composer.js <https://www.composerjs.io>`_ and
-`Kubernetes <https://kubernetes.io/>`_, to create the industry's most customizeable and feature-rich online gaming
-platform.
+The platform offers a *huge* list of `features <features>`_ covering everything from account management, matchmaking to questing.
+With a simple royalty based licensing model as well as commercial `Cloud Services <https://acceleratxr.com/pricing>`_,
+AcceleratXR enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of
+the time and cost of other solutions.
 
-The team behind **AcceleratXR**, pronounced simply *accelerator* (`/əkˈseləˌrādər/`), built the platform with the
-ambitious goal to dramatically **Accelerat**\e E\ **x**\tended **R**\eality product development. With this goal in mind
-the team has defined three dimensions of success.
+Started in 2018 by veteran developers of the gaming industry with over fifty years combined experience who previously
+shipped successful franchises such as XCOM, Hawken, Lost Planet and League of Legends. The AcceleratXR team have pooled
+together all their knowledge and experience to build the most customizeable and feature rich online gaming platform
+leveraging proven open source technology.
 
-- Faster Time to Market
-- Reduced Development Cost
-- Lower Cost of Ownership
+**AcceleratXR**, pronounced simply *accelerator* (`/əkˈseləˌrādər/`), was built with the ambitious goal to dramatically
+**Accelerat**\e E\ **x**\tended **R**\eality games and application development. With this goal in mind the team has defined
+three dimensions of success.
+
+* Faster Time to Market
+* Reduced Development Cost
+* Lower Cost of Ownership
 
 Time to Market
 ==============
 
-Most other solutions in the industry tend to offer only a handful of capabilities, often targeting mobile games
-with simplistic online and multi-player designs. As fellow game developers we know how much additional work
-is required to ship bold and exciting new experiences audiences will love. This lack of overall capability is often
-why many developers choose to build their own custom solution while smaller, indie, teams are left with litte to no
-other choice.
+Most other solutions in the industry tend to offer only a handful of capabilities with a limited focus on simple
+mobile games. As fellow game developers we know how much work is required to handle the sheer difficulty of shipping a product
+on time.
 
-Having experienced these problems first-hand the AcceleratXR team made it priority number one to provide a robust
+Having experienced every kind of development problem first-hand the AcceleratXR team made it priority number one to provide a robust
 collection of systems and features native to the platform itself. This focus on features first empowers teams to spend
 more of their time building a better product instead of worrying about basic backend infrastructure and online systems
 development.
@@ -76,8 +79,18 @@ development.
 Development Cost
 ================
 
+What is often more difficult to achieve as a developer is fitting within your given budget. Too many other platforms make big promises
+about capabilities that they simply can't deliver. Sometimes this is a matter of poor quality with the development of their product.
+Other times its the result of limitations from an overly generic architecture or implementation. The net result means having to roll
+your own more often than not.
 
+Our team has carefully engineered every system and feature within the platform to meet and exceed the quality level of the most demanding
+AAAA titles. Further, our source available approach ensures that you have complete and total control to make it your own in case
+any part of the platform fails to meet needs and expectations.
 
 Total Cost of Ownership
 =======================
 
+Due to our flexible licensing, an unparalleled feature set, and our uniquely open philosophy to game development,
+AcceleratXR offers the lowest total cost of ownership of any other solution available. No other technology platform gives you
+more tools, more features and more flexibility to build your product exactly as you desire.
