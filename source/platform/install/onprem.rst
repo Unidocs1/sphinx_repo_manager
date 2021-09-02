@@ -3,7 +3,7 @@ Installation On-Premises
 ========================
 
 This article details the steps to install the AcceleratXR platform to an on-premises Kubernetes cluster using Helm.
-Before you begin make sure that all `pre-requisites <prerequisites>`_ have been installed and configured correctly.
+Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have been installed and configured correctly.
 
 Clone the Helm Chart
 ====================

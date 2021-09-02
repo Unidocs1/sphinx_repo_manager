@@ -3,7 +3,7 @@ C++ SDK
 =======
 
 The AcceleratXR C++ SDK is written using the modern C++17 standard and leverages
-`vcpkg <https://github.com/microsoft/vcpkg>` as a package manager for third-party dependencies.
+`vcpkg <https://github.com/microsoft/vcpkg>`_ as a package manager for third-party dependencies.
 
 Building from Source
 ====================
@@ -14,7 +14,6 @@ Downloading the Source
 You will first want to clone the repository containing the C++ SDK using the following command.
 
 .. code-block:: bash
-   :linenos:
 
     git clone https://gitlab.com/AcceleratXR/Core/sdk/sdk_cpp
 
@@ -26,8 +25,7 @@ The SDK requires Visual Studio 2019 with the `cmake` component to be installed.
 1. Open a `Developer Powershell for 2019` window.
 2. Run the `build_vc2019.ps1` script.
 
-.. code-block:: powershell
-   :linenos:
+.. code-block::
 
  .\build_vc2019.ps1
 
@@ -45,7 +43,6 @@ When compiling on Linux it is recommended to use clang-9 instead of gcc. However
 2. Run the `build_linux.sh` script.
 
 .. code-block:: bash
-   :linenos:
 
    ./build.sh
 

@@ -4,10 +4,8 @@ Tutorials
 
 .. toctree::
    :maxdepth: 1
-   :caption: IAM
 
-   accounts_frictionless_login
-   accounts_mfa_setup
+   accounts/index
 
 .. toctree::
    :maxdepth: 1

@@ -11,7 +11,6 @@ Installation via yarn
 Yarn is the preferred package management tool when developing with NodeJS and JavaScript.
    
 .. code-block:: bash
-    :linenos:
    
       yarn add @acceleratxr/sdk
 
@@ -21,7 +20,6 @@ Installation via npm
 If you prefer the `npm` package manager this also works.
 
 .. code-block:: bash
-   :linenos:
 
    npm install @acceleratxr/sdk
 
@@ -36,7 +34,6 @@ Downloading the Source
 You will first want to clone the repository containing the SDK using the following command.
 
 .. code-block:: bash
-   :linenos:
 
     git clone https://gitlab.com/AcceleratXR/Core/sdk/sdk_nodejs
 
@@ -49,7 +46,6 @@ You will need NodeJS installed and the `yarn` package manager installed and avai
 2. Run the following commands.
 
 .. code-block:: bash
-   :linenos:
 
     yarn install
     yarn build

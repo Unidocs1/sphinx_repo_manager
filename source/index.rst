@@ -18,11 +18,7 @@ AcceleratXR
    :caption: learn
 
    platform/index
-   sdks/cpp
-   sdks/csharp
-   sdks/nodejs
-   sdks/unity
-   sdks/unreal
+   sdks/index
    tutorials/index
    examples/index
 
@@ -46,7 +42,7 @@ AcceleratXR
    AcceleratXR Cloud <https://acceleratxr.com/pricing>
 
 **AcceleratXR** is a powerful technology platform for building highly-scalable online games and entertainment products.
-The platform offers a *huge* list of `features <features>`_ covering everything from account management, matchmaking to questing.
+The platform offers a *huge* list of :doc:`features <features>` covering everything from account management, matchmaking to questing.
 With a simple royalty based licensing model as well as commercial `Cloud Services <https://acceleratxr.com/pricing>`_,
 AcceleratXR enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of
 the time and cost of other solutions.
@@ -91,6 +87,12 @@ any part of the platform fails to meet needs and expectations.
 Total Cost of Ownership
 =======================
 
-Due to our flexible licensing, an unparalleled feature set, and our uniquely open philosophy to game development,
-AcceleratXR offers the lowest total cost of ownership of any other solution available. No other technology platform gives you
-more tools, more features and more flexibility to build your product exactly as you desire.
+Often times the operating costs of maintaining a product after it launches is the thing that determines the long term success.
+Many games over the last few decades have failed due to sky high hosting and operations costs that far exceeds revenue.
+The AcceleratXR team have experienced these failures first hand and understand the deep complexity of not just operating a game
+that is successful but also profitable. As a result, every bit of the platform has been carefully architected to be as cost effective
+as possible.
+
+This focus on cost sensitivity in combination with our flexible licensing, unparalleled feature set, and our uniquely open philosophy to game
+development, means that AcceleratXR offers the lowest total cost of ownership compared to any other solution available. No other technology
+platform gives you more tools, more features and more flexibility to create and dream big.

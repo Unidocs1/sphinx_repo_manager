@@ -1,6 +1,6 @@
-===================================
-How To Implement Frictionless Login
-===================================
+===============================
+Implementing Frictionless Login
+===============================
 
 Many modern games and applications want their users to be able to start with as little resistance as possible. Often called
 *frictionless login*, the idea is to provide users a method for immediately jumping in before requiring them to create an

@@ -14,8 +14,7 @@ https://www.nuget.org/packages/acceleratxr.sdk/
 To install using the NuGet Package Manager CLI run the following command.
 
 
-.. code-block:: powershell
-   :linenos:
+.. code-block::
 
    Install-Package acceleratxr.sdk
 
@@ -30,7 +29,6 @@ Downloading the Source
 You will first want to clone the repository containing the C# SDK using the following command.
 
 .. code-block:: bash
-   :linenos:
 
     git clone https://gitlab.com/AcceleratXR/Core/sdk/sdk_csharp
 

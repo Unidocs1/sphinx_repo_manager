@@ -2,7 +2,7 @@
 Unity Engine SDK
 ================
 
-The AcceleratXR SDK for Unity provides a simple wrapper around the `C# SDK <csharp>`_ in addition to prefabs and
+The AcceleratXR SDK for Unity provides a simple wrapper around the :doc:`C# SDK <csharp>` in addition to prefabs and
 basic scripts included to make the process of working with the platform easier.
 
 Installation
