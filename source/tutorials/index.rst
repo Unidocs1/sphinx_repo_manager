@@ -6,6 +6,7 @@ Tutorials
    :maxdepth: 1
 
    accounts/index
+   social/index
 
 .. toctree::
    :maxdepth: 1
