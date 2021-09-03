@@ -61,7 +61,7 @@ The following example shows how to perform a device login.
 
             try
             {
-                await CoreSDK.LoginDevice();
+                await CoreSDK.loginDevice();
             }
             catch (error: any)
             {
@@ -176,16 +176,16 @@ the user must already be logged in.
         .. code-block:: typescript
 
             const user: User = CoreSDK.LoggedInUser;
-            user.FirstName = "John";
-            user.LastName = "Smith";
-            user.Email = "john.smith@gmail.com";
-            user.Name = "john.smith";
-            user.Phone = "+1 213-555-1234";
+            user.firstName = "John";
+            user.lastName = "Smith";
+            user.email = "john.smith@gmail.com";
+            user.name = "john.smith";
+            user.phone = "+1 213-555-1234";
 
-            const userService: UserService = CoreSDK.ServiceFactory.GetService(UserService);
+            const userService: UserService = ServiceFactory.getService(UserService);
             try
             {
-                await userService.Update(user.uid, user);
+                await userService.update(user.uid, user);
             }
             catch (error: any)
             {
@@ -303,10 +303,10 @@ is used to create the new password secret.
         .. code-block:: typescript
 
             const secret: UserSecret = new UserSecret();
-            secret.Type = UserSecret.TYPE_MFA;
-            secret.Secret = "<PASSWORD>";
+            secret.type = UserSecret.TYPE_MFA;
+            secret.secret = "<PASSWORD>";
 
-            const service: UserSecretService = CoreSDK.ServiceFactory.GetService(UserSecretService);
+            const service: UserSecretService = ServiceFactory.getService(UserSecretService);
             try
             {
                 await service.Create(secret);

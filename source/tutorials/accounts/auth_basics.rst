@@ -91,13 +91,13 @@ from the SDK as shown below.
             try
             {
                 const newUser: User = new User();
-                newUser.FirstName = "John";
-                newUser.LastName = "Smith";
-                newUser.Email = "john.smith@gmail.com";
-                newUser.Name = "john.smith";
-                newUser.Phone = "+1 213-555-1234";
+                newUser.firstName = "John";
+                newUser.lastName = "Smith";
+                newUser.email = "john.smith@gmail.com";
+                newUser.name = "john.smith";
+                newUser.phone = "+1 213-555-1234";
 
-                await CoreSDK.RegisterUser(newUser);
+                await CoreSDK.registerUser(newUser);
             }
             catch (error: any)
             {
@@ -209,13 +209,13 @@ The following example shows how to register a new account and immediately create
             try
             {
                 const newUser: User = new User();
-                newUser.FirstName = "John";
-                newUser.LastName = "Smith";
-                newUser.Email = "john.smith@gmail.com";
-                newUser.Name = "john.smith";
-                newUser.Phone = "+1 213-555-1234";
+                newUser.firstName = "John";
+                newUser.lastName = "Smith";
+                newUser.email = "john.smith@gmail.com";
+                newUser.name = "john.smith";
+                newUser.phone = "+1 213-555-1234";
 
-                await CoreSDK.RegisterUserAndPassword(newUser, "MyP@ssw0rdIsSecur3!");
+                await CoreSDK.registerUserAndPassword(newUser, "MyP@ssw0rdIsSecur3!");
             }
             catch (error: any)
             {
@@ -350,8 +350,8 @@ section.
 
             try
             {
-                await CoreSDK.Login("john.smith@gmail.com", "MyP@ssw0rdIsSecur3!");
-                if (CoreSDK.LoggedInUser)
+                await CoreSDK.loginPassword("john.smith@gmail.com", "MyP@ssw0rdIsSecur3!");
+                if (CoreSDK.loggedInUser)
                 {
                     // Success
                 }
@@ -485,8 +485,8 @@ session or provided to the application as a command line argument.
 
             try
             {
-                await CoreSDK.LoginToken("<TOKEN>");
-                if (CoreSDK.LoggedInUser)
+                await CoreSDK.loginToken("<TOKEN>");
+                if (CoreSDK.loggedInUser)
                 {
                     // Success
                 }
@@ -620,8 +620,8 @@ a new account is created automatically.
 
             try
             {
-                await CoreSDK.LoginDevice();
-                if (CoreSDK.LoggedInUser)
+                await CoreSDK.loginDevice();
+                if (CoreSDK.loggedInUser)
                 {
                     // Success
                 }

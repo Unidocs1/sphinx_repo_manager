@@ -75,7 +75,7 @@ Ranks are adjusted for each UserLink according to the following table.
 To understand this in more finite terms lets take an example of two shards. The first shard has two friends of the user
 and one user whom has been blocked by the user. The second server has two encounter users.
 
-.. code-block:: math
+.. math::
 
     Rank (Shard One):
       + 3  (Friend A)
@@ -93,7 +93,7 @@ and one user whom has been blocked by the user. The second server has two encoun
 In the above example shard One has a rank of ``5`` and shard Two has a rank of ``2``. Therefore the user will receive a
 sorted list with Shard One preceding Shard Two.
 
-.. code-block:: json
+.. code-block:: javascript
 
     [
         {
