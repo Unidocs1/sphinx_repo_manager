@@ -10,7 +10,7 @@ Service **X** failed to start with a compilation error.
 On occassion you may experience script compilation errors when starting up a service. This may occur immediately after upgrading
 or downgrading a particular service to a different version. The service pod log may look like the following.
 
-.. image:: /images/admin/troulbe_compile_error.png
+.. image:: /images/admin/trouble_compile_error.png
 
 The exact cause of the compilation error is varied but most often it is a result of the live scripting system failing to properly
 merge changes between version changes. This typically occurs more often during downgrade operations.
