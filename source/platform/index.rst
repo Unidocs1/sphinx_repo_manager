@@ -6,6 +6,7 @@ AcceleratXR Platform
     :hidden:
  
     install/index
+    admin/index
     systems/index
 
 .. image:: /images/overview_architecture_diagram.png

@@ -1,0 +1,7 @@
+===========
+Matchmaking
+===========
+
+.. toctree::
+
+    basics

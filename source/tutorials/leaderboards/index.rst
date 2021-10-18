@@ -1,0 +1,7 @@
+============
+Leaderboards
+============
+
+.. toctree::
+    
+    basics
