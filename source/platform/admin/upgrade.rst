@@ -34,16 +34,16 @@ For our example we'll upgrade the `server-instance-services` system.
 
 In the editor look for the line that starts with `image:`. At the end will be a version number like `v1.0.0`. Change it to the desired new version you want to deploy and save.
 
-.. image:: /images/admin/uprade_service_edit_deploy.png
+.. image:: /images/admin/upgrade_service_edit_deploy.png
 
 Once you have edited the deployment you can monitor the pods as the upgrade happens. The system will first create a new pod with new version, leaving the original running. Once
 the new pod is running.
 
-.. image:: /images/admin/uprade_service_pod_deploy.png
+.. image:: /images/admin/upgrade_service_pod_deploy.png
 
 Once the new pod is verified as working the system will shut down the old pod. This ensures no gap in service during the upgrade process.
 
-.. image:: /images/admin/uprade_service_pod_deploy2.png
+.. image:: /images/admin/upgrade_service_pod_deploy2.png
 
 Using Helm Upgrade
 ==================
@@ -73,8 +73,8 @@ When the upgrade is complete you'll get a similar output as you did when you fir
 
 The system will first create a new pod with new version, leaving the original running. Once the new pod is running.
 
-.. image:: /images/admin/uprade_service_pod_deploy.png
+.. image:: /images/admin/upgrade_service_pod_deploy.png
 
 Once the new pod is verified as working the system will shut down the old pod. This ensures no gap in service during the upgrade process.
 
-.. image:: /images/admin/uprade_service_pod_deploy2.png
+.. image:: /images/admin/upgrade_service_pod_deploy2.png
