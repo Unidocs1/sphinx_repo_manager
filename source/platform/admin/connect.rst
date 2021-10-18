@@ -42,6 +42,10 @@ It's very easy to check the system health of an AcceleratXR cluster using Kubern
 The above command will display the system health of the AcceleratXR cluster installed to the `axr-demo-v1` namespace.
 In this example we are checking the official AcceleratXR demo environment. The result should look like the following.
 
+.. note::
+
+    AcceleratXR *Cloud* customers do not need to specify a namespace.
+
 .. image:: /images/admin/system_health.png
 
 If everything is running correctly you should see at least one pod for each system service in the **Running** state. You will also see

@@ -7,5 +7,6 @@ Administration
 
    connect
    database
+   restart
    upgrade
    trouble
