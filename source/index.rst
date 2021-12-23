@@ -33,6 +33,7 @@ AcceleratXR
    :caption: Get Involved
 
    Discord <https://discord.gg/wrfBR2Q>
+   Google Groups <https://groups.google.com/g/acceleratxr>
 
 .. toctree::
    :hidden:

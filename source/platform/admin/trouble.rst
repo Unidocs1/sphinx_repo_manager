@@ -4,8 +4,11 @@ Troubleshooting
 
 This article discusses common problems that you may experience in managing an AcceleratXR platform cluster and how to solve them.
 
-Service **X** failed to start with a compilation error.
-=======================================================
+Service **X** failed to start
+=============================
+
+Compilation Errors
+~~~~~~~~~~~~~~~~~~
 
 On occassion you may experience script compilation errors when starting up a service. This may occur immediately after upgrading
 or downgrading a particular service to a different version. The service pod log may look like the following.
@@ -40,3 +43,7 @@ Once the collection has been dropped you can restart the service's pod by execut
     kubectl -n axr-demo-v1 delete pod -lapp=server-instance-services
 
 After the service's pod finishes the restart process everything should be repaired and working correctly.
+
+*The acl to save must be of the same version. ACL=default_Script, Expected=NaN, Actual=null*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
