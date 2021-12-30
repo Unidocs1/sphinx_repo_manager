@@ -25,7 +25,7 @@ Install the AcceleratXR Workspace
 
 To install the AcceleratXR workspace perform the following.
 
-1. `Install <https://www.postman.com/downloads>`_ or `sign-in<https://identity.getpostman.com/login?continue=https%3A%2F%2Fgo.postman.co%2Fbuild>`_ to Postman
+1. `Install <https://www.postman.com/downloads>`_ or `sign-in <https://identity.getpostman.com/login?continue=https%3A%2F%2Fgo.postman.co%2Fbuild>`_ to Postman
 2. Click the **Import** button near the top left corner.
 3. In the pop-up window, select **Link**.
 4. Paste the following URL into the text field and click **Continue**.
