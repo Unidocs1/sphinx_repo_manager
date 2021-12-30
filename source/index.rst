@@ -21,6 +21,7 @@ AcceleratXR
    sdks/index
    tutorials/index
    examples/index
+   tools
 
 .. toctree::
    :hidden:
