@@ -6,4 +6,5 @@ Installation
    :maxdepth: 1
 
    prerequisites
+   operator
    onprem

@@ -1,63 +1,58 @@
-==================================
-Installation On-Premises with Helm
-==================================
+====================================
+Installation for Amazon Web Services
+====================================
 
-This article details the steps to install the AcceleratXR platform to an on-premises Kubernetes cluster using Helm.
-Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have been installed and configured correctly.
+This article details the steps to install the AcceleratXR platform to an AWS hosted Kubernetes cluster (using self-managed or
+`AWS EKS <https://www.elastic.co/elastic-cloud-kubernetes>`_) using the AcceleratXR Operator. Before you begin make sure that
+all :doc:`pre-requisites <prerequisites>` have been installed and configured correctly for the
+`AWS EKS <https://www.elastic.co/elastic-cloud-kubernetes>`_ or self-managed cluster.
 
-Clone the Helm Chart
+A `Kubernetes Operator <https://kubernetes.io/docs/concepts/extend-kubernetes/operator/>`_ is a special container that runs in the Kubernetes
+cluster that is capable of managing custom resource definitions (CRDs). The AcceleratXR operator is used to manage `acceleratxr.com/Cluster`
+resources. A `Cluster` resource defines a fully functional AcceleratXR platform including all databases, service pods, metrics servers and more.
+
+Install the Operator
 ====================
 
-A Helm chart capable of deploying the platform including all supported micro-services, databases and stats servers is
-available in GitLab. Select the URL of the repository for the subscription plan you have below.
-
-.. list-table::
-   :widths: 25 75
-   :header-rows: 1
-
-   * - Subscription
-     - URL
-   * - Core
-     - https://gitlab.com/AcceleratXR/Core/tools/helm_charts
-   * - Professional
-     - https://gitlab.com/AcceleratXR/professional/tools/helm_charts
-   * - Studio
-     - https://gitlab.com/AcceleratXR/studio/tools/helm_charts
-   * - Enterprise
-     - https://gitlab.com/AcceleratXR/enterprise/tools/helm_charts
-
-Next clone the repository to your local machine.
+To install the AcceleratXR operator for Kubernetes run the following command.
 
 .. code-block:: bash
 
-   git clone git@gitlab.acceleratxr.com:Core/tools/helm_charts.git
+   kubectl apply -f https://nexus.acceleratxr.com/repository/public/Core/tools/operator/latest/deploy/aws.yaml
 
-Dependencies
-============
-
-Before the helm chart can be used the dependencies must be locally downloaded and initialized. This is done with the
-following command.
+Verify that the operator was successfully deployed and is running with the following command.
 
 .. code-block:: bash
 
-   helm dep up
+   kubectl -n acceleratxr-operator-system get pods
 
-Create a Namespace
+If the operator was installed succcessfully you should see similar output to the following.
+
+.. code-block:: bash
+   
+   NAME                                                       READY   STATUS    RESTARTS   AGE
+   acceleratxr-operator-controller-manager-59647d8589-rxcfw   2/2     Running   0          17s
+
+Create the Cluster
 ==================
 
-It is recommended that AcceleratXR be installed within a dedicated namespace within Kubernetes.
+To create a simple AcceleratXR cluster that is accessible only from a localhost run the following command.
 
 .. code-block:: bash
+   
+   kubectl apply -f https://nexus.acceleratxr.com/repository/public/Core/tools/operator/latest/deploy/cluster_sample.yaml
 
-   kubectl create axr-demo-v1
+Defining a Cluster
+==================
 
-In the above example we create a namespace called ``axr-demo-v1``.  This namespace will contain all of the platform's
-resources.
+More than likely you want to deploy AcceleratXR in an environment that others can access it from. To do this requires some
+basic configuration by defining a Cluster resource.
 
-Install Command
-===============
+To get started download the file: https://nexus.acceleratxr.com/repository/public/Core/tools/operator/latest/deploy/cluster_sample.yaml
 
-The helm chart has a number of required properties that must be set in order to install correctly. These are:
+Save a copy of the downloaded file and open the copy in your favorite text editor.
+
+The following table details key configuration options you will need to customize your cluster for external deployment.
 
 .. list-table::
    :widths: 25 50 25
@@ -75,115 +70,12 @@ The helm chart has a number of required properties that must be set in order to 
    * - ``ingress.hosts[0].host``
      - The exact hostname that the platform's REST API will be served from.
      - ``api.demo.goaxr.cloud``
-   * - ``mongodb.auth.password``
-     - The password to the MongoDB database server that each service will use to connect.
-     - 
-   * - ``postgresql.postgresqlPassword``
-     - The password to the MongoDB database server that each service will use to connect.
-     - 
-   * - ``admin.password``
-     - The password to the adminstrator account that will have superuser access to the platform.
-     - 
 
-For details on all available configuration options please consult the repository's
-`README <https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
-
-Utilizing In-Cluster Database Servers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The following command will install the AcceleratXR platform and set up all necessary database
-servers within the running cluster. This is the **RECOMMENDED** install method.
+Once you've made the desired changes you can deploy the cluster similar to above.
 
 .. code-block:: bash
-
-   helm upgrade --install axr-demo-v1 . \
-   --namespace axr-demo-v1 \
-   --set title=AXR-Demo \
-   --set domain=demo.goaxr.cloud \
-   --set ingress.hosts[0].host=api.demo.goaxr.cloud \
-   --set mongodb.create=true \
-   --set mongodb.architecture=standalone \
-   --set mongodb.auth.enabled=false \
-   --set mongodb.auth.username="admin" \
-   --set mongodb.auth.password="<PASSWORD>" \
-   --set mongodb.auth.rootPassword="<PASSWORD>" \
-   --set postgresql.create=true \
-   --set postgresql.postgresqlPassword="<PASSWORD>" \
-   --set admin.password="<PASSWORD>"
-
-Utilizing External Database Servers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If external database providers are desired, such as using DocumentDB/RDS/Elasticache when running in AWS,
-the following command should be used.
-
-.. code-block:: bash
-
-   helm upgrade --install axr-demo-v1 . \
-   --namespace axr-demo-v1 \
-   --set title=AXR-Demo \
-   --set domain=demo.goaxr.cloud \
-   --set ingress.hosts[0].host=api.demo.goaxr.cloud \
-   --set mongodb.create=false \
-   --set mongodb.url=mongodb://admin:<PASSWORD>@ext.hosted.mongodb \
-   --set mongodb.auth.username="admin" \
-   --set mongodb.auth.password="<PASSWORD>" \
-   --set mongodb.auth.rootPassword="<PASSWORD>" \
-   --set postgresql.create=false \
-   --set postgresql.url=postgres://admin:<PASSWORD>@ext.hosted.postgresql \
-   --set postgresql.postgresqlPassword="<PASSWORD>" \
-   --set admin.password="<PASSWORD>"
-
-Utilizing Custom ``values.yaml``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Sometimes our default configuration is not the most desirable option. In such scenarios you can freely edit the ``values.yaml`` file
-included in the helm chart repository and deploy using that method instead. Be sure to fill in any of values marked as **Required**.
-Then you can install your cluster with the following simple command.
-
-.. code-block:: bash
-
-   helm upgrade --install axr-demo-v1 . --namespace axr-demo-v1
-
-Output
-======
-
-Once you've successfully installed the platform with Helm you will see output from the command like the following.
-
-.. code-block:: bash
-
-   NAME: axr-demo-v1
-   LAST DEPLOYED: Thu May 13 12:11:31 2021
-   NAMESPACE: axr-demo-v1
-   STATUS: deployed
-   REVISION: 1
-   NOTES:
-   ###############################################################################
-   # !!!IMPORTANT!!! WRITE DOWN THE FOLLOWING INFORMATION                        #
-   ###############################################################################
-   Cluster Addresses:
-
-      https://api.demo.goaxr.cloud/v1
-
-   Admin Account:
-   Username: admin
-   Password: <PASSWORD>
-
-   Authentication Configuration:
-   Audience: demo.goaxr.cloud
-   Issuer: api.demo.goaxr.cloud
-   ExpiresIn: 1 hour
-   Secret: "<SECRET>"
-
-   Databases:
-   MongoDB:
-      Root Password: <PASSWORD>
-      Username: admin
-      Password: <PASSWORD>
-      URL: mongodb://mongodb
-   PostgreSQL:
-      Username: postgres
-      Password: <PASSWORD>
+   
+   kubectl apply -f cluster_sample.yaml
 
 Validating the Installation
 ===========================
@@ -193,7 +85,7 @@ cluster. The output should look similar to the following.
 
 .. code-block:: bash
 
-   kubectl -n axr-demo-v1 get all
+   kubectl get all
 
 .. code-block:: bash
 
@@ -202,12 +94,6 @@ cluster. The output should look similar to the following.
    pod/achievement-services-dc5cddfbb-bd8rh              1/1     Running   0          18d
    pod/axr-demo-v1-kube-state-metrics-7bb547d5bf-p4gps   1/1     Running   0          18d
    pod/axr-demo-v1-prometheus-server-6dd5bb84bf-b2hgl    0/2     Running   0          18d
-   pod/cache-db-master-0                                 1/1     Running   0          18d
-   pod/cache-db-slave-0                                  1/1     Running   0          18d
-   pod/cache-db-slave-1                                  1/1     Running   0          18d
-   pod/events-db-master-0                                1/1     Running   0          18d
-   pod/events-db-slave-0                                 1/1     Running   0          18d
-   pod/events-db-slave-1                                 1/1     Running   0          18d
    pod/leaderboard-services-b6f47b9d-fsqg5               1/1     Running   0          18d
    pod/mongodb-7bf99647dd-wlfmm                          1/1     Running   0          18d
    pod/notification-services-58f58cf469-846fd            1/1     Running   0          18d
@@ -230,12 +116,6 @@ cluster. The output should look similar to the following.
    service/asset-services                   NodePort    172.23.99.69     <none>        80:31164/TCP   18d
    service/axr-demo-v1-kube-state-metrics   ClusterIP   172.23.44.249    <none>        8080/TCP       18d
    service/axr-demo-v1-prometheus-server    ClusterIP   172.23.113.23    <none>        80/TCP         18d
-   service/cache-db-headless                ClusterIP   None             <none>        6379/TCP       18d
-   service/cache-db-master                  ClusterIP   172.23.26.101    <none>        6379/TCP       18d
-   service/cache-db-slave                   ClusterIP   172.23.47.30     <none>        6379/TCP       18d
-   service/events-db-headless               ClusterIP   None             <none>        6379/TCP       18d
-   service/events-db-master                 ClusterIP   172.23.137.208   <none>        6379/TCP       18d
-   service/events-db-slave                  ClusterIP   172.23.124.235   <none>        6379/TCP       18d
    service/leaderboard-services             NodePort    172.23.195.9     <none>        80:32514/TCP   18d
    service/matchmaking-services             NodePort    172.23.203.156   <none>        80:31485/TCP   18d
    service/mongodb                          ClusterIP   172.23.128.149   <none>        27017/TCP      18d
@@ -293,21 +173,17 @@ cluster. The output should look similar to the following.
    replicaset.apps/world-services-7966478747                   1         1         1       18d
 
    NAME                                READY   AGE
-   statefulset.apps/cache-db-master    1/1     18d
-   statefulset.apps/cache-db-slave     2/2     18d
-   statefulset.apps/events-db-master   1/1     18d
-   statefulset.apps/events-db-slave    2/2     18d
    statefulset.apps/redis-master       1/1     18d
    statefulset.apps/redis-slave        2/2     18d
 
 Lastly you can check that the platform is correctly responding to API requests using the following test.
 The URL is obtained using the Cluster Address reported from the installation command and adding
-``/status/accounts`` to the end.
+``/status`` to the end.
 
 .. code-block:: bash
 
-   curl https://api.demo.goaxr.cloud/v1/status/accounts
+   curl https://api.demo.goaxr.cloud/v1/status
 
 .. code-block:: json
 
-   {"name":"account_services","time":"2021-06-08T00:50:25.786Z","version":"1.0.0"}
+   {"services":{"account-services":{"lastHeartbeat":"2022-02-03T01:25:41.159Z","name":"account_services","online":true,"time":"2022-02-03T01:25:41.159Z","version":"1.19.0","lastUpdate":"2022-02-03T01:25:41.160Z"},"achievement-services":{"lastHeartbeat":"2022-02-03T01:25:41.161Z","name":"achievement_services","online":true,"time":"2022-02-03T01:25:41.161Z","version":"1.6.0","lastUpdate":"2022-02-03T01:25:41.162Z"},"backup-services":{"lastHeartbeat":"2022-02-03T01:25:41.163Z","name":"backup_services","online":true,"lastUpdate":"2022-02-03T01:25:41.163Z","time":"2022-02-03T01:25:41.163Z","version":"1.0.0-beta8"},"leaderboard-services":{"lastHeartbeat":"2022-02-03T01:25:41.165Z","name":"leaderboard_services","online":true,"time":"2022-02-03T01:25:41.165Z","version":"1.8.0","lastUpdate":"2022-02-03T01:25:41.165Z"},"notification-services":{"lastHeartbeat":"2022-02-03T01:25:41.167Z","name":"notification_services","online":true,"time":"2022-02-03T01:25:41.167Z","version":"1.7.0","lastUpdate":"2022-02-03T01:25:41.167Z"},"persona-services":{"lastHeartbeat":"2022-02-03T01:25:41.170Z","name":"persona_services","online":true,"time":"2022-02-03T01:25:41.170Z","version":"1.9.0","lastUpdate":"2022-02-03T01:25:41.171Z"},"progression-services":{"lastHeartbeat":"2022-02-03T01:25:41.173Z","name":"progression_services","online":true,"lastUpdate":"2022-02-03T01:25:41.173Z","time":"2022-02-03T01:25:41.173Z","version":"1.5.0"},"quest-services":{"lastHeartbeat":"2022-02-03T01:25:41.176Z","name":"quest_services","online":true,"lastUpdate":"2022-02-03T01:25:41.176Z","time":"2022-02-03T01:25:41.176Z","version":"1.5.0"},"scripting-services":{"lastHeartbeat":"2022-02-03T01:25:41.179Z","name":"scripting_services","online":true,"time":"2022-02-03T01:25:41.179Z","version":"1.7.0","lastUpdate":"2022-02-03T01:25:41.179Z"},"server-instance-services":{"lastHeartbeat":"2022-02-03T01:25:41.193Z","name":"server_instance_services","online":true,"time":"2022-02-03T01:25:41.193Z","version":"1.7.0","lastUpdate":"2022-02-03T01:25:41.193Z"},"session-services":{"lastHeartbeat":"2022-02-03T01:25:41.196Z","name":"session_services","online":true,"lastUpdate":"2022-02-03T01:25:41.196Z","time":"2022-02-03T01:25:41.196Z","version":"1.7.0"},"social-services":{"lastHeartbeat":"2022-02-03T01:25:41.198Z","name":"social_services","online":true,"lastUpdate":"2022-02-03T01:25:41.198Z","time":"2022-02-03T01:25:41.198Z","version":"1.5.0"},"telemetry-services":{"lastHeartbeat":"2022-02-03T01:25:41.200Z","name":"telemetry_services","online":true,"lastUpdate":"2022-02-03T01:25:41.200Z","time":"2022-02-03T01:25:41.200Z","version":"1.8.0"},"world-services":{"lastHeartbeat":"2022-02-03T01:25:41.202Z","name":"world_services","online":true,"time":"2022-02-03T01:25:41.202Z","version":"1.12.0","lastUpdate":"2022-02-03T01:25:41.202Z"}},"healthy":14,"offline":0,"total":14}
