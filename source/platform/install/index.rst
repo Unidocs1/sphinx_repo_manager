@@ -8,3 +8,4 @@ Installation
    prerequisites
    operator
    onprem
+   aws
