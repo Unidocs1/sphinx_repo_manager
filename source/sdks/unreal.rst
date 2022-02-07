@@ -92,4 +92,4 @@ Installation of the Unreal SDK is simple.
 
 That's it!
 
-To learn more about how to work with these plug-ins check out the `Unreal ShooterGame <../samples/shootergame>`_ project.
+To learn more about how to work with these plug-ins check out the `Unreal ShooterGame <../examples/shootergame.html>`_ project.
