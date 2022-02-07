@@ -2,7 +2,7 @@
 Unreal Engine SDK
 =================
 
-The AcceleratXR SDK for Unreal is compatible with Unreal Engine 4.25, 4.26 and UE5 Early Access. The SDK is broken up
+The AcceleratXR SDK for Unreal is compatible with Unreal Engine 4.25 and above. The SDK is broken up
 into three plug-ins; **AXRCoreSDK**, **OnlineSubsystemAXR** and **GameFrameworkAXR**.
 
 AXRCoreSDK
