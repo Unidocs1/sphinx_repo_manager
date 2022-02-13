@@ -95,23 +95,23 @@ certificates. Let’s Encrypt is simple and free and works with cert-manager out
 .. code-block:: yaml
    :linenos:
 
-   apiVersion: cert-manager.io/v1alpha2
-   kind: ClusterIssuer
-   metadata:
-   name: letsencrypt-prod
-   spec:
-   acme:
-       # The ACME server URL
-       server: https://acme-v02.api.letsencrypt.org/directory
-       # Email address used for ACME registration
-       email: admin@acceleratxr.com
-       # Name of a secret used to store the ACME account private key
-       privateKeySecretRef:
-       name: letsencrypt-prod
-       solvers:
-       - http01:
-           ingress:
-             class: nginx
+  apiVersion: cert-manager.io/v1
+  kind: ClusterIssuer
+  metadata:
+      name: letsencrypt-prod
+  spec:
+      acme:
+          # The ACME server URL
+          server: https://acme-v02.api.letsencrypt.org/directory
+          # Email address used for ACME registration
+          email: admin@acceleratxr.com
+          # Name of a secret used to store the ACME account private key
+          privateKeySecretRef:
+              name: letsencrypt-prod
+          solvers:
+          - http01:
+              ingress:
+                  class: nginx
 
 Now apply the file to the kubernetes cluster with the command.
 
