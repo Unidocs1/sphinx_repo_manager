@@ -2,6 +2,8 @@
 Installation On-Premises with Operator
 ======================================
 
+**Time to Complete: 10 minutes**
+
 This article details the steps to install the AcceleratXR platform to an on-premises Kubernetes cluster using the AcceleratXR Operator.
 Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have been installed and configured correctly.
 

@@ -1,15 +1,46 @@
-====================================
-Installation for Amazon Web Services
-====================================
+===================================================
+Installation for Amazon Web Services using Operator
+===================================================
 
-This article details the steps to install the AcceleratXR platform to an AWS hosted Kubernetes cluster (using self-managed or
-`AWS EKS <https://www.elastic.co/elastic-cloud-kubernetes>`_) using the AcceleratXR Operator. Before you begin make sure that
-all :doc:`pre-requisites <prerequisites>` have been installed and configured correctly for the
-`AWS EKS <https://www.elastic.co/elastic-cloud-kubernetes>`_ or self-managed cluster.
+**Time to Complete: 10 minutes**
 
-A `Kubernetes Operator <https://kubernetes.io/docs/concepts/extend-kubernetes/operator/>`_ is a special container that runs in the Kubernetes
-cluster that is capable of managing custom resource definitions (CRDs). The AcceleratXR operator is used to manage `acceleratxr.com/Cluster`
-resources. A `Cluster` resource defines a fully functional AcceleratXR platform including all databases, service pods, metrics servers and more.
+This article details the steps to install the AcceleratXR platform to an Kubernetes cluster hosted on `AWS EKS <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_ using the official AcceleratXR Operator for Kubernetes.
+
+AWS Elastic Kubernetes Service
+==============================
+
+AWS Elastic Kubernetes Service (EKS) is the preferred way to run AcceleratXR on AWS.
+
+* `Getting Started <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_
+* `Service endpoints and quotas <https://docs.aws.amazon.com/general/latest/gr/eks.html>`_
+* `IAM for AWS EKS <https://docs.aws.amazon.com/eks/latest/userguide/security-iam.html>`_
+* `EKS Pricing <https://aws.amazon.com/eks/pricing/>`_
+* `EKS Troubleshooting <https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html>`_
+
+Pre-requisites
+==============
+
+Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have been installed and configured correctly on the EKS cluster.
+
+Recommendations
+===============
+
+We recommend the following configurations when setting up a AWS EKS cluster for AcceleratXR.
+
+* At least one EKS cluster node
+* Minimum EC2 `t3.medium` instance size for AWS EKS nodes
+* Elastic IP for public load balancer
+* Private S3 bucket for database backup storage
+
+Subscribe to AcceleratXR
+========================
+
+Before you can deploy AcceleratXR to AWS EKS you need to Subscribe to the AcceleratXR platform on the AWS Marketplace.
+
+# Navigate to https://aws.amazon.com/marketplace/pp/prodview-anpdwpjanxl4s
+# Click the *Continue to Subscribe* button
+# Click the *Continue to Configuration* button
+# Select the *Kubernetes Operator* fulfillment option, then click *Continue to Launch*
 
 Install the Operator
 ====================
@@ -187,3 +218,8 @@ The URL is obtained using the Cluster Address reported from the installation com
 .. code-block:: json
 
    {"services":{"account-services":{"lastHeartbeat":"2022-02-03T01:25:41.159Z","name":"account_services","online":true,"time":"2022-02-03T01:25:41.159Z","version":"1.19.0","lastUpdate":"2022-02-03T01:25:41.160Z"},"achievement-services":{"lastHeartbeat":"2022-02-03T01:25:41.161Z","name":"achievement_services","online":true,"time":"2022-02-03T01:25:41.161Z","version":"1.6.0","lastUpdate":"2022-02-03T01:25:41.162Z"},"backup-services":{"lastHeartbeat":"2022-02-03T01:25:41.163Z","name":"backup_services","online":true,"lastUpdate":"2022-02-03T01:25:41.163Z","time":"2022-02-03T01:25:41.163Z","version":"1.0.0-beta8"},"leaderboard-services":{"lastHeartbeat":"2022-02-03T01:25:41.165Z","name":"leaderboard_services","online":true,"time":"2022-02-03T01:25:41.165Z","version":"1.8.0","lastUpdate":"2022-02-03T01:25:41.165Z"},"notification-services":{"lastHeartbeat":"2022-02-03T01:25:41.167Z","name":"notification_services","online":true,"time":"2022-02-03T01:25:41.167Z","version":"1.7.0","lastUpdate":"2022-02-03T01:25:41.167Z"},"persona-services":{"lastHeartbeat":"2022-02-03T01:25:41.170Z","name":"persona_services","online":true,"time":"2022-02-03T01:25:41.170Z","version":"1.9.0","lastUpdate":"2022-02-03T01:25:41.171Z"},"progression-services":{"lastHeartbeat":"2022-02-03T01:25:41.173Z","name":"progression_services","online":true,"lastUpdate":"2022-02-03T01:25:41.173Z","time":"2022-02-03T01:25:41.173Z","version":"1.5.0"},"quest-services":{"lastHeartbeat":"2022-02-03T01:25:41.176Z","name":"quest_services","online":true,"lastUpdate":"2022-02-03T01:25:41.176Z","time":"2022-02-03T01:25:41.176Z","version":"1.5.0"},"scripting-services":{"lastHeartbeat":"2022-02-03T01:25:41.179Z","name":"scripting_services","online":true,"time":"2022-02-03T01:25:41.179Z","version":"1.7.0","lastUpdate":"2022-02-03T01:25:41.179Z"},"server-instance-services":{"lastHeartbeat":"2022-02-03T01:25:41.193Z","name":"server_instance_services","online":true,"time":"2022-02-03T01:25:41.193Z","version":"1.7.0","lastUpdate":"2022-02-03T01:25:41.193Z"},"session-services":{"lastHeartbeat":"2022-02-03T01:25:41.196Z","name":"session_services","online":true,"lastUpdate":"2022-02-03T01:25:41.196Z","time":"2022-02-03T01:25:41.196Z","version":"1.7.0"},"social-services":{"lastHeartbeat":"2022-02-03T01:25:41.198Z","name":"social_services","online":true,"lastUpdate":"2022-02-03T01:25:41.198Z","time":"2022-02-03T01:25:41.198Z","version":"1.5.0"},"telemetry-services":{"lastHeartbeat":"2022-02-03T01:25:41.200Z","name":"telemetry_services","online":true,"lastUpdate":"2022-02-03T01:25:41.200Z","time":"2022-02-03T01:25:41.200Z","version":"1.8.0"},"world-services":{"lastHeartbeat":"2022-02-03T01:25:41.202Z","name":"world_services","online":true,"time":"2022-02-03T01:25:41.202Z","version":"1.12.0","lastUpdate":"2022-02-03T01:25:41.202Z"}},"healthy":14,"offline":0,"total":14}
+
+Additional Support
+==================
+
+AcceleratXR offers commercial support at https://www.acceleratxr.com/pricing/ under Self-Hosted plans.
