@@ -43,7 +43,3 @@ Once the collection has been dropped you can restart the service's pod by execut
     kubectl -n axr-demo-v1 delete pod -lapp=server-instance-services
 
 After the service's pod finishes the restart process everything should be repaired and working correctly.
-
-*The acl to save must be of the same version. ACL=default_Script, Expected=NaN, Actual=null*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-

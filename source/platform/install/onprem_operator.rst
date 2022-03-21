@@ -33,15 +33,6 @@ If the operator was installed succcessfully you should see similar output to the
    NAME                                                       READY   STATUS    RESTARTS   AGE
    acceleratxr-operator-controller-manager-59647d8589-rxcfw   2/2     Running   0          17s
 
-Create the Cluster
-==================
-
-To create a simple AcceleratXR cluster that is accessible only from a localhost run the following command.
-
-.. code-block:: bash
-   
-   kubectl apply -f https://nexus.acceleratxr.com/repository/public/Core/tools/operator/latest/deploy/cluster_sample.yaml
-
 Defining a Cluster
 ==================
 
@@ -71,7 +62,56 @@ The following table details key configuration options you will need to customize
      - The exact hostname that the platform's REST API will be served from.
      - ``api.demo.goaxr.cloud``
 
-Once you've made the desired changes you can deploy the cluster similar to above.
+Example
+~~~~~~~
+
+The following shows a simplified example configuration for the AXR Demo environment.
+
+.. code-block:: yaml
+
+   # The root domain name to use
+   domain: demo.goaxr.cloud
+   
+   # The url to the cluster's account administration website.
+   website: https://console.goaxr.cloud/
+   
+   # The name of the application or product
+   title: Demo
+   
+   ingress:
+     hosts:
+       - host: "api.demo.goaxr.cloud"
+
+Configuring DNS
+===============
+
+Before finally creating the AcceleratXR cluster it is necessary to configure DNS to properly route requests to the configured domain(s) above.
+
+When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the AcceleratXR ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
+
+.. code-block:: bash
+
+   kubectl -n nginx get svc
+
+This will result in an output like the following.
+
+.. code-block:: bash
+
+   NAME                                       TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                      AGE
+   nginx-ingress-nginx-controller             LoadBalancer   172.23.207.63   96.46.186.213   80:31246/TCP,443:32541/TCP   204d
+   nginx-ingress-nginx-controller-admission   ClusterIP      172.23.254.84   <none>          443/TCP                      204d
+
+In the above example, the public IP of the LoadBalancer is `96.46.186.213`. Now update your DNS for the configured **ingress** domains by creating an *A* record
+for the domains with this address.
+
+As an example, using the above cluster configuration we must create an **A Record** DNS entry for the domain `api.demo.goaxr.cloud` to point to IP `96.46.186.213`.
+
+Once the DNS has been set for each of the configured ingress domains it is time to create the AcceleratXR cluster.
+
+Create the Cluster
+==================
+
+Run the following command to create the AcceleratXR cluster.
 
 .. code-block:: bash
    

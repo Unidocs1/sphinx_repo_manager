@@ -37,10 +37,10 @@ Subscribe to AcceleratXR
 
 Before you can deploy AcceleratXR to AWS EKS you need to Subscribe to the AcceleratXR platform on the AWS Marketplace.
 
-# Navigate to https://aws.amazon.com/marketplace/pp/prodview-anpdwpjanxl4s
-# Click the *Continue to Subscribe* button
-# Click the *Continue to Configuration* button
-# Select the *Helm Chart* fulfillment option, then click *Continue to Launch*
+1. Navigate to https://aws.amazon.com/marketplace/pp/prodview-anpdwpjanxl4s
+2. Click the *Continue to Subscribe* button
+3. Click the *Continue to Configuration* button
+4. Select the *Helm Chart* fulfillment option, then click *Continue to Launch*
 
 Chart Repository
 ================
@@ -178,6 +178,30 @@ Once you've successfully installed the platform with Helm you will see output fr
    PostgreSQL:
       Username: postgres
       Password: <PASSWORD>
+
+Configuring DNS
+===============
+
+Once AcceleratXR cluster is created you must configure your DNS server to point to the ingress domain(s) set.
+
+When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the AcceleratXR ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
+
+.. code-block:: bash
+
+   kubectl -n nginx get svc
+
+This will result in an output like the following.
+
+.. code-block:: bash
+
+   NAME                                       TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                      AGE
+   nginx-ingress-nginx-controller             LoadBalancer   172.23.207.63   96.46.186.213   80:31246/TCP,443:32541/TCP   204d
+   nginx-ingress-nginx-controller-admission   ClusterIP      172.23.254.84   <none>          443/TCP                      204d
+
+In the above example, the public IP of the LoadBalancer is `96.46.186.213`. Now update your DNS for the configured **ingress** domains by creating an *A* record
+for the domains with this address.
+
+As an example, using the above cluster configuration we must create an **A Record** DNS entry for the domain `api.demo.goaxr.cloud` to point to IP `96.46.186.213`.
 
 Validating the Installation
 ===========================
