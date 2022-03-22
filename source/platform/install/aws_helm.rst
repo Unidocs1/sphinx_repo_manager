@@ -1,6 +1,6 @@
-===============================================
-Installation for Amazon Web Services using Helm
-===============================================
+======================================
+Installation for Amazon EKS using Helm
+======================================
 
 **Time to Complete: 10 minutes**
 
