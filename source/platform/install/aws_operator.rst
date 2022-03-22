@@ -1,19 +1,19 @@
-===================================================
-Installation for Amazon Web Services using Operator
-===================================================
+==========================================
+Installation for Amazon EKS using Operator
+==========================================
 
 **Time to Complete: 10 minutes**
 
-This article details the steps to install the AcceleratXR platform to an Kubernetes cluster hosted on `AWS EKS <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_ using the official AcceleratXR Operator for Kubernetes.
+This article details the steps to install the AcceleratXR platform to an Kubernetes cluster hosted on `Amazon Elastic Kubernetes Service <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_ using the official AcceleratXR Operator for Kubernetes.
 
-AWS Elastic Kubernetes Service
-==============================
+Amazon EKS
+==========
 
-AWS Elastic Kubernetes Service (EKS) is the preferred way to run AcceleratXR on AWS.
+Amazon EKS is the preferred way to run AcceleratXR on AWS.
 
 * `Getting Started <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_
 * `Service endpoints and quotas <https://docs.aws.amazon.com/general/latest/gr/eks.html>`_
-* `IAM for AWS EKS <https://docs.aws.amazon.com/eks/latest/userguide/security-iam.html>`_
+* `IAM for Amazon EKS <https://docs.aws.amazon.com/eks/latest/userguide/security-iam.html>`_
 * `EKS Pricing <https://aws.amazon.com/eks/pricing/>`_
 * `EKS Troubleshooting <https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html>`_
 
@@ -25,17 +25,17 @@ Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have b
 Recommendations
 ===============
 
-We recommend the following configurations when setting up a AWS EKS cluster for AcceleratXR.
+We recommend the following configurations when setting up a Amazon EKS cluster for AcceleratXR.
 
 * At least one EKS cluster node
-* Minimum EC2 `t3.medium` instance size for AWS EKS nodes
+* Minimum EC2 `t3.medium` instance size for Amazon EKS nodes
 * Elastic IP for public load balancer
 * Private S3 bucket for database backup storage
 
 Subscribe to AcceleratXR
 ========================
 
-Before you can deploy AcceleratXR to AWS EKS you need to Subscribe to the AcceleratXR platform on the AWS Marketplace.
+Before you can deploy AcceleratXR to Amazon EKS you need to Subscribe to the AcceleratXR platform on the AWS Marketplace.
 
 1. Navigate to https://aws.amazon.com/marketplace/pp/prodview-anpdwpjanxl4s
 2. Click the *Continue to Subscribe* button
