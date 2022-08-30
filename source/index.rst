@@ -24,6 +24,10 @@ AcceleratXR
    tools
 
 .. toctree::
+   
+   test/
+
+.. toctree::
    :hidden:
    :caption: Get the Code
 
