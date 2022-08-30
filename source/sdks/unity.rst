@@ -24,7 +24,8 @@ Linking Directly
 
        {
            "dependencies": {
-               "com.acceleratxr.sdk": "https://automation:heRnZ9HPcm8kT9Ek-Czh@gitlab.acceleratxr.com/Core/sdk/sdk_unity.git"
+               // (!) MAINTENANCE: These credentials will be changed ASAP.
+               "com.acceleratxr.sdk": "https://TODO:TODO@gitlab.acceleratxr.com/Core/sdk/sdk_unity.git"
            }
        }
 #. Open your project in the Unity editor.

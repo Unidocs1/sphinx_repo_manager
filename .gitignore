@@ -1,1 +1,14 @@
 /build
+.idea/acceleratxr.io.iml
+.idea/modules.xml
+.idea/vcs.xml
+
+# yarn3
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
