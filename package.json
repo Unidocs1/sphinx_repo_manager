@@ -2,7 +2,8 @@
 	"packageManager": "yarn@3.2.2",
 	"scripts":
 	{
-		"install-reqs": "pip install sphinx-tabs",
-		"build-win": "./make.bat",
+		"setup-guide": "echo '----\n1. Run powershell in ADMIN.\n2. choco install make --yes\n3. pip install sphinx sphinx-tabs recommonmark sphinx_rtd_theme\n----'",
+		"build": "make html",
+		"build-win": "./make.bat"
 	}
 }

@@ -1,2 +1,0 @@
-sphinx-tabs | See package.json
-https://docs.readthedocs.io/en/stable/tutorial/
