@@ -1,15 +1,27 @@
-
 =======
 Persona
 =======
 
-The ``Persona`` is a particular representation of a user in the virtual world. This is also often referred to as a user avatar or player character. Each Persona has a ``name`` that uniquely identifies them from others within the world. They also feature a set of attributes and statistics. The attributes and statistics are entirely arbitrary and defined by the developer as described later in this chapter.
+The ``Persona`` is a particular representation of a user in the virtual world.
+This is also often referred to as a user avatar or player character.
+Each Persona has a ``name`` that uniquely identifies them from others within the world.
+They also feature a set of attributes and statistics. The attributes and statistics are
+entirely arbitrary and defined by the developer as described later in this chapter.
+
+Barebones
+^^^^^^^^^^
+The minimum required to create a Persona:
+
+1. ``userUid``
+2. ``name``
 
 Attributes
 ^^^^^^^^^^
 
-Attributes allow you to describe any characteristic that a given ``Persona`` can have. These characteristics can be discrete values or higher level concepts that link to other structures. For an example, assume we are building an fantasy MMORPG. A typical set of attributes for each character in this game may include the following.
-
+Attributes allow you to describe any characteristic that a given ``Persona`` can have.
+These characteristics can be discrete values or higher level concepts that link to other structures.
+For an example, assume we are building an fantasy MMORPG. A typical set of attributes for each character
+in this game may include the following.
 
 * ``age`` - The descriptive age of the Persona as defined by the user
 * ``bio`` - The descriptive history of the Persona as defined by the user
@@ -36,9 +48,14 @@ These can be easily represented in the ``attributes`` property of a ``Persona`` 
 PersonaStat
 -----------
 
-Similar to attributes the ``PersonaStat`` is a type of statistic associated with a given ``Persona`` that describes the abilities of that particular character. In contrast to attributes the ``PersonaStat`` has a well defined structure to make it easier to perform calculations and comparisons of like statistics from other ``Persona`` objects.
+Similar to attributes the ``PersonaStat`` is a type of statistic associated with a
+given ``Persona``that describes the abilities of that particular character.
+In contrast to attributes the ``PersonaStat`` has a well defined structure to make it
+easier to perform calculations and comparisons of like statistics from other
+``Persona`` objects.
 
-The ``PersonaStat`` object defines a given statistic that has been associated with a particular ``Persona`` and the value that has been assigned to it.
+The ``PersonaStat`` object defines a given statistic that has been associated with a
+particular ``Persona`` and the value that has been assigned to it.
 
 A typical ``PersonaStat`` object looks like the following.
 
@@ -53,7 +70,10 @@ A typical ``PersonaStat`` object looks like the following.
 PersonaStatDefinition
 ---------------------
 
-The ``PersonaStatDefinition`` is a definition of a given statistic that can be associated with any given ``Persona`` object. It has a set of properties that clearly define the boundaries of a statistic in order to simply code when performing comparison and computation against other statistics of like values.
+The ``PersonaStatDefinition`` is a definition of a given statistic that can be
+associated with any given ``Persona`` object. It has a set of properties that clearly
+define the boundaries of a statistic in order to simply code when performing comparison
+and computation against other statistics of like values.
 
 Each statistic must define one or all of the following properties.
 
@@ -64,14 +84,19 @@ Each statistic must define one or all of the following properties.
 * ``values`` - A list of pre-defined values that the statistic can have. Useful when describing an enumerator.
 * ``default`` - The initial value that will be given to all ``Persona`` objects that have a stat associated with them.
 
-When defining a definition the types of ``min``\ , ``max``\ , ``values`` and ``default`` must all be the same and must be of the same type as described by the ``type`` property. If the types are different the definition will be rejected upon creation. In the case of the ``object`` type no validation is performed other than to verify than a given value is a valid JavaScript object (e.g. ``{}``\ ).
+When defining a definition the types of ``min``\ , ``max``\ , ``values`` and ``default``
+must all be the same and must be of the same type as described by the ``type`` property.
+If the types are different the definition will be rejected upon creation. In the case of
+the ``object`` type no validation is performed other than to verify than a given value is
+a valid JavaScript object (e.g. ``{}``\ ).
 
 Using this definition it is possible to define many different types of statistic values.
 
 Example Number
 ^^^^^^^^^^^^^^
 
-The following example illustrates how to define a statistic with numerical values that range from ``0`` to ``100`` with a default value of ``0``.
+The following example illustrates how to define a statistic with numerical values that
+range from ``0`` to ``100`` with a default value of ``0``.
 
 .. code-block:: javascript
 

@@ -6,13 +6,33 @@ When an update is available to one of the AcceleratXR platform services you can 
 method is to edit the deployment directly and set the desired version. The second method is to use `helm upgrade` to modify the
 installation.
 
+Quickstart
+----------
+1. Setup via `this powershell script <https://gitlab.acceleratxr.com/Core/tools/scripts/-/blob/main/kube-helm/%23helm-setup.ps1>`__.
+2. Your service's git repo should have version++.
+3. Your helm_charts repo should version++ within `values.yaml`.
+4. Upgrade via
+
 Pre-requisites
 ==============
 
+via script:
+-----------
+Have everything installed for you via `this powershell script <https://gitlab.acceleratxr.com/Core/tools/scripts/-/blob/main/kube-helm/%23helm-setup.ps1>`__.
+
+via manual setup:
+-----------------
 The following tools are required to follow this guide.
 
 * `kubectl <https://kubernetes.io/docs/reference/kubectl/overview/>`_
 * `helm <https://helm.sh/>`_
+* helm repos:
+    * ingress-nginx
+    * bitnami
+    * bokysan
+    * jetstack
+    * prometheus-community
+    * cortex-helm
 
 Editing the Deployment
 ======================
@@ -48,11 +68,13 @@ Once the new pod is verified as working the system will shut down the old pod. T
 Using Helm Upgrade
 ==================
 
-The recommended method to update any AcceleratXR platform service is to use `helm upgrade`. The primary benefit of this approach is that it allows you to
-better track which versions of the system have been deployed. This helps if the cluster ever needs to be rebuilt.
+The recommended method to update any AcceleratXR platform service is to use `helm upgrade`.
+The primary benefit of this approach is that it allows you to better track which versions of
+the system have been deployed. This helps if the cluster ever needs to be rebuilt.
 
-First open the `values.yaml` file that was used to install the AcceleratXR cluster in the first place. Look for the section for the service in question
-and change the version value to the one desired. Then save the file.
+First open the `values.yaml` file that was used to install the AcceleratXR cluster in the first place.
+Look for the section for the service in question and change the version value to the one desired.
+Then save the file.
 
 .. code-block:: yaml
 
@@ -62,7 +84,15 @@ and change the version value to the one desired. Then save the file.
       config:
         # Override any environment variables here (e.g. admin_user__name)
 
-Now run the `helm upgrade` command as in the following example.
+Upgrade via Script
+------------------
+
+Have everything upgraded for you via `this powershell script <https://gitlab.acceleratxr.com/Core/tools/scripts/-/blob/main/kube-helm/%23helm-upgrade.ps1>`__.
+
+Upgrade via Manually Setup
+--------------------------
+
+Now run the `helm upgrade` command as in the following example -- or use our `helm upgrade script <>`__.
 
 .. code-block:: bash
 
