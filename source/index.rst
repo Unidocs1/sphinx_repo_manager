@@ -87,7 +87,7 @@ Other times its the result of limitations from an overly generic architecture or
 your own more often than not.
 
 Our team has carefully engineered every system and feature within the platform to meet and exceed the quality level of the most demanding
-AAAA titles. Further, our source available approach ensures that you have complete and total control to make it your own in case
+AAA titles. Further, our source available approach ensures that you have complete and total control to make it your own in case
 any part of the platform fails to meet needs and expectations.
 
 Total Cost of Ownership
