@@ -21,7 +21,9 @@ The Unity Sample project integrates the AcceleratXR Unity SDK and provides an ex
 Getting Started
 ===============
 
-To get started with the Unity Example project you must clone the Git repository from our GitLab server. The project is compatible with **Unity 2019.4**.
+* To get started with, clone the repo from our GitLab server.
+* This project works out of the box for Unity **2021.3 LTS**.
+   * Older Unity versions may require additional DLL files from the `sdk_unity <https://gitlab.acceleratxr.com/Core/sdk/sdk_unity>`__ source build.
 
 .. code-block:: bash
    :linenos:
@@ -31,20 +33,26 @@ To get started with the Unity Example project you must clone the Git repository 
 Project Structure
 =================
 
-Upon opening the project you'll notice a very simple project structure.
+Upon opening the project, you'll notice a simple project structure:
 
 .. image:: /images/samples/unity_example_diagram1.png
 
-All of the project's relevant files are located in the ``Scenes`` and ``UI`` folder. The ``Scenes`` folder contains the primary scene and the ``UI`` folder contains all of the code.
+All of the project's implementation logic exists in the ``Scenes`` and ``UI`` folder.
+
+The main folder for getting started is #Setup:
+
+.. image:: /images/samples/unity_example_setup_dir.png
 
 Default Scene
 =============
 
-The default scene for the project is called ``SampleScene``. Upon opening the scene you will see the following in the editor viewport.
+The default scene for the project is ``SampleScene``:
 
 .. image:: /images/samples/unity_example_diagram3.png
 
-The scene is composed of a single camera and ``Canvas`` object containing all relevant UI objects.
+The scene is composed of:
+* 1 Camera
+* ``Canvas`` object containing all relevant UI objects.
 
 .. image:: /images/samples/unity_example_diagram2.png
 
