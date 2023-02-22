@@ -17,8 +17,8 @@ Minimum Requirements (Development/Testing)
 
 One machine with the following:
 
-* 4 CPUs or more
-* 4GB RAM
+* 4 CPUs
+* 12GB RAM
 * Linux with 64-bit architecture
 * Kubernetes 1.20+
 * 30GB available storage
@@ -29,16 +29,8 @@ Recommended (Production)
 At least three machines with the following:
 
 * 8 CPUs or more
-* 8GB RAM
+* 32GB RAM
 * Linux with 64-bit architecture
 * Kubernetes 1.20+
-* 100GB available storage
+* 50GB available storage
 * NVMe or SSD based storage device
-
-Command Line Tools
-==================
-
-There are two command line tools that are required for installation. They are:
-
-* `kubectl <https://kubernetes.io/docs/reference/kubectl/overview/>`_
-* `helm <https://helm.sh/>`_
