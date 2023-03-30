@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'AcceleratXR'
+project = 'acceleratxr'
 copyright = 'AcceleratXR, Inc. All rights reserved'
 author = 'AcceleratXR, Inc'
 
