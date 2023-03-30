@@ -5,8 +5,8 @@ Plug-ins and SDKs
 .. toctree::
    :caption: General Purpose SDKs
 
-   cpp
-   csharp
+   :doc:`C++ SDK <sdk-cpp>`
+   :doc:`C# SDK <sdk-csharp>`
    nodejs
 
 .. toctree::

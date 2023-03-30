@@ -6,4 +6,5 @@ API Reference
    :hidden:
    :caption: API Reference
 
-   typedoc-plugin-sphinx/
+   :doc:`C++ SDK <sdk-cpp:api>`
+   :doc:`C# SDK <sdk-csharp:api>`

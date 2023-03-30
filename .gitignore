@@ -1,4 +1,5 @@
 /build
+/src/_build
 .idea/acceleratxr.io.iml
 .idea/modules.xml
 .idea/vcs.xml
