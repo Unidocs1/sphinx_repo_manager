@@ -1,6 +1,6 @@
-============
-Installation
-============
+===============================
+Installing AcceleratXR Platform
+===============================
 
 .. toctree::
    :maxdepth: 1
@@ -11,7 +11,7 @@ Installation
    aws_helm
    aws_operator
 
-The AcceleratXR platform can be easily installed to any self-hosted or on-premise Kubernetes cluster as well as to AWS EKS.
+The AcceleratXR backend platform can be easily installed anywhere that Kubernetes operates.
 
 Two methods of installation are provided.
 

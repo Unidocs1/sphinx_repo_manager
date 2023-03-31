@@ -1,13 +1,12 @@
-=====
-Tools
-=====
+=======================
+Other Tools & Utilities
+=======================
 
 AcceleratXR Admin Console
 =========================
 
-The AcceleratXR Admin Console is our custom cluster administration tool.
-
-https://console.goaxr.cloud/
+The AcceleratXR Admin Console is our custom cluster administration tool. It comes bundled with every AcceleratXR cluster and is typically
+available at the url `https://console.<project>.goaxr.cloud`.
 
 Fiddler
 =======

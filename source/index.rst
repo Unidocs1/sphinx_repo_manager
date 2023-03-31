@@ -15,17 +15,18 @@ AcceleratXR
 
 .. toctree::
    :hidden:
-   :caption: learn
+   :caption: Learn
 
-   platform/index
-   sdks/index
-   tutorials/index
-   examples/index
+   getting_started
+   samples_and_tutorials
    tools
 
 .. toctree::
+   :hidden:
+   :caption: API Reference
    
-   test/
+   :sdk-cpp:`C++ SDK </api>`
+   :sdk-csharp:`C# SDK </api>`
 
 .. toctree::
    :hidden:
@@ -44,7 +45,7 @@ AcceleratXR
    :hidden:
    :caption: Other Links
 
-   Admin Console <https://console.goaxr.cloud>
+   Demo <https://acceleratxr.com/demo>
    AcceleratXR Cloud <https://acceleratxr.com/pricing>
 
 **AcceleratXR** is a powerful technology platform for building highly-scalable online games and entertainment products.

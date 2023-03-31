@@ -1,18 +1,11 @@
-====================
-AcceleratXR Platform
-====================
-
-.. toctree::
-    :hidden:
- 
-    install/index
-    admin/index
-    systems/index
+==============
+Backend Basics
+==============
 
 .. image:: /images/overview_architecture_diagram.png
 
-The AcceleratXR platform utilizes a `micro-services <https://en.wikipedia.org/wiki/Microservices>`_ based architecture
-composed of more than 15 unique services. Each of these services provides a singularly focused set of functionality within
+The AcceleratXR backend platform utilizes a `micro-services <https://en.wikipedia.org/wiki/Microservices>`_ based architecture
+composed of more than two dozen unique services. Each of these services provides a singularly focused set of functionality within
 the platform. Functionality such as user account management (`acount-services <https://gitlab.com/AcceleratXR/Core/account_services>`_),
 player achievements (`achievement-services <https://gitlab.com/AcceleratXR/Core/achievements_services>`_), virtual
 economy (`economy-services <https://gitlab.com/AcceleratXR/Core/economy_services>`_), matchmaking
