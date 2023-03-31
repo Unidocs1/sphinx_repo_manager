@@ -5,11 +5,11 @@ Getting Started
 .. toctree::
     :hidden:
  
-    install
+    install/index
     basics
-    framework
-    sdks
-    admin
+    framework/index
+    sdks/index
+    admin/index
 
 What is AcceleratXR?
 ====================

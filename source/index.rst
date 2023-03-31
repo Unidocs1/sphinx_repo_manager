@@ -17,8 +17,8 @@ AcceleratXR
    :hidden:
    :caption: Learn
 
-   getting_started
-   samples_and_tutorials
+   getting_started/index
+   samples_and_tutorials/index
    tools
 
 .. toctree::

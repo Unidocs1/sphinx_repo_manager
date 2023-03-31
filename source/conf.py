@@ -41,8 +41,8 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 intersphinx_mapping = {
-    "sdk-cpp": ("https://sdk-cpp.acceleratxr.io", None),
-    "sdk-csharp": ("https://sdk-csharp.acceleratxr.io", None)
+    "sdk-cpp": ("https://sdk-cpp.acceleratxr.io/en/latest/", None),
+    "sdk-csharp": ("https://sdk-csharp.acceleratxr.io/en/latest/", None)
 }
 
 # We recommend adding the following config value.
