@@ -25,8 +25,8 @@ AcceleratXR
    :hidden:
    :caption: API Reference
    
-   C++ SDK <https://sdk-cpp.acceleratxr.io/en/latest/api>
-   C# SDK <https://sdk-csharp.acceleratxr.io/en/latest/api/namespacelist.html>
+   C++ SDK <https://acceleratxr.io/projects/sdk-cpp/en/latest/api>
+   C# SDK <https://acceleratxr.io/projects/sdk-csharp/en/latest/api/namespacelist.html>
 
 .. toctree::
    :hidden:
