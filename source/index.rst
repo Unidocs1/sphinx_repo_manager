@@ -25,8 +25,8 @@ AcceleratXR
    :hidden:
    :caption: API Reference
    
-   :sdk-cpp:`C++ SDK </api>`
-   :sdk-csharp:`C# SDK </api>`
+   C++ SDK <sdk-cpp:api>
+   C# SDK <sdk-csharp:api>
 
 .. toctree::
    :hidden:
