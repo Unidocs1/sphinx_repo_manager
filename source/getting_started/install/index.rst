@@ -1,6 +1,6 @@
-===============================
-Installing AcceleratXR Platform
-===============================
+============
+Installation
+============
 
 .. toctree::
    :maxdepth: 1

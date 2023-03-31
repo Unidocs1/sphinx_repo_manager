@@ -3,7 +3,7 @@ Service Framework
 =================
 
 The AcceleratXR service framework is built as an extension and superset of the open source
-`ComposerJS project <https://composerjs.io>`. In addition to Composer's simple and intuitive
+`ComposerJS project <https://composerjs.io>`_. In addition to Composer's simple and intuitive
 language for easily definining REST API services the AcceleratXR framework adds the following
 built-in capabilities:
 

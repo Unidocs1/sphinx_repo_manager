@@ -1,5 +1,5 @@
 =======================
-Other Tools & Utilities
+Tools & Utilities
 =======================
 
 AcceleratXR Admin Console
