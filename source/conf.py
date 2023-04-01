@@ -84,7 +84,8 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
+    'gitlab_url': 'https://gitlab.acceleratxr.com/core/acceleratxr.io'
 }
 
 html_context = {
