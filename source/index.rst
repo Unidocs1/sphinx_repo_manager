@@ -19,6 +19,7 @@ AcceleratXR
 
    getting_started/index
    Accounts <https://acceleratxr.io/projects/account-services/en/latest/content>
+   Social <https://acceleratxr.io/projects/social-services/en/latest/content>
    samples_and_tutorials/index
    tools
 
