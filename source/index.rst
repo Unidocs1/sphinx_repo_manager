@@ -20,6 +20,11 @@ AcceleratXR
    getting_started/index
    Accounts <https://acceleratxr.io/projects/account-services/en/latest/content>
    Social <https://acceleratxr.io/projects/social-services/en/latest/content>
+   Gameplay <gameplay>
+   Multi-player <multiplayer>
+   Content <content>
+   Commerce <commerce>
+   LiveOps <liveops>
    samples_and_tutorials/index
    tools
 
