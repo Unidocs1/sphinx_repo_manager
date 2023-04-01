@@ -18,6 +18,7 @@ AcceleratXR
    :caption: Learn
 
    getting_started/index
+   Accounts <https://acceleratxr.io/projects/account-services/en/latest/content>
    samples_and_tutorials/index
    tools
 
