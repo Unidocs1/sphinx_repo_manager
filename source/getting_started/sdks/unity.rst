@@ -11,80 +11,67 @@ Looking for a Unity Demo?
 
 Want something that works out of the box? Check out the `example_unity repo <https://gitlab.acceleratxr.com/Core/samples/example_unity>`__.
 
-Pre-Requisites
-==============
+Prerequisites
+=============
 
-This plug-in requires that you have the following settings for your project.
+This plug-in requires the following:
 
-1. **Api Compatibility Level:** ``.NET 4.x``
-2. Unity 2019+ LTS (2021.3 LTS == currently recommended)
+1. **Unity 2021.3+ LTS** or newer.
 
 Installation
 ============
 
-There are two options to import the SDK into your Unity project: 
+There are two ways to import the SDK into your project...
 
-#. Link the repository directly via the ``manifest.json`` file. [RECOMMENDED]
-#. Clone the repo and link from a local path.
+* Option 1: Install From Git URL *[Recommended]*
+* Option 2: Clone The Repo and Install From Local Disk
 
-Linking Directly via Manifest [RECOMMENDED]
-~~~~~~~~~~~~~~~~
+Option 1: Install From Git URL *[Recommended]*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Close the project or Unity editor, if currently open.
-#. Open your project root ``Packages/manifest.json`` file.
-#. Add the following ``scopedRegistries`` and ``dependencies``:
+1. Open your project in Unity and navigate to the Package Manager window (`Windows > Package Manager`).
+2. In the `Package Manager` window click the `+` button in the top left corner and select `Add package from git URL...`
+3. Enter the following URL into the text box and click `Add`.
 
-  // The example below specifies ``2021-lts`` branch. Browse `other supported versions <https://gitlab.acceleratxr.com/Core/samples/example_unity/-/branches>`__.
+  .. code-block:: text
    
-   .. code-block:: json
+    https://unity:4sWpuQS6dnuSqa-Ki_nV@gitlab.acceleratxr.com/Core/sdk/sdk_unity.git
 
-    {
-        "dependencies": {
-            "com.acceleratxr.sdk": "https://unity:4sWpuQS6dnuSqa-Ki_nV@gitlab.acceleratxr.com/Core/sdk/sdk_unity.git#2021-lts"
-        }
-    }
-    
-#. Open your project in the Unity editor.
+4. *AcceleratXR SDK* should now be listed in the package manager.
+5. Next follow the section on Configuration.
 
-Linking from a Local Path
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Option 2: Clone The Repo and Install From Local Disk
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Clone the repo to your local machine.
-   
-   .. code-block::
+1. Clone the `sdk_unity` repo to your local machine.
 
-       git clone https://gitlab.acceleratxr.com/Core/sdk/sdk_unity.git
+  .. code-block:: text
+  
+    git clone https://gitlab.acceleratxr.com/Core/sdk/sdk_unity.git
 
-#. Open your project in the Unity editor.
-#. Open the Package Manager: ``[Top Menu] Windows -> Package Manager``.
-#. Click the ``[ + ]`` button in the top-left corner -> ``Add package from disk..``
-#. Browse to the cloned dir containing the SDK -> ``Open``.
+2. Open your project in Unity and navigate to the Package Manager window (`Windows > Package Manager`).
+3. In the `Package Manager` window click the `+` button in the top left corner and select `Add package from disk...`
+4. Browse to the root folder of your local `sdk_unity` checkout, select the `package.json` file, and click `Open`.
+5. *AcceleratXR SDK* should now be listed in the package manager.
+6. Next follow the section on Configuration.
 
 Configuration
 =============
 
-#. Create ``AXRCoreSDK`` <ScriptableObject> via right-click context menu in Project tab:
-  .. image:: /images/samples/unity_create_coresdk.png
+In order for your game or application to communicate with an AcceleratXR cluster you must first create a configuration asset to configure the SDK. This can be accomplished by creating a new Asset of type `AXRCoreSDK` by selecting `Assets > Create > AcceleratXR > Core SDK`. Once created, you will see the new object selected in the `Project` window and the configuration options shown in the `Inspector` window.
 
-#. This is your settings file -> Edit to match your server info: Most notably, your `BaseUrl`:
-  .. image:: /images/samples/unity_example_coresdk_inspector.png
+The most important setting is *BaseUrl*. This is the URL to your AcceleratXR cluster that your app will communicate with.
 
-  \* Leave ``JWT`` empty, unless debugging with ``ClientSDK.LocalLogin()``.
+The *JWT* settings are optional and only needed if you will be using the `ClientSDK.LocalLogin()` function. The *JWT Settings* section and `LocalLogin` function is provided for debugging purposes and is not recommended for production use. For production builds make sure that the *JWTPassword* field is blank.
 
-#. To init AXR:
-    #. Make a `AxrManager` prefab and place it in your 1st scene.
-    #. Add a new `AxrMgr.cs` script to the prefab.
-    #. Serialize the AXRCoreSDK settings ScriptableObject created earlier.
-
-#. Start your scene -> check logs for success.
+The default values in the `AXRCoreSDK` asset correspond to the AcceleratXR demo environment.
 
 Using the AcceleratXR Demo Environment
 ======================================
 
-Creating a new AXRCoreSDK ScriptableObject creates the following default settings,
-pointing to the `demo env (web dashboard) <https://console.demo.goaxr.cloud/>`__:
+You can use the following settings to access AcceleratXR's demo environment. This environment is a shared environment that is reset daily and is intended for testing purposes only. You can use the demo environment to test your integration with the AcceleratXR API before deploying your own cluster.
 
-.. code-block::
+  .. code-block:: text
 
     Global Settings
     URL: https://api.demo.goaxr.cloud/v1
@@ -94,82 +81,106 @@ pointing to the `demo env (web dashboard) <https://console.demo.goaxr.cloud/>`__
     Issuer: api.demo.goaxr.cloud
     Password:
 
-(Note that the demo environment has a limited feature set that will result in
-run-time failures when using certain SDK services.)
+You can access the web admin console for the demo environment at `https://admin.demo.goaxr.cloud <https://admin.demo.goaxr.cloud>`__.
 
-Updating the SDK
-================
+*Note that the demo environment has a limited feature set that will result in
+run-time failures when using certain SDK services.*
 
-Remote Git Link
-~~~~~~~~~~~~~~~
+Using an AXRCoreSDK Configuration To Access The API
+===================================================
 
-If you linked the SDK directly in the ``manifest.json`` file, simply update it within the ``Unity Package Manager (UPM)``:
+Assign your desired AXRCoreSDK configuration asset to a field on a behavior or scriptable object that's referenced in your scene, and use the Instance property to access the CoreSDK features. The Instance property on AXRCoreSDK will always return the same reference for a given AXRCoreSDK asset.
 
-  .. image:: /images/samples/unity_pkg_mgr.png
+  .. code-block:: csharp
 
-Once updated, restart the Unity editor (to refresh the DLL bindings) to finalize the update.
+    using axr.sdk; // Required for AXRCoreSDK, base Object, and other SDK types
+    using axr.sdk.Models; // Required models such as User below
+    using axr.sdk.Services; // Required for Services such as SessionService below
+    using System.Linq; // Not required, but used below for Linq where clause as an example
+    using UnityEngine; // Required for MonoBehaviour
 
-Local Path
-~~~~~~~~~~
+    public class AXRExample : MonoBehaviour
+    {
+        // Assign in the inspector
+        public AXRCoreSDK config;
 
-If you cloned the repo locally you can update the SDK by performing a ``git pull`` on the folder
-that you have cloned this repository to.
-Once updated, restart the Unity editor (to refresh the DLL bindings) to finalize the update.
-
-Accessing the SDK from Code
-===========================
-
-The instance of the ``AXRCoreSDK`` asset can be easily accessed from anywhere in your code:
-
-.. code-block::
-
-    using axr.sdk;
-    using UnityEngine;
-
-    public class MyBehavior : MonoBehaviour
-        void Start()
+        async void Start()
         {
-            AXRCoreSDK SDK = AXRCoreSDK.GetInstance();
-            if (SDK != null)
+            // Validate config is set
+            if (config == null)
             {
-                CoreSDK = SDK.Instance;
-                EntityWatchdog = SDK.EntityWatchdog;
-                ServiceFactory = SDK.ServiceFactory;
+                // Warn if no configuration is set
+                Debug.LogWarning($"WARNING: AXRCoreSDK config not set!");
+                return;
             }
-        // ...
+
+            // Get core SDK instance from configuration
+            CoreSDK sdk = config.Instance;
+
+            // Print DeviceId (set) and logged in user UID (null)
+            Debug.Log($"Device: {sdk.DeviceId} | User: {sdk.LoggedInUser?.Uid}");
+
+            // Login using Device method
+            await sdk.LoginDevice();
+
+            // Print DeviceId (set) and logged in user UID (now set!)
+            Debug.Log($"Device: {sdk.DeviceId} | User: {sdk.LoggedInUser?.Uid}");
+
+            // Logged in user now non-null, let's inspect..
+            User localUser = sdk.LoggedInUser;
+
+            // Walk each property on the logged in user's object and print the value
+            foreach (var prop in localUser.Properties.Keys)
+                Debug.Log($"\t{prop}: {localUser.GetProperty(prop)}");
+
+            // Get the session service
+            var sessionService = sdk.GetService<SessionService>();
+
+            // Find all sessions
+            var sessions = await sessionService.FindAll();
+
+            // Filter results locally to non-empty sessions with Linq
+            var sessionsNonEmpty = sessions.Where(s => s.Users.Count() > 0).ToList();
+
+            // Print sessions found
+            Debug.Log($"Sessions found: {sessions.Count} ({sessionsNonEmpty.Count} non-empty)");
+
+            // Print info from each session
+            sessionsNonEmpty.ForEach(s =>
+                Debug.Log($"\t{s.Type}\t{s.Status}\t({s.Users.Count})\th:{s.HostUid}\ts:{s.ServerUrl ?? "NONE"}"));
         }
     }
 
-💡For convenience, an `AxrMgr.cs <https://gitlab.acceleratxr.com/Core/samples/example_unity/-/blob/master/Assets/%23Setup/Scripts/AxrMgr.cs>`__
-template is already made for you from our `example_unity <https://gitlab.acceleratxr.com/Core/samples/example_unity>`__ project!
-Drop this in any GameObject in your 1st scene and serialize your selected AxrManager's AXRCoreSDK.
+Enabling and Running Tests
+==========================
 
-Multi-User Support
-=====================
+The SDK includes a suite of unit tests that can be run from within Unity. To enable the tests you must first add the `com.unity.test-framework` package at version `1.4.1` or greater to your project. To add or upgrade the package from the package manager:
 
-The SDK supports multiple users through the creation of multiple AXRCoreSDK assets.
-This can be useful when developing a game that supports split-screen multiplayer.
+#. Open the `Package Manager` window (`Windows > Package Manager`) and clicking the `+` button in the top left corner.
+#. Select *Add package by name...*
+#. Set the `Name` field to *com.unity.test-framework*.
+#. Set the `Version` field to *1.4.1* or greater.
+#. Click `Add`.
 
-For example, if you want to support two-player split-screen - where each player has their own login to AcceleratXR -
-this can easily be accomplished by creating two asset instances of AXRCoreSDK.
+Open your project's `Packages/manifest.json`, verify that the `com.unity.test-framework` package is listed in the `dependencies` section with an appropriate version, and add the `com.acceleratxr.sdk` package name to the `testables` array as shown below. Save the file and return to Unity.
 
-To access these instances, use the name of the asset when calling ``AXRCoreSDK.GetInstance()``:
+  .. code-block:: json
 
-.. code-block::
-
-    using axr.sdk;
-    using UnityEngine;
-
-    public class PlayerOneBehavior : MonoBehaviour
-        void Start()
-        {
-            AXRCoreSDK SDK = AXRCoreSDK.GetInstance("PlayerOne"); // << Here
-            if (SDK != null)
-            {
-                CoreSDK = SDK.Instance;
-                EntityWatchdog = SDK.EntityWatchdog;
-                ServiceFactory = SDK.ServiceFactory;
-            }
-        // ...
-        }
+    {
+        "dependencies": {
+            "com.acceleratxr.sdk": "...",
+            // ...
+            "com.unity.test-framework": "1.4.1",
+            // ...
+        },
+        "testables": [
+            "com.acceleratxr.sdk"
+        ]
     }
+
+
+*Note that the `com.unity.test-framework` package may be installed by default at a lower version, please make sure you verify the version number and upgrade if necessary or the tests will not run properly.*
+
+Once the `com.acceleratxr.sdk` package has been added to the `testables` list, you can open the `Test Runner` window (`Windows > General > Test Runner`) and run the tests from the package by clicking the `Run All` button at the bottom right of the window, or by double-clicking on a particular test or group.
+
+You can right click any test and select `Open Source Code` to load the test code in your IDE, where you can sample from various use cases or debug any integration issues you might be experiencing.
