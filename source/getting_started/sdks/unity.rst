@@ -81,7 +81,12 @@ You can use the following settings to access AcceleratXR's demo environment. Thi
     Issuer: api.demo.goaxr.cloud
     Password:
 
-You can access the web admin console for the demo environment at `https://admin.demo.goaxr.cloud <https://admin.demo.goaxr.cloud>`__.
+You can access the web admin console for the demo environment at `https://console.demo.goaxr.cloud <https://console.demo.goaxr.cloud>`__ with the followng credentials:
+
+- Username: **admin**
+ 
+- Password: **@xrD3m0!**
+
 
 *Note that the demo environment has a limited feature set that will result in
 run-time failures when using certain SDK services.*

@@ -44,52 +44,68 @@ Some important features include:
 Installation
 ============
 
-Installation of the Unreal SDK is simple.
+Installation of the Unreal plugins is simple...
 
 1. Clone the repository to your project's Plugins folder.
-   
-   .. code-block:: bash
-    
-    git clone git@gitlab.acceleratxr.com:Core/sdk/sdk_unreal.git AcceleratXR
+
+From your project root directory:
+
+    .. code-block:: bash
+
+        cd Plugins
+        git clone https://unreal:_9EZ7XzLBuzBb_ctT1yS@gitlab.acceleratxr.com/Core/sdk/sdk_unreal.git AcceleratXR
 
 2. Run the corresponding ``start`` script for your supported platform.
 
-   For Linux...
+For Linux...
 
-   .. code-block:: bash
+    .. code-block:: bash
+        
+        cd AcceleratXR
+        ./setup.sh
 
-    ./setup.sh
+For Windows...
 
-   For Windows...
+    .. code-block:: powershell
 
-   .. code-block:: powershell
+        cd AcceleratXR
+        .\setup.ps1
 
-    .\setup.ps1
+1. Add the desired plug-ins to your project's ``.uproject`` file at the root directory.
 
-3. Add the desired plug-ins to project's ``uproject`` file.
+    .. code-block:: json
 
-   .. code-block:: json
+        {
+            "Name": "AXRCoreSDK",
+            "Enabled": true
+        },
+        {
+            "Name": "OnlineSubsystemAXR",
+            "Enabled": true
+        },
+        {
+            "Name": "GameFrameworkAXR",
+            "Enabled": true
+        }
 
-    {
-        "Name": "AXRCoreSDK",
-        "Enabled": true
-    },
-    {
-        "Name": "OnlineSubsystemAXR",
-        "Enabled": true
-    },
-    {
-        "Name": "GameFrameworkAXR",
-        "Enabled": true
-    }
+2. Set ``AXR`` as the default OnlineSubsytem in ``Config/DefaultEngine.ini``.
 
-4. Set ``AXR`` as the default OnlineSubsytem in ``DefaultEngine.ini``.
+    .. code-block:: ini
 
-   .. code-block:: ini
+        [OnlineSubsystem]
+        DefaultPlatformService=AXR
 
-    [OnlineSubsystem]
-    DefaultPlatformService=AXR
+3. Launch the project by double clicking the ``.uproject`` file or by launching it from the Epic Games Launcher.
 
-That's it!
+    *Note: If prompted to rebuild missing modules, click **Yes** and wait for the project to load.*
+
+That's it! If your project supports the ``OnlineSubsystem`` interface, you should now be using AcceleratXR user login and session management on the AXR demo environment.
+
+You can access the web admin console for the demo environment at `https://console.demo.goaxr.cloud <https://console.demo.goaxr.cloud>`__ with the followng credentials:
+
+- Username: **admin**
+ 
+- Password: **@xrD3m0!**
 
 To learn more about how to work with these plug-ins check out the `Unreal ShooterGame <../examples/shootergame.html>`_ project.
+
