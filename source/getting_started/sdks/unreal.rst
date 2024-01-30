@@ -97,7 +97,7 @@ For Windows...
 
 3. Launch the project by double clicking the ``.uproject`` file or by launching it from the Epic Games Launcher.
 
-    *Note: If prompted to rebuild missing modules, click **Yes** and wait for the project to load.*
+    *Note: If prompted to rebuild missing modules, click 'Yes' and wait for the project to load.*
 
 That's it! If your project supports the ``OnlineSubsystem`` interface, you should now be using AcceleratXR user login and session management on the AXR demo environment.
 

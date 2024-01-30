@@ -55,6 +55,22 @@ Option 2: Clone The Repo and Install From Local Disk
 5. *AcceleratXR SDK* should now be listed in the package manager.
 6. Next follow the section on Configuration.
 
+WebGL - Additional Steps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The AcceleratXR SDK for Unity supports WebGL, however there are a few additional steps required to enable the SDK to work properly in a WebGL build.
+
+1. Install the `WebGL Threading Patcher` package to enable async tasks to function properly in WebGL builds. Go to the `Package Manager`, select `Add package from git URL...`, and enter the follwing URL:
+  
+  .. code-block:: text
+
+    https://github.com/VolodymyrBS/WebGLThreadingPatcher.git
+
+2. Go to `Project Settings > Player Settings` and make the following changes under the `WebGL` tab:
+
+   -  In `Other Settings`, set `Managed Stripping Level` to `Minimal` to prevent code stripping from making Newtonsoft unable to deserialize JWT.Builder models.
+   -  In `Publishing Settings` set `Enable Exceptions` to `Full Without Stacktrace` and also uncheck the `Data Caching` checkbox.
+
 Configuration
 =============
 
