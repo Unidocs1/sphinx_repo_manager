@@ -56,7 +56,7 @@ Option 2: Clone The Repo and Install From Local Disk
 6. Next follow the section on Configuration.
 
 WebGL - Additional Steps
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 The AcceleratXR SDK for Unity supports WebGL, however there are a few additional steps required to enable the SDK to work properly in a WebGL build.
 
