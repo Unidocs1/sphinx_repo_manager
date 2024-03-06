@@ -61,7 +61,7 @@ The helm chart has a number of required properties that must be set in order to 
      - ``api.demo.goaxr.cloud``
 
 For details on all available configuration options please consult the repository's
-`README <https://acceleratxr.gitlab.com/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
+`README <https://gitlab.acceleratxr.com/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
 
 Utilizing In-Cluster Database Servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
