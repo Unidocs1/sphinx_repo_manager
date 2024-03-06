@@ -10,11 +10,19 @@ Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have b
 Chart Repository
 ================
 
-AcceleratXR maintains its own Helm repository containing all the official Helm charts. Add the repository with the following command.
+AcceleratXR maintains its own Helm repository containing all the official Helm charts. Add the repository and dependencies with the following commands.
 
 .. code-block:: bash
+   
+   helm repo add bitnami https://charts.bitnami.com/bitnami
+   helm repo add bokysan https://bokysan.github.io/docker-postfix/
+   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+   helm repo add grafana https://grafana.github.io/helm-charts
+   helm repo add jetstack https://charts.jetstack.io
+   helm repo add percona https://percona.github.io/percona-helm-charts/
 
    helm repo add axr https://nexus.acceleratxr.com/repository/axr-helm/
+   
    helm repo update
 
 Namespaces
@@ -53,7 +61,7 @@ The helm chart has a number of required properties that must be set in order to 
      - ``api.demo.goaxr.cloud``
 
 For details on all available configuration options please consult the repository's
-`README <https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
+`README <https://acceleratxr.gitlab.com/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
 
 Utilizing In-Cluster Database Servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +115,7 @@ Then you can install your cluster with the following simple command.
 Output
 ======
 
-Once you've successfully installed the platform with Helm you will see output from the command like the following.
+Once you've successfully installed the platform with Helm you will see output from the command like the following. The Cluster Address is your API base url, and the Admin Console URL below your admin credentials is the web portal to your Console where you can manage your cluster, browse data, perform live script updates, and more.
 
 .. code-block:: bash
 
@@ -127,6 +135,9 @@ Once you've successfully installed the platform with Helm you will see output fr
    Admin Account:
    Username: admin
    Password: <PASSWORD>
+
+   Admin Console:
+      https://console.demo.goaxr.cloud
 
    Authentication Configuration:
    Audience: demo.goaxr.cloud
