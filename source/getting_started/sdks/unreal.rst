@@ -68,6 +68,7 @@ For Windows...
 
     .. code-block:: powershell
 
+        Set-ExecutionPolicy Bypass -Scope Process -Force
         cd AcceleratXR
         .\setup.ps1
 
