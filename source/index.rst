@@ -10,7 +10,7 @@ AcceleratXR
 
    features
    Case Studies <https://www.acceleratxr.com/case-studies/>
-   eula
+   End User License Agreement <eula>
    Press <https://www.acceleratxr.com/press/>
 
 .. toctree::
@@ -43,10 +43,10 @@ AcceleratXR
 
 .. toctree::
    :hidden:
-   :caption: Get Involved
+   :caption: Support
 
    Discord <https://discord.gg/wrfBR2Q>
-   Google Groups <https://groups.google.com/g/acceleratxr>
+   Xsolla Partner Support <https://xsolla.com/partner-support>
 
 .. toctree::
    :hidden:
