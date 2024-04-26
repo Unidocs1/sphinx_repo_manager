@@ -2,13 +2,13 @@
 Gameplay Using Event Handlers
 =============================
 
-Welcome to the final installment in our five part series on custom scripting with AcceleratXR. So far we’ve learned how to work with the Script Manager extension for Visual Studio Code, extend the REST API, implement custom data types and write background jobs for post processing of data
+Welcome to the final installment in our five part series on custom scripting with Xsolla Backend. So far we’ve learned how to work with the Script Manager extension for Visual Studio Code, extend the REST API, implement custom data types and write background jobs for post processing of data
 
 Today’s article will cover how to implement asynchronous and semi-real-time gameplay using event handlers.
 
 In the last article we created a background service to regenerate a players health over time. For this week we’re going to instead react to certain events to trigger a full replenishment of the player’s health. Specifically, any time the player completes a quest or logs in their health will be fully replenished.
 
-Before we dig into the code let’s take a closer look at the telemetry and event system for those of you unfamiliar. The telemetry services system is responsible for managing all event data in the AcceleratXR platform. Game clients as well as servers and other backend services all send events to this service in order to provide tracking of useful information. Some of this data is purely for record keeping and offline player analysis while other data is intended to be acted upon by other systems. Each event that arrives is broadcasted to the entire rest of the platform so that they can be processed via event handlers. These event handlers make it possible to process event data in real-time and serves as the foundation for important gameplay features such as the questing system or the progression system.
+Before we dig into the code let’s take a closer look at the telemetry and event system for those of you unfamiliar. The telemetry services system is responsible for managing all event data in the Xsolla Backend engine. Game clients as well as servers and other backend services all send events to this service in order to provide tracking of useful information. Some of this data is purely for record keeping and offline player analysis while other data is intended to be acted upon by other systems. Each event that arrives is broadcasted to the entire rest of the platform so that they can be processed via event handlers. These event handlers make it possible to process event data in real-time and serves as the foundation for important gameplay features such as the questing system or the progression system.
 
 Each telemetry event contains a set of common data as well as data specific to that single event as defined by you, the game developer. You can review these properties here.
 
@@ -28,7 +28,7 @@ In order for event handlers to be properly constructed and registered your scrip
        private repo?: Repository<Character>;
    }
 
-In AcceleratXR, an event handler is any function decorated with the @OnEvent decorator. The function must always take a single argument containing the data of type Event. Since this example is interested only in user logins the event type that the handler will be registered for is UserLogin. There are no limitations to how many event handler functions you can define in a class. If you define multiple functions that respond to the same event note that there is no guarantee in which order they will execute in and you should assume they will execute in parallel.
+In Xsolla Backend, an event handler is any function decorated with the @OnEvent decorator. The function must always take a single argument containing the data of type Event. Since this example is interested only in user logins the event type that the handler will be registered for is UserLogin. There are no limitations to how many event handler functions you can define in a class. If you define multiple functions that respond to the same event note that there is no guarantee in which order they will execute in and you should assume they will execute in parallel.
 
 .. code-block:: typescript
    :linenos:
@@ -112,4 +112,4 @@ Your final code should look like the following.
        }
    }
 
-That’s it! You’ve now mastered all aspects of custom scripting with AcceleratXR. Go forth and make a great game!
+That’s it! You’ve now mastered all aspects of custom scripting with Xsolla Backend. Go forth and make a great game!

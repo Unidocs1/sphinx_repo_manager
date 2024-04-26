@@ -2,7 +2,7 @@
 Unreal Engine SDK
 =================
 
-The AcceleratXR SDK for Unreal is compatible with Unreal Engine 4.25 and above. The SDK is broken up
+The Xsolla Backend SDK for Unreal is compatible with Unreal Engine 4.25 and above. The SDK is broken up
 into three plug-ins; **AXRCoreSDK**, **OnlineSubsystemAXR** and **GameFrameworkAXR**.
 
 AXRCoreSDK
@@ -16,7 +16,7 @@ OnlineSubsystemAXR
 
 The **OnlineSubsystemAXR** plug-in provides an implementation of the
 `OnlineSubsystem <https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/Online/>`_ interfaces designed to
-work with the AcceleratXR platform. The plug-in supports a variety of platform features including:
+work with the Xsolla Backend engine. The plug-in supports a variety of platform features including:
 
 * Authentication
 * Achievements
@@ -53,7 +53,7 @@ From your project root directory:
     .. code-block:: bash
 
         cd Plugins
-        git clone https://unreal:_9EZ7XzLBuzBb_ctT1yS@gitlab.acceleratxr.com/Core/sdk/sdk_unreal.git AcceleratXR
+        git clone https://unreal:_9EZ7XzLBuzBb_ctT1yS@gitlab.acceleratxr.com/Core/sdk/sdk_unreal.git Xsolla Backend
 
 2. Run the corresponding ``start`` script for your supported platform.
 
@@ -61,7 +61,7 @@ For Linux...
 
     .. code-block:: bash
         
-        cd AcceleratXR
+        cd Xsolla Backend
         ./setup.sh
 
 For Windows...
@@ -69,7 +69,7 @@ For Windows...
     .. code-block:: powershell
 
         Set-ExecutionPolicy Bypass -Scope Process -Force
-        cd AcceleratXR
+        cd Xsolla Backend
         .\setup.ps1
 
 1. Add the desired plug-ins to your project's ``.uproject`` file at the root directory.
@@ -100,7 +100,7 @@ For Windows...
 
     *Note: If prompted to rebuild missing modules, click 'Yes' and wait for the project to load.*
 
-That's it! If your project supports the ``OnlineSubsystem`` interface, you should now be using AcceleratXR user login and session management on the AXR demo environment.
+That's it! If your project supports the ``OnlineSubsystem`` interface, you should now be using Xsolla Backend user login and session management on the AXR demo environment.
 
 You can access the web admin console for the demo environment at `https://console.demo.goaxr.cloud <https://console.demo.goaxr.cloud>`__ with the followng credentials:
 

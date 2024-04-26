@@ -3,12 +3,12 @@ Authentication Basics
 =====================
 
 This article covers the basics of how to register user accounts as well as the available authentication methods for logging in
-a user account to an AcceleratXR cluster.
+a user account to an Xsolla Backend cluster.
 
 Account Registration
 ====================
 
-Registering a new account in AcceleratXR is very simple, requiring only the creation of a new account record. Due to the design
+Registering a new account in Xsolla Backend is very simple, requiring only the creation of a new account record. Due to the design
 of the platform setting a password during the registration process is completely optional. This gaurantees flexibility in how
 you choose to implement authentication with your game.
 
@@ -274,7 +274,7 @@ The following example shows how to register a new account and immediately create
 Authentication
 ==============
 
-AcceleratXR supports five different methods of user authentication.
+Xsolla Backend supports five different methods of user authentication.
 
 * API key
 * Password
@@ -690,7 +690,7 @@ a new account is created automatically.
 Third-party
 ~~~~~~~~~~~
 
-AcceleratXR supports multiple third-party authentication methods for single-sign-on including OAuth2 compatibility.
+Xsolla Backend supports multiple third-party authentication methods for single-sign-on including OAuth2 compatibility.
 
 The following third-party providers are supported out of the box.
 

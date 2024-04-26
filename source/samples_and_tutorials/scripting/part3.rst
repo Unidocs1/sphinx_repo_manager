@@ -2,11 +2,11 @@
 Managing Data Structures
 ========================
 
-This is part three of our series on scripting with AcceleratXR. In part two we discussed how to create new custom REST API endpoints. In part three we will build upon that to create a REST API that serves as a RESTful interface to a custom data structure. Go ahead and open up your test workspace in Visual Studio Code and let’s get started.
+This is part three of our series on scripting with Xsolla Backend. In part two we discussed how to create new custom REST API endpoints. In part three we will build upon that to create a REST API that serves as a RESTful interface to a custom data structure. Go ahead and open up your test workspace in Visual Studio Code and let’s get started.
 
-In AcceleratXR, data storage is managed using a strictly typed system of classes that are stored in a database using an Object-Relational Mapping layer (TypeORM). This makes it possible to easily switch between database types based on the different needs of the data structure and service. In fact, it’s possible to have two classes be stored in two entirely different databases within the same service. The ORM framework supports popular SQL databases as well as NoSQL such as MongoDB. Most services in the AcceleratXR platform have been written to use MongoDB. We will continue that tradition for today’s tutorial.
+In Xsolla Backend, data storage is managed using a strictly typed system of classes that are stored in a database using an Object-Relational Mapping layer (TypeORM). This makes it possible to easily switch between database types based on the different needs of the data structure and service. In fact, it’s possible to have two classes be stored in two entirely different databases within the same service. The ORM framework supports popular SQL databases as well as NoSQL such as MongoDB. Most services in the Xsolla Backend engine have been written to use MongoDB. We will continue that tradition for today’s tutorial.
 
-Let’s imagine that we’re building an RPG in which players can create unique characters (let’s also imagine that AcceleratXR doesn’t already have a system for this). Each character needs certain attributes stored that matter to our gameplay. Things like health, mana, current equipment and an inventory of items. We’ll start by creating the Character class.
+Let’s imagine that we’re building an RPG in which players can create unique characters (let’s also imagine that Xsolla Backend doesn’t already have a system for this). Each character needs certain attributes stored that matter to our gameplay. Things like health, mana, current equipment and an inventory of items. We’ll start by creating the Character class.
 
 First create a new file called Character.ts. Like routes, it’s recommended practice to place your data structure classes in the models sub-folder.
 

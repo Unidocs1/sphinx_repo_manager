@@ -4,12 +4,12 @@ Backend Basics
 
 .. image:: /images/overview_architecture_diagram.png
 
-The AcceleratXR backend platform utilizes a `micro-services <https://en.wikipedia.org/wiki/Microservices>`_ based architecture
+The Xsolla Backend backend platform utilizes a `micro-services <https://en.wikipedia.org/wiki/Microservices>`_ based architecture
 composed of more than two dozen unique services. Each of these services provides a singularly focused set of functionality within
-the platform. Functionality such as user account management (`acount-services <https://gitlab.com/AcceleratXR/Core/account_services>`_),
-player achievements (`achievement-services <https://gitlab.com/AcceleratXR/Core/achievements_services>`_), virtual
-economy (`economy-services <https://gitlab.com/AcceleratXR/Core/economy_services>`_), matchmaking
-(`matchmaking-services <https://gitlab.com/AcceleratXR/Core/matchmaking_services>`_) and more.
+the platform. Functionality such as user account management (`acount-services <https://gitlab.com/Xsolla Backend/Core/account_services>`_),
+player achievements (`achievement-services <https://gitlab.com/Xsolla Backend/Core/achievements_services>`_), virtual
+economy (`economy-services <https://gitlab.com/Xsolla Backend/Core/economy_services>`_), matchmaking
+(`matchmaking-services <https://gitlab.com/Xsolla Backend/Core/matchmaking_services>`_) and more.
 
 True to micro-service principles each service within the platform maintains strict database access isolation and uses
 a post/push methodology for performing write operations and delivering changes. As a result, no two services will have
@@ -27,7 +27,7 @@ selected as the preferred orchestration system due to its powerful features, sim
 any environment.
 
 In order to provide a unified set of endpoints for communicating with the platform `nginx <https://www.nginx.com/>`_ is
-utilized as the primary load balancer and reverse proxy for all of AcceleratXR's backend services.
+utilized as the primary load balancer and reverse proxy for all of Xsolla Backend's backend services.
 
 Lastly, the `Prometheus <https://prometheus.io/>`_ server is leveraged for gathering real-time statistics as well as
 providing Kubernetes with the necessary metrics for performing automatic scaling of individual services.

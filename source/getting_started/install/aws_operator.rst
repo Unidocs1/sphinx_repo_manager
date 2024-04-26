@@ -4,12 +4,12 @@ Installation for Amazon EKS using Operator
 
 **Time to Complete: 10 minutes**
 
-This article details the steps to install the AcceleratXR platform to an Kubernetes cluster hosted on `Amazon Elastic Kubernetes Service <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_ using the official AcceleratXR Operator for Kubernetes.
+This article details the steps to install the Xsolla Backend engine to an Kubernetes cluster hosted on `Amazon Elastic Kubernetes Service <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_ using the official Xsolla Backend Operator for Kubernetes.
 
 Amazon EKS
 ==========
 
-Amazon EKS is the preferred way to run AcceleratXR on AWS.
+Amazon EKS is the preferred way to run Xsolla Backend on AWS.
 
 * `Getting Started <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_
 * `Service endpoints and quotas <https://docs.aws.amazon.com/general/latest/gr/eks.html>`_
@@ -25,17 +25,17 @@ Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have b
 Recommendations
 ===============
 
-We recommend the following configurations when setting up a Amazon EKS cluster for AcceleratXR.
+We recommend the following configurations when setting up a Amazon EKS cluster for Xsolla Backend.
 
 * At least one EKS cluster node
 * Minimum EC2 `t3.medium` instance size for Amazon EKS nodes
 * Elastic IP for public load balancer
 * Private S3 bucket for database backup storage
 
-Subscribe to AcceleratXR
+Subscribe to Xsolla Backend
 ========================
 
-Before you can deploy AcceleratXR to Amazon EKS you need to Subscribe to the AcceleratXR platform on the AWS Marketplace.
+Before you can deploy Xsolla Backend to Amazon EKS you need to Subscribe to the Xsolla Backend engine on the AWS Marketplace.
 
 1. Navigate to https://aws.amazon.com/marketplace/pp/prodview-anpdwpjanxl4s
 2. Click the *Continue to Subscribe* button
@@ -45,7 +45,7 @@ Before you can deploy AcceleratXR to Amazon EKS you need to Subscribe to the Acc
 Install the Operator
 ====================
 
-To install the AcceleratXR operator for Kubernetes run the following command.
+To install the Xsolla Backend operator for Kubernetes run the following command.
 
 .. code-block:: bash
 
@@ -67,7 +67,7 @@ If the operator was installed succcessfully you should see similar output to the
 Defining a Cluster
 ==================
 
-More than likely you want to deploy AcceleratXR in an environment that others can access it from. To do this requires some
+More than likely you want to deploy Xsolla Backend in an environment that others can access it from. To do this requires some
 basic configuration by defining a Cluster resource.
 
 To get started download the file: https://nexus.acceleratxr.com/repository/public/Core/tools/operator/latest/deploy/cluster_sample.yaml
@@ -116,9 +116,9 @@ The following shows a simplified example configuration for the AXR Demo environm
 Configuring DNS
 ===============
 
-Before finally creating the AcceleratXR cluster it is necessary to configure DNS to properly route requests to the configured domain(s) above.
+Before finally creating the Xsolla Backend cluster it is necessary to configure DNS to properly route requests to the configured domain(s) above.
 
-When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the AcceleratXR ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
+When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the Xsolla Backend ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
 
 .. code-block:: bash
 
@@ -137,12 +137,12 @@ for the domains with this address.
 
 As an example, using the above cluster configuration we must create an **A Record** DNS entry for the domain `api.demo.goaxr.cloud` to point to IP `96.46.186.213`.
 
-Once the DNS has been set for each of the configured ingress domains it is time to create the AcceleratXR cluster.
+Once the DNS has been set for each of the configured ingress domains it is time to create the Xsolla Backend cluster.
 
 Create the Cluster
 ==================
 
-Run the following command to create the AcceleratXR cluster.
+Run the following command to create the Xsolla Backend cluster.
 
 .. code-block:: bash
    
@@ -262,4 +262,4 @@ The URL is obtained using the Cluster Address reported from the installation com
 Additional Support
 ==================
 
-AcceleratXR offers commercial support at https://www.acceleratxr.com/pricing/ under Self-Hosted plans.
+Xsolla Backend offers commercial support at https://www.acceleratxr.com/pricing/ under Self-Hosted plans.

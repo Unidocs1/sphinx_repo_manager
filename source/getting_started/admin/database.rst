@@ -12,10 +12,10 @@ The following tools are required to follow this guide.
 Overview
 ========
 
-AcceleratXR allows for direct access to any of the underlying databases used by the platform. Each database is run as a local set of pods within
+Xsolla Backend allows for direct access to any of the underlying databases used by the platform. Each database is run as a local set of pods within
 the kubernetes namespace that the cluster was deployed to.
 
-AcceleratXR currently deploys three different database technologies across five different instances.
+Xsolla Backend currently deploys three different database technologies across five different instances.
 
 .. list-table::
    :header-rows: 1
@@ -34,7 +34,7 @@ AcceleratXR currently deploys three different database technologies across five 
       - Used for 2nd level caching of HTTP requests and search queries.
     * - Redis
       - `events`
-      - Used to communicate system events and broadcast telemetry data to all AcceleratXR platform services.
+      - Used to communicate system events and broadcast telemetry data to all Xsolla Backend engine services.
     * - Redis
       - `redis`
       - Used for performance sensitive systems such as matchmaking and leaderboards.
@@ -42,7 +42,7 @@ AcceleratXR currently deploys three different database technologies across five 
 Connecting to MongoDB
 =====================
 
-An AcceleratXR cluster's MongoDB database can be accessed directly using the `kubectl` tool and the `port-forward` command.
+An Xsolla Backend cluster's MongoDB database can be accessed directly using the `kubectl` tool and the `port-forward` command.
 
 First you'll need to identify the exact name of the database pod. To do this we need to list all pods in the cluster's namespace.
 

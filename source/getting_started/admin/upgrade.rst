@@ -2,7 +2,7 @@
 Upgrading a Cluster
 ===================
 
-When an update is available to one of the AcceleratXR platform services you can apply the update with one of two methods. The first
+When an update is available to one of the Xsolla Backend engine services you can apply the update with one of two methods. The first
 method is to edit the deployment directly and set the desired version. The second method is to use `helm upgrade` to modify the
 installation.
 
@@ -37,7 +37,7 @@ The following tools are required to follow this guide.
 Editing the Deployment
 ======================
 
-The simplest way to upgrade an AcceleratXR platform service is to edit the deployment directly. This is often useful when only
+The simplest way to upgrade an Xsolla Backend engine service is to edit the deployment directly. This is often useful when only
 upgrading a single service at a time.
 
 In a terminal run the following `kubectl` command.
@@ -68,11 +68,11 @@ Once the new pod is verified as working the system will shut down the old pod. T
 Using Helm Upgrade
 ==================
 
-The recommended method to update any AcceleratXR platform service is to use `helm upgrade`.
+The recommended method to update any Xsolla Backend engine service is to use `helm upgrade`.
 The primary benefit of this approach is that it allows you to better track which versions of
 the system have been deployed. This helps if the cluster ever needs to be rebuilt.
 
-First open the `values.yaml` file that was used to install the AcceleratXR cluster in the first place.
+First open the `values.yaml` file that was used to install the Xsolla Backend cluster in the first place.
 Look for the section for the service in question and change the version value to the one desired.
 Then save the file.
 

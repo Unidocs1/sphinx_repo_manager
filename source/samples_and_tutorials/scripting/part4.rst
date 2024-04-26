@@ -2,11 +2,11 @@
 Background Services
 ===================
 
-Greetings and welcome back to our five part series on custom scripting with the AcceleratXR Live Scripting system. So far we’ve learned how to respond to web requests to transact and process data. This is great for what is likely the vast majority of use cases you’ll encounter. However it doesn’t solve every problem. Sometimes you need something proactive instead of reactive.
+Greetings and welcome back to our five part series on custom scripting with the Xsolla Backend Live Scripting system. So far we’ve learned how to respond to web requests to transact and process data. This is great for what is likely the vast majority of use cases you’ll encounter. However it doesn’t solve every problem. Sometimes you need something proactive instead of reactive.
 
-This week’s topic is all about background services. A background service (aka job) in AcceleratXR is a special class that is executed on a regular schedule. Execution begins at service startup and will continue running indefinitely at the interval you specify in code until the server is shut down. This is particularly helpful for tasks like data processing and real-time game simulation.
+This week’s topic is all about background services. A background service (aka job) in Xsolla Backend is a special class that is executed on a regular schedule. Execution begins at service startup and will continue running indefinitely at the interval you specify in code until the server is shut down. This is particularly helpful for tasks like data processing and real-time game simulation.
 
-Before we write a background service from scratch let’s start by taking a look at an existing one. Every project in the AcceleratXR platform comes with one pre-defined background service; the MetricsCollector. The MetricsCollector is a background job whose responsibility is collecting aggregate metrics data about the service and updating the Prometheus state. This allows each service to provide important reporting data about the system that can be monitored in real-time.
+Before we write a background service from scratch let’s start by taking a look at an existing one. Every project in the Xsolla Backend engine comes with one pre-defined background service; the MetricsCollector. The MetricsCollector is a background job whose responsibility is collecting aggregate metrics data about the service and updating the Prometheus state. This allows each service to provide important reporting data about the system that can be monitored in real-time.
 
 Open up your test workspace that you created in part one. Look for the file named MetricsCollector.ts in the jobs folder and open it.
 

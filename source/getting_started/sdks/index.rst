@@ -15,7 +15,7 @@ Plug-ins and SDKs
    unity
    unreal
 
-AcceleratXR provides SDKs and plug-ins for a variety of popular programming languages and game engines including
+Xsolla Backend provides SDKs and plug-ins for a variety of popular programming languages and game engines including
 C++, C#, JavaScript (TypeScript), Unreal and Unity.
 
 Common SDK Features
@@ -35,7 +35,7 @@ given backend.
 Data Structures
 ~~~~~~~~~~~~~~~
 
-All data structures within the AcceleratXR platform are defined as classes, typically under a sub-folder named `models`.
+All data structures within the Xsolla Backend engine are defined as classes, typically under a sub-folder named `models`.
 Each model class within the SDK is backed by one or more REST API endpoints and associated service classes for accessing
 that data model.
 

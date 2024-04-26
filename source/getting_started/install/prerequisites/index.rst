@@ -3,7 +3,7 @@ Prerequisites
 =============
 
 This document details the required computing resources, supported operating systems and pre-installed software needed
-to correctly run the AcceleratXR platform.
+to correctly run the Xsolla Backend engine.
 
 Harware Requirements
 ====================

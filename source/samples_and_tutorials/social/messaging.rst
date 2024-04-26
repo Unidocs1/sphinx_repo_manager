@@ -2,7 +2,7 @@
 Player-to-Player Messaging
 ==========================
 
-AcceleratXR supports asynchronus Player-to-Player messaging as well as real-time chat. This article describes
+Xsolla Backend supports asynchronus Player-to-Player messaging as well as real-time chat. This article describes
 how to implement the former.
 
 Each player has their own inbox and outbox of messages both received and sent respectively. Access to these mailboxes is
@@ -33,11 +33,11 @@ game-specific features such as invites, embedded media and so on.
 Unreal Considerations
 =====================
 
-Unreal's OnlineSubsystem handles player messaging a little differently than AcceleratXR. This affects the way the
+Unreal's OnlineSubsystem handles player messaging a little differently than Xsolla Backend. This affects the way the
 `IOnlineMessage <https://docs.unrealengine.com/4.26/en-US/API/Plugins/OnlineSubsystem/Interfaces/IOnlineMessage/>`_
 is both implemented and used.
 
-The following table details how the ``IOnlineMessage`` interface functions are intended to behave and how AcceleratXR's
+The following table details how the ``IOnlineMessage`` interface functions are intended to behave and how Xsolla Backend's
 implementation differs.
 
 +-------------------------+---------------------------------------------------------------------------+-------------------------------------------------------------------------+

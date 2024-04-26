@@ -1,14 +1,14 @@
 ==========================
-AcceleratXR Script Manager
+Xsolla Backend Script Manager
 ==========================
 
-Hello everyone and welcome to the first article of a five part series discussing custom scripting with AcceleratXR. This article will focus on introducing you to the AcceleratXR Script Manager, an extension for Visual Studio Code making the management of scripts simple and powerful.
+Hello everyone and welcome to the first article of a five part series discussing custom scripting with Xsolla Backend. This article will focus on introducing you to the Xsolla Backend Script Manager, an extension for Visual Studio Code making the management of scripts simple and powerful.
 
-The Script Manager extension allows you to interact with an AcceleratXR cluster’s scripting system by implementing a Source Control Provider. The scm provider is able to communicate with your AXR backend cluster. With the manager you can automatically synchronize existing scripts to a local workspace, modify and commit changes, then publish those changes when you’re ready to make them live. Scripts can also be deleted and recovered so that you never lose precious work.
+The Script Manager extension allows you to interact with an Xsolla Backend cluster’s scripting system by implementing a Source Control Provider. The scm provider is able to communicate with your AXR backend cluster. With the manager you can automatically synchronize existing scripts to a local workspace, modify and commit changes, then publish those changes when you’re ready to make them live. Scripts can also be deleted and recovered so that you never lose precious work.
 
-In AcceleratXR scripts can be created from two different places. The first script source is called disk. These are scripts that have been bundled with the service code itself. They can never be permanently deleted but they can be unpublished and/or modified. The second source of scripts are user scripts. These are scripts that you create with the Script Manager or AcceleratXR console tools. These scripts are only visible to the service that they were created with and only exist in the cluster database.
+In Xsolla Backend scripts can be created from two different places. The first script source is called disk. These are scripts that have been bundled with the service code itself. They can never be permanently deleted but they can be unpublished and/or modified. The second source of scripts are user scripts. These are scripts that you create with the Script Manager or Xsolla Backend console tools. These scripts are only visible to the service that they were created with and only exist in the cluster database.
 
-Let’s get started. Open up Visual Studio Code to the extensions panel. Type in acceleratxr into the search box. You’ll immediately see an entry for the AcceleratXR Script Manager. Click on it and hit Install.
+Let’s get started. Open up Visual Studio Code to the extensions panel. Type in acceleratxr into the search box. You’ll immediately see an entry for the Xsolla Backend Script Manager. Click on it and hit Install.
 
 .. image:: /images/tutorials/scripting/part1_diagram1.png
 

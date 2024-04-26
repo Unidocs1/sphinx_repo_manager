@@ -12,8 +12,8 @@ The following tools are required to follow this guide.
 Restarting the Platform
 =======================
 
-Sometimes it's necessary to restart all of the platform services in an AcceleratXR cluster. This can be easily done using the `kubectl delete pod`
-command. AcceleratXR tags each service pod with a special label so that you can perform such operations against only the platform itself.
+Sometimes it's necessary to restart all of the platform services in an Xsolla Backend cluster. This can be easily done using the `kubectl delete pod`
+command. Xsolla Backend tags each service pod with a special label so that you can perform such operations against only the platform itself.
 
 
 .. code-block:: bash

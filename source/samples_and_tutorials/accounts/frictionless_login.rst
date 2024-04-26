@@ -6,7 +6,7 @@ Many modern games and applications want their users to be able to start with as 
 *frictionless login*, the idea is to provide users a method for immediately jumping in before requiring them to create an
 account and enter personal details such as their name or e-mail.
 
-Using AcceleratXR it is possible to implement frictionless login with a few easy steps.
+Using Xsolla Backend it is possible to implement frictionless login with a few easy steps.
 
 #. Use device login
 #. Set a valid e-mail address
@@ -249,7 +249,7 @@ Create a Password
 In order for the user to be able to login to their account from another device it is necessary to create a password. This is done by
 creating a user secret of type ``password``. The ``password`` secret can be either created at the time of updating the account information
 as performed in step two, or it can be done implicitly later as a result of the e-mail verification step. In the latter case the user will
-be prompted to enter a new password upon clicking the e-mail verification link and will be either sent to the AcceleratXR Admin Console or
+be prompted to enter a new password upon clicking the e-mail verification link and will be either sent to the Xsolla Backend Admin Console or
 your custom website that is able to fulfill the request.
 
 We will cover the former case here and assume that following the customization of the user account information your game either prompts

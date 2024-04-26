@@ -41,7 +41,7 @@ Shard Selection (by Social Relevancy) **[STUDIO]**
 =======================================================
 
 .. attention::
-    Requires license to AcceleratXR **Studio** and above.
+    Requires license to Xsolla Backend **Studio** and above.
 
 In addition to sorting shards by their geographical location the system will also rank shards based on the social
 relevancy of users already joined in relation to the user performing the request. This is accomplished by querying

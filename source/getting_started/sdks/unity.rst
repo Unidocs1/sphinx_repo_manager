@@ -2,7 +2,7 @@
 Unity Engine SDK
 ================
 
-The `AcceleratXR SDK for Unity <https://gitlab.acceleratxr.com/Core/sdk/sdk_unity/>`__ provides
+The `Xsolla Backend SDK for Unity <https://gitlab.acceleratxr.com/Core/sdk/sdk_unity/>`__ provides
 a simple wrapper around the :doc:`C# SDK <csharp>` in addition to prefabs and basic scripts
 included to make the process of working with the platform easier.
 
@@ -37,7 +37,7 @@ Option 1: Install From Git URL *[Recommended]*
    
     https://unity:4sWpuQS6dnuSqa-Ki_nV@gitlab.acceleratxr.com/Core/sdk/sdk_unity.git
 
-4. *AcceleratXR SDK* should now be listed in the package manager.
+4. *Xsolla Backend SDK* should now be listed in the package manager.
 5. Next follow the section on Configuration.
 
 Option 2: Clone The Repo and Install From Local Disk
@@ -52,13 +52,13 @@ Option 2: Clone The Repo and Install From Local Disk
 2. Open your project in Unity and navigate to the Package Manager window (`Windows > Package Manager`).
 3. In the `Package Manager` window click the `+` button in the top left corner and select `Add package from disk...`
 4. Browse to the root folder of your local `sdk_unity` checkout, select the `package.json` file, and click `Open`.
-5. *AcceleratXR SDK* should now be listed in the package manager.
+5. *Xsolla Backend SDK* should now be listed in the package manager.
 6. Next follow the section on Configuration.
 
 WebGL - Additional Steps
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The AcceleratXR SDK for Unity supports WebGL, however there are a few additional steps required to enable the SDK to work properly in a WebGL build.
+The Xsolla Backend SDK for Unity supports WebGL, however there are a few additional steps required to enable the SDK to work properly in a WebGL build.
 
 1. Install the `WebGL Threading Patcher` package to enable async tasks to function properly in WebGL builds. Go to the `Package Manager`, select `Add package from git URL...`, and enter the follwing URL:
   
@@ -74,18 +74,18 @@ The AcceleratXR SDK for Unity supports WebGL, however there are a few additional
 Configuration
 =============
 
-In order for your game or application to communicate with an AcceleratXR cluster you must first create a configuration asset to configure the SDK. This can be accomplished by creating a new Asset of type `AXRCoreSDK` by selecting `Assets > Create > AcceleratXR > Core SDK`. Once created, you will see the new object selected in the `Project` window and the configuration options shown in the `Inspector` window.
+In order for your game or application to communicate with an Xsolla Backend cluster you must first create a configuration asset to configure the SDK. This can be accomplished by creating a new Asset of type `AXRCoreSDK` by selecting `Assets > Create > Xsolla Backend > Core SDK`. Once created, you will see the new object selected in the `Project` window and the configuration options shown in the `Inspector` window.
 
-The most important setting is *BaseUrl*. This is the URL to your AcceleratXR cluster that your app will communicate with.
+The most important setting is *BaseUrl*. This is the URL to your Xsolla Backend cluster that your app will communicate with.
 
 The *JWT* settings are optional and only needed if you will be using the `ClientSDK.LocalLogin()` function. The *JWT Settings* section and `LocalLogin` function is provided for debugging purposes and is not recommended for production use. For production builds make sure that the *JWTPassword* field is blank.
 
-The default values in the `AXRCoreSDK` asset correspond to the AcceleratXR demo environment.
+The default values in the `AXRCoreSDK` asset correspond to the Xsolla Backend demo environment.
 
-Using the AcceleratXR Demo Environment
+Using the Xsolla Backend Demo Environment
 ======================================
 
-You can use the following settings to access AcceleratXR's demo environment. This environment is a shared environment that is reset daily and is intended for testing purposes only. You can use the demo environment to test your integration with the AcceleratXR API before deploying your own cluster.
+You can use the following settings to access Xsolla Backend's demo environment. This environment is a shared environment that is reset daily and is intended for testing purposes only. You can use the demo environment to test your integration with the Xsolla Backend API before deploying your own cluster.
 
   .. code-block:: text
 

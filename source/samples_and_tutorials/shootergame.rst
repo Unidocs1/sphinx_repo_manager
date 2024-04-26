@@ -5,7 +5,7 @@ Unreal ShooterGame
 .. image:: /images/samples/ShooterGame.png
 
 The **ShooterGame** project provides an example implementation of integrating the
-:doc:`AcceleratXR SDK for Unreal </sdks/unreal>` in Unreal Engine. It is based upon Epic's standard
+:doc:`Xsolla Backend SDK for Unreal </sdks/unreal>` in Unreal Engine. It is based upon Epic's standard
 `ShooterGame <https://docs.unrealengine.com/4.26/en-US/Resources/SampleGames/ShooterGame/>`_ sample project. The project
 is compatible with Unreal Engine 4.25 and can be downloaded using git.
 
@@ -16,7 +16,7 @@ is compatible with Unreal Engine 4.25 and can be downloaded using git.
 Differences
 ===========
 
-A number of changes have been made to the original project to support the AcceleratXR platform.
+A number of changes have been made to the original project to support the Xsolla Backend engine.
 
 ShooterOnlineSearchSettings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,14 +28,14 @@ ShooterLocalPlayer
 ~~~~~~~~~~~~~~~~~~
 
 The **UShooterLocalPlayer** class has been modified to not use a **FPlatformUserId** for loading of persistent user
-data. This is due to the fact that the *FPlatformUserId* data type is a 32-bit value and all AcceleratXR platfrom id's
+data. This is due to the fact that the *FPlatformUserId* data type is a 32-bit value and all Xsolla Backend platfrom id's
 must be 128-bit values and thus cannot be represented correctly.
 
 ShooterGameInstance
 ~~~~~~~~~~~~~~~~~~~
 
 The **ShooterGameInstance** class has been modified to load a custom login menu on game startup that players use to
-authenticate with the AcceleratXR platform.
+authenticate with the Xsolla Backend engine.
 
 ShooterMainMenu
 ~~~~~~~~~~~~~~~

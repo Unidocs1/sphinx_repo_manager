@@ -17,7 +17,7 @@ External IDs
 ============
 
 In order to support single-sign on with external authentication providers it is important to link a user's
-third-party account id with their AcceleratXR id. These IDs are stored in the ``externalIds`` property as an array
+third-party account id with their Xsolla Backend id. These IDs are stored in the ``externalIds`` property as an array
 of ``<type>:<uid>`` mappings that indicate which third-party provider is represented along with the universally
 unique identifier for that provider.
 
@@ -28,7 +28,7 @@ At present there are three supported external authentication providers.
 * Twitter
 
 Existing external ID links may be re-associated with another account if a user performs a single-sign on attempt in
-collaboration with an existing AcceleratXR authentication token.
+collaboration with an existing Xsolla Backend authentication token.
 
 Verifying Accounts
 ==================

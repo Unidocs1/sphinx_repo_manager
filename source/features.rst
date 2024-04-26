@@ -2,7 +2,7 @@
 Features
 ========
 
-AcceleratXR is the most feature rich of any online gaming platform. Our technology is easily adaptable to fit any project’s goals, allowing teams to create truly cross-platform multi-player games in less time and with fewer resources.
+Xsolla Backend (powered by AcceleratXR technology) is the most feature rich of any online gaming platform. Our technology is easily adaptable to fit any project’s goals, allowing teams to create truly cross-platform multi-player games in less time and with fewer resources.
 
 Essentials
 ==========
@@ -12,14 +12,18 @@ Identity & Access Management
 
 Manage all of your user data and provide simple account management with ease using the Account Services system.
 
-* OAuth2 Compatible
+* OAuth 2.0 & OpenID Connect authorization server
+* Passwordless & device login
 * Multi-factor authentication
-* Roles Based Access Control
 * Single-Sign-On Integration
+  - Any OAuth 2.0 compatible provider
+  - Discord
   - Facebook
   - Google
+  - Steam
   - Twitter
-* Organizations & Teams **[ENTERPRISE]**
+* Roles Based Access Control
+* Organizations & Teams
 
 Player Data
 ~~~~~~~~~~~
@@ -145,7 +149,7 @@ Manage and automatically scale your game server instances from anywhere in the w
 * Auto assignment in less than 5 seconds
 * Fail-over protection
 
-Global Network Engine **[PROFESSIONAL]**
+Global Network Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build ultra-scalable real-time multi-player using our ground breaking server-less Global Network Engine. The GNE gives developers the tools to build powerful server authoritative or peer-based real-time networked games and applications using a one of a kind cloud-centric approach. [PREMIUM]
@@ -166,12 +170,12 @@ Create a virtual world of infinite size! Easily define your virtual world topolo
 * Automatically scale Shard instances by population demand
 * Apply custom auto-scaling policies
 * Find the closest shards by geolocation
-* Find the best suited shards by social connections **[STUDIO]**
+* Find the best suited shards by social connections
 
 Monetization
 ============
 
-Purchasing **[STUDIO]**
+Purchasing
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Our Purchasing Servies system provides all the necessary tools you want and need to monetize your game including subscriptions, entitlements and more. The system integrates with common processing payment providers such as Stripe for dead simple business operations.
@@ -182,6 +186,7 @@ Our Purchasing Servies system provides all the necessary tools you want and need
 * Contact management
 * Invoice management
 * Integrated payment providers
+  - Stripe
 
 IAP Validation
 ~~~~~~~~~~~~~~
@@ -236,7 +241,7 @@ Prometheus based real-time metrics and telemetry is built in to every system and
 Admin Console
 ~~~~~~~~~~~~~
 
-The AcceleratXR Admin Console makes it easy to manage your game from anywhere. Get insight into important KPIs with live monitoring and health metrics, edit game and player data with ease.
+The Xsolla Backend Admin Console makes it easy to manage your game from anywhere. Get insight into important KPIs with live monitoring and health metrics, edit game and player data with ease.
 
 * Access from desktop, mobile or tablet
 * Manage all game and player data
@@ -249,7 +254,7 @@ Integrations
 General Purpose SDKs
 ~~~~~~~~~~~~~~~~~~~~
 
-Integrate AcceleratXR easily into any existing project with our general purpose SDK available in a variety of popular languages.
+Integrate Xsolla Backend easily into any existing project with our general purpose SDK available in a variety of popular languages.
 
 * C++
 * C#
@@ -258,7 +263,7 @@ Integrate AcceleratXR easily into any existing project with our general purpose 
 Unity Engine
 ~~~~~~~~~~~~
 
-Integrate AcceleratXR with our drag-n-drop SDK for Unity Engine. The SDK includes easy to configure prefabs and scriptable behaviors to get up and running quickly. Check out our unity sample project covering common integration tasks such as user registration, sessions, matchmaking and more.
+Integrate Xsolla Backend with our drag-n-drop SDK for Unity Engine. The SDK includes easy to configure prefabs and scriptable behaviors to get up and running quickly. Check out our unity sample project covering common integration tasks such as user registration, sessions, matchmaking and more.
 
 * Drag-n-drop prefabs
 * Built-in Behaviors for common tasks
@@ -267,7 +272,7 @@ Integrate AcceleratXR with our drag-n-drop SDK for Unity Engine. The SDK include
 Unreal Engine
 ~~~~~~~~~~~~~
 
-Integrate AcceleratXR with our plug-n-play SDK for Unreal Engine. Supports engine versions 4.25-4.26 including the upcoming UE5. Check out our ShooterGame sample project featuring our OnlineSubsystem integration.
+Integrate Xsolla Backend with our plug-n-play SDK for Unreal Engine. Supports engine versions 4.25-4.26 including the upcoming UE5. Check out our ShooterGame sample project featuring our OnlineSubsystem integration.
 
 * Compatible with Unreal 4.25+
 * Native OnlineSubsystem support

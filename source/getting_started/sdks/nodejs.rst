@@ -2,7 +2,7 @@
 JavaScript/TypeScript SDK
 =========================
 
-The AcceleratXR JavaScript/TypeScript SDK is written in TypeScript and includes both JavaScript and TypeScript bindings
+The Xsolla Backend JavaScript/TypeScript SDK is written in TypeScript and includes both JavaScript and TypeScript bindings
 when installed.
 
 Installation via yarn
@@ -35,7 +35,7 @@ You will first want to clone the repository containing the SDK using the followi
 
 .. code-block:: bash
 
-    git clone https://gitlab.com/AcceleratXR/Core/sdk/sdk_nodejs
+    git clone https://gitlab.com/Xsolla Backend/Core/sdk/sdk_nodejs
 
 Building the SDK
 ~~~~~~~~~~~~~~~~

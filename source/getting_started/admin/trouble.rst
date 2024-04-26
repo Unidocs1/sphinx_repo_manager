@@ -2,7 +2,7 @@
 Troubleshooting
 ===============
 
-This article discusses common problems that you may experience in managing an AcceleratXR platform cluster and how to solve them.
+This article discusses common problems that you may experience in managing an Xsolla Backend engine cluster and how to solve them.
 
 Service **X** failed to start
 =============================

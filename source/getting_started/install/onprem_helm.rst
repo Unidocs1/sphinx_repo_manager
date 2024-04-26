@@ -4,13 +4,13 @@ Installation On-Premises with Helm
 
 **Time to Complete: 10 minutes**
 
-This article details the steps to install the AcceleratXR platform to an on-premises Kubernetes cluster using Helm.
+This article details the steps to install the Xsolla Backend engine to an on-premises Kubernetes cluster using Helm.
 Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have been installed and configured correctly.
 
 Chart Repository
 ================
 
-AcceleratXR maintains its own Helm repository containing all the official Helm charts. Add the repository and dependencies with the following commands.
+Xsolla Backend maintains its own Helm repository containing all the official Helm charts. Add the repository and dependencies with the following commands.
 
 .. code-block:: bash
    
@@ -28,7 +28,7 @@ AcceleratXR maintains its own Helm repository containing all the official Helm c
 Namespaces
 ==========
 
-It is recommended that AcceleratXR be installed within a dedicated namespace within Kubernetes. A namespace can be created
+It is recommended that Xsolla Backend be installed within a dedicated namespace within Kubernetes. A namespace can be created
 explicitly as shown below or automatically during helm installation using the `--create-namespace` option.
 
 .. code-block:: bash
@@ -66,7 +66,7 @@ For details on all available configuration options please consult the repository
 Utilizing In-Cluster Database Servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command will install the AcceleratXR platform and set up all necessary database
+The following command will install the Xsolla Backend engine and set up all necessary database
 servers within the running cluster. This is the **RECOMMENDED** install method.
 
 .. code-block:: bash
@@ -158,9 +158,9 @@ Once you've successfully installed the platform with Helm you will see output fr
 Configuring DNS
 ===============
 
-Once AcceleratXR cluster is created you must configure your DNS server to point to the ingress domain(s) set.
+Once Xsolla Backend cluster is created you must configure your DNS server to point to the ingress domain(s) set.
 
-When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the AcceleratXR ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
+When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the Xsolla Backend ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
 
 .. code-block:: bash
 

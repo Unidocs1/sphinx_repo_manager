@@ -2,13 +2,13 @@
 Extending the REST API
 ======================
 
-Welcome to the second installment of our series on custom scripting using the AcceleratXR Live Scripting System. In part one we covered the AcceleratXR Script Manager and how to create a workspace, sync scripts and work in Visual Studio Code.
+Welcome to the second installment of our series on custom scripting using the Xsolla Backend Live Scripting System. In part one we covered the Xsolla Backend Script Manager and how to create a workspace, sync scripts and work in Visual Studio Code.
 
 This article will focus on extending the platform REST API by creating entirely new endpoints that titles can access to enable custom behavior, new data storage access and more.
 
-AcceleratXR is built upon the open source project ComposerJS. ComposerJS is a generalized framework for creating RESTful API services using NodeJS. One of Composer’s core design principles is to enable rapid development with minimal setup and configuration. As such, each service scans for source code on the running server’s disk, automatically importing and activating that code at startup. This capability dramatically simplifies the development process, reducing the time and difficulty needed to develop the server code. The Live Scripting System has re-imagined this core functionality by pulling source code from a database, in addition to scanning the local disk. Combined this makes it possible to develop all of the source code needed for any kind of new platform functionality without ever having to fork, commit or deploy an AcceleratXR micro-service project directly.
+Xsolla Backend is built upon the open source project ComposerJS. ComposerJS is a generalized framework for creating RESTful API services using NodeJS. One of Composer’s core design principles is to enable rapid development with minimal setup and configuration. As such, each service scans for source code on the running server’s disk, automatically importing and activating that code at startup. This capability dramatically simplifies the development process, reducing the time and difficulty needed to develop the server code. The Live Scripting System has re-imagined this core functionality by pulling source code from a database, in addition to scanning the local disk. Combined this makes it possible to develop all of the source code needed for any kind of new platform functionality without ever having to fork, commit or deploy an Xsolla Backend micro-service project directly.
 
-In AcceleratXR there are four primary types of scripts. They are…
+In Xsolla Backend there are four primary types of scripts. They are…
 
 * Background Jobs
 * Data Models
@@ -58,7 +58,7 @@ In the above example you’ll notice that we return a string as the function res
 
 .. image:: /images/tutorials/scripting/part2_diagram2.png
 
-Congratulations! You’ve just created your first new REST API endpoint in AcceleratXR. Now let’s try something a bit more complicated. What if we want to greet the user instead, based on an id passed in via a URL parameter. Let’s say something like GET /hello/sam. We can do this by modifying our route handler as follows.
+Congratulations! You’ve just created your first new REST API endpoint in Xsolla Backend. Now let’s try something a bit more complicated. What if we want to greet the user instead, based on an id passed in via a URL parameter. Let’s say something like GET /hello/sam. We can do this by modifying our route handler as follows.
 
 .. code-block:: typescript
    :linenos:

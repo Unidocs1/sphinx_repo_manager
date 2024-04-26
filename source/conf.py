@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'acceleratxr'
-copyright = 'AcceleratXR, Inc. All rights reserved'
-author = 'AcceleratXR, Inc'
+project = 'xbe'
+copyright = 'Xsolla (USA), Inc. All rights reserved'
+author = 'Xsolla'
 
 # -- General configuration ---------------------------------------------------
 

@@ -2,7 +2,7 @@
 Architecture
 ============
 
-The architecture of the service is similar to that of any other AcceleratXR Core micro-service. The service is implemented as a stateless HTTP server that uses a database to store all ``Ticket`` and ``Match`` information. This allows the service to be scaled infinitely to meet any amount of demand and enabling any single micro-service instance the ability to respond to requests for any ticket managed by the system.
+The architecture of the service is similar to that of any other Xsolla Backend Core micro-service. The service is implemented as a stateless HTTP server that uses a database to store all ``Ticket`` and ``Match`` information. This allows the service to be scaled infinitely to meet any amount of demand and enabling any single micro-service instance the ability to respond to requests for any ticket managed by the system.
 
 The processing of tickets is deferred to a specalized program called a `Ticket Processor <ticket_processor>`_. The role of the ticket processor is to perform the primary work of searching for and creating matches. Traditional matchmaking systems often utilize a bucket system that separates tickets into groups of similar criteria. Each bucket is processed by one single-threaded program which performs a loop to collate and create matches for all tickets in the bucket. The performance is particularly slow, often being ``O(n^2)`` in the best case. As the search criteria for a given user expands their tickets are moved from bucket to bucket. This creates a common problem where two perfectly matched tickets may never be matched together as they are never in the same bucket at the same time. This age old architecture is why most games take several minutes to find a match for any given player.
 

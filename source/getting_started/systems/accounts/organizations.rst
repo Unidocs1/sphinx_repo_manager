@@ -3,7 +3,7 @@ Organizations **[ENTERPRISE]**
 ==============================
 
 .. attention::
-    Requires license to AcceleratXR **Enterprise**.
+    Requires license to Xsolla Backend **Enterprise**.
 
 A user Organization is an additional level of abstraction allowing for the grouping of multiple users together into
 virtual teams.

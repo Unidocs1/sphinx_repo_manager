@@ -3,7 +3,7 @@
 User Relationships
 ==================
 
-In AcceleratXR a relationship between two users is called a ``UserLink``. A user can have any number of links to any number of other users. Each link describes a relationship from one user to another. This makes it possible to implement the following social network concepts.
+In Xsolla Backend a relationship between two users is called a ``UserLink``. A user can have any number of links to any number of other users. Each link describes a relationship from one user to another. This makes it possible to implement the following social network concepts.
 
 * User Follow
 * Friends

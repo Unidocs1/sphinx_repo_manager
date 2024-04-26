@@ -2,9 +2,9 @@
 Service Framework
 =================
 
-The AcceleratXR service framework is built as an extension and superset of the open source
+The Xsolla Backend service framework is built as an extension and superset of the open source
 `ComposerJS project <https://composerjs.io>`_. In addition to Composer's simple and intuitive
-language for easily definining REST API services the AcceleratXR framework adds the following
+language for easily definining REST API services the Xsolla Backend framework adds the following
 built-in capabilities:
 
 * :doc:`Live Scripting System <scripting>`

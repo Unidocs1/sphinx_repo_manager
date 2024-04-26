@@ -2,11 +2,11 @@
 SSL/TLS Certificates
 ====================
 
-By default, the AcceleratXR platform enables SSL/TLS for all HTTP traffic and utilizes HTTP Strict Transport Security
+By default, the Xsolla Backend engine enables SSL/TLS for all HTTP traffic and utilizes HTTP Strict Transport Security
 (HSTS). While support for SSL and HSTS can be disabled it is **strongly** recommended not to.
 
 SSL certificates can be  installed from any certificate authority, including self-signed, for use by the platform.
-However, for simplicity and security AcceleratXR comes with native support for Let's Encrypt certificates.
+However, for simplicity and security Xsolla Backend comes with native support for Let's Encrypt certificates.
 
 To utilize a Let's Encrypt certificate *cert-manager* is recommended to be installed on the Kubernetes cluster.
 

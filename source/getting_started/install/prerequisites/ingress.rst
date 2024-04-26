@@ -2,7 +2,7 @@
 Ingress
 =======
 
-AcceleratXR requires an ingress controller in order to expose its REST API, administration console, databases and other
+Xsolla Backend requires an ingress controller in order to expose its REST API, administration console, databases and other
 tools to the outside world. Most Kubernetes distrobutions do not include an ingress controller out of the box and there
 are many options to choose from.
 
@@ -14,7 +14,7 @@ Supported Ingress Controllers
 Configuration
 ~~~~~~~~~~~~~
 
-The AcceleratXR platform takes advantage of several important web technologies including the following:
+The Xsolla Backend engine takes advantage of several important web technologies including the following:
 
 * HTTP2
 * Proxy Protocol

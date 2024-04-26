@@ -1,6 +1,6 @@
-===========
-AcceleratXR
-===========
+==============
+Xsolla Backend
+==============
 
 .. image:: /images/features_banner.png
 
@@ -53,21 +53,21 @@ AcceleratXR
    :caption: Other Links
 
    Demo <https://acceleratxr.com/demo>
-   AcceleratXR Cloud <https://acceleratxr.com/pricing>
+   Xsolla Backend Cloud <https://acceleratxr.com/pricing>
 
-**AcceleratXR** is a powerful technology platform for building highly-scalable online games and entertainment products.
+**Xsolla Backend**, powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
 The platform offers a *huge* list of :doc:`features <features>` covering everything from account management, matchmaking to questing.
 With a simple royalty based licensing model as well as commercial `Cloud Services <https://acceleratxr.com/pricing>`_,
-AcceleratXR enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of
+Xsolla Backend enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of
 the time and cost of other solutions.
 
-Started in 2018 by veteran developers of the gaming industry with over fifty years combined experience who previously
-shipped successful franchises such as XCOM, Hawken, Lost Planet and League of Legends. The AcceleratXR team have pooled
+AcceleratXR started in 2018 by veteran developers of the gaming industry with over fifty years combined experience who previously
+shipped successful franchises such as XCOM, Hawken, Lost Planet and League of Legends. The Xsolla Backend team have pooled
 together all their knowledge and experience to build the most customizeable and feature rich online gaming platform
 leveraging proven open source technology.
 
-**AcceleratXR**, pronounced simply *accelerator* (`/əkˈseləˌrādər/`), was built with the ambitious goal to dramatically
-**Accelerat**\e E\ **x**\tended **R**\eality games and application development. With this goal in mind the team has defined
+**Xsolla Backend**, formerly AcceleratXR (pronounced *accelerator* `/əkˈseləˌrādər/`), was built with the ambitious goal to dramatically
+accelerate extended reality games and application development. With this goal in mind the team has defined
 three dimensions of success.
 
 * Faster Time to Market
@@ -81,7 +81,7 @@ Most other solutions in the industry tend to offer only a handful of capabilitie
 mobile games. As fellow game developers we know how much work is required to handle the sheer difficulty of shipping a product
 on time.
 
-Having experienced every kind of development problem first-hand the AcceleratXR team made it priority number one to provide a robust
+Having experienced every kind of development problem first-hand the Xsolla Backend team made it priority number one to provide a robust
 collection of systems and features native to the platform itself. This focus on features first empowers teams to spend
 more of their time building a better product instead of worrying about basic backend infrastructure and online systems
 development.
@@ -103,10 +103,10 @@ Total Cost of Ownership
 
 Often times the operating costs of maintaining a product after it launches is the thing that determines the long term success.
 Many games over the last few decades have failed due to sky high hosting and operations costs that far exceeds revenue.
-The AcceleratXR team have experienced these failures first hand and understand the deep complexity of not just operating a game
+The Xsolla Backend team have experienced these failures first hand and understand the deep complexity of not just operating a game
 that is successful but also profitable. As a result, every bit of the platform has been carefully architected to be as cost effective
 as possible.
 
 This focus on cost sensitivity in combination with our flexible licensing, unparalleled feature set, and our uniquely open philosophy to game
-development, means that AcceleratXR offers the lowest total cost of ownership compared to any other solution available. No other technology
+development, means that Xsolla Backend offers the lowest total cost of ownership compared to any other solution available. No other technology
 platform gives you more tools, more features and more flexibility to create and dream big.

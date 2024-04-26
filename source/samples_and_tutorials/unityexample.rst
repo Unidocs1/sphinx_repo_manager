@@ -4,7 +4,7 @@ Unity Example
 
 .. image:: /images/samples/unity_example.png
 
-The Unity Sample project integrates the AcceleratXR Unity SDK and provides an example implementation of the following features.
+The Unity Sample project integrates the Xsolla Backend Unity SDK and provides an example implementation of the following features.
 
 * Account registration
 * User login
@@ -60,7 +60,7 @@ The scene is composed of:
 ================
 
 The ``MainScene.cs`` file located in the ``UI/Controllers`` folder contains the entry point for the project. This class implements a `MonoBehavior <https://docs.unity3d.com/2019.4/Documentation/ScriptReference/MonoBehaviour.html>`_
-and initializes the AcceleratXR SDK. It also registers necessary push notification handlers so that the application can respond to SDK push messages coming from the backend.
+and initializes the Xsolla Backend SDK. It also registers necessary push notification handlers so that the application can respond to SDK push messages coming from the backend.
 
 Login & User Registration
 =========================
@@ -75,7 +75,7 @@ The `LoginUser.cs`` file contains relevant code for performing user login. The l
 ``RegisterUser.cs``
 ~~~~~~~~~~~~~~~~~~~
 
-The ``RegisterUser.cs`` file contains example code for how to properly register a new user with the backend. In AcceleratXR, account creation is typically a two-step
+The ``RegisterUser.cs`` file contains example code for how to properly register a new user with the backend. In Xsolla Backend, account creation is typically a two-step
 process. The first step is to create the actual user account record. Once the user account has been created then a second step is performed to create a password for
 the new user that will allow that person to login with their username and password in the future. Note that it is possible to create a user account without creating
 a password.

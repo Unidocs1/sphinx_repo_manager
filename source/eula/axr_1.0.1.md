@@ -3,7 +3,7 @@
 Version: 1.0.1, Updated: 2021-08-06
 
 Please read this Agreement carefully. It is a legal document that explains your
-rights and obligations related to your use of AcceleratXR™ Technology and
+rights and obligations related to your use of Xsolla Backend™ Technology and
 related content. By downloading or using this software or any related content,
 you are agreeing to be bound by the terms of this Agreement. If you do not or
 cannot agree to the terms of this Agreement, please do not download or use this
@@ -12,13 +12,13 @@ software or any related content.
 Certain words or phrases are defined to have certain meanings when used in this
 Agreement. Those words and phrases are defined below in Section 25.
 
-If you are separately licensed by AcceleratXR, Inc. under a Custom License
+If you are separately licensed by Xsolla Backend, Inc. under a Custom License
 certain terms of this Agreement do not apply to your Custom License. Those terms
 are described below in Section 26.
 
 **1. License Grant**
 
-AcceleratXR, Inc. (the “Company”) grants you a non-exclusive, non-transferable,
+Xsolla Backend, Inc. (the “Company”) grants you a non-exclusive, non-transferable,
 non-sublicensable (except as described in this Agreement) license to use,
 reproduce, display, perform, and modify the Licensed Technology for any lawful
 purpose (the “License”). However, the rights that Company grants you under the
@@ -49,14 +49,14 @@ You may only Distribute the Licensed Technology as follows:
 
 >   *b.* Distribution to other licensees – You may Distribute the Licensed
 >   Technology (including as modified by you under the License) in Source Code
->   or object code format, or any Content, to an AcceleratXR Licensee who has
+>   or object code format, or any Content, to an Xsolla Backend Licensee who has
 >   rights under its license to the same Version of the Source Code that you are
 >   Distributing.
 
 >   *c.* Distributions to employees and contractors – You also may Distribute
->   Content to an AcceleratXR Licensee who is your employee or your contractor
+>   Content to an Xsolla Backend Licensee who is your employee or your contractor
 >   who does not have rights under their license to the same Content, but only
->   to permit that AcceleratXR Licensee to utilize that Content in good faith to
+>   to permit that Xsolla Backend Licensee to utilize that Content in good faith to
 >   develop a Product on your behalf for Distribution by you under the License,
 >   and not for the purpose of Content pooling or any other Distribution or
 >   sublicensing of Content that is not permitted under this Agreement.
@@ -75,7 +75,7 @@ You are permitted to post snippets of Source Code, up to 30 lines of code in
 length, online in public forums for the sole purpose of discussing the content
 of the snippet, or distribute such snippets in connection with supporting
 patches and plug-ins for the Licensed Technology, so long as it is not for the
-purpose of enabling non- AcceleratXR Licensees to use or modify any Source Code,
+purpose of enabling non- Xsolla Backend Licensees to use or modify any Source Code,
 or to aggregate, recombine, or reconstruct any larger portion of the Source
 Code.
 
@@ -333,11 +333,11 @@ You agree to place the following notices in the credits for any Product, other
 than Unrestricted Products that do not otherwise have credits, (replacing YYYY
 with the current year):
 
-“[Product name] uses AcceleratXR™ Technology. AcceleratXR™ is a trademark or
-registered trademark of AcceleratXR, Inc. in the United States of America and
+“[Product name] uses Xsolla Backend™ Technology. Xsolla Backend™ is a trademark or
+registered trademark of Xsolla Backend, Inc. in the United States of America and
 elsewhere”
 
-“AcceleratXR™ Technology, Copyright 2018 – YYYY, AcceleratXR, Inc. All rights
+“Xsolla Backend™ Technology, Copyright 2018 – YYYY, Xsolla Backend, Inc. All rights
 reserved.”
 
 No other license or right in the Company Trademarks is granted under this
@@ -349,7 +349,7 @@ consumer confusion or diminish any goodwill relating to any Company Trademarks.
 Company may use your trademarks, service marks, trade names, and logos used with
 any Product, as well as publicly released screen shots and video content from
 the Product, in connection with Company’s marketing, advertisement, and
-promotion of AcceleratXR™ Technology in any and all media without restriction.
+promotion of Xsolla Backend™ Technology in any and all media without restriction.
 
 **14. Disclaimers and Limitation of Liability**
 
@@ -585,7 +585,7 @@ Contribution.
 
 *“Custom License”* means any agreement between you and Company, or any
 sublicensor authorized by Company, other than this Agreement or any amendment to
-this Agreement, under which you are granted a license to use AcceleratXR™
+this Agreement, under which you are granted a license to use Xsolla Backend™
 Technology to develop one or more product(s).
 
 *“Custom Product”* means a product developed pursuant to a Custom License.
@@ -593,18 +593,18 @@ Technology to develop one or more product(s).
 *“Distribute”* means to provide or otherwise make a copy available, or to make
 its functionality available on a network.
 
-*“AcceleratXR Licensee”* means a third party who is separately licensed by
+*“Xsolla Backend Licensee”* means a third party who is separately licensed by
 Company to use the Source Code.
 
-*"Company"* means AcceleratXR, Inc., a Florida Corporation having its principal
+*"Company"* means Xsolla Backend, Inc., a Florida Corporation having its principal
 business offices at 1170 Tree Swallow Drive, Suite 306, Winter Springs, FL,
 32708, U.S.A
 
 *“Company Licenses”* means this License.
 
 *“Company Trademarks”* means the trademarks, service marks, trade names and
-logos associated with AcceleratXR, AcceleratXR’s technology and other
-intellectual property, and the AcceleratXR™ Technology.
+logos associated with Xsolla Backend, Xsolla Backend’s technology and other
+intellectual property, and the Xsolla Backend™ Technology.
 
 *“Examples”* means the Source Code made available by Company in GitLab at the
 URL <https://gitlab.acceleratxr.com/Core/samples>.

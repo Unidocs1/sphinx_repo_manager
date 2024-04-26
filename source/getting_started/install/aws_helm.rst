@@ -4,12 +4,12 @@ Installation for Amazon EKS using Helm
 
 **Time to Complete: 10 minutes**
 
-This article details the steps to install the AcceleratXR platform to an Kubernetes cluster hosted on `Amazon Elastic Kubernetes Service <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_ using Helm.
+This article details the steps to install the Xsolla Backend engine to an Kubernetes cluster hosted on `Amazon Elastic Kubernetes Service <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_ using Helm.
 
 Amazon EKS
 ==========
 
-Amazon EKS is the preferred way to run AcceleratXR on AWS.
+Amazon EKS is the preferred way to run Xsolla Backend on AWS.
 
 * `Getting Started <https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>`_
 * `Service endpoints and quotas <https://docs.aws.amazon.com/general/latest/gr/eks.html>`_
@@ -25,17 +25,17 @@ Before you begin make sure that all :doc:`pre-requisites <prerequisites>` have b
 Recommendations
 ===============
 
-We recommend the following configurations when setting up a Amazon EKS cluster for AcceleratXR.
+We recommend the following configurations when setting up a Amazon EKS cluster for Xsolla Backend.
 
 * At least one EKS cluster node
 * Minimum EC2 `t3.medium` instance size for Amazon EKS nodes
 * Elastic IP for public load balancer
 * Private S3 bucket for database backup storage
 
-Subscribe to AcceleratXR
+Subscribe to Xsolla Backend
 ========================
 
-Before you can deploy AcceleratXR to Amazon EKS you need to Subscribe to the AcceleratXR platform on the AWS Marketplace.
+Before you can deploy Xsolla Backend to Amazon EKS you need to Subscribe to the Xsolla Backend engine on the AWS Marketplace.
 
 1. Navigate to https://aws.amazon.com/marketplace/pp/prodview-anpdwpjanxl4s
 2. Click the *Continue to Subscribe* button
@@ -45,7 +45,7 @@ Before you can deploy AcceleratXR to Amazon EKS you need to Subscribe to the Acc
 Chart Repository
 ================
 
-AcceleratXR maintains its own Helm repository containing all the official Helm charts. Add the repository with the following command.
+Xsolla Backend maintains its own Helm repository containing all the official Helm charts. Add the repository with the following command.
 
 .. code-block:: bash
 
@@ -55,7 +55,7 @@ AcceleratXR maintains its own Helm repository containing all the official Helm c
 Namespaces
 ==========
 
-It is recommended that AcceleratXR be installed within a dedicated namespace within Kubernetes. A namespace can be created
+It is recommended that Xsolla Backend be installed within a dedicated namespace within Kubernetes. A namespace can be created
 explicitly as shown below or automatically during helm installation using the `--create-namespace` option.
 
 .. code-block:: bash
@@ -88,12 +88,12 @@ The helm chart has a number of required properties that must be set in order to 
      - ``api.demo.goaxr.cloud``
 
 For details on all available configuration options please consult the repository's
-`README <https://gitlab.com/AcceleratXR/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
+`README <https://gitlab.com/Xsolla Backend/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
 
 Utilizing In-Cluster Database Servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command will install the AcceleratXR platform and set up all necessary database
+The following command will install the Xsolla Backend engine and set up all necessary database
 servers within the running cluster. This is the **RECOMMENDED** install method.
 
 .. code-block:: bash
@@ -182,9 +182,9 @@ Once you've successfully installed the platform with Helm you will see output fr
 Configuring DNS
 ===============
 
-Once AcceleratXR cluster is created you must configure your DNS server to point to the ingress domain(s) set.
+Once Xsolla Backend cluster is created you must configure your DNS server to point to the ingress domain(s) set.
 
-When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the AcceleratXR ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
+When nginx is setup it creates a Load Balancer resource. This LoadBalancer is what traffic will come in to the cluster to and will be routed to the Xsolla Backend ingress. Therefore, the external IP address of the load balancer is required. You can discover this IP address with the following command.
 
 .. code-block:: bash
 
@@ -451,4 +451,4 @@ The URL is obtained using the Cluster Address reported from the installation com
 Additional Support
 ==================
 
-AcceleratXR offers commercial support at https://www.acceleratxr.com/pricing/ under Self-Hosted plans.
+Xsolla Backend offers commercial support at https://www.acceleratxr.com/pricing/ under Self-Hosted plans.

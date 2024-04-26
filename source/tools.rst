@@ -2,10 +2,10 @@
 Tools & Utilities
 =======================
 
-AcceleratXR Admin Console
+Xsolla Backend Admin Console
 =========================
 
-The AcceleratXR Admin Console is our custom cluster administration tool. It comes bundled with every AcceleratXR cluster and is typically
+The Xsolla Backend Admin Console is our custom cluster administration tool. It comes bundled with every Xsolla Backend cluster and is typically
 available at the url `https://console.<project>.goaxr.cloud`.
 
 Fiddler
@@ -17,24 +17,24 @@ what is being sent and received directly. For this task we recommend `Telerik Fi
 Postman
 =======
 
-`Postman <https://www.postman.com/>`_ is a free tool for working directly with AcceleratXR's REST API.
+`Postman <https://www.postman.com/>`_ is a free tool for working directly with Xsolla Backend's REST API.
 
-Install the AcceleratXR Workspace
+Install the Xsolla Backend Workspace
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To install the AcceleratXR workspace perform the following.
+To install the Xsolla Backend workspace perform the following.
 
 1. `Install <https://www.postman.com/downloads>`_ or `sign-in <https://identity.getpostman.com/login?continue=https%3A%2F%2Fgo.postman.co%2Fbuild>`_ to Postman
 2. Click the **Import** button near the top left corner.
 3. In the pop-up window, select **Link**.
 4. Paste the following URL into the text field and click **Continue**.
    https://www.getpostman.com/collections/afec68df8e1d205a1524
-5. Verify the name of the workspace as *AcceleratXR* and click **Import**.
+5. Verify the name of the workspace as *Xsolla Backend* and click **Import**.
 
 Setting up the workspace
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once the AcceleratXR workspace has been installed you need to configure an environment to talk to your cluster.
+Once the Xsolla Backend workspace has been installed you need to configure an environment to talk to your cluster.
 
 1. Near the top right corner click the little eye icon next to *No Environment*.
 2. Click the **Add** button under *Environment*.
@@ -47,7 +47,7 @@ You are now ready to access your cluster with Postman.
 
 In order to begin making REST API calls to the cluster you need to authenticate.
 
-1. Under the AcceleratXR collection, expand **Account Services**.
+1. Under the Xsolla Backend collection, expand **Account Services**.
 2. Click on **Auth Password**.
 3. Click the *Authorization* tab.
 4. Enter your desired username and password.
@@ -65,17 +65,17 @@ If all is successful you will see a JSON response similar to the following.
         "userUid": "<user_uid>"
     }
 
-You are now ready to start using the AcceleratXR postman API.
+You are now ready to start using the Xsolla Backend postman API.
 
 Visual Studio Code
 ==================
 
-AcceleratXR develops all of our products and services using the very popular and
+Xsolla Backend develops all of our products and services using the very popular and
 powerful `Microsoft Visual Studio Code <https://code.visualstudio.com/>`_.
 
 We recommend installing the following extensions.
 
-* `AcceleratXR Script Manager <https://marketplace.visualstudio.com/items?itemName=acceleratxr.vscode-scripts-scm>`_
+* `Xsolla Backend Script Manager <https://marketplace.visualstudio.com/items?itemName=acceleratxr.vscode-scripts-scm>`_
 * `Docker <https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker>`_
 * `ESLint <https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint>`_
 * `Jest <https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest>`_
