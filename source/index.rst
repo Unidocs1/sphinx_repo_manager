@@ -52,7 +52,7 @@ Xsolla Backend
    :hidden:
    :caption: Other Links
 
-   Demo <https://acceleratxr.com/demo>
+   Demo <demo>
    Company <https://xsolla.com/backend>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
