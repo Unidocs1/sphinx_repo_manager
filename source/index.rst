@@ -55,10 +55,18 @@ Xsolla Backend
    Demo <https://acceleratxr.com/demo>
    Company <https://xsolla.com/backend>
 
-**Xsolla Backend**, powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
+**Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
 The platform offers a *huge* list of :doc:`features <features>` covering everything from account management, matchmaking to questing.
-With a simple royalty based licensing model, Xsolla Backend enables teams of any size and experience level to build state-of-the-art online experiences at
-a fraction of the time and cost of other solutions.
+XBE enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of the time and cost of other solutions.
+
+* Pay only 5% of gross sales
+* Free Hosting
+* Source Available
+* Unlimited Support
+* Business Benchmarking
+
+History
+=======
 
 AcceleratXR started in 2018 by veteran developers of the gaming industry with over fifty years combined experience who previously
 shipped successful franchises such as XCOM, Hawken, Lost Planet and League of Legends. The Xsolla Backend team have pooled
