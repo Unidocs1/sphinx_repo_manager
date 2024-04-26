@@ -4,11 +4,11 @@ Xsolla Backend Demo
 
 To get an idea of what it’s like to work with our platform please check out our demo environment.
 
-Try out the demo `launcher <https://demo.goaxr.cloud>`
+Try out the demo `launcher <https://demo.goaxr.cloud>`_
 
 or
 
-Open the `Admin Console <https://console.demo.goaxr.cloud/>`
+Open the `Admin Console <https://console.demo.goaxr.cloud/>`_
 
 and login with the demo account.
 
@@ -17,7 +17,7 @@ and login with the demo account.
     Username: admin
     Password: @xrD3m0!
 
-If you are building one of our quality `sample projects <https://gitlab.acceleratxr.com/Core/samples>` you can use the following:
+If you are building one of our quality `sample projects <https://gitlab.acceleratxr.com/Core/samples>`_ you can use the following:
 
 .. code-block:: 
 
