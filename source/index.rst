@@ -9,9 +9,7 @@ Xsolla Backend
    :caption: About
 
    features
-   Case Studies <https://www.acceleratxr.com/case-studies/>
-   End User License Agreement <eula>
-   Press <https://www.acceleratxr.com/press/>
+   End User License Agreement <eula/index>
 
 .. toctree::
    :hidden:
