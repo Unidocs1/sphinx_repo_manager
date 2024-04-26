@@ -55,10 +55,10 @@ The helm chart has a number of required properties that must be set in order to 
      - AXR Demo
    * - ``domain``
      - The primary domain that the platform will be deployed to.
-     - ``demo.goaxr.cloud``
+     - ``demo.xsolla.cloud``
    * - ``ingress.hosts[0].host``
      - The exact hostname that the platform's REST API will be served from.
-     - ``api.demo.goaxr.cloud``
+     - ``api.demo.xsolla.cloud``
 
 For details on all available configuration options please consult the repository's
 `README <https://gitlab.acceleratxr.com/Core/tools/k8s_deploy/-/blob/master/README.md>`_.
@@ -75,8 +75,8 @@ servers within the running cluster. This is the **RECOMMENDED** install method.
    --create-namespace \
    --namespace axr-demo-v1 \
    --set title=AXR-Demo \
-   --set domain=demo.goaxr.cloud \
-   --set ingress.hosts[0].host=api.demo.goaxr.cloud
+   --set domain=demo.xsolla.cloud \
+   --set ingress.hosts[0].host=api.demo.xsolla.cloud
 
 Utilizing External Database Servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,8 +90,8 @@ the following command should be used.
    --create-namespace \
    --namespace axr-demo-v1 \
    --set title=AXR-Demo \
-   --set domain=demo.goaxr.cloud \
-   --set ingress.hosts[0].host=api.demo.goaxr.cloud \
+   --set domain=demo.xsolla.cloud \
+   --set ingress.hosts[0].host=api.demo.xsolla.cloud \
    --set mongodb.create=false \
    --set mongodb.url=mongodb://admin:<PASSWORD>@ext.hosted.mongodb \
    --set mongodb.auth.username="admin" \
@@ -130,18 +130,18 @@ Once you've successfully installed the platform with Helm you will see output fr
    ###############################################################################
    Cluster Addresses:
 
-      https://api.demo.goaxr.cloud/v1
+      https://api.demo.xsolla.cloud/v1
 
    Admin Account:
    Username: admin
    Password: <PASSWORD>
 
    Admin Console:
-      https://console.demo.goaxr.cloud
+      https://console.demo.xsolla.cloud
 
    Authentication Configuration:
-   Audience: demo.goaxr.cloud
-   Issuer: api.demo.goaxr.cloud
+   Audience: demo.xsolla.cloud
+   Issuer: api.demo.xsolla.cloud
    ExpiresIn: 1 hour
    Secret: "<SECRET>"
 
@@ -177,7 +177,7 @@ This will result in an output like the following.
 In the above example, the public IP of the LoadBalancer is `96.46.186.213`. Now update your DNS for the configured **ingress** domains by creating an *A* record
 for the domains with this address.
 
-As an example, using the above cluster configuration we must create an **A Record** DNS entry for the domain `api.demo.goaxr.cloud` to point to IP `96.46.186.213`.
+As an example, using the above cluster configuration we must create an **A Record** DNS entry for the domain `api.demo.xsolla.cloud` to point to IP `96.46.186.213`.
 
 Validating the Installation
 ===========================
@@ -292,7 +292,7 @@ The URL is obtained using the Cluster Address reported from the installation com
 
 .. code-block:: bash
 
-   curl https://api.demo.goaxr.cloud/v1/status
+   curl https://api.demo.xsolla.cloud/v1/status
 
 .. code-block:: json
 

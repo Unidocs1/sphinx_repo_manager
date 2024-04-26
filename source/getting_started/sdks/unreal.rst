@@ -102,7 +102,7 @@ For Windows...
 
 That's it! If your project supports the ``OnlineSubsystem`` interface, you should now be using Xsolla Backend user login and session management on the AXR demo environment.
 
-You can access the web admin console for the demo environment at `https://console.demo.goaxr.cloud <https://console.demo.goaxr.cloud>`__ with the followng credentials:
+You can access the web admin console for the demo environment at `https://console.demo.xsolla.cloud <https://console.demo.xsolla.cloud>`__ with the followng credentials:
 
 - Username: **admin**
  

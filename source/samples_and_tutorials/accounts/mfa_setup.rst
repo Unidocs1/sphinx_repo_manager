@@ -16,7 +16,7 @@ using an existing secret such as a ``password``. Once authenticated you can now 
         .. code-block::
 
             POST /users/00000000-0000-0000-0000-000000000000/secrets HTTP/1.1
-            Host: api.demo.goaxr.cloud
+            Host: api.demo.xsolla.cloud
             Content-Type: application/json
             Authorization: jwt f902e78f90827f2.f20978f23v9807039q.2vf9287vf93q879038q27f029q87vf90q2
 
@@ -39,7 +39,7 @@ a compatible MFA device. An example is shown below.
             {
                 "type": "mfa",
                 "secret": {
-                    "otpauth_url": "https://api.demo.goaxr.cloud/v1/auth/totp",
+                    "otpauth_url": "https://api.demo.xsolla.cloud/v1/auth/totp",
                     "secret": "flkj32q979bv7f98327vf93q"
                 }
             }
@@ -59,7 +59,7 @@ To finish enrollment the following request must be sent to the service.
         .. code-block::
 
             PUT /users/00000000-0000-0000-0000-000000000000/secrets/00000000-0000-0000-0000-000000000001/enroll HTTP/1.1
-            Host: api.demo.goaxr.cloud
+            Host: api.demo.xsolla.cloud
             Content-Type: application/json
             Authorization: jwt f902e78f90827f2.f20978f23v9807039q.2vf9287vf93q879038q27f029q87vf90q2
 

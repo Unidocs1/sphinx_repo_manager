@@ -88,10 +88,10 @@ The following table details key configuration options you will need to customize
      - AXR Demo
    * - ``domain``
      - The primary domain that the platform will be deployed to.
-     - ``demo.goaxr.cloud``
+     - ``demo.xsolla.cloud``
    * - ``ingress.hosts[0].host``
      - The exact hostname that the platform's REST API will be served from.
-     - ``api.demo.goaxr.cloud``
+     - ``api.demo.xsolla.cloud``
 
 Example
 ~~~~~~~
@@ -101,17 +101,17 @@ The following shows a simplified example configuration for the AXR Demo environm
 .. code-block:: yaml
 
    # The root domain name to use
-   domain: demo.goaxr.cloud
+   domain: demo.xsolla.cloud
    
    # The url to the cluster's account administration website.
-   website: https://console.goaxr.cloud/
+   website: https://console.xsolla.cloud/
    
    # The name of the application or product
    title: Demo
    
    ingress:
      hosts:
-       - host: "api.demo.goaxr.cloud"
+       - host: "api.demo.xsolla.cloud"
 
 Configuring DNS
 ===============
@@ -135,7 +135,7 @@ This will result in an output like the following.
 In the above example, the public IP of the LoadBalancer is `96.46.186.213`. Now update your DNS for the configured **ingress** domains by creating an *A* record
 for the domains with this address.
 
-As an example, using the above cluster configuration we must create an **A Record** DNS entry for the domain `api.demo.goaxr.cloud` to point to IP `96.46.186.213`.
+As an example, using the above cluster configuration we must create an **A Record** DNS entry for the domain `api.demo.xsolla.cloud` to point to IP `96.46.186.213`.
 
 Once the DNS has been set for each of the configured ingress domains it is time to create the Xsolla Backend cluster.
 
@@ -253,7 +253,7 @@ The URL is obtained using the Cluster Address reported from the installation com
 
 .. code-block:: bash
 
-   curl https://api.demo.goaxr.cloud/v1/status
+   curl https://api.demo.xsolla.cloud/v1/status
 
 .. code-block:: json
 

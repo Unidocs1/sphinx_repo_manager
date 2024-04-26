@@ -6,7 +6,7 @@ Xsolla Backend Admin Console
 =========================
 
 The Xsolla Backend Admin Console is our custom cluster administration tool. It comes bundled with every Xsolla Backend cluster and is typically
-available at the url `https://console.<project>.goaxr.cloud`.
+available at the url `https://console.<project>.xsolla.cloud`.
 
 Fiddler
 =======
@@ -40,7 +40,7 @@ Once the Xsolla Backend workspace has been installed you need to configure an en
 2. Click the **Add** button under *Environment*.
 3. Enter a name at the top.
 4. Add a new variable named *base_url* and enter your cluster address for the initial value.
-   e.g. *base_url* = *https://api.demo.goaxr.cloud/v1*
+   e.g. *base_url* = *https://api.demo.xsolla.cloud/v1*
 5. Now click the Save button.
 
 You are now ready to access your cluster with Postman.

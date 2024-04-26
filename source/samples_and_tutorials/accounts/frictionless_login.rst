@@ -17,7 +17,7 @@ Device Login
 
 Device login allows your application to use the unique device identifier (e.g. *IMEI* on mobile) to perform automatic account registration and login.
 The first time a device attempts device login a new account is automatically created with the username being the device id and the e-mail
-address generated as ``<device_id>@device.goaxr.cloud``. A special user secret is also created of type ``device`` using a determistic
+address generated as ``<device_id>@device.xsolla.cloud``. A special user secret is also created of type ``device`` using a determistic
 hash of the device information. This is what allows the device to login each time safely and securely. Subsequent logins use the device id
 and secret hash to lookup and authorize the user.
 

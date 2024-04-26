@@ -90,14 +90,14 @@ You can use the following settings to access Xsolla Backend's demo environment. 
   .. code-block:: text
 
     Global Settings
-    URL: https://api.demo.goaxr.cloud/v1
+    URL: https://api.demo.xsolla.cloud/v1
 
     JWT Settings
-    Audience: demo.goaxr.cloud
-    Issuer: api.demo.goaxr.cloud
+    Audience: demo.xsolla.cloud
+    Issuer: api.demo.xsolla.cloud
     Password:
 
-You can access the web admin console for the demo environment at `https://console.demo.goaxr.cloud <https://console.demo.goaxr.cloud>`__ with the followng credentials:
+You can access the web admin console for the demo environment at `https://console.demo.xsolla.cloud <https://console.demo.xsolla.cloud>`__ with the followng credentials:
 
 - Username: **admin**
  
