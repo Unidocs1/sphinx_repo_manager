@@ -49,75 +49,74 @@ import os
 import yaml
 import subprocess
 from sphinx.util import logging
+from colorama import init, Fore, Style
 
+init(autoreset=True)  # Initializes Colorama and automatically resets styles after each print
 STOP_BUILD_ON_ERROR = True
 logger = logging.getLogger(__name__)
 
 
 class RepositoryManagementError(Exception):
-    """Custom exception for repository management errors."""
+    """ Custom exception for repository management errors. """
     pass
 
 
 def setup(app):
-    # Connect the 'builder-inited' event from Sphinx to our custom function.
+    """ Connect the 'builder-inited' event from Sphinx to our custom function. """
     app.connect('builder-inited', clone_update_repos)
 
 
 def clone_update_repos(app):
-    print("\n--BEGIN REPO_MANAGER--\n")
+    """ Handle the repository cloning and updating process when Sphinx initializes. """
+    print("\n══BEGIN REPO_MANAGER══\n")
     try:
-        manifest = read_manifest()
-        manage_repositories(manifest)
+        manifest, manifest_path = read_manifest()
+        print(f"Manifest path: {manifest_path}\n")  # Display the fully resolved path
+        manage_repositories(manifest, manifest_path)
     except Exception as e:
         logger.error(f"Failed to manage repositories:\n{e}")
         if STOP_BUILD_ON_ERROR:
             raise RepositoryManagementError(f"Critical repository management failure: {e}")
     finally:
-        print("\n--END REPO_MANAGER--\n")
+        print("\n══END REPO_MANAGER══\n")
 
 
 def read_manifest():
-    """Read and return the repository manifest file."""
+    """ Read and return the repository manifest from YAML file, along with its path. """
     base_path = os.path.abspath(os.path.dirname(__file__))
-    manifest_path = os.path.join(base_path, '..', '..', 'repo_manifest.yml')
-    print(f"Manifest path:", manifest_path)
-
+    manifest_path = os.path.abspath(os.path.join(base_path, '..', '..', 'repo_manifest.yml'))  # Normalize early
     with open(manifest_path, 'r') as file:
-        return yaml.safe_load(file)
+        return yaml.safe_load(file), manifest_path
 
 
-def manage_repositories(manifest):
-    """Manage the cloning and checking out of repositories as defined in the manifest."""
-    base_path = os.path.abspath(os.path.dirname(__file__))
-    base_clone_path = os.path.abspath(os.path.join(base_path, manifest.get('baseClonePath', '../')))
-
-    for repo_name, repo_info in manifest['repositories'].items():
-        clone_path = repo_info.get('clonePath', repo_name)
-        repo_path = os.path.join(base_clone_path, clone_path)
-        clone_and_checkout(repo_name, repo_info, repo_path)
+def manage_repositories(manifest, manifest_path):
+    """ Manage the cloning and checking out of repositories as defined in the manifest. """
+    # Use the directory of the manifest file to calculate the base clone path
+    base_clone_path = os.path.abspath(os.path.join(os.path.dirname(manifest_path), manifest.get('base_clone_path', '../')))
+    for version, details in manifest['macro_versions'].items():
+        for repo_name, repo_info in details['repositories'].items():
+            clone_path = repo_info.get('clone_path', repo_name)
+            repo_path = os.path.join(base_clone_path, clone_path)
+            clone_and_checkout(repo_name, repo_info, repo_path)
 
 
 def clone_and_checkout(repo_name, repo_info, repo_path):
-    """Clone the repository if it does not exist and checkout the specified tag, with less verbosity."""
+    """ Clone the repository if it does not exist and checkout the specified branch and tag, with less verbosity. """
     if not os.path.exists(repo_path):
         logger.info(f"Cloning {repo_name} into {repo_path}...")
-        subprocess.run(['git', 'clone', repo_info['url'], repo_path], check=True)
-        subprocess.run(['git', '-C', repo_path, 'fetch', '--tags'], check=True)
+        subprocess.run(['git', 'clone', '-q', repo_info['url'], repo_path], check=True)
+        subprocess.run(['git', '-C', repo_path, 'fetch', '--all'], check=True)
 
     try:
-        logger.info(f"Checking out '{repo_name}' to tag '{repo_info['tag']}'...")
+        if 'branch' in repo_info:
+            logger.info(f"Checking out branch '{repo_info['branch']}' for '{repo_name}'...")
+            subprocess.run(['git', '-C', repo_path, 'checkout', '-q', repo_info['branch']], check=True)
 
-        # Disable detached HEAD advice temporarily during checkout (-q / --quiet)
-        subprocess.run(['git', '-C', repo_path, 'config', 'advice.detachedHead', 'false'], check=True)
-        subprocess.run(['git', '-C', repo_path, 'checkout', '-q', repo_info['tag']], check=True)
-
-        # Optionally reset detached HEAD advice to default after operation
-        subprocess.run(['git', '-C', repo_path, 'config', '--unset', 'advice.detachedHead'], check=True)
+        if 'tag' in repo_info:
+            logger.info(f"Checking out tag '{repo_info['tag']}' for '{repo_name}'...")
+            subprocess.run(['git', '-C', repo_path, 'checkout', '-q', repo_info['tag']], check=True)
     except subprocess.CalledProcessError as e:
         error_url = f"{repo_info['url']}/tree/{repo_info['tag']}"
-        error_message = (f"Failed to checkout tag '{repo_info['tag']}' for repository '{repo_name}'."
-                         f"Please ensure the tag exists: {error_url}")
+        error_message = f"Failed to checkout branch/tag for repository '{repo_name}'. Does it exist? {error_url}"
         logger.error(error_message)
         raise RepositoryManagementError(error_message)
-

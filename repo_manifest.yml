@@ -7,7 +7,7 @@ macro_versions:
   v1.0.0:  # Create a new branch matching this
     repositories:
       account_services:
-        url: "https://gitlab.acceleratxr.com/Core/account_services"
+        url: "https://gitlab.acceleratxr.com/Core/account_services.git" # End in .git
         branch: "master"
         tag: "v2.1.0"
         clone_path: "account_services"  # Relative to baseClonePath

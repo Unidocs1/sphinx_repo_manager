@@ -2,8 +2,8 @@
 # git+git://github.com/svenevs/exhale.git#egg=exhale
 # See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
 sphinx>=4.8
-sphinx_rtd_theme
-#recommonmark
-myst_parser
-sphinx_tabs
-PyYAML
+sphinx_rtd_theme>=1.0.0
+myst_parser>0.18.0  # `recommonmark` successor
+sphinx_tabs>3.3.0
+PyYAML>6.0
+colorama>=0.4.5
