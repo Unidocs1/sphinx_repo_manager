@@ -51,8 +51,6 @@ import subprocess
 from sphinx.util import logging
 
 STOP_BUILD_ON_ERROR = True
-LOG_PREFIX = "[repo_manager]"
-END_REPO_MGR = "\n--END REPO_MANAGER--\n"
 logger = logging.getLogger(__name__)
 
 
@@ -72,18 +70,18 @@ def clone_update_repos(app):
         manifest = read_manifest()
         manage_repositories(manifest)
     except Exception as e:
-        logger.error(f"{LOG_PREFIX} Failed to manage repositories:\n{e}")
+        logger.error(f"Failed to manage repositories:\n{e}")
         if STOP_BUILD_ON_ERROR:
-            raise RepositoryManagementError(f"{LOG_PREFIX} Critical repository management failure: {e}")
+            raise RepositoryManagementError(f"Critical repository management failure: {e}")
     finally:
-        print(END_REPO_MGR)
+        print("\n--END REPO_MANAGER--\n")
 
 
 def read_manifest():
     """Read and return the repository manifest file."""
     base_path = os.path.abspath(os.path.dirname(__file__))
     manifest_path = os.path.join(base_path, '..', '..', 'repo_manifest.yml')
-    print(f"{LOG_PREFIX} Manifest path:", manifest_path)
+    print(f"Manifest path:", manifest_path)
 
     with open(manifest_path, 'r') as file:
         return yaml.safe_load(file)
@@ -101,17 +99,25 @@ def manage_repositories(manifest):
 
 
 def clone_and_checkout(repo_name, repo_info, repo_path):
-    """Clone the repository if it does not exist and checkout the specified tag."""
+    """Clone the repository if it does not exist and checkout the specified tag, with less verbosity."""
     if not os.path.exists(repo_path):
         logger.info(f"Cloning {repo_name} into {repo_path}...")
         subprocess.run(['git', 'clone', repo_info['url'], repo_path], check=True)
         subprocess.run(['git', '-C', repo_path, 'fetch', '--tags'], check=True)
 
     try:
-        logger.info(f"Checking out {repo_name} to tag {repo_info['tag']}...")
-        subprocess.run(['git', '-C', repo_path, 'checkout', repo_info['tag']], check=True)
-    except subprocess.CalledProcessError:
+        logger.info(f"Checking out '{repo_name}' to tag '{repo_info['tag']}'...")
+
+        # Disable detached HEAD advice temporarily during checkout (-q / --quiet)
+        subprocess.run(['git', '-C', repo_path, 'config', 'advice.detachedHead', 'false'], check=True)
+        subprocess.run(['git', '-C', repo_path, 'checkout', '-q', repo_info['tag']], check=True)
+
+        # Optionally reset detached HEAD advice to default after operation
+        subprocess.run(['git', '-C', repo_path, 'config', '--unset', 'advice.detachedHead'], check=True)
+    except subprocess.CalledProcessError as e:
         error_url = f"{repo_info['url']}/tree/{repo_info['tag']}"
-        error_message = (f"- Failed to checkout tag '{repo_info['tag']}' for repository '{repo_name}'.\n"
-                         f"   - Does the tag exist? {error_url}")
+        error_message = (f"Failed to checkout tag '{repo_info['tag']}' for repository '{repo_name}'."
+                         f"Please ensure the tag exists: {error_url}")
+        logger.error(error_message)
         raise RepositoryManagementError(error_message)
+
