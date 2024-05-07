@@ -37,7 +37,8 @@ release = 'v0.0.1'
 extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
-    'sphinx_tabs.tabs'
+    'sphinx_tabs.tabs',
+    'repo_manager'  # Our own custom extension
 ]
 
 # Add any paths that contain templates here, relative to this directory.
