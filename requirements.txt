@@ -3,5 +3,7 @@
 # See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
 sphinx>=4.5
 sphinx_rtd_theme
-recommonmark
+#recommonmark
+myst_parser
 sphinx_tabs
+PyYAML

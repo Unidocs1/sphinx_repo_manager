@@ -19,3 +19,11 @@ sphinx:
 python:
    install:
    - requirements: requirements.txt
+
+## TODO: Manage multiple doc sets
+#submodules:
+#   include: all
+#   # - submodule1
+#   # - submodule2
+#   #exclude:
+#   recursive: true

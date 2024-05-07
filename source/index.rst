@@ -2,36 +2,36 @@
 Xsolla Backend
 ==============
 
-.. image:: /images/features_banner.png
+.. image:: /_static/images/features_banner.png
 
 .. toctree::
    :hidden:
    :caption: About
 
    features
-   End User License Agreement <eula/index>
+   End User License Agreement <javascript:void(0);>
 
 .. toctree::
    :hidden:
    :caption: Learn
 
-   getting_started/index
-   Accounts <https://acceleratxr.io/projects/account-services/en/latest/content>
-   Social <https://acceleratxr.io/projects/social-services/en/latest/content>
-   Gameplay <gameplay>
-   Multi-player <multiplayer>
-   Content <content>
-   Commerce <commerce>
-   LiveOps <liveops>
-   samples_and_tutorials/index
-   tools
+   Getting Started <<javascript:void(0);>
+   Accounts <content/learn/account_services/docs/source/index>
+   Social <javascript:void(0);>
+   Gameplay <javascript:void(0);>
+   Multi-player <javascript:void(0);>
+   Content <javascript:void(0);>
+   Commerce <javascript:void(0);>
+   LiveOps <javascript:void(0);>
+   Samples/Tutorials <javascript:void(0);>
+   Tools <javascript:void(0);>
 
 .. toctree::
    :hidden:
    :caption: API Reference
    
-   C++ SDK <https://acceleratxr.io/projects/sdk-cpp/en/latest/api>
-   C# SDK <https://acceleratxr.io/projects/sdk-csharp/en/latest/api/namespacelist.html>
+   C++ SDK <javascript:void(0);>
+   C# SDK <javascript:void(0);>
 
 .. toctree::
    :hidden:
@@ -50,11 +50,11 @@ Xsolla Backend
    :hidden:
    :caption: Other Links
 
-   Demo <demo>
+   Demo <javascript:void(0);>
    Company <https://xsolla.com/backend>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
-The platform offers a *huge* list of :doc:`features <features>` covering everything from account management, matchmaking to questing.
+The platform offers a *huge* list of :doc:`features <javascript:void(0);>` covering everything from account management, matchmaking to questing.
 XBE enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of the time and cost of other solutions.
 
 * Pay only 5% of gross sales
