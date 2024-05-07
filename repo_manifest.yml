@@ -1,0 +1,7 @@
+version: "v1.0.0"
+baseClonePath: "../"  # Default base path for cloning repositories, default to "source" dir
+repositories:
+  account_services:
+    url: "https://gitlab.acceleratxr.com/Core/account_services"
+    tag: "2.1.0"
+    clonePath: "account_services"  # Path relative to the baseClonePath

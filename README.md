@@ -15,7 +15,9 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 ## Setup
 
-Run `requirements-install.ps1` as a normal user
+1. Run `requirements-install.ps1` as a normal user
+
+2. Configure the `repo_manifest.yml` with your desired versioning/cloning.
 
 ## Build
 
@@ -32,8 +34,6 @@ The output will build to the root-level `/Build` dir.
 ### Main Doc
 
 In this repo, we want to merge multiple docs into a single doc:
-
-
 
 ### Single Doc
 
