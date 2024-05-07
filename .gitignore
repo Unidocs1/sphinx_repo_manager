@@ -18,3 +18,4 @@ source/build
 .vscode/settings.json
 source/_build
 .vscode/settings.json
+venv
