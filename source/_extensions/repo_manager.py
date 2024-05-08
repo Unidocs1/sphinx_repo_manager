@@ -154,11 +154,19 @@ def manage_repositories(manifest):
 
     for version, details in manifest['macro_versions'].items():
         for repo_name, repo_info in details['repositories'].items():
+            logger.info(f"{Style.BRIGHT}[{current_repo}/{total_repos}]{Style.NORMAL}")
+
+            # Ensure repo is active
+            active = repo_info.get('active', True)
+            if not active:
+                logger.info(f"{Fore.YELLOW}[{repo_name}] Repository !active; skipping...{Fore.RESET}")
+                total_repos -= 1
+                continue
+
+            # Gather paths to clone + symlink
             symlink_path = repo_info.get('symlink_path', repo_name)
             repo_path = os.path.join(init_clone_path, symlink_path)
             symlink_target_path = os.path.join(base_symlink_path, symlink_path)
-
-            logger.info(f"{Style.BRIGHT}[{current_repo}/{total_repos}]{Style.NORMAL}")
 
             clone_and_symlink(repo_name,
                               repo_info,
