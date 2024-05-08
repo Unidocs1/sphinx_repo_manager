@@ -2,12 +2,15 @@
 ---
 # This YAML file configures repository settings for the Sphinx documentation system.
 # It specifies the base path for cloning and details for each version-controlled set of docs.
-base_clone_path: "source"  # Default base path for cloning repos relative to this file
+init_clone_path: "source/_reposAvailable"   # Default base for cloning; use /forward slashes
+base_symlink_path: "source"                 # Default base path for cloning repos relative to this file; use /forward slashes
+clean_init_clone_path: false,               # Recursively delete all clones from init_clone_path?
+clean_base_symlink_path: false,             # Recursively delete all symlinks from base_symlink_path?
 macro_versions:
   v1.0.0:  # Create a new branch matching this
     repositories:
       account_services:
-        url: "https://gitlab.acceleratxr.com/Core/account_services.git" # End in .git
+        url: "https://gitlab.acceleratxr.com/Core/account_services"
         branch: "master"
         tag: "v2.1.0"
-        clone_path: "account_services"  # Relative to baseClonePath
+        symlink_path: "account_services"  # Relative to baseClonePath; use /forward slashes
