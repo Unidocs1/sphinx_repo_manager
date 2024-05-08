@@ -25,20 +25,6 @@ are cloned and how they are accessed.
 4. Include this extension in your Sphinx `conf.py` file by adding the extension's path to `sys.path`
 and including `'repo_manager'` in the `extensions` list.
 
-Manifest Format Example:
-repo_manifest.yml should look like this:
-
-    version: "v1.0.0"
-    init_clone_path: "../_reposAvailable"  # Optional: Default base path for initial cloning
-    base_symlink_path: "../source"  # Default base path for symlinks to cloned repositories
-    macro_versions:
-      v1.0.0:
-        repositories:
-          example_repo:
-            url: "https://github.com/example/example_repo"
-            tag: "v1.0"
-            symlink_path: "example_repo"  # Specific path relative to baseSymlinkPath
-
 Requirements:
 - Python 3.6 or higher
 - Sphinx 1.8 or higher
@@ -116,9 +102,20 @@ def normalize_manifest(manifest):
     """ Normalize the manifest values, such as removing .git from URLs. """
     for version, details in manifest['macro_versions'].items():
         for repo_name, repo_info in details['repositories'].items():
+            # Default `active` to True
+            repo_info.setdefault('active', True)
+
+            # Strip ".git" from urls
             if repo_info['url'].endswith('.git'):
                 repo_info['url'] = repo_info['url'][:-4]
 
+            # Default branch == parent {default_branch}
+            if 'default_branch' not in repo_info:
+                repo_info.setdefault('branch', manifest['default_branch'])
+
+            # Default symlink_path == repo name (the end of url after the last slash/)
+            repo_name = repo_info['url'].split('/')[-1]
+            repo_info.setdefault('symlink_path', repo_name)
     return manifest
 
 
@@ -154,7 +151,8 @@ def manage_repositories(manifest):
 
     for version, details in manifest['macro_versions'].items():
         for repo_name, repo_info in details['repositories'].items():
-            logger.info(f"{Style.BRIGHT}[{current_repo}/{total_repos}]{Style.NORMAL}")
+            line_break = "" if current_repo == 1 else "\n"
+            logger.info(f"{line_break}[{current_repo}/{total_repos}]")
 
             # Ensure repo is active
             active = repo_info.get('active', True)
