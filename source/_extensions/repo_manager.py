@@ -57,12 +57,26 @@ def setup(app):
     app.connect('builder-inited', clone_update_repos)
 
 
+def init_dir_tree(manifest):
+    """ Initialize or clear paths based on manifest configuration. """
+    print(f"{Fore.CYAN}🧹 Crafting expected hierarchy from manifest...{Fore.RESET}")
+
+    init_clone_path = os.path.abspath(manifest.get('init_clone_path', '../_reposAvailable'))
+    base_symlink_path = os.path.abspath(manifest.get('base_symlink_path', '../source'))
+    print(f"{Fore.CYAN}   - init_clone_path: '{Style.BRIGHT}{init_clone_path}{Style.NORMAL}'{Fore.RESET}")
+    print(f"{Fore.CYAN}   - base_symlink_path: '{Style.BRIGHT}{base_symlink_path}{Style.NORMAL}'{Fore.RESET}")
+
+    setup_directories(init_clone_path, manifest.get('clear_clone_path', False))
+    setup_directories(base_symlink_path, manifest.get('clear_base_symlink_path', False))
+    print()
+
+
 def clone_update_repos(app):
     """ Handle the repository cloning and updating process when Sphinx initializes. """
     print(f"\n{Fore.GREEN}══BEGIN REPO_MANAGER══\n{Fore.RESET}")
     try:
         manifest, manifest_path = read_manifest()
-        print(f"{Fore.CYAN}📜 Found manifest @ {os.path.normpath(manifest_path)}{Fore.RESET}\n")
+        init_dir_tree(manifest)
 
         manage_repositories(manifest)
     except Exception as e:
@@ -98,24 +112,41 @@ def manage_symlinks(repo_name, source_path, target_path, overwrite=True):
         os.symlink(source_path, target_path)
 
 
-def normalize_manifest(manifest):
-    """ Normalize the manifest values, such as removing .git from URLs. """
+def normalize_manifest_set_meta(manifest):
+    """
+    Normalize the manifest values, such as removing .git from URLs, +injects hidden '_meta' prop:
+    - Adds to repositories.x: { url_dotgit, is_default, repo_name }
+    """
+    repo_i = 0
     for version, details in manifest['macro_versions'].items():
         for repo_name, repo_info in details['repositories'].items():
+            # Inject '_meta' placeholders; can technically be overridden in yml for debugging
+            if '_meta' not in repo_info:
+                repo_info['_meta'] = {
+                    'is_default': repo_i == 0,  # 1st entry
+                    'url_dotgit': ''
+                }
+            _meta = repo_info['_meta']
+
             # Default `active` to True
             repo_info.setdefault('active', True)
 
             # Strip ".git" from urls
-            if repo_info['url'].endswith('.git'):
-                repo_info['url'] = repo_info['url'][:-4]
+            url = repo_info['url']
+            if url.endswith('.git'):
+                repo_info['url'] = url[:-4]
+                _meta['url_dotgit'] = f"{url}.git"
 
             # Default branch == parent {default_branch}
             if 'default_branch' not in repo_info:
                 repo_info.setdefault('branch', manifest['default_branch'])
 
             # Default symlink_path == repo name (the end of url after the last slash/)
-            repo_name = repo_info['url'].split('/')[-1]
+            repo_name = url.split('/')[-1]
             repo_info.setdefault('symlink_path', repo_name)
+            _meta["repo_name"] = repo_name
+
+            repo_i += 1
     return manifest
 
 
@@ -123,11 +154,14 @@ def read_manifest():
     """ Read and return the repository manifest from YAML file, along with its path. """
     base_path = os.path.abspath(os.path.dirname(__file__))
     manifest_path = os.path.abspath(os.path.join(base_path, '..', '..', 'repo_manifest.yml'))
+    manifest_path = os.path.normpath(manifest_path)  # Normalize
+    print(f"{Fore.CYAN}📜 Reading manifest: '{Style.BRIGHT}{manifest_path}{Style.NORMAL}'...{Fore.RESET}")
+
     with open(manifest_path, 'r') as file:
         manifest = yaml.safe_load(file)
 
-    # Remove .git from urls, etc
-    manifest = normalize_manifest(manifest)
+    # Remove .git from urls; inject hidden _meta prop per repo { url_dotgit, is_default }
+    manifest = normalize_manifest_set_meta(manifest)
 
     # Initialize or clear paths based on manifest configuration
     init_clone_path = os.path.abspath(manifest.get('init_clone_path', '../_reposAvailable'))
@@ -196,12 +230,11 @@ def validate_pull_repo(repo_name, repo_path):
     git_fetch(repo_name, repo_path)
 
 
-def clone_repo(repo_name, repo_url, repo_path):
+def clone_repo(repo_name, repo_url_dotgit, repo_path):
     """ Clone the repository from the provided URL to the specified path. """
     logger.info(f"[{repo_name}] {Fore.YELLOW}⬇️ | Cloning '{repo_path}'...{Fore.RESET}")
 
-    git_url = f"{repo_url}.git"
-    subprocess.run(['git', 'clone', '-q', git_url, repo_path], check=True)
+    subprocess.run(['git', 'clone', '-q', repo_url_dotgit, repo_path], check=True)
     subprocess.run(['git', '-C', repo_path, 'fetch', '--all'], check=True)
 
 
@@ -210,8 +243,8 @@ def clone_and_symlink(repo_name, repo_info, repo_path, symlink_target_path):
     try:
         # Clone the repo, if we haven't done so already
         if not os.path.exists(repo_path):
-            repo_url = repo_info['url']
-            clone_repo(repo_name, repo_url, repo_path)
+            repo_url_dotgit = repo_info['_meta']['url_dotgit']
+            clone_repo(repo_name, repo_url_dotgit, repo_path)
         else:
             validate_pull_repo(repo_name, repo_path)
 
@@ -226,13 +259,14 @@ def clone_and_symlink(repo_name, repo_info, repo_path, symlink_target_path):
 
         # Manage symlinks
         manage_symlinks(repo_name, repo_path, symlink_target_path)
-        logger.info(f"[{repo_name}] {Fore.GREEN}✅ | Repository setup complete at {symlink_target_path}{Fore.RESET}")
+        logger.info(f"[{repo_name}] {Fore.GREEN}✅ | Repo symlinked: "
+                    f"'{Style.BRIGHT}{symlink_target_path}{Style.NORMAL}'{Fore.RESET}")
 
     except subprocess.CalledProcessError:
         tag = repo_info['tag']
-        repo_url = repo_info['url']
-        error_url = f"{repo_url}/tree/{tag}"
-        tags_url = f"{repo_url}/-/tags"
+        repo_url_dotgit = repo_info['url']
+        error_url = f"{repo_url_dotgit}/tree/{tag}"
+        tags_url = f"{repo_url_dotgit}/-/tags"
 
         error_message = (f"\n\n{Fore.RED}[repo_manager]{Style.BRIGHT} Failed to checkout branch/tag for "
                          f"repository '{repo_name}':{Style.NORMAL}\n"
