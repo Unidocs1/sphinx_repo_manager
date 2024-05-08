@@ -51,7 +51,7 @@ import subprocess
 from sphinx.util import logging
 from colorama import init, Fore, Style
 
-init(autoreset=True)  # Initializes Colorama and automatically resets styles after each print
+init(autoreset=True)  # Initializes Colorama + auto-resets styles after each print (Style.RESET_ALL)
 STOP_BUILD_ON_ERROR = True
 logger = logging.getLogger(__name__)
 
@@ -68,17 +68,17 @@ def setup(app):
 
 def clone_update_repos(app):
     """ Handle the repository cloning and updating process when Sphinx initializes. """
-    print("\n══BEGIN REPO_MANAGER══\n")
+    print(f"\n{Fore.GREEN}══BEGIN REPO_MANAGER══\n")
     try:
         manifest, manifest_path = read_manifest()
-        print(f"Manifest path: {manifest_path}\n")  # Display the fully resolved path
+        print(f"{Fore.CYAN}Manifest path: {manifest_path}\n")  # Display the fully resolved path
         manage_repositories(manifest, manifest_path)
     except Exception as e:
         logger.error(f"Failed to manage repositories:\n{e}")
         if STOP_BUILD_ON_ERROR:
             raise RepositoryManagementError(f"Critical repository management failure: {e}")
     finally:
-        print("\n══END REPO_MANAGER══\n")
+        print(f"\n{Fore.GREEN}══END REPO_MANAGER══\n")
 
 
 def read_manifest():
@@ -92,29 +92,40 @@ def read_manifest():
 def manage_repositories(manifest, manifest_path):
     """ Manage the cloning and checking out of repositories as defined in the manifest. """
     # Use the directory of the manifest file to calculate the base clone path
-    base_clone_path = os.path.abspath(os.path.join(os.path.dirname(manifest_path), manifest.get('base_clone_path', '../')))
+    base_clone_path = os.path.abspath(os.path.join(os.path.dirname(manifest_path),
+                                                   manifest.get('base_clone_path', '../')))
+
+    # Calculate the total number of repositories to process
+    total_repos = sum(len(details['repositories']) for version, details in manifest['macro_versions'].items())
+    current_repo = 1  # Initialize the current repository counter
+
     for version, details in manifest['macro_versions'].items():
         for repo_name, repo_info in details['repositories'].items():
             clone_path = repo_info.get('clone_path', repo_name)
             repo_path = os.path.join(base_clone_path, clone_path)
-            clone_and_checkout(repo_name, repo_info, repo_path)
+            clone_and_checkout(repo_name, repo_info, repo_path, total_repos, current_repo)
+            current_repo += 1
 
 
-def clone_and_checkout(repo_name, repo_info, repo_path):
+def clone_and_checkout(repo_name, repo_info, repo_path, total_repos, current_repo):
     """ Clone the repository if it does not exist and checkout the specified branch and tag, with less verbosity. """
     if not os.path.exists(repo_path):
-        logger.info(f"Cloning {repo_name} into {repo_path}...")
+        logger.info(f"[{repo_name}]{Fore.CYAN} Cloning '{repo_name}' into '{repo_path}'...")
         subprocess.run(['git', 'clone', '-q', repo_info['url'], repo_path], check=True)
         subprocess.run(['git', '-C', repo_path, 'fetch', '--all'], check=True)
 
     try:
+        logger.info(f"[{current_repo}/{total_repos}] {Fore.CYAN}{repo_path}")
+
         if 'branch' in repo_info:
-            logger.info(f"Checking out branch '{repo_info['branch']}' for '{repo_name}'...")
+            logger.info(f"{Fore.YELLOW}[{repo_name}] Checking out branch '{repo_info['branch']}'...")
             subprocess.run(['git', '-C', repo_path, 'checkout', '-q', repo_info['branch']], check=True)
 
         if 'tag' in repo_info:
-            logger.info(f"Checking out tag '{repo_info['tag']}' for '{repo_name}'...")
+            logger.info(f"{Fore.YELLOW}[{repo_name}] Checking out tag '{repo_info['tag']}'...")
             subprocess.run(['git', '-C', repo_path, 'checkout', '-q', repo_info['tag']], check=True)
+
+        logger.info(f"{Fore.GREEN}Ok.\n")
     except subprocess.CalledProcessError as e:
         error_url = f"{repo_info['url']}/tree/{repo_info['tag']}"
         error_message = f"Failed to checkout branch/tag for repository '{repo_name}'. Does it exist? {error_url}"

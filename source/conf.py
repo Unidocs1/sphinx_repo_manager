@@ -93,7 +93,7 @@ html_favicon = '_static/images/favicon.png'
 # a list of builtin themes.
 #
 html_theme_options = {
-    'canonical_url': 'https://acceleratxr.io',
+    'canonical_url': 'https://docs.xsolla.cloud',
     'analytics_id': 'UA-136672390-2',  # Provided by Google in your dashboard
     'logo_only': True,
     'display_version': True,
