@@ -6,9 +6,7 @@
 # - Keep 1st child repository heavily commented with all optional props for collaborator FYI
 ############################################################################################
 init_clone_path: "source/_reposAvailable"  # Default base for cloning; use /forward slashes
-base_symlink_path: "source"                # Default base path for cloning repos relative to this file; use /forward slashes
-clean_init_clone_path: false,              # Recursively delete all clones from init_clone_path?
-clean_base_symlink_path: false,            # Recursively delete all symlinks from base_symlink_path?
+base_symlink_path: "source/content"        # Default base path for cloning repos relative to this file; use /forward slashes
 default_branch: "master"                   # Fallback if child branch is missing
 macro_versions:                            # Dirs will be created per-macro version
   v1.0.1:  # 1st entry == default; create a matching branch for each macro_version

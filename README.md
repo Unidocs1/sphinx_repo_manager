@@ -15,7 +15,7 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 ## Setup
 
-1. Run `requirements-install.ps1` as a normal user
+1. Run `tools/requirements-install.ps1` as a normal user
 
 2. Configure the `repo_manifest.yml` with your desired versioning/cloning.
 

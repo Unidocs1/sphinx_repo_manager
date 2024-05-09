@@ -58,16 +58,33 @@ def setup(app):
 
 
 def init_dir_tree(manifest):
-    """ Initialize or clear paths based on manifest configuration. """
+    """
+    Initialize or clear paths based on manifest configuration. Default tree:
+    ########################################################
+    - source
+        - _reposAvailable
+        - content
+            - {macro_version[x]} // Contains symlinked repos
+    ########################################################
+    """
     print(f"{Fore.CYAN}🧹 Crafting expected hierarchy from manifest...{Fore.RESET}")
 
+    # init_clone_path
     init_clone_path = os.path.abspath(manifest.get('init_clone_path', '../_reposAvailable'))
-    base_symlink_path = os.path.abspath(manifest.get('base_symlink_path', '../source'))
     print(f"{Fore.CYAN}   - init_clone_path: '{Style.BRIGHT}{init_clone_path}{Style.NORMAL}'{Fore.RESET}")
-    print(f"{Fore.CYAN}   - base_symlink_path: '{Style.BRIGHT}{base_symlink_path}{Style.NORMAL}'{Fore.RESET}")
+    setup_directories(init_clone_path, clear=False)
 
-    setup_directories(init_clone_path, manifest.get('clear_clone_path', False))
-    setup_directories(base_symlink_path, manifest.get('clear_base_symlink_path', False))
+    # base_symlink_path
+    base_symlink_path = os.path.abspath(manifest.get('base_symlink_path', '../source'))
+    print(f"{Fore.CYAN}   - base_symlink_path: '{Style.BRIGHT}{base_symlink_path}{Style.NORMAL}'{Fore.RESET}")
+    setup_directories(base_symlink_path, clear=False)
+
+    # macro_versions
+    macro_versions = manifest['macro_versions'].items()
+    for macro_version, details in macro_versions:
+        version_path = os.path.abspath(os.path.join(base_symlink_path, macro_version))
+        setup_directories(version_path, clear=False)
+
     print()
 
 
@@ -88,7 +105,10 @@ def clone_update_repos(app):
 
 
 def setup_directories(path, clear=False):
-    """Ensure directory exists and optionally clear its contents."""
+    """
+    Ensure directory exists and optionally clear its contents.
+    TODO: Utilize `clear` - getting perm denied errs, so may require admin
+    """
     if not os.path.exists(path):
         os.makedirs(path)
     elif clear:

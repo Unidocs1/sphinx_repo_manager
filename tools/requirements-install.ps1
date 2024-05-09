@@ -1,3 +1,6 @@
+# Jump to project root
+cd ../
+
 # Check if the 'venv' directory does not exist
 if (-Not (Test-Path "./venv")) {
     # Create the virtual environment
