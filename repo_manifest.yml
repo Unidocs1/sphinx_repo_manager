@@ -5,16 +5,16 @@
 # - Specifies base path for cloning and details for each version-controlled set of docs.
 # - Keep 1st child repository heavily commented with all optional props for collaborator FYI
 ############################################################################################
-init_clone_path: "source/_reposAvailable"  # Default base for cloning; use /forward slashes
-base_symlink_path: "source/content"        # Default base path for cloning repos relative to this file; use /forward slashes
-default_branch: "master"                   # Fallback if child branch is missing
-macro_versions:                            # Dirs will be created per-macro version
+init_clone_path: "source/_repos-available"  # [Optional] Default base for cloning; use /forward slashes; defaults to source/_repos-available, if omitted
+base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
+default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
+macro_versions:                             # Dirs will be created per-macro version
   v1.0.1:  # 1st entry == default; create a matching branch for each macro_version
     repositories:
       account_services:
         url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
         tag: "v2.1.0"                     # (!) Don't forget to prefix with "v", if target tags include this
-        symlink_path: "account_services"  # [Optional] Relative to baseClonePath; use /forward slashes; default repo name, if omitted
+        symlink_path: "account_services"  # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
         branch: "master"                  # [Optional] Default {default_branch}, if omitted
         active: true                      # [Optional] Default true, if omitted
 
