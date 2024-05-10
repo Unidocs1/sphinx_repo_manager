@@ -126,21 +126,28 @@ def setup_directory_skeleton(path, clear=False):
                 os.remove(item_path)
 
 
-def manage_symlinks(repo_name, source_path, target_path, overwrite=True):
-    """Create or update a symlink."""
-    logger.info(f"[{repo_name}] {Fore.CYAN}🔗 | Symlinking...{Fore.RESET}")
+def manage_symlinks(repo_name, rel_init_clone_path, rel_symlinked_path_to, overwrite=True):
+    """
+    Create or update a symlink.
+    - repo_name            # eg: "account_services"
+    - rel_init_clone_path  # eg: "source/_repos-available/account_services-v2.1.0"
+    - target_path          # eg: "source/content/v1.0.0/account_services-v2.1.0"
+    """
+    logger.info(f"[{repo_name}] {Fore.CYAN}🔗 | Symlinking from '{rel_init_clone_path}'...{Fore.RESET}")
 
-    if os.path.islink(target_path):
+    # Is it already symlinked?
+    if os.path.islink(rel_symlinked_path_to):
         if overwrite:
-            os.remove(target_path)
-            os.symlink(source_path, target_path)
-    elif not os.path.exists(target_path):
-        os.symlink(source_path, target_path)
+            # Remove it, so we can add it back cleanly
+            os.remove(rel_symlinked_path_to)
+
+    # Path is clean: Symlink now
+    os.symlink(rel_init_clone_path, rel_symlinked_path_to)
 
 
 def validate_normalize_manifest_set_meta(manifest):
     """
-    Validates + normalizes manifest vals, such as removing .git from URLs, 
+    Validates + normalizes manifest vals, such as removing .git from URLs,
     +injects hidden '_meta' prop, etc.
     - Sets default fallbacks, if any
     - Adds to repositories.x: { url_dotgit, is_default, repo_name, macro_repo }
@@ -152,7 +159,7 @@ def validate_normalize_manifest_set_meta(manifest):
     manifest.setdefault('base_symlink_path', 'source/content')
 
     repo_i = 0
-    for macro_version, details in manifest['macro_versions'].items():        
+    for macro_version, details in manifest['macro_versions'].items():
         for repo_name, repo_info in details['repositories'].items():
             # Inject '_meta' placeholders; can technically be overridden in yml for debugging
             if '_meta' not in repo_info:
@@ -160,7 +167,7 @@ def validate_normalize_manifest_set_meta(manifest):
                     'is_default': repo_i == 0,  # 1st entry == default
                     'url_dotgit': '',           # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
                     'repo_name': '',            # eg: "account_services"
-                    'symlinked_path_to': ''     # "{macro_version}{symlink_path}-{tag}"
+                    'rel_symlinked_path_to': ''     # "{macro_version}{symlink_path}-{tag}"
                 }
 
             # url: Req'd - Strip ".git" from suffix, if any
@@ -197,8 +204,8 @@ def validate_normalize_manifest_set_meta(manifest):
             _meta = repo_info['_meta']
             _meta['url_dotgit'] = f"{url}.git"
             _meta["repo_name"] = repo_name
-            _meta['symlinked_path_to'] = f"{macro_version}/{symlink_path}-{tag}"
-            print(f"symlinked_path_to: {_meta['symlinked_path_to']}")
+            _meta['rel_symlinked_path_to'] = f"{macro_version}/{symlink_path}-{tag}"
+            print(f"rel_symlinked_path_to: {_meta['rel_symlinked_path_to']}")
 
             repo_i += 1
     return manifest
@@ -231,12 +238,11 @@ def manage_repositories(manifest):
     """ Manage the cloning and checking out of repositories as defined in the manifest. """
     # Read manifest
     rel_init_clone_path = manifest['init_clone_path']
-    rel_base_symlink_path = manifest['base_symlink_path']
     macro_versions = manifest['macro_versions'].items()
     repositories = [repo for version, details in macro_versions
                     for repo in details['repositories'].items()]
 
-    base_clone_to = os.path.abspath(rel_init_clone_path)  # eg: "source/repos_available
+    abs_init_clone_path = os.path.abspath(rel_init_clone_path)  # eg: "source/repos_available
 
     # How many macro_versions and repos to manage?
     total_macro_versions = len(macro_versions)
@@ -254,10 +260,10 @@ def manage_repositories(manifest):
                         f"Repo {current_repo_num}/{total_repos_num}]")
 
             # Ensure repo is active
-            symlinked_path_to = repo_info['_meta']['symlinked_path_to']  # eg: "v1.0.0/account_services-v2.1.0"
+            rel_symlinked_path_to = repo_info['_meta']['rel_symlinked_path_to']  # eg: "v1.0.0/account_services-v2.1.0"
             active = repo_info['active']
             if not active:
-                logger.info(f"{Fore.YELLOW}[{symlinked_path_to}] Repository !active; skipping...{Fore.RESET}")
+                logger.info(f"{Fore.YELLOW}[{rel_symlinked_path_to}] Repository !active; skipping...{Fore.RESET}")
                 total_repos_num -= 1
                 continue
 
@@ -269,36 +275,36 @@ def manage_repositories(manifest):
             tag_versioned_repo_name = f"{base_symlink_path}-{repo_tag}"
 
             #######################################################################
-            # Combine "{init_clone_path}\{macro_version}\{repo_name}-{tag_version}"
-            # eg: "_repos-available\v1.0.0\account_services-v2.1.0"
+            # Combine "{init_clone_path}/{macro_version}/{repo_name}-{tag_version}"
+            # eg: "_repos-available/v1.0.0/account_services-v2.1.0"
             #######################################################################
 
             print()  # DELETE ME >>
             print("#############################################################")
-            print(f"init_clone_path: {base_clone_to}")  # eg: "source/_repos-available"
+            print(f"init_clone_path: {abs_init_clone_path}")  # eg: "source/_repos-available"
             print(f"tag_versioned_repo_name: {tag_versioned_repo_name}")  # eg: "account_services-{tag_version}"
             print("#############################################################")
             print()  # << DELETE ME
 
             symlink_to = os.path.join(
-                base_clone_to,            # eg: "source/_repos-available"
+                rel_init_clone_path,      # eg: "source/_repos-available"
                 tag_versioned_repo_name)  # eg: "account_services-v2.1.0"
 
-            logger.info(f"[{symlinked_path_to}] {Fore.CYAN}📁 | Repo path: "
+            logger.info(f"[{rel_symlinked_path_to}] {Fore.CYAN}📁 | Repo path: "
                         f"'{Style.BRIGHT}{symlink_to}{Style.NORMAL}'{Fore.RESET}")
 
             clone_and_symlink(repo_name,
                               repo_info,
-                              base_clone_to,
+                              rel_init_clone_path,
                               tag_versioned_repo_name)
 
             current_repo_num += 1
         current_macro_ver += 1
 
 
-def git_fetch(symlinked_path_to, repo_path):
+def git_fetch(rel_symlinked_path_to, repo_path):
     """ Fetch all branches and tags from the remote repository. """
-    logger.info(f"[{symlinked_path_to}] {Fore.YELLOW}🔃 | Fetching updates...{Fore.RESET}")
+    logger.info(f"[{rel_symlinked_path_to}] {Fore.YELLOW}🔃 | Fetching updates...{Fore.RESET}")
 
     # Fetch all branches and tags *from the repo_path working dir (-C)*
     git_submodule_cmd(['fetch', '--all', '--tags'], repo_path)
@@ -310,16 +316,20 @@ def validate_is_git_dir(repo_path):
     return is_git_dir
 
 
-def git_clone(symlinked_path_to, repo_url_dotgit, repo_path, branch):
-    """ Clone the repo+branch from the provided URL to the specified path. """
-    logger.info(f"[{symlinked_path_to}] {Fore.YELLOW}⬇️ | Cloning '{repo_path}'...{Fore.RESET}")
+def git_clone(rel_symlinked_path_to, repo_url_dotgit, branch):
+    """
+    Clone the repo+branch from the provided URL to the specified path.
+    - rel_symlinked_path_to # eg: "v1.0.0/account_services"
+    """
+    logger.info(f"[{rel_symlinked_path_to}] {Fore.YELLOW}⬇️ | Cloning (--branch {branch}) "
+                f"'{repo_url_dotgit}'...{Fore.RESET}")
 
     # Clone -> Fetch all
     subprocess.run([
         'git', 'clone',
         '--branch', branch,
         '-q',
-        repo_url_dotgit, repo_path], check=True)
+        repo_url_dotgit, rel_symlinked_path_to], check=True)
 
 
 def git_checkout(clone_to_path, tag_or_branch):
@@ -337,34 +347,40 @@ def git_submodule_cmd(cmd, repo_path):
     subprocess.run(['git', '-C', repo_path] + cmd, check=True)
 
 
-def clone_and_symlink(repo_name, repo_info, base_clone_to_path, tag_versioned_repo_name):
+def clone_and_symlink(repo_name, repo_info, rel_init_clone_path, tag_versioned_repo_name):
     """ Clone the repository if it does not exist and create a symlink in the base symlink path. """
     try:
-        symlinked_path_to = repo_info['_meta']['symlinked_path_to']  # eg: "v1.0.0/path/to/account_services"
+        # eg: "v1.0.0/path/to/account_services"
+        rel_symlinked_path_to = repo_info['_meta']['rel_symlinked_path_to']
 
-        full_clone_path = os.path.join(base_clone_to_path, tag_versioned_repo_name)  # eg: "_repos-available\account_services"
+        # eg: "_repos-available/account_services-v3.2.1"
+        repo_tag_versioned_clone_path = os.path.join(rel_init_clone_path, tag_versioned_repo_name)
         branch = repo_info['branch']
 
         # Clone the repo, if we haven't done so already
-        if not os.path.exists(full_clone_path):
+        if not os.path.exists(repo_tag_versioned_clone_path):
             repo_url_dotgit = repo_info['_meta']['url_dotgit']
-            git_clone(symlinked_path_to, repo_url_dotgit, base_clone_to_path, branch)
+            git_clone(rel_symlinked_path_to, repo_url_dotgit, branch)
         else:
-            git_fetch(symlinked_path_to, base_clone_to_path)
+            git_fetch(rel_symlinked_path_to, rel_init_clone_path)
 
         # Checkout to the specific branch or tag
         if 'branch' in repo_info:
-            logger.info(f"[{symlinked_path_to}] {Fore.YELLOW}🔄 | Checking out branch '{branch}'...{Fore.RESET}")
-            git_checkout(base_clone_to_path, repo_info['branch'])
+            logger.info(f"[{rel_symlinked_path_to}] {Fore.YELLOW}🔄 | Checking out branch "
+                        f"'{branch}'...{Fore.RESET}")
+            git_checkout(rel_init_clone_path, repo_info['branch'])
 
         if 'tag' in repo_info:
-            logger.info(f"[{symlinked_path_to}] {Fore.YELLOW}🏷️ | Checking out tag '{repo_info['tag']}'...{Fore.RESET}")
-            git_checkout(base_clone_to_path, repo_info['tag'])
+            logger.info(f"[{rel_symlinked_path_to}] {Fore.YELLOW}🏷️ | Checking out tag "
+                        f"'{repo_info['tag']}'...{Fore.RESET}")
+            git_checkout(rel_init_clone_path, repo_info['tag'])
 
         # Manage symlinks
-        manage_symlinks(repo_name, base_clone_to_path, symlink_to_path)
-        logger.info(f"[{symlinked_path_to}] {Fore.GREEN}✅ | Repo symlinked: "
-                    f"'{Style.BRIGHT}{symlink_to_path}{Style.NORMAL}'{Fore.RESET}")
+        print(f"*base_clone_to_path: {rel_init_clone_path}")
+        print(f"*rel_symlinked_path_to: {rel_symlinked_path_to}")
+        manage_symlinks(repo_name, rel_init_clone_path, rel_symlinked_path_to, overwrite=True)
+        logger.info(f"[{rel_symlinked_path_to}] {Fore.GREEN}✅ | Repo symlinked to: "
+                    f"'{Style.BRIGHT}{rel_symlinked_path_to}{Style.NORMAL}'{Fore.RESET}")
 
     except subprocess.CalledProcessError:
         tag = repo_info['tag']
