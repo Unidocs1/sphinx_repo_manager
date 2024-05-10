@@ -4,8 +4,8 @@ Sphinx Extension: Repository Manager
 
 Description:
 This Sphinx extension is designed to automate the management of multiple documentation repositories as part
-of building a larger, unified documentation system. It facilitates the cloning and updating of external
-repositories specified in a YAML manifest file, ensuring that each repository is checked out to the specified
+of building a larger, unified doc system. It facilitates the cloning and updating of external repositories
+specified in a YAML manifest file, ensuring that each repository is checked out to the specified
 tag before Sphinx documentation generation proceeds.
 
 How it Works:
@@ -30,15 +30,12 @@ Requirements:
 - Sphinx 1.8 or higher
 - PyYAML library
 
-Ensure that the Python environment where Sphinx is running includes PyYAML to parse the YAML configuration.
-
 Entry point: setup(app) | This script is executed during the 'builder-inited' event of Sphinx,
-which is triggered after Sphinx initialization but before the build process begins.
+which is triggered after Sphinx inits but before the build process begins.
 """
 import os
 import yaml
 import subprocess
-import shutil
 from sphinx.util import logging
 from colorama import init, Fore, Style
 
@@ -50,6 +47,36 @@ logger = logging.getLogger(__name__)
 class RepositoryManagementError(Exception):
     """ Custom exception for repository management errors. """
     pass
+
+
+def brighten(log_str):
+    """ Apply bright style to a string. """
+    return f"{Style.BRIGHT}{log_str}{Style.NORMAL}"
+
+
+def colorize(log_str, color):
+    """ Apply color to a string, resetting when done. """
+    return f"{color}{log_str}{Fore.RESET}"
+
+
+def colorize_path(log_str):
+    """ Apply a path-related color (CYAN) to a string. """
+    return f"{Fore.CYAN}{log_str}{Fore.RESET}"
+
+
+def colorize_action(log_str):
+    """ Apply an action-related color (YELLOW) to a string. """
+    return f"{Fore.YELLOW}{log_str}{Fore.RESET}"
+
+
+def colorize_success(log_str):
+    """ Apply a success-related color (GREEN) to a string. """
+    return f"{Fore.GREEN}{log_str}{Fore.RESET}"
+
+
+def colorize_error(log_str):
+    """ Apply an error-related color (RED) to a string. """
+    return f"{Fore.RED}{log_str}{Fore.RESET}"
 
 
 def setup(app):
@@ -67,27 +94,27 @@ def init_dir_tree(manifest):
             - {macro_version[i]} // Contains symlinked repos
     ########################################################
     """
-    logger.info(f"{Fore.CYAN}🧹 Crafting expected hierarchy from manifest...{Fore.RESET}")
+    logger.info(colorize_path("🧹 Crafting expected hierarchy from manifest..."))
 
     # init_clone_path
     init_clone_path = os.path.abspath(manifest['init_clone_path'])
-    logger.info(f"{Fore.CYAN}   - init_clone_path: '{Style.BRIGHT}{init_clone_path}{Style.NORMAL}'{Fore.RESET}")
+    logger.info(colorize_path(f"   - init_clone_path: '{brighten(init_clone_path)}'"))
     setup_directory_skeleton(init_clone_path)
 
     # base_symlink_path
     base_symlink_path = os.path.abspath(manifest['base_symlink_path'])
-    logger.info(f"{Fore.CYAN}   - base_symlink_path: '{Style.BRIGHT}{base_symlink_path}{Style.NORMAL}'{Fore.RESET}")
+    logger.info(colorize_path(f"   - base_symlink_path: '{brighten(base_symlink_path)}'"))
     setup_directory_skeleton(base_symlink_path)
 
     # macro_versions
     macro_versions = manifest['macro_versions'].items()
-    logger.info(f"{Fore.CYAN}     - macro_version dirs:{Fore.RESET}")
+    logger.info(colorize_path("     - macro_version dirs:"))
 
     # Log macro versions -> Create directory skeleton
     macro_version_i = 0
     for macro_version, details in macro_versions:
-        default_str = f" {Style.BRIGHT}(default){Style.NORMAL}" if macro_version_i == 0 else ""
-        logger.info(f"{Fore.CYAN}       - {macro_version}{default_str}{Fore.RESET}")
+        default_str = f" {brighten('(default)')}" if macro_version_i == 0 else ""
+        logger.info(colorize_path(f"       - {macro_version}{default_str}"))
         version_path = os.path.abspath(os.path.join(base_symlink_path, macro_version))
 
         setup_directory_skeleton(version_path)
@@ -97,17 +124,17 @@ def init_dir_tree(manifest):
 
 def clone_update_repos(app):
     """ Handle the repository cloning and updating process when Sphinx initializes. """
-    logger.info(f"\n{Fore.GREEN}══{Style.BRIGHT}BEGIN REPO_MANAGER{Style.NORMAL}══\n{Fore.RESET}")
+    logger.info(colorize_success(f"\n══{brighten('BEGIN REPO_MANAGER')}══\n"))
     try:
         manifest, manifest_path = read_manifest()
         init_dir_tree(manifest)
         manage_repositories(manifest)
     except Exception as e:
-        logger.error(f"Failed to manage_repositories {Style.BRIGHT}*See `Extension error` below*{Style.NORMAL}")
+        logger.error(f"Failed to manage_repositories {brighten('*See `Extension error` below*')}")
         if STOP_BUILD_ON_ERROR:
             raise RepositoryManagementError(f"clone_update_repos failure:\n- {e}")
     finally:
-        logger.info(f"\n{Fore.GREEN}══{Style.BRIGHT}END REPO_MANAGER{Style.NORMAL}══\n{Fore.RESET}")
+        logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
 
 
 def setup_directory_skeleton(create_path_to):
@@ -158,7 +185,7 @@ def validate_normalize_manifest_set_meta(manifest):
             # url: Req'd - Strip ".git" from suffix, if any
             url = repo_info.get('url', None)
             if not url:
-                logger.error(f"{Fore.RED}Missing 'url' for repo '{repo_name}'{Fore.RESET}")
+                logger.error(colorize_error(f"Missing 'url' for repo '{repo_name}'"))
                 raise RepositoryManagementError(f"Missing 'url' for repo '{repo_name}'")
 
             if url.endswith('.git'):
@@ -173,14 +200,10 @@ def validate_normalize_manifest_set_meta(manifest):
             repo_name = url.split('/')[-1]
             repo_info.setdefault('symlink_path', repo_name)
 
-            # "{base_symlink_path}{macro_version}/{repositories[i].symlink_path}"
-            # eg: "source/content/v1.0.0/path/to/account_services"
-            symlink_path = repo_info['symlink_path']
-
             # Other validations
             tag = repo_info['tag']
             if not tag:
-                logger.error(f"{Fore.RED}Missing 'tag' for repo '{repo_name}'{Fore.RESET}")
+                logger.error(colorize_error(f"Missing 'tag' for repo '{repo_name}'"))
                 raise RepositoryManagementError(f"Missing 'tag' for repo '{repo_name}'")
 
             # Set other defaults
@@ -189,7 +212,7 @@ def validate_normalize_manifest_set_meta(manifest):
             # Set dynamic meta
             _meta = repo_info['_meta']
             _meta['url_dotgit'] = f"{url}.git"
-            _meta["repo_name"] = repo_name
+            _meta['repo_name'] = repo_name
             _meta['tag_versioned_repo_name'] = f"{repo_name}-{tag}"  # eg: "account-services-v2.1.0"
 
             tag_versioned_repo_name = _meta['tag_versioned_repo_name']
@@ -214,7 +237,7 @@ def manage_symlinks(src, destination):
     """
     # Is it already symlinked?
     if os.path.islink(destination):
-        logger.info(f"  - {Fore.GREEN} Already linked.{Fore.RESET}")
+        logger.info(colorize_success(f"  - Already linked."))
         return
 
     # Path is clean: Symlink now, after we ensure a "/" on the end
@@ -226,7 +249,7 @@ def read_manifest():
     base_path = os.path.abspath(os.path.dirname(__file__))
     manifest_path = os.path.abspath(os.path.join(base_path, '..', '..', 'repo_manifest.yml'))
     manifest_path = os.path.normpath(manifest_path)  # Normalize
-    logger.info(f"{Fore.CYAN}📜 Reading manifest: '{Style.BRIGHT}{manifest_path}{Style.NORMAL}'...{Fore.RESET}")
+    logger.info(colorize_path(f"📜 Reading manifest: '{brighten(manifest_path)}'..."))
 
     with open(manifest_path, 'r') as file:
         manifest = yaml.safe_load(file)
@@ -242,6 +265,28 @@ def read_manifest():
     setup_directory_skeleton(base_symlink_path)
 
     return manifest, manifest_path
+
+
+def log_paths(
+        debug_mode,
+        tag_versioned_repo_name,
+        rel_init_clone_path,
+        tag_versioned_clone_src_path,
+        rel_symlinked_tagged_repo_path):
+    """ Log paths for production [and optionally debugging, if debug_mode]. """
+    if debug_mode:
+        print("###############################################################################")
+        print(f"tag_versioned_repo_name:  '{tag_versioned_repo_name}'")                # eg: "account_services-v2.1.0"
+        print(f"rel_init_clone_path:  '{rel_init_clone_path}'")                        # eg: "source/_repos-available"
+        print(f"tag_versioned_clone_src_path:  '{tag_versioned_clone_src_path}'")      # eg: "source/_repos-available/account_services-v2.1.0"
+        print(f"rel_symlinked_tagged_repo_path:  '{rel_symlinked_tagged_repo_path}'")  # eg: "source/content/v1.0.0/account_services-v2.1.0"
+        print("###############################################################################")
+        print()
+
+    action_str = colorize_action(f"📁 | Working Dirs:")
+    logger.info(f"[{tag_versioned_repo_name}] {action_str}")
+    logger.info(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
+    logger.info(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_tagged_repo_path)}'"))
 
 
 def manage_repositories(manifest):
@@ -264,9 +309,8 @@ def manage_repositories(manifest):
     for macro_version, details in macro_versions:
         for repo_name, repo_info in details['repositories'].items():
             line_break = "" if current_repo_num == 1 else "\n"
-            logger.info(f"{line_break}{Fore.YELLOW}[MacroVer {Style.BRIGHT}{current_macro_ver}/{total_macro_versions}"
-                        f"{Style.NORMAL}, Repo {Style.BRIGHT}{current_repo_num}/{total_repos_num}"
-                        f"{Style.NORMAL}]{Fore.RESET}")
+            logger.info(
+                colorize_action(f"{line_break}[MacroVer {current_macro_ver}/{total_macro_versions}, Repo {current_repo_num}/{total_repos_num}]"))
 
             # Get paths from _meta
             _meta = repo_info['_meta']
@@ -276,34 +320,26 @@ def manage_repositories(manifest):
             # Ensure repo is active
             active = repo_info['active']
             if not active:
-                logger.info(f"{Fore.YELLOW}[{rel_symlinked_tagged_repo_path}] Repository !active; skipping...{Fore.RESET}")
+                logger.info(colorize_action(f"[{rel_symlinked_tagged_repo_path}] Repository !active; skipping..."))
                 total_repos_num -= 1
                 continue
 
             # eg: "source/_repos-available/account_services-v2.1.0"
             tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
-            debug_mode = manifest["debug_mode"]
+            debug_mode = manifest['debug_mode']
+            log_paths(
+                debug_mode,
+                tag_versioned_repo_name,
+                rel_init_clone_path,
+                tag_versioned_clone_src_path,
+                rel_symlinked_tagged_repo_path)
 
-            if debug_mode:
-                print("###############################################################################")
-                print(f"tag_versioned_repo_name:  '{tag_versioned_repo_name}'")                # eg: "account_services-v2.1.0"
-                print(f"rel_init_clone_path:  '{rel_init_clone_path}'")                        # eg: "source/_repos-available"
-                print(f"tag_versioned_clone_src_path:  '{tag_versioned_clone_src_path}'")      # eg: "source/_repos-available/account_services-v2.1.0"
-                print(f"rel_symlinked_tagged_repo_path:  '{rel_symlinked_tagged_repo_path}'")  # eg: "source/content/v1.0.0/account_services-v2.1.0"
-                print("###############################################################################")
-                print()
-
-            logger.info(f"[{tag_versioned_repo_name}] {Fore.CYAN}📁 | Repo clone src path: "
-                        f"'{Style.BRIGHT}{tag_versioned_clone_src_path}{Style.NORMAL}'{Fore.RESET}")
-
-            logger.info(f"[{tag_versioned_repo_name}] {Fore.CYAN}📁 | Repo symlink path: "
-                        f"'{Style.BRIGHT}{rel_symlinked_tagged_repo_path}{Style.NORMAL}'{Fore.RESET}")
-
-            clone_and_symlink(repo_info,
-                              tag_versioned_repo_name,
-                              rel_init_clone_path,
-                              tag_versioned_clone_src_path,
-                              rel_symlinked_tagged_repo_path)
+            clone_and_symlink(
+                repo_info,
+                tag_versioned_repo_name,
+                rel_init_clone_path,
+                tag_versioned_clone_src_path,
+                rel_symlinked_tagged_repo_path)
 
             current_repo_num += 1
         current_macro_ver += 1
@@ -372,15 +408,13 @@ def clone_and_symlink(
 
         # Clone the repo, if we haven't done so already
         if not os.path.exists(tag_versioned_clone_src_path):
-            logger.info(f"[{tag_versioned_repo_name}] {Fore.YELLOW}📦 | Cloning "
-                        f"({Style.BRIGHT}--branch {branch}{Style.NORMAL}) "
-                        f"'{repo_url_dotgit}'...{Fore.RESET}")
+            action_str = colorize_action(f"📦 | Cloning ({brighten(f'--branch {branch}')}) '{repo_url_dotgit}'...")
+            logger.info(f"[{tag_versioned_repo_name}] {action_str}")
 
             git_clone(tag_versioned_clone_src_path, repo_url_dotgit, branch)
         else:
-            logger.info(f"[{tag_versioned_repo_name}] {Fore.YELLOW}🔃 | Fetching updates...{Fore.RESET}")
-            logger.info(f"  - {Fore.CYAN}From clone src path: '{Style.BRIGHT}{tag_versioned_clone_src_path}'"
-                        f"{Style.NORMAL}{Fore.RESET}")
+            action_str = colorize_action(f"🔄 | Fetching updates...")
+            logger.info(f"[{tag_versioned_repo_name}] {action_str}")
 
             git_fetch(tag_versioned_clone_src_path)
 
@@ -389,26 +423,31 @@ def clone_and_symlink(
         has_branch = 'branch' in repo_info
 
         if has_branch:
-            logger.info(f"[{tag_versioned_repo_name}] {Fore.YELLOW}🔄 | Checking out branch "
-                        f"'{Style.BRIGHT}{branch}{Style.NORMAL}'...{Fore.RESET}")
+            action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
+            logger.info(f"[{tag_versioned_repo_name}] {action_str}")
             git_checkout(tag_versioned_clone_src_path, branch)
 
         if has_tag:
-            logger.info(f"[{tag_versioned_repo_name}] {Fore.YELLOW}🏷️ | Checking out tag "
-                        f"'{Style.BRIGHT}{tag}{Style.NORMAL}'...{Fore.RESET}")
+            action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
+            logger.info(f"[{tag_versioned_repo_name}] {action_str}")
             git_checkout(tag_versioned_clone_src_path, tag)
 
         # Manage symlinks
-        logger.info(f"[{tag_versioned_repo_name}] {Fore.YELLOW}🔗 | Symlinking...{Fore.RESET}")
-        logger.info(f"  - {Fore.CYAN}From clone src path: '{Style.BRIGHT}{tag_versioned_clone_src_path}{Style.NORMAL}'{Fore.RESET}")
-        logger.info(f"  - {Fore.CYAN}To symlink path: '{Style.BRIGHT}{rel_symlinked_tagged_repo_path}{Style.NORMAL}'{Fore.RESET}")
+        action_str = colorize_action(f"🔗 | Symlinking...")
+        logger.info(f"[{tag_versioned_repo_name}] {action_str}")
+        logger.info(colorize_path(f"  - From clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
+        logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_symlinked_tagged_repo_path)}'"))
         manage_symlinks(tag_versioned_clone_src_path, rel_symlinked_tagged_repo_path)
+
+        # Done with this repo
+        success_str = colorize_success("✅ | Done.")
+        logger.info(f"[{tag_versioned_repo_name}] {success_str}")
 
     except subprocess.CalledProcessError:
         error_url = f"{repo_url_dotgit}/tree/{tag}"
         tags_url = f"{repo_url_dotgit}/-/tags"
 
-        error_message = (f"\n\n{Fore.RED}[repo_manager]{Style.BRIGHT} Failed to checkout "
+        error_message = (f"\n\n{Fore.RED}[repo_manager] {brighten('Failed to checkout')}"
                          f"branch/tag '{rel_symlinked_tagged_repo_path}'\n"
                          f"- Does the '{tag}' tag exist? {error_url}\n"
                          f"- Check available tags: {tags_url}{Fore.RESET}\n\n")
