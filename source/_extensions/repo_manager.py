@@ -32,6 +32,9 @@ Requirements:
 
 Entry point: setup(app) | This script is executed during the 'builder-inited' event of Sphinx,
 which is triggered after Sphinx inits but before the build process begins.
+
+# Tested in:
+- Windows 11 via PowerShell7
 """
 import os
 import yaml
@@ -227,21 +230,31 @@ def validate_normalize_manifest_set_meta(manifest):
     return manifest
 
 
-def manage_symlinks(src, destination):
+def create_symlink(rel_symlinked_tagged_repo_path, tag_versioned_clone_src_path):
     """
     Create or update a symlink.
     (!) overwrite only works if running in ADMIN
+    (!) In Windows, symlinking is the *opposite* src and destination of Unix
     - tag_versioned_clone_src_path   # eg: "source/_repos-available/account_services-v2.1.0"
     - rel_symlinked_tagged_repo_path # eg: "source/content/v1.0.0/account_services-v2.1.0"
     - ^ We need a lingering /slash on the end
     """
+    # Convert to abs paths
+    abs_symlinked_tagged_repo_path = os.path.abspath(rel_symlinked_tagged_repo_path)
+    abs_tag_versioned_clone_src_path = os.path.abspath(tag_versioned_clone_src_path)
+    
+    print(f"*Source (real content): {abs_tag_versioned_clone_src_path}")
+    print(f"*Destination (symlink): {abs_symlinked_tagged_repo_path}")
+    print(f"*PowerShell equivalent command:")
+    print(f'New-Item -ItemType SymbolicLink -Path "{abs_symlinked_tagged_repo_path}" -Target "{abs_tag_versioned_clone_src_path}"')
+
     # Is it already symlinked?
-    if os.path.islink(destination):
+    if os.path.islink(abs_symlinked_tagged_repo_path):
         logger.info(colorize_success(f"  - Already linked."))
         return
 
     # Path is clean: Symlink now, after we ensure a "/" on the end
-    os.symlink(src, destination)
+    os.symlink(abs_tag_versioned_clone_src_path, abs_symlinked_tagged_repo_path)
 
 
 def read_manifest():
@@ -437,7 +450,7 @@ def clone_and_symlink(
         logger.info(f"[{tag_versioned_repo_name}] {action_str}")
         logger.info(colorize_path(f"  - From clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
         logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_symlinked_tagged_repo_path)}'"))
-        manage_symlinks(tag_versioned_clone_src_path, rel_symlinked_tagged_repo_path)
+        create_symlink(rel_symlinked_tagged_repo_path, tag_versioned_clone_src_path)
 
         # Done with this repo
         success_str = colorize_success("✅ | Done.")
