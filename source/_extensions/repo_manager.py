@@ -460,8 +460,8 @@ def clone_and_symlink(
         error_url = f"{repo_url_dotgit}/tree/{tag}"
         tags_url = f"{repo_url_dotgit}/-/tags"
 
-        error_message = (f"\n\n{Fore.RED}[repo_manager] {brighten('Failed to checkout')}"
-                         f"branch/tag '{rel_symlinked_tagged_repo_path}'\n"
+        error_message = (f"\n\n{Fore.RED}[repo_manager] "
+                         f"Failed to checkout branch/tag '{rel_symlinked_tagged_repo_path}'\n"
                          f"- Does the '{tag}' tag exist? {error_url}\n"
                          f"- Check available tags: {tags_url}{Fore.RESET}\n\n")
         raise RepositoryManagementError(error_message)
