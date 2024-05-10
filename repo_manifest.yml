@@ -5,6 +5,7 @@
 # - Specifies base path for cloning and details for each version-controlled set of docs.
 # - Keep 1st child repository heavily commented with all optional props for collaborator FYI
 ############################################################################################
+debug_mode: false,                          # [Optional] Verbose logging, mostly
 init_clone_path: "source/_repos-available"  # [Optional] Default base for cloning; use /forward slashes; defaults to source/_repos-available, if omitted
 base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
 default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
