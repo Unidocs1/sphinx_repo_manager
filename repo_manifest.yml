@@ -4,13 +4,14 @@
 ## This YAML file configures repository settings for the Sphinx documentation system.         ##
 ## - Specifies base path for cloning and details for each version-controlled set of docs.     ##
 ## - Keep 1st child repository heavily commented with all optional props for collaborator FYI ##
+## - For macro_versions, minor patches should just override the minor versions                ##
 ################################################################################################
 #debug_mode: false                           # [Optional] Verbose logging, mostly
 #init_clone_path: "source/_repos-available"  # [Optional] Default base for cloning; use /forward slashes; defaults to source/_repos-available, if omitted
 #base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
 #default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
 macro_versions:                              # Dirs will be created per-macro version
-  v1.0.1:  # 1st entry == default; create a matching branch for each macro_version
+  "2024.2":  # 1st entry == default; create a matching branch for each macro_version. Add quotes if !contains alpha chars
     repositories:
       account_services:
         url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
@@ -19,7 +20,7 @@ macro_versions:                              # Dirs will be created per-macro ve
         #branch: "master"                  # [Optional] Default {default_branch}, if omitted
         #active: true                      # [Optional] Default true, if omitted
 
-  v1.0.0:
+  "2024.1":
     repositories:
       account_services:
         url: "https://gitlab.acceleratxr.com/Core/account_services"

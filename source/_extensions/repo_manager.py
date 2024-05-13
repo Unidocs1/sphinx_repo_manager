@@ -39,6 +39,7 @@ which is triggered after Sphinx inits but before the build process begins.
 import os
 import yaml
 import subprocess
+import shlex  # CLI helper
 from sphinx.util import logging
 from colorama import init, Fore, Style
 
@@ -77,11 +78,6 @@ def colorize_success(log_str):
     return f"{Fore.GREEN}{log_str}{Fore.RESET}"
 
 
-def colorize_error(log_str):
-    """ Apply an error-related color (RED) to a string. """
-    return f"{Fore.RED}{log_str}{Fore.RESET}"
-
-
 def setup(app):
     """ Connect the 'builder-inited' event from Sphinx to our custom function. """
     app.connect('builder-inited', clone_update_repos)
@@ -90,39 +86,39 @@ def setup(app):
 def init_dir_tree(manifest):
     """
     Initialize or clear paths based on manifest configuration. Default tree:
-    ########################################################
+    ########################################################################
     - source
-        - _repos-available
+      - _repos-available
         - content
-            - {macro_version[i]} // Contains symlinked repos
-    ########################################################
+          - {macro_version[i]} // This tree stops here
+            - {repo}-{tag} // Symlinked repo content to later be made
+    ########################################################################
     """
-    logger.info(colorize_path("🧹 Crafting expected hierarchy from manifest..."))
+    logger.info(colorize_action("⚙️ | Crafting dir skeleton from manifest..."))
 
     # init_clone_path
     init_clone_path = os.path.abspath(manifest['init_clone_path'])
     logger.info(colorize_path(f"   - init_clone_path: '{brighten(init_clone_path)}'"))
-    setup_directory_skeleton(init_clone_path)
+    # Setup clone src path skeleton tree
 
-    # base_symlink_path
+    # Setup target symlink path skeleton tree
     base_symlink_path = os.path.abspath(manifest['base_symlink_path'])
     logger.info(colorize_path(f"   - base_symlink_path: '{brighten(base_symlink_path)}'"))
     setup_directory_skeleton(base_symlink_path)
 
     # macro_versions
     macro_versions = manifest['macro_versions'].items()
-    logger.info(colorize_path("     - macro_version dirs:"))
 
     # Log macro versions -> Create directory skeleton
     macro_version_i = 0
     for macro_version, details in macro_versions:
         default_str = f" {brighten('(default)')}" if macro_version_i == 0 else ""
-        logger.info(colorize_path(f"       - {macro_version}{default_str}"))
-        version_path = os.path.abspath(os.path.join(base_symlink_path, macro_version))
+        logger.info(colorize_path(f"     - Macro version: '{brighten(macro_version)}'{default_str}"))
+        version_path = os.path.abspath(os.path.join(
+            base_symlink_path, macro_version))
 
         setup_directory_skeleton(version_path)
         macro_version_i += 1
-    logger.info("")
 
 
 def clone_update_repos(app):
@@ -145,8 +141,11 @@ def setup_directory_skeleton(create_path_to):
     Ensure directory exists and optionally clear its contents.
     (!) Deleting or overriding may require ADMIN
     """
-    if not os.path.exists(create_path_to):
-        os.makedirs(create_path_to)
+    # Create the dir skeleton structure
+    try:
+        os.makedirs(create_path_to, exist_ok=True)
+    except OSError as e:
+        raise RepositoryManagementError(f"Failed to create directory '{create_path_to}': {str(e)}")
 
 
 def validate_normalize_manifest_set_meta(manifest):
@@ -163,6 +162,8 @@ def validate_normalize_manifest_set_meta(manifest):
         - tag_versioned_clone_src_path
     }
     """
+    logger.info(colorize_action("🧹 | Validating & normalizing manifest..."))
+
     # Set root defaults
     manifest.setdefault('debug_mode', False)
     manifest.setdefault('default_branch', 'master')
@@ -173,7 +174,10 @@ def validate_normalize_manifest_set_meta(manifest):
     base_symlink_path = manifest['base_symlink_path']
     repo_i = 0
     for macro_version, details in manifest['macro_versions'].items():
+        logger.info(colorize_path(f"   - Macro version: '{brighten(macro_version)}'"))
         for repo_name, repo_info in details['repositories'].items():
+            # logger.info(colorize_action(f"    - {repo_name}..."))
+
             # Inject '_meta' placeholders; can technically be overridden in yml for debugging
             if '_meta' not in repo_info:
                 repo_info['_meta'] = {
@@ -188,7 +192,7 @@ def validate_normalize_manifest_set_meta(manifest):
             # url: Req'd - Strip ".git" from suffix, if any
             url = repo_info.get('url', None)
             if not url:
-                logger.error(colorize_error(f"Missing 'url' for repo '{repo_name}'"))
+                logger.error(f"Missing 'url' for repo '{repo_name}'")
                 raise RepositoryManagementError(f"Missing 'url' for repo '{repo_name}'")
 
             if url.endswith('.git'):
@@ -206,7 +210,7 @@ def validate_normalize_manifest_set_meta(manifest):
             # Other validations
             tag = repo_info['tag']
             if not tag:
-                logger.error(colorize_error(f"Missing 'tag' for repo '{repo_name}'"))
+                logger.error(f"Missing 'tag' for repo '{repo_name}'")
                 raise RepositoryManagementError(f"Missing 'tag' for repo '{repo_name}'")
 
             # Set other defaults
@@ -225,8 +229,8 @@ def validate_normalize_manifest_set_meta(manifest):
             # "{init_clone_path}/{tag_versioned_repo_name}"
             _meta['tag_versioned_clone_src_path'] = os.path.normpath(os.path.join(
                 init_clone_path, tag_versioned_repo_name))
-
         repo_i += 1
+
     return manifest
 
 
@@ -242,11 +246,6 @@ def create_symlink(rel_symlinked_tagged_repo_path, tag_versioned_clone_src_path)
     # Convert to abs paths
     abs_symlinked_tagged_repo_path = os.path.abspath(rel_symlinked_tagged_repo_path)
     abs_tag_versioned_clone_src_path = os.path.abspath(tag_versioned_clone_src_path)
-    
-    print(f"*Source (real content): {abs_tag_versioned_clone_src_path}")
-    print(f"*Destination (symlink): {abs_symlinked_tagged_repo_path}")
-    print(f"*PowerShell equivalent command:")
-    print(f'New-Item -ItemType SymbolicLink -Path "{abs_symlinked_tagged_repo_path}" -Target "{abs_tag_versioned_clone_src_path}"')
 
     # Is it already symlinked?
     if os.path.islink(abs_symlinked_tagged_repo_path):
@@ -262,7 +261,9 @@ def read_manifest():
     base_path = os.path.abspath(os.path.dirname(__file__))
     manifest_path = os.path.abspath(os.path.join(base_path, '..', '..', 'repo_manifest.yml'))
     manifest_path = os.path.normpath(manifest_path)  # Normalize
-    logger.info(colorize_path(f"📜 Reading manifest: '{brighten(manifest_path)}'..."))
+
+    logger.info(colorize_action(f'📜 | Reading manifest...'))
+    logger.info(colorize_path(f"   - Path: '{brighten(manifest_path)}'"))
 
     with open(manifest_path, 'r') as file:
         manifest = yaml.safe_load(file)
@@ -321,14 +322,15 @@ def manage_repositories(manifest):
     #       - Prep paths, clone/fetch, checkout tagged version
     for macro_version, details in macro_versions:
         for repo_name, repo_info in details['repositories'].items():
-            line_break = "" if current_repo_num == 1 else "\n"
-            logger.info(
-                colorize_action(f"{line_break}[MacroVer {current_macro_ver}/{total_macro_versions}, Repo {current_repo_num}/{total_repos_num}]"))
+            logger.info(colorize_action(
+                "\n-----------------------\n"
+                f"[MacroVer {current_macro_ver}/{total_macro_versions},"
+                f"Repo {current_repo_num}/{total_repos_num}]"))
 
             # Get paths from _meta
             _meta = repo_info['_meta']
-            rel_symlinked_tagged_repo_path = _meta['rel_symlinked_tagged_repo_path']  # eg: "source/content/v1.0.0/account_services-v2.1.0"
             tag_versioned_repo_name = _meta['tag_versioned_repo_name']  # eg: "account_services-v2.1.0"
+            rel_symlinked_tagged_repo_path = _meta['rel_symlinked_tagged_repo_path']  # eg: "source/content/v1.0.0/account_services-v2.1.0"
 
             # Ensure repo is active
             active = repo_info['active']
@@ -364,10 +366,23 @@ def git_fetch(repo_path):
     git_submodule_cmd(['fetch', '--all', '--tags'], repo_path)
 
 
-def validate_is_git_dir(repo_path):
-    """ Check if a directory is a valid Git repository. """
-    is_git_dir = os.path.exists(os.path.join(repo_path, '.git'))
-    return is_git_dir
+def validate_is_git_dir(repo_path, validate_has_other_files):
+    """ Check if a directory is a valid Git repository """
+    if not os.path.exists(repo_path):
+        return False
+
+    # Check if it has a .git folder
+    git_dir = os.path.join(repo_path, '.git')
+    if not os.path.exists(git_dir):
+        return False
+
+    # Check if it has other files
+    if validate_has_other_files:
+        other_files = os.listdir(repo_path)
+        if len(other_files) > 1:
+            return False
+
+    return True
 
 
 def git_clone(clone_to_path, repo_url_dotgit, branch):
@@ -396,7 +411,12 @@ def git_submodule_cmd(cmd, working_dir_repo_path):
     - eg: git_existing_repo_cmd(['fetch', '--all', '--tags'], 'source/_repos-available/v1.0.0/account_services')
     - eg: git_existing_repo_cmd(['pull'], 'source/_repos-available/v1.0.0/account_services')
     """
-    subprocess.run(['git', '-C', working_dir_repo_path, *cmd, "--quiet"], check=True)
+    full_cmd = ['git', '-C', working_dir_repo_path] + cmd + ['--quiet']
+
+    pretty_cmd = shlex.join(full_cmd)
+    logger.info(colorize_action(colorize_path(f"  - CLI: `{brighten(pretty_cmd)}`")))
+
+    subprocess.run(full_cmd, check=True)
 
 
 def clone_and_symlink(
@@ -426,7 +446,7 @@ def clone_and_symlink(
 
             git_clone(tag_versioned_clone_src_path, repo_url_dotgit, branch)
         else:
-            action_str = colorize_action(f"🔄 | Fetching updates...")
+            action_str = colorize_action(f"🔃 | Fetching updates...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
 
             git_fetch(tag_versioned_clone_src_path)
