@@ -36,14 +36,14 @@ which is triggered after Sphinx inits but before the build process begins.
 # Tested in:
 - Windows 11 via PowerShell7
 """
-import os
 import yaml
-import subprocess
-import shlex  # CLI helper
+from log_styles import *
+from git_helper import *
 from sphinx.util import logging
-from colorama import init, Fore, Style
 
-init(autoreset=True)  # Initializes Colorama and auto-resets styles after each print
+BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+MANIFEST_PATH = os.path.normpath(os.path.join(
+    BASE_PATH, '..', '..', '..', 'repo_manifest.yml'))
 STOP_BUILD_ON_ERROR = True
 logger = logging.getLogger(__name__)
 
@@ -51,31 +51,6 @@ logger = logging.getLogger(__name__)
 class RepositoryManagementError(Exception):
     """ Custom exception for repository management errors. """
     pass
-
-
-def brighten(log_str):
-    """ Apply bright style to a string. """
-    return f"{Style.BRIGHT}{log_str}{Style.NORMAL}"
-
-
-def colorize(log_str, color):
-    """ Apply color to a string, resetting when done. """
-    return f"{color}{log_str}{Fore.RESET}"
-
-
-def colorize_path(log_str):
-    """ Apply a path-related color (CYAN) to a string. """
-    return f"{Fore.CYAN}{log_str}{Fore.RESET}"
-
-
-def colorize_action(log_str):
-    """ Apply an action-related color (YELLOW) to a string. """
-    return f"{Fore.YELLOW}{log_str}{Fore.RESET}"
-
-
-def colorize_success(log_str):
-    """ Apply a success-related color (GREEN) to a string. """
-    return f"{Fore.GREEN}{log_str}{Fore.RESET}"
 
 
 def setup(app):
@@ -125,7 +100,7 @@ def clone_update_repos(app):
     """ Handle the repository cloning and updating process when Sphinx initializes. """
     logger.info(colorize_success(f"\n══{brighten('BEGIN REPO_MANAGER')}══\n"))
     try:
-        manifest, manifest_path = read_manifest()
+        manifest = read_manifest()
         init_dir_tree(manifest)
         manage_repositories(manifest)
     except Exception as e:
@@ -257,15 +232,11 @@ def create_symlink(rel_symlinked_tagged_repo_path, tag_versioned_clone_src_path)
 
 
 def read_manifest():
-    """ Read and return the repository manifest from YAML file, along with its path. """
-    base_path = os.path.abspath(os.path.dirname(__file__))
-    manifest_path = os.path.abspath(os.path.join(base_path, '..', '..', 'repo_manifest.yml'))
-    manifest_path = os.path.normpath(manifest_path)  # Normalize
-
+    """ Read and return the repository manifest from YAML file. """
     logger.info(colorize_action(f'📜 | Reading manifest...'))
-    logger.info(colorize_path(f"   - Path: '{brighten(manifest_path)}'"))
+    logger.info(colorize_path(f"   - Path: '{brighten(MANIFEST_PATH)}'"))
 
-    with open(manifest_path, 'r') as file:
+    with open(MANIFEST_PATH, 'r') as file:
         manifest = yaml.safe_load(file)
 
     # Remove .git from urls; inject hidden _meta prop per repo, etc
@@ -278,7 +249,7 @@ def read_manifest():
     setup_directory_skeleton(init_clone_path)
     setup_directory_skeleton(base_symlink_path)
 
-    return manifest, manifest_path
+    return manifest
 
 
 def log_paths(
@@ -358,65 +329,6 @@ def manage_repositories(manifest):
 
             current_repo_num += 1
         current_macro_ver += 1
-
-
-def git_fetch(repo_path):
-    """ Fetch all branches and tags from the remote repository. """
-    # Fetch all branches and tags *from the repo_path working dir (-C)*
-    git_submodule_cmd(['fetch', '--all', '--tags'], repo_path)
-
-
-def validate_is_git_dir(repo_path, validate_has_other_files):
-    """ Check if a directory is a valid Git repository """
-    if not os.path.exists(repo_path):
-        return False
-
-    # Check if it has a .git folder
-    git_dir = os.path.join(repo_path, '.git')
-    if not os.path.exists(git_dir):
-        return False
-
-    # Check if it has other files
-    if validate_has_other_files:
-        other_files = os.listdir(repo_path)
-        if len(other_files) > 1:
-            return False
-
-    return True
-
-
-def git_clone(clone_to_path, repo_url_dotgit, branch):
-    """
-    Clone the repo+branch from the provided URL to the specified path.
-    - rel_symlinked_tagged_repo_path # eg: "v1.0.0/account_services"
-    """
-    # Clone -> Fetch all
-    subprocess.run([
-        'git', 'clone',
-        '--branch', branch,
-        '-q',
-        repo_url_dotgit, clone_to_path], check=True)
-
-
-def git_checkout(repo_path, tag_or_branch):
-    """ Checkout the specified tag/branch in the repository. """
-    git_submodule_cmd(['checkout', tag_or_branch], repo_path)
-
-
-def git_submodule_cmd(cmd, working_dir_repo_path):
-    """
-    Run a git command in the specified sub-repo path, ensuring it's run from that working dir.
-    - `--quiet` suppresses spammy tips
-    - eg: git_existing_repo_cmd(['checkout', 'v1.0.0'], 'source/_repos-available/v1.0.0/account_services')
-    - eg: git_existing_repo_cmd(['fetch', '--all', '--tags'], 'source/_repos-available/v1.0.0/account_services')
-    - eg: git_existing_repo_cmd(['pull'], 'source/_repos-available/v1.0.0/account_services')
-    """
-    full_cmd = ['git', '-C', working_dir_repo_path] + cmd + ['--quiet']
-
-    pretty_cmd = shlex.join(full_cmd)
-    logger.info(colorize_action(colorize_path(f"  - CLI: `{brighten(pretty_cmd)}`")))
-
-    subprocess.run(full_cmd, check=True)
 
 
 def clone_and_symlink(

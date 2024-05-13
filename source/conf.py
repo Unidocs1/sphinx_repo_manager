@@ -1,9 +1,30 @@
+##############################################################################
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+#
+##############################################################################
+# XBE Custom Extension: repo_manager
+#
+# At build time, clones tagged versions from ../repo_manifest.yml into the
+# specified directories. This allows us to build documentation for multiple
+# versions of the same service.
+#
+# DEFAULTS:
+# - Src clone dir: `./repos_available`
+# - Target symlinked content: `./content/{macro_version}/{repo}-{tag}`
+#
+##############################################################################
 
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
+project = 'xbe'
+copyright = 'Xsolla (USA), Inc. All rights reserved'
+author = 'Xsolla'
+release = '2024.2'
 
 # -- Path setup --------------------------------------------------------------
 #
@@ -13,20 +34,27 @@
 
 import os
 import sys
-sys.path.append(os.path.abspath('./_extensions'))
+import yaml
+sys.path.append(os.path.abspath(
+    os.path.join('_extensions', 'repo_manager')))
 sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath('./multiplayer/account_services/docs/content'))
 # sys.path.insert(0, os.path.abspath('./multiplayer/quest_services/docs/content'))
 
-
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
-project = 'xbe'
-copyright = 'Xsolla (USA), Inc. All rights reserved'
-author = 'Xsolla'
-release = 'v0.0.1'
-
+# # -- Define dynamic paths to use |like_this| in rst files ---------------------
+# with open('../repo_manifest.yml', 'r') as file:
+#     manifest = yaml.safe_load(file)
+# 
+# repo_path_to_doc_content = manifest['repo_path_to_doc_content']  # eg: "docs/content"
+# repos = manifest['macro_versions'][release]['repositories']
+# account_services_version = repos['account_services']['tag']
+# account_services_path = f"content/{release}/account_services-{account_services_version}/{repo_path_to_doc_content}/index"
+# 
+# # Add to rst_prolog for global replacement throughout your .rst files
+# rst_prolog = f".. |macro_versions| replace:: {manifest['macro_versions']}"
+# rst_prolog += f"""
+# .. |account_services_path| replace:: {account_services_path}
+# """
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
