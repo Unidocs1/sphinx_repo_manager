@@ -46,6 +46,7 @@ MANIFEST_PATH = os.path.normpath(os.path.join(
     BASE_PATH, '..', '..', '..', 'repo_manifest.yml'))
 STOP_BUILD_ON_ERROR = True
 logger = logging.getLogger(__name__)
+Manifest = None # Set after normalized
 
 
 class RepositoryManagementError(Exception):
@@ -56,6 +57,21 @@ class RepositoryManagementError(Exception):
 def setup(app):
     """ Connect the 'builder-inited' event from Sphinx to our custom function. """
     app.connect('builder-inited', clone_update_repos)
+    #app.connect('source-read', replace_paths)  # (!) WIP
+
+
+def replace_paths(app, docname, source):
+    """ WIP. """
+    ## DEBUG
+    print(f"\n\n*docname=='{docname}'\n\n")
+    print(f"\n\n*source=='{source}'\n\n")
+    ## DEBUG
+
+    # if docname == "index":
+    #     release = Manifest['macro_versions'].items()[0]  # eg: "2024.2"
+    #     path = f"content/{release}/account_services-{manifest['macro_versions'][release]['repositories']['account_services']['tag']}/docs/content/index"
+    #     source[0] = source[0].replace("content/2024.2/account_services-v2.1.0/docs/content/index", path)
+    #     logger.info(f"Replaced paths in {docname}")
 
 
 def init_dir_tree(manifest):
@@ -206,6 +222,7 @@ def validate_normalize_manifest_set_meta(manifest):
                 init_clone_path, tag_versioned_repo_name))
         repo_i += 1
 
+    Manifest = manifest
     return manifest
 
 
