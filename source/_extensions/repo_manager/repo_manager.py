@@ -387,12 +387,12 @@ def clone_and_symlink(
         if has_branch:
             action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
-            git_checkout(tag_versioned_clone_src_path, branch)
+            git_checkout(rel_symlinked_tagged_repo_path, branch)
 
         if has_tag:
             action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
-            git_checkout(tag_versioned_clone_src_path, tag)
+            git_checkout(rel_symlinked_tagged_repo_path, tag)
 
         # Manage symlinks
         action_str = colorize_action(f"🔗 | Symlinking...")
