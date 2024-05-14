@@ -17,10 +17,10 @@ macro_versions:                             # Dirs will be created per-macro ver
     repositories:
       account_services:
         url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
-        tag: "v2.1.0"                     # [Optional] You may not want a tag, if locally testing (!) Don't forget to prefix with "v", if target tags include this
-        symlink_path: "account_services"  # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
-        branch: "master"                  # [Optional] Default {default_branch}, if omitted
-        active: true                      # [Optional] Default true, if omitted
+        #tag: "v2.1.0"                        # [Optional] You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+        symlink_path: "account_services"      # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
+        branch: "dylan/refactor/docs-revamp"  # [Optional] Default {default_branch}, if omitted
+        active: true                          # [Optional] Default true, if omitted
 
   "2024.1":
     repositories:

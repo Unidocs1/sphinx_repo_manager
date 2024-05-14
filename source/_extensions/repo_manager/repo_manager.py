@@ -36,6 +36,7 @@ which is triggered after Sphinx inits but before the build process begins.
 # Tested in:
 - Windows 11 via PowerShell7
 """
+import re  # regex
 import yaml
 from log_styles import *
 from git_helper import *
@@ -46,7 +47,7 @@ MANIFEST_PATH = os.path.normpath(os.path.join(
     BASE_PATH, '..', '..', '..', 'repo_manifest.yml'))
 STOP_BUILD_ON_ERROR = True
 logger = logging.getLogger(__name__)
-Manifest = None # Set after normalized
+Manifest = None  # Set after normalized
 
 
 class RepositoryManagementError(Exception):
@@ -57,15 +58,15 @@ class RepositoryManagementError(Exception):
 def setup(app):
     """ Connect the 'builder-inited' event from Sphinx to our custom function. """
     app.connect('builder-inited', clone_update_repos)
-    #app.connect('source-read', replace_paths)  # (!) WIP
+    # app.connect('source-read', replace_paths)  # (!) WIP
 
 
 def replace_paths(app, docname, source):
-    """ WIP. """
-    ## DEBUG
-    print(f"\n\n*docname=='{docname}'\n\n")
-    print(f"\n\n*source=='{source}'\n\n")
-    ## DEBUG
+    """ TODO: WIP Experiments for dynamic path replacements in .rst files from Manifest. """
+    # ## DEBUG
+    # print(f"\n\n*docname=='{docname}'\n\n")
+    # print(f"\n\n*source=='{source}'\n\n")
+    # ## /DEBUG
 
     # if docname == "index":
     #     release = Manifest['macro_versions'].items()[0]  # eg: "2024.2"
@@ -81,8 +82,7 @@ def init_dir_tree(manifest):
     - source
       - _repos-available
         - content
-          - {macro_version[i]} // This tree stops here
-            - {repo}-{tag} // Symlinked repo content to later be made
+          - {macro_version[i]}  // This tree stops here
     ########################################################################
     """
     logger.info(colorize_action("⚙️ | Crafting dir skeleton from manifest..."))
@@ -177,8 +177,9 @@ def validate_normalize_manifest_set_meta(manifest):
                     'is_default': repo_i == 0,             # 1st entry == default
                     'url_dotgit': '',                      # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
                     'repo_name': '',                       # eg: "account_services"
-                    'rel_symlinked_tagged_repo_path': '',  # "{base_symlink_path}{macro_version}{symlink_path}-{tag}"
-                    'tag_versioned_repo_name': '',         # "Prep "repo-{repo_tag}"; eg: "account-services-v2.1.0"
+                    'has_tag': False,                      # True if tag exists
+                    'rel_symlinked_tagged_repo_path': '',  # "{base_symlink_path}{macro_version}{symlink_path}-{tag_or_branch}"
+                    'tag_versioned_repo_name': '',         # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
                     'tag_versioned_clone_src_path': ''     # "{init_clone_path}/{tag_versioned_repo_name}"
                 }
 
@@ -195,25 +196,37 @@ def validate_normalize_manifest_set_meta(manifest):
             # Default branch == parent {default_branch}
             if 'default_branch' not in repo_info:
                 repo_info.setdefault('branch', manifest['default_branch'])
+            branch = repo_info['branch']
 
             # Default symlink_path == repo name (the end of url after the last slash/)
             repo_name = url.split('/')[-1]
             repo_info.setdefault('symlink_path', repo_name)
 
-            # Other validations
-            tag = repo_info['tag']
-            if not tag:
-                logger.error(f"Missing 'tag' for repo '{repo_name}'")
-                raise RepositoryManagementError(f"Missing 'tag' for repo '{repo_name}'")
+            # It's ok if !tag (we'll just checkout the branch); great for debugging
+            # (!) However, this will affect our naming convention, normally "{repo}-{tag_or_branch}"
+            tag = repo_info.get('tag', None)
+            has_tag = bool(tag)
 
             # Set other defaults
             repo_info.setdefault('active', True)
 
             # Set dynamic meta
             _meta = repo_info['_meta']
+            _meta['has_tag'] = has_tag
             _meta['url_dotgit'] = f"{url}.git"
             _meta['repo_name'] = repo_name
-            _meta['tag_versioned_repo_name'] = f"{repo_name}-{tag}"  # eg: "account-services-v2.1.0"
+
+            # If tag, append "-{tag} to repo name
+            # If !tag, append "--{branch} to repo name
+            if has_tag:
+                _meta['tag_versioned_repo_name'] = f"{repo_name}-{tag}"  # "repo-{tag}"; eg: "account-services-v2.1.0"
+            else:
+                # "repo-{"cleaned_branch"}"; eg: "account-services--master" or "account-services--some_nested_branch"
+                # ^ Notice the "--" double slash separator. Only accept alphanumeric chars; replace all others with "_"
+                pattern = r'\W+'
+                normalized_repo_name_for_dir = branch.replace("/", "--")
+                re.sub(pattern, '_', normalized_repo_name_for_dir)
+                _meta['tag_versioned_repo_name'] = f"{repo_name}--{normalized_repo_name_for_dir}"
 
             tag_versioned_repo_name = _meta['tag_versioned_repo_name']
             _meta['rel_symlinked_tagged_repo_path'] = os.path.normpath(os.path.join(
@@ -230,24 +243,26 @@ def validate_normalize_manifest_set_meta(manifest):
 
 def create_symlink(rel_symlinked_tagged_repo_path, tag_versioned_clone_src_path):
     """
-    Create or update a symlink.
+    Create or update a symlink using relative paths.
     (!) overwrite only works if running in ADMIN
     (!) In Windows, symlinking is the *opposite* src and destination of Unix
     - tag_versioned_clone_src_path   # eg: "source/_repos-available/account_services-v2.1.0"
     - rel_symlinked_tagged_repo_path # eg: "source/content/v1.0.0/account_services-v2.1.0"
     - ^ We need a lingering /slash on the end
     """
-    # Convert to abs paths
-    abs_symlinked_tagged_repo_path = os.path.abspath(rel_symlinked_tagged_repo_path)
-    abs_tag_versioned_clone_src_path = os.path.abspath(tag_versioned_clone_src_path)
+    # Get the directory of the symlink path
+    symlink_dir = os.path.dirname(rel_symlinked_tagged_repo_path)
+
+    # Get the relative path from the symlink directory to the clone source path
+    rel_tag_versioned_clone_src_path = os.path.relpath(tag_versioned_clone_src_path, symlink_dir)
 
     # Is it already symlinked?
-    if os.path.islink(abs_symlinked_tagged_repo_path):
+    if os.path.islink(rel_symlinked_tagged_repo_path):
         logger.info(colorize_success(f"  - Already linked."))
         return
 
     # Path is clean: Symlink now, after we ensure a "/" on the end
-    os.symlink(abs_tag_versioned_clone_src_path, abs_symlinked_tagged_repo_path)
+    os.symlink(rel_tag_versioned_clone_src_path, rel_symlinked_tagged_repo_path)
 
 
 def read_manifest():
@@ -361,18 +376,22 @@ def clone_and_symlink(
     - tag_versioned_clone_src_path    # eg: "source/_repos-available/account_services-v2.1.0"
     - rel_symlinked_tagged_repo_path  # eg: "source/content/v1.0.0/account_services-v2.1.0"
     """
-    tag = repo_info['tag']
+    _meta = repo_info['_meta']
+    repo_url_dotgit = _meta['url_dotgit']
+    has_tag = _meta['has_tag']
+
+    tag = repo_info['tag'] if has_tag else None
     branch = repo_info['branch']
-    repo_url_dotgit = repo_info['_meta']['url_dotgit']
 
     try:
-
         # Clone the repo, if we haven't done so already
+        cloned = False
         if not os.path.exists(tag_versioned_clone_src_path):
             action_str = colorize_action(f"📦 | Cloning ({brighten(f'--branch {branch}')}) '{repo_url_dotgit}'...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
 
             git_clone(tag_versioned_clone_src_path, repo_url_dotgit, branch)
+            cloned = True
         else:
             action_str = colorize_action(f"🔃 | Fetching updates...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
@@ -380,14 +399,13 @@ def clone_and_symlink(
             git_fetch(tag_versioned_clone_src_path)
 
         # Checkout to the specific branch or tag
-        has_tag = 'tag' in repo_info
         has_branch = 'branch' in repo_info
-
-        if has_branch:
+        if not cloned and has_branch:
             action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
             git_checkout(tag_versioned_clone_src_path, branch, stash_and_continue_if_wip)
 
+        # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
         if has_tag:
             action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")

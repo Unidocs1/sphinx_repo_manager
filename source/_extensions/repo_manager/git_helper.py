@@ -82,9 +82,6 @@ def git_checkout(repo_path, tag_or_branch, stash_and_continue_if_wip):
     Checkout the specified tag/branch in the repository, considering `stash_and_continue_if_wip`.
     """
     if git_dir_exists(repo_path):
-        print(f"*repo_path: {repo_path}")
-        print(f"*stash_and_continue_if_wip: {stash_and_continue_if_wip}")
-        print(f"*git_check_is_dirty: {git_check_is_dirty(repo_path)}")
         if git_check_is_dirty(repo_path):
             if stash_and_continue_if_wip:
                 git_stash(repo_path, stash_message=f"Stashing WIP changes for repo_path '{brighten(repo_path)}'")
