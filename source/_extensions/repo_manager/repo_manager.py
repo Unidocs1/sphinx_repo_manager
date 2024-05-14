@@ -87,15 +87,15 @@ def init_dir_tree(manifest):
     """
     logger.info(colorize_action("⚙️ | Crafting dir skeleton from manifest..."))
 
-    # init_clone_path
-    init_clone_path = os.path.abspath(manifest['init_clone_path'])
-    logger.info(colorize_path(f"   - init_clone_path: '{brighten(init_clone_path)}'"))
-    # Setup clone src path skeleton tree
+    # Setup target symlink path skeleton tree from manifest vals
+    abs_init_clone_path = os.path.abspath(manifest['init_clone_path'])
+    abs_base_symlink_path = os.path.abspath(manifest['base_symlink_path'])
 
-    # Setup target symlink path skeleton tree
-    base_symlink_path = os.path.abspath(manifest['base_symlink_path'])
-    logger.info(colorize_path(f"   - base_symlink_path: '{brighten(base_symlink_path)}'"))
-    setup_directory_skeleton(base_symlink_path)
+    logger.info(colorize_path(f"   - init_clone_path: '{brighten(abs_init_clone_path)}'"))
+    logger.info(colorize_path(f"   - base_symlink_path: '{brighten(abs_base_symlink_path)}'"))
+
+    setup_directory_skeleton(abs_init_clone_path)           # eg: source/_repos-available
+    setup_directory_skeleton(abs_base_symlink_path)         # eg: source/content
 
     # macro_versions
     macro_versions = manifest['macro_versions'].items()
@@ -106,7 +106,7 @@ def init_dir_tree(manifest):
         default_str = f" {brighten('(default)')}" if macro_version_i == 0 else ""
         logger.info(colorize_path(f"     - Macro version: '{brighten(macro_version)}'{default_str}"))
         version_path = os.path.abspath(os.path.join(
-            base_symlink_path, macro_version))
+            abs_base_symlink_path, macro_version))
 
         setup_directory_skeleton(version_path)
         macro_version_i += 1
@@ -275,14 +275,6 @@ def read_manifest():
 
     # Remove .git from urls; inject hidden _meta prop per repo, etc
     manifest = validate_normalize_manifest_set_meta(manifest)
-
-    # Initialize or clear paths based on manifest configuration
-    init_clone_path = os.path.abspath(manifest['init_clone_path'])
-    base_symlink_path = os.path.abspath(manifest['base_symlink_path'])
-
-    setup_directory_skeleton(init_clone_path)
-    setup_directory_skeleton(base_symlink_path)
-
     return manifest
 
 
