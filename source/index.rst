@@ -8,23 +8,23 @@ Xsolla Backend
    :hidden:
    :caption: About
 
-   features
-   End User License Agreement <_static/content/eula/index>
+   _repos-available/_unversioned/features
+   _repos-available/_unversioned/eula/index
 
 .. toctree::
    :hidden:
    :caption: Learn
 
-   getting_started/index
+   _repos-available/_unversioned/getting_started/index
    content/2024.2/account_services-v2.1.0/docs/content/index
    Social <https://acceleratxr.io/projects/social-services/en/latest/content>
-   Gameplay <_static/content/gameplay>
-   Multi-player <_static/content/multiplayer>
-   Content <_static/content/content>
-   Commerce <_static/content/commerce>
-   LiveOps <_static/content/liveops>
-   samples_and_tutorials/index
-   tools
+   _repos-available/_unversioned/gameplay
+   _repos-available/_unversioned/multiplayer
+   _repos-available/_unversioned/content
+   _repos-available/_unversioned/commerce
+   _repos-available/_unversioned/liveops
+   _repos-available/_unversioned/samples_and_tutorials/index
+   _repos-available/_unversioned/tools
 
 .. toctree::
    :hidden:
@@ -50,11 +50,11 @@ Xsolla Backend
    :hidden:
    :caption: Other Links
 
-   Demo <_static/content/demo>
+   _repos-available/_unversioned/demo
    Company <https://xsolla.com/backend>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
-The platform offers a *huge* list of :doc:`features <_static/content/features>` covering everything from account management, matchmaking to questing.
+The platform offers a *huge* list of :doc:`features <_repos-available/_unversioned/features>` covering everything from account management, matchmaking to questing.
 XBE enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of the time and cost of other solutions.
 
 * Pay only 5% of gross sales
@@ -68,10 +68,10 @@ History
 
 AcceleratXR started in 2018 by veteran developers of the gaming industry with over fifty years combined experience who previously
 shipped successful franchises such as XCOM, Hawken, Lost Planet and League of Legends. The Xsolla Backend team have pooled
-together all their knowledge and experience to build the most customizeable and feature rich online gaming platform
+together all their knowledge and experience to build the most customizable and feature rich online gaming platform
 leveraging proven open source technology.
 
-**Xsolla Backend**, formerly AcceleratXR (pronounced *accelerator* `/əkˈseləˌrādər/`), was built with the ambitious goal to dramatically
+**Xsolla Backend**, formerly AcceleratXR (pronounced *accelerator* ``/əkˈseləˌrādər/``), was built with the ambitious goal to dramatically
 accelerate extended reality games and application development. With this goal in mind the team has defined
 three dimensions of success.
 

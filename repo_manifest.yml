@@ -21,7 +21,6 @@ macro_versions:                             # Dirs will be created per-macro ver
         symlink_path: "account_services"      # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
         branch: "dylan/refactor/docs-revamp"  # [Optional] Default {default_branch}, if omitted
         active: true                          # [Optional] Default true, if omitted
-
   "2024.1":
     repositories:
       account_services:
