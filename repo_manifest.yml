@@ -7,6 +7,7 @@
 ## - For macro_versions, minor patches should just override the minor versions                ##
 ################################################################################################
 debug_mode: false                           # [Optional] Verbose logging, mostly
+stash_and_continue_if_wip: true             # [Optional] If true, will stash and continue if working directory is dirty; defaults to false, if omitted
 init_clone_path: "source/_repos-available"  # [Optional] Default base for cloning; use /forward slashes; defaults to source/_repos-available, if omitted
 base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
 default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted

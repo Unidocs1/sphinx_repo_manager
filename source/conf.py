@@ -34,7 +34,7 @@ release = '2024.2'
 
 import os
 import sys
-import yaml
+# import yaml
 sys.path.append(os.path.abspath(
     os.path.join('_extensions', 'repo_manager')))
 sys.path.insert(0, os.path.abspath('.'))

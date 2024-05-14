@@ -157,9 +157,11 @@ def validate_normalize_manifest_set_meta(manifest):
 
     # Set root defaults
     manifest.setdefault('debug_mode', False)
+    manifest.setdefault('stash_and_continue_if_wip', False)
     manifest.setdefault('default_branch', 'master')
     manifest.setdefault('init_clone_path', 'source/_repos-available')
     manifest.setdefault('base_symlink_path', 'source/content')
+    manifest.setdefault('macro_versions', {})
 
     init_clone_path = manifest['init_clone_path']
     base_symlink_path = manifest['base_symlink_path']
@@ -272,14 +274,12 @@ def read_manifest():
 def log_paths(
         debug_mode,
         tag_versioned_repo_name,
-        rel_init_clone_path,
         tag_versioned_clone_src_path,
         rel_symlinked_tagged_repo_path):
     """ Log paths for production [and optionally debugging, if debug_mode]. """
     if debug_mode:
         print("###############################################################################")
         print(f"tag_versioned_repo_name:  '{tag_versioned_repo_name}'")                # eg: "account_services-v2.1.0"
-        print(f"rel_init_clone_path:  '{rel_init_clone_path}'")                        # eg: "source/_repos-available"
         print(f"tag_versioned_clone_src_path:  '{tag_versioned_clone_src_path}'")      # eg: "source/_repos-available/account_services-v2.1.0"
         print(f"rel_symlinked_tagged_repo_path:  '{rel_symlinked_tagged_repo_path}'")  # eg: "source/content/v1.0.0/account_services-v2.1.0"
         print("###############################################################################")
@@ -294,7 +294,7 @@ def log_paths(
 def manage_repositories(manifest):
     """ Manage the cloning and checking out of repositories as defined in the manifest. """
     # Read manifest
-    rel_init_clone_path = manifest['init_clone_path']
+    stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
     macro_versions = manifest['macro_versions'].items()
     repositories = [repo for version, details in macro_versions
                     for repo in details['repositories'].items()]
@@ -333,16 +333,15 @@ def manage_repositories(manifest):
             log_paths(
                 debug_mode,
                 tag_versioned_repo_name,
-                rel_init_clone_path,
                 tag_versioned_clone_src_path,
                 rel_symlinked_tagged_repo_path)
 
             clone_and_symlink(
                 repo_info,
                 tag_versioned_repo_name,
-                rel_init_clone_path,
                 tag_versioned_clone_src_path,
-                rel_symlinked_tagged_repo_path)
+                rel_symlinked_tagged_repo_path,
+                stash_and_continue_if_wip)
 
             current_repo_num += 1
         current_macro_ver += 1
@@ -351,9 +350,9 @@ def manage_repositories(manifest):
 def clone_and_symlink(
         repo_info,
         tag_versioned_repo_name,
-        rel_init_clone_path,  # TODO: Unused?
         tag_versioned_clone_src_path,
-        rel_symlinked_tagged_repo_path):
+        rel_symlinked_tagged_repo_path,
+        stash_and_continue_if_wip):
     """
     Clone the repository if it does not exist and create a symlink in the base symlink path.
     - repo_name                       # eg: "account_services"
@@ -387,12 +386,12 @@ def clone_and_symlink(
         if has_branch:
             action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
-            git_checkout(rel_symlinked_tagged_repo_path, branch)
+            git_checkout(tag_versioned_clone_src_path, branch, stash_and_continue_if_wip)
 
         if has_tag:
             action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
             logger.info(f"[{tag_versioned_repo_name}] {action_str}")
-            git_checkout(rel_symlinked_tagged_repo_path, tag)
+            git_checkout(tag_versioned_clone_src_path, tag, stash_and_continue_if_wip)
 
         # Manage symlinks
         action_str = colorize_action(f"🔗 | Symlinking...")
