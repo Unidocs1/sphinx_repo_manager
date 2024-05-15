@@ -25,10 +25,7 @@ are cloned and how they are accessed.
 4. Include this extension in your Sphinx `conf.py` file by adding the extension's path to `sys.path`
 and including `'repo_manager'` in the `extensions` list.
 
-Requirements:
-- Python 3.6 or higher
-- Sphinx 1.8 or higher
-- PyYAML library
+Requirements: See project root `requirements.txt`
 
 Entry point: setup(app) | This script is executed during the 'builder-inited' event of Sphinx,
 which is triggered after Sphinx inits but before the build process begins.

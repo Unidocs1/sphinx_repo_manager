@@ -1,9 +1,9 @@
 # for testing the master branch
 # git+git://github.com/svenevs/exhale.git#egg=exhale
 # See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
-sphinx>=4.8
-sphinx_rtd_theme>=1.0.0
-myst_parser>0.18.0  # `recommonmark` successor
-sphinx_tabs>3.3.0
-PyYAML>6.0          # Req'd for repo_manager ext
-colorama>=0.4.5     # Req'd for repo_manager ext
+sphinx==7.3.7
+sphinx_rtd_theme>=2.0.0
+myst_parser>=0.18.0  # `recommonmark` successor
+sphinx_tabs>=3.4.5
+PyYAML==6.0          # Req'd for repo_manager ext
+colorama==0.4.5      # Req'd for repo_manager ext

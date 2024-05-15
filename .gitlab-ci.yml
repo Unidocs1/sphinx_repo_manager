@@ -1,0 +1,54 @@
+# Define the stages of the CI/CD pipeline
+stages:
+  - build    # Stage to build the documentation
+  - deploy   # Stage to deploy the built documentation
+
+# Define variables to be used in the pipeline
+variables:
+  SPHINXOPTS: "-n -W --keep-going"  # Options for sphinx-build
+  MANIFEST_FILE: "repo_manifest.yml"  # Path to the manifest file
+  RTD_WEBHOOK_URL: "https://readthedocs.org/api/v2/webhook/<project-name>/"  # Read the Docs webhook URL (remove if self-hosting)
+
+# Commands to run before the main script in each job
+before_script:
+  - apt-get update -y   # Update package list
+  - apt-get install -y python3-pip   # Install pip for Python 3
+  - pip3 install -r requirements.txt   # Install Python dependencies from requirements.txt
+
+# Job to build the latest version of the documentation
+build_latest:
+  stage: build   # Assign this job to the 'build' stage
+  script:
+    - python3 tools/get_repo_data.py $MANIFEST_FILE   # Run the script to fetch repo data based on manifest
+    - sphinx-build -b html source build/html   # Build the documentation using Sphinx
+  only:
+    - master   # Only run this job on the 'master' branch
+    - latest   # Also run on the 'latest' branch if exists
+
+# Job to deploy the latest version of the documentation
+deploy_latest:
+  stage: deploy   # Assign this job to the 'deploy' stage
+  script:
+    - echo "Deploying latest documentation..."   # Echo a message for visibility
+    # Add your deployment steps here, e.g., rsync, scp, or commit to a deployment branch
+  only:
+    - master   # Only run this job on the 'master' branch
+    - latest   # Also run on the 'latest' branch if exists
+
+# Job to build the 2024.1 version of the documentation
+build_2024_1:
+  stage: build   # Assign this job to the 'build' stage
+  script:
+    - python3 tools/get_repo_data.py $MANIFEST_FILE   # Run the script to fetch repo data based on manifest
+    - sphinx-build -b html source build/html   # Build the documentation using Sphinx
+  only:
+    - 2024.1   # Only run this job on the '2024.1' branch
+
+# Job to deploy the 2024.1 version of the documentation
+deploy_2024_1:
+  stage: deploy   # Assign this job to the 'deploy' stage
+  script:
+    - echo "Deploying 2024.1 documentation..."   # Echo a message for visibility
+    # Add your deployment steps here
+  only:
+    - 2024.1   # Only run this job on the '2024.1' branch
