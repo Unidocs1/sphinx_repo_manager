@@ -33,9 +33,11 @@ which is triggered after Sphinx inits but before the build process begins.
 # Tested in:
 - Windows 11 via PowerShell7
 """
-import os  # For file path operations
-import re  # For regex operations
-import yaml  # For YAML file parsing
+import os       # file path ops
+import re       # regex ops
+import shutil   # file ops
+import time     # time ops
+import yaml     # YAML file parsing
 from log_styles import *  # Custom logging styles
 from git_helper import GitHelper  # Helper functions for git operations
 from sphinx.util import logging  # Sphinx logging utility
@@ -44,6 +46,7 @@ from sphinx.util import logging  # Sphinx logging utility
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 MANIFEST_PATH = os.path.normpath(os.path.join(
     BASE_PATH, '..', '..', '..', 'repo_manifest.yml'))
+
 STOP_BUILD_ON_ERROR = True  # Whether to stop build on error
 logger = logging.getLogger(__name__)  # Get logger instance
 
@@ -60,7 +63,14 @@ class RepoManager:
         self.manifest = None
 
     def read_manifest(self):
-        """ Read and return the repository manifest from YAML file. """
+        """
+        Read and return the repository manifest from YAML file.
+        - validate_normalize_manifest_set_meta():
+            - Normalizes data, such as removing .git from git urls
+            - Injects _meta prop objs per repo
+            - Sets defaults, if any
+            - Validates required fields
+        """
         logger.info(colorize_action(f'📜 | Reading manifest...'))
         logger.info(colorize_path(f"   - Path: '{brighten(self.manifest_path)}'"))
 
@@ -91,6 +101,7 @@ class RepoManager:
 
         # Set root defaults
         manifest.setdefault('debug_mode', False)
+        manifest.setdefault('readthedocs_yaml_path', None)
         manifest.setdefault('stash_and_continue_if_wip', False)
         manifest.setdefault('default_branch', 'master')
         manifest.setdefault('init_clone_path', 'source/_repos-available')
@@ -207,13 +218,59 @@ class RepoManager:
             self.setup_directory_skeleton(version_path)
             macro_version_i += 1
 
-    def clone_repos(self, app):
-        """ Handle the repository cloning and updating process when Sphinx initializes. """
+    @staticmethod
+    def backup_existing_yaml(yaml_path):
+        """ Backup the existing .readthedocs.yaml file. """
+        if os.path.exists(yaml_path):
+            backup_path = f"{yaml_path}.bak"
+            shutil.copyfile(yaml_path, backup_path)
+            # logger.info(colorize_action(f"💾 | Created '{brighten(backup_path)}'"))
+
+    def update_readthedocs_yaml(self, manifest):
+        """ Update the .readthedocs.yaml file with versions from the manifest. """
+        print()
+        yaml_path = manifest.get('readthedocs_yaml_path', None)
+        if not yaml_path:
+            logger.error(colorize_action("🚫 | No .readthedocs.yaml path specified; skipping..."))
+            return
+
+        # If existing rtd, bak it up
+        self.backup_existing_yaml(yaml_path)
+        versions = list(manifest['macro_versions'].keys())
+
+        if os.path.exists(yaml_path):
+            with open(yaml_path, 'r') as f:  # r == read-only
+                rtd_config = yaml.safe_load(f)
+
+            #############################################
+            # We only want to change the 'versions' obj #
+            #############################################
+            if 'versions' not in rtd_config:
+                rtd_config['versions'] = {}
+
+            rtd_config['versions']['only'] = versions
+
+            with open(yaml_path, 'w') as f:  # w == write
+                yaml.dump(rtd_config, f, default_flow_style=False)
+
+            logger.info(colorize_success(f"✅ | .readthedocs.yaml updated with versions: {brighten(versions)}"))
+        else:
+            logger.error(colorize_action(f".readthedocs.yaml not found at '{yaml_path}'"))
+
+    def read_manifest_manage_repos(self, app):
+        """
+        Handle the repository cloning and updating process when Sphinx initializes.
+        - Read/noramlize/validate the manifest
+        - Initialize the directory tree skeleton
+        - Manage the repositories (cloning, updating, and symlinking)
+        - Update the .readthedocs.yaml file with versions from the manifest
+        """
         logger.info(colorize_success(f"\n══{brighten('BEGIN REPO_MANAGER')}══\n"))
         try:
             manifest = self.read_manifest()
             self.init_dir_tree(manifest)
             self.manage_repositories(manifest)
+            self.update_readthedocs_yaml(manifest)
         except Exception as e:
             logger.error(f"Failed to manage_repositories {brighten('*See `Extension error` below*')}")
             if STOP_BUILD_ON_ERROR:
@@ -397,5 +454,5 @@ class RepoManager:
 # [ENTRY POINT] Set up the Sphinx extension
 def setup(app):
     repo_manager = RepoManager(MANIFEST_PATH)
-    app.connect('builder-inited', repo_manager.clone_repos)
+    app.connect('builder-inited', repo_manager.read_manifest_manage_repos)
     # app.connect('source-read', replace_paths)  # (!) WIP
