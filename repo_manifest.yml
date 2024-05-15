@@ -14,7 +14,7 @@ base_symlink_path: "source/content"         # [Optional] Default base path for c
 default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
 repo_path_to_doc_content: "docs/content"    # [Optional] Path to individual repo files (where index.rst exists); this should be consistent between all repos; defaults to "docs/content/index", if omitted
 macro_versions:                             # Dirs will be created per-macro version
-  "2024.2":  # 1st entry == default; create a matching branch for each macro_version. Add quotes if !contains alpha chars
+  "2024.07.0-LTS":  # 1st entry == default; create a matching branch for each macro_version. Add quotes if !contains alpha chars
     repositories:
       account_services:
         url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
@@ -22,7 +22,7 @@ macro_versions:                             # Dirs will be created per-macro ver
         symlink_path: "account_services"      # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
         branch: "dylan/refactor/docs-revamp"  # [Optional] Default {default_branch}, if omitted
         active: true                          # [Optional] Default true, if omitted
-  "2024.1":
+  "2024.06.0-LTS":
     repositories:
       account_services:
         url: "https://gitlab.acceleratxr.com/Core/account_services"
