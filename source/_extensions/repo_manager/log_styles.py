@@ -1,3 +1,4 @@
+# TODO: Wrap this in a class
 from colorama import init, Fore, Style
 
 # Initializes Colorama and auto-resets styles after each print
