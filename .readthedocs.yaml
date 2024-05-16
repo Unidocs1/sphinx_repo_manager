@@ -11,5 +11,5 @@ sphinx:
 version: 2
 versions:
   only:
-  - '2024.2'
-  - '2024.1'
+  - 2024.07.0-TEST
+  - 2024.06.0-TEST
