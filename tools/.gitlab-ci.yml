@@ -1,3 +1,10 @@
+####################################################################
+# (!) Currently, we don't need to use this since we're hosting with
+#     `.readthedocs`.
+#
+# However, if we ever wanted to self-host or add anything fancy,
+# Use this file as a template!
+####################################################################
 # Define the stages of the CI/CD pipeline
 stages:
   - prepare   # Stage to prepare the environment
