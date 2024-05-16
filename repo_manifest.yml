@@ -32,3 +32,4 @@ unversioned:  # You could technically repeat this for each macro_version instead
     xbe-static-docs:
         url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"
         symlink_path: "xbe-static-docs"
+        branch: "main"

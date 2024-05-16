@@ -36,6 +36,8 @@ which is triggered after Sphinx inits but before the build process begins.
 import os       # file path ops
 import re       # regex ops
 import shutil   # file ops
+import subprocess
+
 import yaml     # YAML file parsing
 from log_styles import *  # Custom logging styles
 from git_helper import GitHelper  # Helper functions for git operations
@@ -81,8 +83,7 @@ class RepoManager:
         self.manifest = manifest
         return manifest
 
-    @staticmethod
-    def validate_normalize_manifest_set_meta(manifest):
+    def validate_normalize_manifest_set_meta(self, manifest):
         """
         Validates + normalizes YAML v1.2 manifest vals, such as removing .git from URLs,
         +injects hidden '_meta' prop, etc.
@@ -97,7 +98,7 @@ class RepoManager:
         }
         """
         logger.info(colorize_action("🧹 | Validating & normalizing manifest..."))
-
+    
         # Set root defaults
         manifest.setdefault('debug_mode', False)
         manifest.setdefault('stash_and_continue_if_wip', False)
@@ -105,80 +106,92 @@ class RepoManager:
         manifest.setdefault('init_clone_path', 'source/_repos-available')
         manifest.setdefault('base_symlink_path', 'source/content')
         manifest.setdefault('macro_versions', {})
-
+    
         init_clone_path = manifest['init_clone_path']
         base_symlink_path = manifest['base_symlink_path']
         repo_i = 0
+    
+        # Handle macro_versions
         for macro_version, details in manifest['macro_versions'].items():
             logger.info(colorize_path(f"   - Macro version: '{brighten(macro_version)}'"))
             for repo_name, repo_info in details['repositories'].items():
-                if '_meta' not in repo_info:
-                    repo_info['_meta'] = {
-                        'is_default': repo_i == 0,  # 1st entry == default
-                        'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
-                        'repo_name': '',  # eg: "account_services"
-                        'has_tag': False,  # True if tag exists
-                        'rel_symlinked_tagged_repo_path': '',
-                        # "{base_symlink_path}{macro_version}{symlink_path}-{tag_or_branch}"
-                        'tag_versioned_repo_name': '',  # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
-                        'tag_versioned_clone_src_path': ''  # "{init_clone_path}/{tag_versioned_repo_name}"
-                    }
-
-                # url: Req'd - Strip ".git" from suffix, if any
-                url = repo_info.get('url', None)
-                if not url:
-                    logger.error(f"Missing 'url' for repo '{repo_name}'")
-                    raise RepositoryManagementError(f"Missing 'url' for repo '{repo_name}'")
-
-                if url.endswith('.git'):
-                    url = url[:-4]
-                    repo_info['url'] = url
-
-                # Default branch == parent {default_branch}
-                if 'default_branch' not in repo_info:
-                    repo_info.setdefault('branch', manifest['default_branch'])
-                branch = repo_info['branch']
-
-                # Default symlink_path == repo name (the end of url after the last slash/)
-                repo_name = url.split('/')[-1]
-                repo_info.setdefault('symlink_path', repo_name)
-
-                # It's ok if !tag (we'll just checkout the branch); great for debugging
-                # (!) However, this will affect our naming convention, normally "{repo}-{tag_or_branch}"
-                tag = repo_info.get('tag', None)
-                has_tag = bool(tag)
-
-                # Set other defaults
-                repo_info.setdefault('active', True)
-
-                # Set dynamic meta
-                _meta = repo_info['_meta']
-                _meta['has_tag'] = has_tag
-                _meta['url_dotgit'] = f"{url}.git"
-                _meta['repo_name'] = repo_name
-
-                # If tag, append "-{tag} to repo name
-                # If !tag, append "--{branch} to repo name
-                if has_tag:
-                    _meta['tag_versioned_repo_name'] = f"{repo_name}-{tag}"  # "repo-{tag}"; eg: "account-services-v2.1.0"
-                else:
-                    # "repo-{"cleaned_branch"}"; eg: "account-services--master" or "account-services--some_nested_branch"
-                    # ^ Notice the "--" double slash separator. Only accept alphanumeric chars; replace all others with "_"
-                    pattern = r'\W+'
-                    normalized_repo_name_for_dir = branch.replace("/", "--")
-                    re.sub(pattern, '_', normalized_repo_name_for_dir)
-                    _meta['tag_versioned_repo_name'] = f"{repo_name}--{normalized_repo_name_for_dir}"
-
-                tag_versioned_repo_name = _meta['tag_versioned_repo_name']
-                _meta['rel_symlinked_tagged_repo_path'] = os.path.normpath(os.path.join(
-                    base_symlink_path, macro_version, tag_versioned_repo_name))
-
-                # "{init_clone_path}/{tag_versioned_repo_name}"
-                _meta['tag_versioned_clone_src_path'] = os.path.normpath(os.path.join(
-                    init_clone_path, tag_versioned_repo_name))
-            repo_i += 1
-
+                self.set_repo_meta(repo_info, repo_name, init_clone_path, base_symlink_path, macro_version, repo_i, manifest)
+                repo_i += 1
+    
+        # Handle unversioned repositories
+        if 'unversioned' in manifest:
+            logger.info(colorize_path("   - Unversioned"))
+            for repo_name, repo_info in manifest['unversioned']['repositories'].items():
+                self.set_repo_meta(repo_info, repo_name, init_clone_path, base_symlink_path, 'unversioned', repo_i, manifest)
+                repo_i += 1
+    
         return manifest
+
+    def set_repo_meta(self, repo_info, repo_name, init_clone_path, base_symlink_path, macro_version, repo_i, manifest):
+        if '_meta' not in repo_info:
+            repo_info['_meta'] = {
+                'is_default': repo_i == 0,  # 1st entry == default
+                'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
+                'repo_name': '',  # eg: "account_services"
+                'has_tag': False,  # True if tag exists
+                'rel_symlinked_tagged_repo_path': '',
+                # "{base_symlink_path}{macro_version}{symlink_path}-{tag_or_branch}"
+                'tag_versioned_repo_name': '',  # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
+                'tag_versioned_clone_src_path': ''  # "{init_clone_path}/{tag_versioned_repo_name}"
+            }
+
+        # url: Req'd - Strip ".git" from suffix, if any
+        url = repo_info.get('url', None)
+        if not url:
+            logger.error(f"Missing 'url' for repo '{repo_name}'")
+            raise RepositoryManagementError(f"Missing 'url' for repo '{repo_name}'")
+    
+        if url.endswith('.git'):
+            url = url[:-4]
+            repo_info['url'] = url
+    
+        # Default branch == parent {default_branch}
+        if 'default_branch' not in repo_info:
+            repo_info.setdefault('branch', manifest['default_branch'])
+        branch = repo_info['branch']
+    
+        # Default symlink_path == repo name (the end of url after the last slash/)
+        repo_name = url.split('/')[-1]
+        repo_info.setdefault('symlink_path', repo_name)
+    
+        # It's ok if !tag (we'll just checkout the branch); great for debugging
+        # (!) However, this will affect our naming convention, normally "{repo}-{tag_or_branch}"
+        tag = repo_info.get('tag', None)
+        has_tag = bool(tag)
+    
+        # Set other defaults
+        repo_info.setdefault('active', True)
+    
+        # Set dynamic meta
+        _meta = repo_info['_meta']
+        _meta['has_tag'] = has_tag
+        _meta['url_dotgit'] = f"{url}.git"
+        _meta['repo_name'] = repo_name
+    
+        # If tag, append "-{tag} to repo name
+        # If !tag, append "--{branch} to repo name
+        if has_tag:
+            _meta['tag_versioned_repo_name'] = f"{repo_name}-{tag}"  # "repo-{tag}"; eg: "account-services-v2.1.0"
+        else:
+            # "repo-{"cleaned_branch"}"; eg: "account-services--master" or "account-services--some_nested_branch"
+            # ^ Notice the "--" double slash separator. Only accept alphanumeric chars; replace all others with "_"
+            pattern = r'\W+'
+            normalized_repo_name_for_dir = branch.replace("/", "--")
+            re.sub(pattern, '_', normalized_repo_name_for_dir)
+            _meta['tag_versioned_repo_name'] = f"{repo_name}--{normalized_repo_name_for_dir}"
+    
+        tag_versioned_repo_name = _meta['tag_versioned_repo_name']
+        _meta['rel_symlinked_tagged_repo_path'] = os.path.normpath(os.path.join(
+            base_symlink_path, macro_version, tag_versioned_repo_name))
+    
+        # "{init_clone_path}/{tag_versioned_repo_name}"
+        _meta['tag_versioned_clone_src_path'] = os.path.normpath(os.path.join(
+            init_clone_path, tag_versioned_repo_name))
 
     def init_dir_tree(self, manifest):
         """
@@ -215,6 +228,14 @@ class RepoManager:
 
             self.setup_directory_skeleton(version_path)
             macro_version_i += 1
+
+        # Initialize unversioned dir
+        unversioned_repos = manifest.get('unversioned', {}).get('repositories', {})
+        if unversioned_repos:
+            unversioned_path = os.path.normpath(
+                os.path.join(abs_base_symlink_path, 'unversioned'))
+            logger.info(colorize_path(f"     - Unversioned path: '{brighten(unversioned_path)}'"))
+            self.setup_directory_skeleton(unversioned_path)
 
     def read_manifest_manage_repos(self, app):
         """
@@ -288,18 +309,16 @@ class RepoManager:
 
     def manage_repositories(self, manifest):
         """ Manage the cloning and checking out of repositories as defined in the manifest. """
-        # Read manifest
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
         macro_versions = manifest['macro_versions'].items()
-        repositories = [repo for version, details in macro_versions
-                        for repo in details['repositories'].items()]
-
+        unversioned_repos = manifest.get('unversioned', {}).get('repositories', {}).items()
+    
         # Track current/max macro_versions & child repos
         total_macro_versions = len(macro_versions)
-        total_repos_num = len(repositories)
+        total_repos_num = len([repo for version, details in macro_versions for repo in details['repositories'].items()]) + len(unversioned_repos)
         current_macro_ver = 1
         current_repo_num = 1
-
+    
         # For each macro version:
         #   - for each repo:
         #       - Prep paths, clone/fetch, checkout tagged version
@@ -307,21 +326,21 @@ class RepoManager:
             for repo_name, repo_info in details['repositories'].items():
                 logger.info(colorize_action(
                     "\n-----------------------\n"
-                    f"[MacroVer {current_macro_ver}/{total_macro_versions},"
-                    f"Repo {current_repo_num}/{total_repos_num}]"))
-
+                    f"[Repo {current_repo_num}/{total_repos_num} | "
+                    f"MacroVer {current_macro_ver}/{total_macro_versions}]"))
+    
                 # Get paths from _meta
                 _meta = repo_info['_meta']
                 tag_versioned_repo_name = _meta['tag_versioned_repo_name']  # eg: "account_services-v2.1.0"
                 rel_symlinked_tagged_repo_path = _meta['rel_symlinked_tagged_repo_path']  # eg: "source/content/v1.0.0/account_services-v2.1.0"
-
+    
                 # Ensure repo is active
                 active = repo_info['active']
                 if not active:
                     logger.info(colorize_action(f"[{rel_symlinked_tagged_repo_path}] Repository !active; skipping..."))
                     total_repos_num -= 1
                     continue
-
+    
                 # eg: "source/_repos-available/account_services-v2.1.0"
                 tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
                 debug_mode = manifest['debug_mode']
@@ -330,16 +349,90 @@ class RepoManager:
                     tag_versioned_repo_name,
                     tag_versioned_clone_src_path,
                     rel_symlinked_tagged_repo_path)
-
+    
                 self.clone_and_symlink(
                     repo_info,
                     tag_versioned_repo_name,
                     tag_versioned_clone_src_path,
                     rel_symlinked_tagged_repo_path,
                     stash_and_continue_if_wip)
-
+    
                 current_repo_num += 1
             current_macro_ver += 1
+    
+        # Handle unversioned repositories
+        num_unversioned_repos = len(unversioned_repos)
+        current_unversioned_repo_num = 1
+        
+        for repo_name, repo_info in unversioned_repos:
+            logger.info(colorize_action(
+                "\n-----------------------\n"
+                f"[Repo {current_repo_num}/{total_repos_num} | "
+                f"Unversioned {current_unversioned_repo_num}/{num_unversioned_repos}]"))
+    
+            # Get paths from _meta
+            _meta = repo_info['_meta']
+            tag_versioned_repo_name = _meta['tag_versioned_repo_name']  # eg: "account_services-v2.1.0"
+            rel_symlinked_tagged_repo_path = os.path.join(manifest['base_symlink_path'], tag_versioned_repo_name)  # Directly under base_symlink_path
+    
+            # Ensure repo is active
+            active = repo_info['active']
+            if not active:
+                logger.info(colorize_action(f"[{rel_symlinked_tagged_repo_path}] Repository !active; skipping..."))
+                total_repos_num -= 1
+                continue
+    
+            # eg: "source/_repos-available/account_services-v2.1.0"
+            tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
+            debug_mode = manifest['debug_mode']
+            self.log_paths(
+                debug_mode,
+                tag_versioned_repo_name,
+                tag_versioned_clone_src_path,
+                rel_symlinked_tagged_repo_path)
+    
+            self.clone_and_symlink(
+                repo_info,
+                tag_versioned_repo_name,
+                tag_versioned_clone_src_path,
+                rel_symlinked_tagged_repo_path,
+                stash_and_continue_if_wip)
+    
+            current_repo_num += 1
+            current_unversioned_repo_num += 1
+    
+    def process_repo(self, repo_info, repo_name, stash_and_continue_if_wip, current_macro_ver, total_macro_versions, current_repo_num, total_repos_num):
+        logger.info(colorize_action(
+            "\n-----------------------\n"
+            f"[Repo {current_repo_num}/{total_repos_num} | "
+            f"MacroVer {current_macro_ver}/{total_macro_versions}]"))
+    
+        # Get paths from _meta
+        _meta = repo_info['_meta']
+        tag_versioned_repo_name = _meta['tag_versioned_repo_name']  # eg: "account_services-v2.1.0"
+        rel_symlinked_tagged_repo_path = _meta['rel_symlinked_tagged_repo_path']  # eg: "source/content/v1.0.0/account_services-v2.1.0"
+    
+        # Ensure repo is active
+        active = repo_info['active']
+        if not active:
+            logger.info(colorize_action(f"[{rel_symlinked_tagged_repo_path}] Repository !active; skipping..."))
+            return
+    
+        # eg: "source/_repos-available/account_services-v2.1.0"
+        tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
+        debug_mode = self.manifest['debug_mode']
+        self.log_paths(
+            debug_mode,
+            tag_versioned_repo_name,
+            tag_versioned_clone_src_path,
+            rel_symlinked_tagged_repo_path)
+    
+        self.clone_and_symlink(
+            repo_info,
+            tag_versioned_repo_name,
+            tag_versioned_clone_src_path,
+            rel_symlinked_tagged_repo_path,
+            stash_and_continue_if_wip)
 
     def clone_and_symlink(self, repo_info, tag_versioned_repo_name, tag_versioned_clone_src_path,
                           rel_symlinked_tagged_repo_path, stash_and_continue_if_wip):
@@ -397,14 +490,19 @@ class RepoManager:
             success_str = colorize_success("✅ | Done.")
             logger.info(f"[{tag_versioned_repo_name}] {success_str}")
 
-        except GitHelper.subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
             error_url = f"{repo_url_dotgit}/tree/{tag}"
             tags_url = f"{repo_url_dotgit}/-/tags"
-
+        
             error_message = (f"\n\n{Fore.RED}[repo_manager] "
                              f"Failed to checkout branch/tag '{rel_symlinked_tagged_repo_path}'\n"
                              f"- Does the '{tag}' tag exist? {error_url}\n"
                              f"- Check available tags: {tags_url}{Fore.RESET}\n\n")
+            raise RepositoryManagementError(error_message)
+        except Exception as e:
+            error_message = (f"\n\n{Fore.RED}[repo_manager] "
+                             f"Error during clone and checkout process for '{rel_symlinked_tagged_repo_path}'\n"
+                             f"- Error: {str(e)}\n\n")
             raise RepositoryManagementError(error_message)
 
 
