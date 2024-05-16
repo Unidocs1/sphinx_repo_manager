@@ -24,7 +24,7 @@
 project = 'xbe'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = '2024.2'
+release = '2024.07.0-TEST'
 
 # -- Path setup --------------------------------------------------------------
 #
