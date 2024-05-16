@@ -7,14 +7,13 @@
 ## - For macro_versions, minor patches should just override the minor versions                ##
 ################################################################################################
 debug_mode: false                           # [Optional] Verbose logging, mostly
-readthedocs_yaml_path: ".readthedocs.yaml"  # [Optional] Path to `.readthedocs` for dynamic version editing; use /forward slashes; skips rtd generation if omitted
 stash_and_continue_if_wip: true             # [Optional] If true, will stash and continue if working directory is dirty; defaults to false, if omitted
 init_clone_path: "source/_repos-available"  # [Optional] Default base for cloning; use /forward slashes; defaults to source/_repos-available, if omitted
 base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
 default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
 repo_path_to_doc_content: "docs/content"    # [Optional] Path to individual repo files (where index.rst exists); this should be consistent between all repos; defaults to "docs/content/index", if omitted
-macro_versions:                             # Dirs will be created per-macro version
-  "2024.07.0-TEST":  # 1st entry == default; create a matching branch for each macro_version. Add quotes if !contains alpha chars
+macro_versions:                             # Dirs will be created per-macro version; dupes (like xbe-static-docs) with same (or no) ver will be consolidated into 1 src
+  "2024.07.0-TEST":  # (!) 1ST ENTRY == DEFAULT; create a matching branch for each macro_version. Add quotes if !contains alpha chars 
     repositories:
       account_services:
         url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional

@@ -9,7 +9,3 @@ sphinx:
   builder: html
   configuration: source/conf.py
 version: 2
-versions:
-  only:
-  - 2024.07.0-TEST
-  - 2024.06.0-TEST

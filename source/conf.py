@@ -26,6 +26,7 @@ copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = '2024.07.0-TEST'
 
+
 # -- Path setup --------------------------------------------------------------
 #
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -56,6 +57,7 @@ sys.path.insert(0, os.path.abspath('.'))
 # .. |account_services_path| replace:: {account_services_path}
 # """
 
+
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
@@ -85,6 +87,8 @@ master_doc = 'index'
 
 
 # -- Intersphinx Mapping -------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
+# Link to other projects’ documentation
 
 # Link constants shared across multiple docs
 intersphinx_mapping = {
@@ -106,7 +110,6 @@ intersphinx_disabled_reftypes = ["*"]
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
 html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -119,7 +122,6 @@ html_favicon = '_static/images/favicon.png'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
 html_theme_options = {
     'canonical_url': 'https://docs.xsolla.cloud',
     'analytics_id': 'UA-136672390-2',  # Provided by Google in your dashboard
@@ -128,21 +130,21 @@ html_theme_options = {
     'prev_next_buttons_location': 'bottom',
     'style_external_links': True,
     'style_nav_header_background': '#2D2926',
-    # Toc options
+    # Toc options >>
     'collapse_navigation': True,
     'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False,
-    'gitlab_url': 'https://gitlab.acceleratxr.com/core/acceleratxr.io'
+    'titles_only': False
+    #'gitlab_url': 'https://gitlab.acceleratxr.com/core/acceleratxr.io'  # Unsupported in sphinx_rtd_theme
 }
 
 html_context = {
-    # Edit on GitLab
+    "conf_py_path": "/source/",  # Path in the checkout to the docs root
+    # Edit on GitLab >>
     "display_gitlab": True,  # Integrate Gitlab
     "gitlab_host": "gitlab.acceleratxr.com",
     "gitlab_user": "Core",  # Group
     "gitlab_repo": "acceleratxr.io",  # Repo name
-    "gitlab_version": "master",  # Version
-    "conf_py_path": "/source/",  # Path in the checkout to the docs root
+    "gitlab_version": "master"  # Version
 }
