@@ -78,9 +78,12 @@ class GitHelper:
         if GitHelper.git_dir_exists(repo_path):
             if GitHelper.git_check_is_dirty(repo_path):
                 if stash_and_continue_if_wip:
-                    GitHelper.git_stash(repo_path, stash_message=f"Stashing WIP changes for repo_path '{brighten(repo_path)}'")
+                    logger.info(colorize_path(f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'"))
+                    GitHelper.git_stash(repo_path)
                 else:
-                    raise Exception(f"Working directory is dirty and !stash_and_continue_if_wip: '{brighten(repo_path)}'")
+                    raise Exception(
+                        f"Working directory is dirty and !stash_and_continue_if_wip: "
+                        f"'{brighten(repo_path)}'")
 
         cmd_arr = ['checkout', tag_or_branch]
         GitHelper.git_submodule_cmd(cmd_arr, repo_path, quiet=True)
