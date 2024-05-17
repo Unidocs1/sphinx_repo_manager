@@ -12,24 +12,14 @@ init_clone_path: "source/_repos-available"  # [Optional] Default base for clonin
 base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
 default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
 repo_path_to_doc_content: "docs/content"    # [Optional] Path to individual repo files (where index.rst exists); this should be consistent between all repos; defaults to "docs/content/index", if omitted
-macro_versions:                             # Dirs will be created per-macro version; dupes (like xbe-static-docs) with same (or no) ver will be consolidated into 1 src
-  "2024.07.0-TEST":  # (!) 1ST ENTRY == DEFAULT; create a matching branch for each macro_version. Add quotes if !contains alpha chars 
-    repositories:
-      account_services:
-        url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
-        #tag: "v2.1.0"                        # [Optional] You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
-        symlink_path: "account_services"      # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
-        branch: "dylan/refactor/docs-revamp"  # [Optional] Default {default_branch}, if omitted
-        active: true                          # [Optional] Default true, if omitted
-  "2024.06.0-TEST":
-    repositories:
-      account_services:
-        url: "https://gitlab.acceleratxr.com/Core/account_services"
-        tag: "v2.0.1"
-        symlink_path: "account_services"
-unversioned:  # You could technically repeat this for each macro_version instead of use this
-  repositories:
-    xbe-static-docs:
-        url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"
-        symlink_path: "xbe-static-docs"
-        branch: "main"
+repositories:                               # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
+  account_services:
+    url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
+    #tag: "v2.1.0"                        # [Optional] You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+    symlink_path: "account_services"      # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
+    branch: "dylan/refactor/docs-revamp"  # [Optional] Default {default_branch}, if omitted
+    active: true                          # [Optional] Default true, if omitted
+  xbe-static-docs:
+      url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"
+      symlink_path: "xbe-static-docs"
+      branch: "main"
