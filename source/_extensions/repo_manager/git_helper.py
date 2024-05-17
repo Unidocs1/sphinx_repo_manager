@@ -7,6 +7,30 @@ from log_styles import *
 logger = logging.getLogger(__name__)
 
 
+def log_pretty_cli_cmd(cmd_arr):
+    """ Log a pretty CLI command. """
+    pretty_cmd = shlex.join(cmd_arr)
+    logger.info(colorize_cli_cmd(f"  - CLI: `{brighten(pretty_cmd)}`"))
+
+
+def run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True):
+    """ Run a subprocess command and handle errors. """
+    log_pretty_cli_cmd(cmd_arr)
+    try:
+        result = subprocess.run(cmd_arr, capture_output=True, text=True)
+        if result.returncode != 0:
+            error_message = result.stderr.strip()
+            logger.error(f"Command failed:\n{brighten(error_message)}")
+            if check_throw_on_cli_err:
+                pretty_cmd = shlex.join(cmd_arr)
+                raise Exception(f"Command failed: '{pretty_cmd}'\nError: '{brighten(error_message)}'")
+        return result.stdout
+    except FileNotFoundError as e:
+        logger.error(f"Command not found: '{brighten(e)}'")
+        pretty_cmd = shlex.join(cmd_arr)
+        raise Exception(f"Command not found: {pretty_cmd}\nError: '{brighten(e)}'")
+
+
 class GitHelper:
     def __init__(self):
         pass
@@ -15,8 +39,8 @@ class GitHelper:
     def git_fetch(repo_path):
         """ Fetch all remote branches and tags *from the repo_path working dir (-C). """
         GitHelper.throw_if_path_not_exists(repo_path)
-        cmd_arr = ['fetch', '--all', '--tags']
-        GitHelper.git_submodule_cmd(cmd_arr, repo_path, quiet=False)
+        cmd_arr = ['git', '-C', repo_path, 'fetch', '--all', '--tags']
+        run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
     def git_validate_is_git_dir(repo_path, validate_has_other_files):
@@ -40,19 +64,51 @@ class GitHelper:
     @staticmethod
     def git_clone(clone_to_path, repo_url_dotgit, branch):
         """ Clone the repo+branch from the provided URL to the specified path. """
-        subprocess.run([
+        git_clone_cmd_arr = [
             'git', 'clone',
             '--branch', branch,
             '-q',
-            repo_url_dotgit, clone_to_path], check=True)
+            repo_url_dotgit, clone_to_path
+        ]
+        run_subprocess_cmd(git_clone_cmd_arr, check_throw_on_cli_err=True)
+
+    @staticmethod
+    def git_sparse_clone(
+            clone_to_path,
+            repo_url_dotgit,
+            branch,
+            sparse_paths
+    ):
+        """ Clone the repo with sparse checkout, only fetching the specified directories. """
+        # Clone the repository with no checkout
+        git_clone_cmd_arr = [
+            'git', 'clone', '--no-checkout',
+            '--branch', branch,
+            '-q',
+            repo_url_dotgit, clone_to_path
+        ]
+        run_subprocess_cmd(git_clone_cmd_arr, check_throw_on_cli_err=True)
+
+        # Initialize sparse checkout
+        sparse_checkout_init_cmd_arr = ['git', '-C', clone_to_path, 'sparse-checkout', 'init', '--cone']
+        run_subprocess_cmd(sparse_checkout_init_cmd_arr, check_throw_on_cli_err=True)
+
+        # Set the sparse paths (only the paths we'll use in the repo)
+        for path in sparse_paths:
+            sparse_checkout_set_cmd_arr = ['git', '-C', clone_to_path, 'sparse-checkout', 'set', path]
+            run_subprocess_cmd(sparse_checkout_set_cmd_arr, check_throw_on_cli_err=True)
+
+        # Pull the changes
+        pull_cmd_arr = ['git', '-C', clone_to_path, 'pull', 'origin', branch]
+        run_subprocess_cmd(pull_cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
     def git_check_is_dirty(repo_path):
         """ Check if the working directory is dirty (has WIP changes). """
         try:
             GitHelper.throw_if_path_not_exists(repo_path)
-            cmd_arr = ['status', '--porcelain']
-            output = GitHelper.git_submodule_cmd(cmd_arr, repo_path, quiet=False)
+            cmd_arr = ['git', '-C', repo_path, 'status', '--porcelain']
+            output = run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
             is_dirty = bool(output.strip())
             return is_dirty
         except Exception as e:
@@ -63,8 +119,8 @@ class GitHelper:
     def git_stash(repo_path, stash_message='repo_mgr-autostash'):
         """ Stash the working directory. """
         GitHelper.throw_if_path_not_exists(repo_path)
-        cmd_arr = ['stash', 'push', '-m', stash_message]
-        GitHelper.git_submodule_cmd(cmd_arr, repo_path, quiet=False)
+        cmd_arr = ['git', '-C', repo_path, 'stash', 'push', '-m', stash_message]
+        run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
     def git_dir_exists(repo_path):
@@ -85,8 +141,8 @@ class GitHelper:
                         f"Working directory is dirty and !stash_and_continue_if_wip: "
                         f"'{brighten(repo_path)}'")
 
-        cmd_arr = ['checkout', tag_or_branch]
-        GitHelper.git_submodule_cmd(cmd_arr, repo_path, quiet=True)
+        cmd_arr = ['git', '-C', repo_path, 'checkout', tag_or_branch]
+        run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
     def git_submodule_cmd(cmd, working_dir_repo_path, quiet, check_throw_on_cli_err=True):
@@ -95,21 +151,7 @@ class GitHelper:
             cmd += ['--quiet']
         cmd_prefix_arr = ['git', '-C', working_dir_repo_path]
         full_cmd = cmd_prefix_arr + cmd
-
-        pretty_cmd = shlex.join(full_cmd)
-        logger.info(colorize_action(colorize_path(f"  - CLI: `{brighten(pretty_cmd)}`")))
-
-        try:
-            result = subprocess.run(full_cmd, capture_output=True, text=True)
-            if result.returncode != 0:
-                error_message = result.stderr.strip()
-                logger.error(f"Git command failed:\n{brighten(error_message)}")
-                if check_throw_on_cli_err:
-                    raise Exception(f"Git command failed: '{pretty_cmd}'\nError: '{brighten(error_message)}'")
-            return result.stdout
-        except FileNotFoundError as e:
-            logger.error(f"Git command not found: '{brighten(e)}'")
-            raise Exception(f"Git command not found: {pretty_cmd}\nError: '{brighten(e)}'")
+        run_subprocess_cmd(full_cmd, check_throw_on_cli_err=check_throw_on_cli_err)
 
     @staticmethod
     def throw_if_path_not_exists(path):
