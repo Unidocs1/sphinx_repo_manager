@@ -1,24 +1,30 @@
 %YAML 1.2
 ---
-################################################################################################
-## This YAML file configures repository settings for the Sphinx documentation system.         ##
-## - Specifies base path for cloning and details for each version-controlled set of docs.     ##
-## - Keep 1st child repository heavily commented with all optional props for collaborator FYI ##
-## - For macro_versions, minor patches should just override the minor versions                ##
-################################################################################################
-debug_mode: false                           # [Optional] Verbose logging, mostly
-stash_and_continue_if_wip: true             # [Optional] If true, will stash and continue if working directory is dirty; defaults to false, if omitted
-init_clone_path: "source/_repos-available"  # [Optional] Default base for cloning; use /forward slashes; defaults to source/_repos-available, if omitted
-base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
-default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
-repo_path_to_doc_content: "docs/content"    # [Optional] Path to individual repo files (where index.rst exists); this should be consistent between all repos; defaults to "docs/content/index", if omitted
+#################################################################################################
+## This YAML file configures repository settings for the Sphinx documentation system.          ##
+## - Specifies base path for cloning and details for each version-controlled set of docs.      ##
+## - Keep 1st child repository heavily commented with all optional props for collaborator FYI. ##
+## - Most all properties are OPTIONAL; see comment for fallback vals.                          ##
+## - Most path/slashes/are/normalized for you to prevent confusion; use whichever.             ##
+## - Most path/slashes/are/normalized for you; use whichever.                                  ##
+## - [Versioned] Both src clone + symlinked dir names will look like "{repo_name}-{tag}"       ##
+## - [Unversioned] Both src clone + symlinked dir names will look like "{repo_name}--{branch}" ##
+## - [Unversioned] Double dashes replcae slashes. Eg: {repo_name}--foo--branch}} ##
+## - It *is safe* to wipe your source/_repos-available + source/content dirs.                  ##
+#################################################################################################
+debug_mode: false                           # More-verbose logging or debugging
+stash_and_continue_if_wip: true             # If true, will stash and continue if working directory is dirty; defaults to false, if omitted
+init_clone_path: "source/_repos-available"  # Default base for cloning; normalizes "os/path/slashes"; defaults to source/_repos-available, if omitted
+base_symlink_path: "source/content"         # Default base path for cloning repos relative to this file; normalizes "os/path/slashes"; defaults to "source/content", if omitted
+default_branch: "master"                    # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
+repo_sparse_paths: "docs/source/content"    # Path to individual repo dirs we want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; default to "docs/source/content", if omitted 
 repositories:                               # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
   account_services:
     url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
-    #tag: "v2.1.0"                        # [Optional] You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
-    symlink_path: "account_services"      # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
-    branch: "dylan/refactor/docs-revamp"  # [Optional] Default {default_branch}, if omitted
-    active: true                          # [Optional] Default true, if omitted
+    #tag: "v2.1.0"                          # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+    symlink_path: "account_services"        # Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"
+    branch: "dylan/refactor/docs-revamp"    # Normalizes os/path/slashes; Default {default_branch}, if omitted
+    active: true                            # Default true, if omitted
   xbe-static-docs:
       url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"
       symlink_path: "xbe-static-docs"

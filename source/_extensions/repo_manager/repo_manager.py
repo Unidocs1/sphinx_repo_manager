@@ -1,5 +1,5 @@
 """
-Sphinx Extension: Repository Manager
+Xsolla Sphinx Extension: repo_manager
 ------------------------------------
 
 Description:
@@ -44,9 +44,10 @@ from git_helper import GitHelper  # Helper functions for git operations
 from sphinx.util import logging  # Sphinx logging utility
 
 # Define base path and manifest path
-BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-MANIFEST_PATH = os.path.normpath(os.path.join(
-    BASE_PATH, '..', '..', '..', 'repo_manifest.yml'))
+ABS_BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+MANIFEST_NAME = 'repo_manifest.yml'
+ABS_MANIFEST_PATH = os.path.normpath(os.path.join(
+    ABS_BASE_PATH, '..', '..', '..', MANIFEST_NAME))
 
 STOP_BUILD_ON_ERROR = True  # Whether to stop build on error
 logger = logging.getLogger(__name__)  # Get logger instance
@@ -72,8 +73,10 @@ class RepoManager:
             - Sets defaults, if any
             - Validates required fields
         """
+        # Logs
         logger.info(colorize_action(f'📜 | Reading manifest...'))
-        logger.info(colorize_path(f"   - Path: '{brighten(self.manifest_path)}'"))
+        logger.info(colorize_path(f"   - Base Path: '{brighten(ABS_BASE_PATH)}'"))
+        logger.info(colorize_path(f"   - Manifest Src: '{brighten(MANIFEST_NAME)}'"))
 
         # Read manifest file; exit if !found
         if not os.path.exists(self.manifest_path):
@@ -87,6 +90,11 @@ class RepoManager:
         # (!) Exits if repositories are empty
         manifest = self.validate_normalize_manifest_set_meta(manifest)
         self.manifest = manifest
+
+        # Logs
+        repo_sparse_paths = manifest['repo_sparse_paths']
+        logger.info(colorize_path(f"   - repo_sparse_paths: '{brighten(repo_sparse_paths)}'"))
+
         return manifest
 
     def validate_normalize_manifest_set_meta(self, manifest):
@@ -109,8 +117,9 @@ class RepoManager:
         manifest.setdefault('debug_mode', False)
         manifest.setdefault('stash_and_continue_if_wip', False)
         manifest.setdefault('default_branch', 'master')
-        manifest.setdefault('init_clone_path', 'source/_repos-available')
-        manifest.setdefault('base_symlink_path', 'source/content')
+        manifest.setdefault('init_clone_path', os.path.normpath('source/_repos-available'))
+        manifest.setdefault('base_symlink_path', os.path.normpath('source/content'))
+        manifest.setdefault('repo_sparse_paths', 'docs/source/content')
         manifest.setdefault('repositories', {})
 
         # Validate repositories
@@ -118,6 +127,8 @@ class RepoManager:
             logger.warning("[repo_manager] No repositories found in manifest - skipping extension!")
             sys.exit(0)
 
+        repo_sparse_paths = manifest['repo_sparse_paths']
+        manifest['repo_sparse_paths'] = repo_sparse_paths.replace('\\', '/')  # Normalize to forward/slashes
         init_clone_path = manifest['init_clone_path']
         base_symlink_path = manifest['base_symlink_path']
         repo_i = 0
@@ -141,16 +152,16 @@ class RepoManager:
             repo_name,
             init_clone_path,
             base_symlink_path,
-            manifest):
+            manifest,
+    ):
         if '_meta' not in repo_info:
             repo_info['_meta'] = {
-                'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
-                'repo_name': '',  # eg: "account_services"
-                'has_tag': False,  # True if tag exists
-                'rel_symlinked_tagged_repo_path': '',
-                # "{base_symlink_path}{symlink_path}-{tag_or_branch}"
-                'tag_versioned_repo_name': '',  # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
-                'tag_versioned_clone_src_path': ''  # "{init_clone_path}/{tag_versioned_repo_name}"
+                'url_dotgit': '',                      # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
+                'repo_name': '',                       # eg: "account_services"
+                'has_tag': False,                      # True if tag exists
+                'rel_symlinked_tagged_repo_path': '',  # "{base_symlink_path}{symlink_path}-{tag_or_branch}"
+                'tag_versioned_repo_name': '',         # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
+                'tag_versioned_clone_src_path': ''     # "{init_clone_path}/{tag_versioned_repo_name}"
             }
 
         # url: Req'd - Strip ".git" from suffix, if any
@@ -161,12 +172,15 @@ class RepoManager:
 
         if url.endswith('.git'):
             url = url[:-4]
-            repo_info['url'] = url
+        repo_info['url'] = url
 
         # Default branch == parent {default_branch}
         if 'default_branch' not in repo_info:
             repo_info.setdefault('branch', manifest['default_branch'])
+
+        # Explicitly normalize branch slashes/to/forward
         branch = repo_info['branch']
+        repo_info['branch'] = branch.replace('\\', '/')
 
         # Default symlink_path == repo name (the end of url after the last slash/)
         repo_name = url.split('/')[-1]
@@ -218,10 +232,12 @@ class RepoManager:
         logger.info(colorize_action("⚙️ | Crafting dir skeleton from manifest..."))
 
         # Setup target symlink path skeleton tree from manifest vals
-        abs_init_clone_path = os.path.abspath(manifest['init_clone_path'])
-        abs_base_symlink_path = os.path.abspath(manifest['base_symlink_path'])
+        rel_init_clone_path = manifest['init_clone_path']
+        rel_base_symlink_path = manifest['base_symlink_path']
+        abs_init_clone_path = os.path.abspath(rel_init_clone_path)
+        abs_base_symlink_path = os.path.abspath(rel_base_symlink_path)
 
-        logger.info(colorize_path(f"   - init_clone_path: '{brighten(abs_init_clone_path)}'"))
+        logger.info(colorize_path(f"   - init_clone_path: '{brighten(rel_init_clone_path)}'"))
         logger.info(colorize_path(f"   - base_symlink_path: '{brighten(abs_base_symlink_path)}'"))
 
         self.setup_directory_skeleton(abs_init_clone_path)  # eg: source/_repos-available
@@ -282,15 +298,13 @@ class RepoManager:
         os.symlink(rel_tag_versioned_clone_src_path, rel_symlinked_tagged_repo_path)
 
     @staticmethod
-    def log_paths(debug_mode, tag_versioned_repo_name, tag_versioned_clone_src_path, rel_symlinked_tagged_repo_path):
+    def log_repo_paths(
+            debug_mode,
+            tag_versioned_repo_name,
+            tag_versioned_clone_src_path,
+            rel_symlinked_tagged_repo_path,
+    ):
         """ Log paths for production [and optionally debugging, if debug_mode]. """
-        if debug_mode:
-            print("###############################################################################")
-            print(f"tag_versioned_repo_name:  '{tag_versioned_repo_name}'")                # eg: "account_services-v2.1.0"
-            print(f"tag_versioned_clone_src_path:  '{tag_versioned_clone_src_path}'")      # eg: "source/_repos-available/account_services-v2.1.0"
-            print(f"rel_symlinked_tagged_repo_path:  '{rel_symlinked_tagged_repo_path}'")  # eg: "source/content/account_services-v2.1.0"
-            print("###############################################################################")
-            print()
 
         action_str = colorize_action(f"📁 | Working Dirs:")
         logger.info(f"[{tag_versioned_repo_name}] {action_str}")
@@ -313,7 +327,9 @@ class RepoManager:
         # eg: "source/_repos-available/account_services-v2.1.0"
         tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
         debug_mode = self.manifest['debug_mode']
-        self.log_paths(
+        repo_sparse_paths = self.manifest['repo_sparse_paths']
+
+        self.log_repo_paths(
             debug_mode,
             tag_versioned_repo_name,
             tag_versioned_clone_src_path,
@@ -324,7 +340,8 @@ class RepoManager:
             tag_versioned_repo_name,
             tag_versioned_clone_src_path,
             rel_symlinked_tagged_repo_path,
-            stash_and_continue_if_wip)
+            stash_and_continue_if_wip,
+            repo_sparse_paths)
 
     def manage_repositories(self, manifest):
         """ Manage the cloning and checking out of repositories as defined in the manifest. """
@@ -351,7 +368,9 @@ class RepoManager:
             tag_versioned_repo_name,
             tag_versioned_clone_src_path,
             rel_symlinked_tagged_repo_path,
-            stash_and_continue_if_wip):
+            stash_and_continue_if_wip,
+            repo_sparse_paths,
+    ):
         """
         Clone the repository if it does not exist and create a symlink in the base symlink path.
         - repo_name                       # eg: "account_services"
@@ -371,10 +390,21 @@ class RepoManager:
             # Clone the repo, if we haven't done so already
             cloned = False
             if not os.path.exists(tag_versioned_clone_src_path):
-                action_str = colorize_action(f"📦 | Cloning ({brighten(f'--branch {branch}')}) '{repo_url_dotgit}'...")
+                action_str = colorize_action(f"📦 | Sparse-cloning repo...")
                 logger.info(f"[{tag_versioned_repo_name}] {action_str}")
+                logger.info(colorize_path(f"  - Src Repo URL: '{brighten(tag_versioned_clone_src_path)}'"))
 
-                GitHelper.git_clone(tag_versioned_clone_src_path, repo_url_dotgit, branch)
+                GitHelper.git_sparse_clone(
+                    tag_versioned_clone_src_path,
+                    repo_url_dotgit,
+                    branch,
+                    repo_sparse_paths)
+
+                # Clean the repo to only use the specified sparse paths
+                action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
+                logger.info(f"[{tag_versioned_repo_name}] {action_str}")
+                GitHelper.git_clean_sparse_docs_clone(tag_versioned_clone_src_path, repo_sparse_paths)
+
                 cloned = True
             else:
                 action_str = colorize_action(f"🔃 | Fetching updates...")
@@ -424,6 +454,6 @@ class RepoManager:
 
 # [ENTRY POINT] Set up the Sphinx extension
 def setup(app):
-    repo_manager = RepoManager(MANIFEST_PATH)
+    repo_manager = RepoManager(ABS_MANIFEST_PATH)
     app.connect('builder-inited', repo_manager.read_manifest_manage_repos)
     # app.connect('source-read', replace_paths)  # (!) WIP
