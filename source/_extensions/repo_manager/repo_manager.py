@@ -234,6 +234,8 @@ class RepoManager:
         # Setup target symlink path skeleton tree from manifest vals
         rel_init_clone_path = manifest['init_clone_path']
         rel_base_symlink_path = manifest['base_symlink_path']
+
+        # Normalize paths -> log -> create dir skeleton
         abs_init_clone_path = os.path.abspath(rel_init_clone_path)
         abs_base_symlink_path = os.path.abspath(rel_base_symlink_path)
 
@@ -394,7 +396,8 @@ class RepoManager:
                 logger.info(f"[{tag_versioned_repo_name}] {action_str}")
                 logger.info(colorize_path(f"  - Src Repo URL: '{brighten(tag_versioned_clone_src_path)}'"))
 
-                GitHelper.git_sparse_clone(
+                git_helper = GitHelper()  # TODO: Place this instance @ top?
+                git_helper.git_sparse_clone(
                     tag_versioned_clone_src_path,
                     repo_url_dotgit,
                     branch,

@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 import shlex  # CLI helper
+from pathlib import Path
 from sphinx.util import logging
 from log_styles import *
 
@@ -74,56 +75,71 @@ class GitHelper:
         run_subprocess_cmd(git_clone_cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
-    def git_clean_sparse_docs_clone(repo_path, repo_sparse_paths):
-        """ Clean up the repo to only keep the specified sparse checkout paths. """
-        # Split repo_sparse_paths into its subdirectories
-        sparse_path_parts = repo_sparse_paths.split(os.sep)
-        first_part = sparse_path_parts[0]
-        
-        # Print for debugging
-        print(f"*Sparse path parts: {sparse_path_parts}")
-        
-        # Remove all items except .git and the first part of the sparse path
-        for item in os.listdir(repo_path):
-            item_path = os.path.join(repo_path, item)
-            if item not in ['.git', first_part]:
+    def remove_except(base_path, exclude_dirs):
+        for item in os.listdir(base_path):
+            item_path = os.path.join(base_path, item)
+            if item not in exclude_dirs:
                 if os.path.isdir(item_path):
                     shutil.rmtree(item_path)
                 else:
                     os.remove(item_path)
 
     @staticmethod
+    def git_clean_sparse_docs_clone(repo_path, repo_sparse_path):
+        """
+        Clean up the repo to only keep the specified sparse checkout paths.
+        """
+        # Ensure the path to exclude exists
+        full_path = os.path.join(repo_path, repo_sparse_path)
+        os.makedirs(full_path, exist_ok=True)
+
+        # Extract the parts of the sparse path
+        sparse_parts = Path(repo_sparse_path).parts
+
+        # Remove everything except the .git directory and the first
+        # level directory specified in repo_sparse_path
+        GitHelper.remove_except(repo_path, ['.git', sparse_parts[0]])
+        if len(sparse_parts) > 1:
+            GitHelper.remove_except(os.path.join(
+                repo_path,
+                sparse_parts[0]),
+                exclude_dirs=[sparse_parts[1]])
+
+        if len(sparse_parts) > 2:
+            GitHelper.remove_except(os.path.join(
+                repo_path,
+                sparse_parts[0],
+                sparse_parts[1]),
+                exclude_dirs=[sparse_parts[2]])
+
     def git_sparse_clone(
+            self,
             clone_to_path,
             repo_url_dotgit,
             branch,
-            repo_sparse_paths,
-            filter_tree_amt=0,
+            repo_sparse_path,
     ):
         """
         Clone the repo with sparse checkout, only fetching the specified directories.
+        (!) repo_sparse_path is a single string that will be combined into an arr.
         (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
         """
         # Clone the repository with no checkout
         git_clone_cmd_arr = [
             'git', 'clone',
-            f'--filter=tree:{filter_tree_amt}', '--no-checkout',
+            f'--filter=blob:none', '--no-checkout',
             '--branch', branch,
             '-q', repo_url_dotgit, clone_to_path
         ]
         run_subprocess_cmd(git_clone_cmd_arr, check_throw_on_cli_err=True)
 
         # Initialize sparse checkout
-        sparse_checkout_init_cmd_arr = ['git', '-C', clone_to_path, 'sparse-checkout', 'init', '--cone']
+        sparse_checkout_init_cmd_arr = ['git', '-C', clone_to_path, 'sparse-checkout', 'set', '--cone',
+                                        repo_sparse_path]
         run_subprocess_cmd(sparse_checkout_init_cmd_arr, check_throw_on_cli_err=True)
 
-        # Set the sparse paths (only the paths we'll use in the repo)
-        sparse_checkout_set_cmd_arr = ['git', '-C', clone_to_path, 'sparse-checkout', 'set'] + repo_sparse_paths
-        run_subprocess_cmd(sparse_checkout_set_cmd_arr, check_throw_on_cli_err=True)
-
         # Pull the changes
-        pull_cmd_arr = ['git', '-C', clone_to_path, 'pull', 'origin', branch]
-        run_subprocess_cmd(pull_cmd_arr, check_throw_on_cli_err=True)
+        self.git_checkout(clone_to_path, tag_or_branch=None, stash_and_continue_if_wip=True)
 
     @staticmethod
     def git_check_is_dirty(repo_path):
@@ -168,7 +184,11 @@ class GitHelper:
                         f"Working directory is dirty and !stash_and_continue_if_wip: "
                         f"'{brighten(repo_path)}'")
 
-        cmd_arr = ['git', '-C', repo_path, 'checkout', tag_or_branch]
+        cmd_arr = ['git', '-C', repo_path, 'checkout']
+        has_tag_or_branch = (tag_or_branch is not None) and (tag_or_branch != '')
+        if has_tag_or_branch:
+            cmd_arr += [tag_or_branch]
+
         run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
