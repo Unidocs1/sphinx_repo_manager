@@ -3,7 +3,7 @@ Xsolla Backend
 ==============
 Test!
 
-.. image:: /images/features_banner.png
+.. image:: /_static/images/features_banner.png
 
 .. toctree::
    :hidden:
@@ -17,7 +17,7 @@ Test!
    :caption: Learn
 
    _repos-available/xbe-static-docs--main/docs/source/content/getting_started/index
-   content/2024.07.0-TEST/account_services--dylan--refactor--docs-revamp/docs/source/index
+   Accounts <content/2024.07.0-TEST/account_services--dylan--refactor--docs-revamp/docs/source/index>
    Social <https://acceleratxr.io/projects/social-services/en/latest/content>
    _repos-available/xbe-static-docs--main/docs/source/content/gameplay
    _repos-available/xbe-static-docs--main/docs/source/content/multiplayer

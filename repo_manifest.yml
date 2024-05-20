@@ -19,13 +19,16 @@ base_symlink_path: "source/content"         # Default base path for cloning repo
 default_branch: "master"                    # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
 repo_sparse_paths: "docs/source/content"    # Path to individual repo dirs we want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; default to "docs/source/content", if omitted 
 repositories:                               # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
+  xbe-static-docs:
+    url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"
+    #tag: "v1.0.0"                          # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+    symlink_path: "xbe-static-docs"         # Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"
+    branch: "main"                          # Normalizes os/path/slashes; Default {default_branch}, if omitted
+    active: true                            # Default true, if omitted
   account_services:
     url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
-    #tag: "v2.1.0"                          # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+    #tag: "v2.1.0"                          
     symlink_path: "account_services"        # Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"
     branch: "dylan/refactor/docs-revamp"    # Normalizes os/path/slashes; Default {default_branch}, if omitted
     active: true                            # Default true, if omitted
-  xbe-static-docs:
-      url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"
-      symlink_path: "xbe-static-docs"
-      branch: "main"
+

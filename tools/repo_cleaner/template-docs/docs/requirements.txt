@@ -1,0 +1,7 @@
+# for testing the master branch
+# git+git://github.com/svenevs/exhale.git#egg=exhale
+# See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
+sphinx==7.3.7
+sphinx_rtd_theme>=2.0.0
+myst_parser>=0.18.0  # `recommonmark` successor
+sphinx_tabs>=3.4.5
