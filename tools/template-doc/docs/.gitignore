@@ -59,7 +59,3 @@ coverage.xml
 docs/_build/
 venv
 .readthedocs.yaml.bak
-
-# repo_manager ext: Ignore generated clone src, symlinked content
-source/content
-source/_repos-available
