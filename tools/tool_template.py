@@ -4,7 +4,7 @@ and reading the ../repo_manifest.yml file
 """
 import os
 import sys
-import yaml
+# import yaml
 
 # Add the path to the repo_manager extension
 repo_manager_path = os.path.abspath(os.path.join(os.path.dirname(__file__), './repo_manager'))
