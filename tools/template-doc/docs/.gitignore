@@ -59,3 +59,9 @@ coverage.xml
 docs/_build/
 venv
 .readthedocs.yaml.bak
+
+# Local symbolic links
+tools/repo_manager
+
+# Ensure docs content
+!docs/source/content

@@ -60,6 +60,8 @@ docs/_build/
 venv
 .readthedocs.yaml.bak
 
-# repo_manager ext: Ignore generated clone src, symlinked content
-source/content
-source/_repos-available
+# Local symbolic links
+tools/repo_manager
+
+# Ensure docs content
+!docs/source/content

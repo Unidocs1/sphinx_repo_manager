@@ -13,19 +13,18 @@ How it Works:
 clone URLs and tags.
 2. It checks if each repository is already cloned at the specified location.
 3. If a repository is not found, it clones the repository from the provided URL to an initial clone path.
-4. Symlinks are created from the clone path to the base symlink path specified in the YAML.
-5. Regardless of the initial presence, it checks out the specified tag to align the documentation state
-with the desired version.
+4. Git checkouts use sparse cloning in combination with git exclusions to only keep [ .git, docs ] dirs.
+5. Symlinks are created from the clone path to the base symlink path specified in the YAML.
 
 Usage:
-1. Place the `repo_manifest.yml` file two levels up from this script, typically at the project root.
-2. Ensure each repository listed in the manifest includes a `url` and a `tag`.
+1. Edit the `repo_manifest.yml` at your repo project root.
+2. Ensure each repository listed in the manifest includes at least a `url` and a `tag`.
 3. Optionally, specify `init_clone_path` and `base_symlink_path` in the manifest to manage where repositories
 are cloned and how they are accessed.
 4. Include this extension in your Sphinx `conf.py` file by adding the extension's path to `sys.path`
-and including `'repo_manager'` in the `extensions` list.
+(source/_extensions/repo_manager) and including in the `extensions` list.
 
-Requirements: See project root `requirements.txt`
+Requirements: See project root `requirements.txt` -> Install easily via project `root tools/requirements-install.ps1`
 
 Entry point: setup(app) | This script is executed during the 'builder-inited' event of Sphinx,
 which is triggered after Sphinx inits but before the build process begins.
@@ -115,7 +114,7 @@ class RepoManager:
 
         # Set root defaults
         manifest.setdefault('debug_mode', False)
-        manifest.setdefault('stash_and_continue_if_wip', False)
+        manifest.setdefault('stash_and_continue_if_wip', True)
         manifest.setdefault('default_branch', 'master')
         manifest.setdefault('init_clone_path', os.path.normpath('source/_repos-available'))
         manifest.setdefault('base_symlink_path', os.path.normpath('source/content'))
@@ -401,7 +400,8 @@ class RepoManager:
                     tag_versioned_clone_src_path,
                     repo_url_dotgit,
                     branch,
-                    repo_sparse_paths)
+                    repo_sparse_paths,
+                    stash_and_continue_if_wip)
 
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")

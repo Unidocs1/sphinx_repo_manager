@@ -28,7 +28,7 @@ try {
     python3 -m pip install -r "$projRoot/requirements.txt"
 
     Write-Host ""
-    Write-Host "Done."
+    Read-Host "Done. Press Enter to quit"
 } catch {
-    Write-Host "An error occurred. Try deleting the project root 'venv' directory and run the script again."
+    Write-Host "An error occurred. Try deleting the project root proj root 'venv' directory and run the script again."
 }

@@ -13,11 +13,11 @@
 ## - It *is safe* to wipe your source/_repos-available + source/content dirs.                  ##
 #################################################################################################
 debug_mode: false                           # More-verbose logging or debugging
-stash_and_continue_if_wip: true             # If true, will stash and continue if working directory is dirty; defaults to false, if omitted
+stash_and_continue_if_wip: true             # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
 init_clone_path: "source/_repos-available"  # Default base for cloning; normalizes "os/path/slashes"; defaults to source/_repos-available, if omitted
 base_symlink_path: "source/content"         # Default base path for cloning repos relative to this file; normalizes "os/path/slashes"; defaults to "source/content", if omitted
 default_branch: "master"                    # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
-repo_sparse_paths: "docs/source/content"    # Path to individual repo dirs we want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; default to "docs/source/content", if omitted 
+repo_sparse_paths: "docs"                   # Path to individual repo dirs we want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; default to "docs/source/content", if omitted 
 repositories:                               # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
 #  xbe-static-docs:
 #    url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"  # .git suffix == optional

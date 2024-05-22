@@ -76,6 +76,9 @@ class GitHelper:
 
     @staticmethod
     def remove_except(base_path, exclude_dirs):
+        """
+        Remove all items in the base_path except those in exclude_dirs.
+        """
         for item in os.listdir(base_path):
             item_path = os.path.join(base_path, item)
             if item not in exclude_dirs:
@@ -83,6 +86,21 @@ class GitHelper:
                     shutil.rmtree(item_path)
                 else:
                     os.remove(item_path)
+
+    @staticmethod
+    def clean_exclude_root_level(repo_path, sparse_first_level):
+        """
+        Clean the root level of the repo_path, leaving only .git and sparse_first_level directories.
+        """
+        # These dirs won't be touched
+        preserved_dirs = ['.git', sparse_first_level]
+
+        # Add non-preserved dirs to .git/info/exclude before wiping
+        # We don't want it to show on git diff -- this is *just* local to us
+        GitHelper.git_add_to_exclude(repo_path, preserved_dirs)
+
+        # Remove all items except those in exclude_dirs
+        GitHelper.remove_except(repo_path, preserved_dirs)
 
     @staticmethod
     def git_clean_sparse_docs_clone(repo_path, repo_sparse_path):
@@ -95,22 +113,11 @@ class GitHelper:
 
         # Extract the parts of the sparse path
         sparse_parts = Path(repo_sparse_path).parts
+        docs_dir = sparse_parts[0]
 
-        # Remove everything except the .git directory and the first
-        # level directory specified in repo_sparse_path
-        GitHelper.remove_except(repo_path, ['.git', sparse_parts[0]])
-        if len(sparse_parts) > 1:
-            GitHelper.remove_except(os.path.join(
-                repo_path,
-                sparse_parts[0]),
-                exclude_dirs=[sparse_parts[1]])
-
-        if len(sparse_parts) > 2:
-            GitHelper.remove_except(os.path.join(
-                repo_path,
-                sparse_parts[0],
-                sparse_parts[1]),
-                exclude_dirs=[sparse_parts[2]])
+        # Remove everything except the .git and docs dir at root level
+        print(f"*docs_dir: {docs_dir}")
+        GitHelper.clean_exclude_root_level(repo_path, docs_dir)
 
     def git_sparse_clone(
             self,
@@ -118,6 +125,7 @@ class GitHelper:
             repo_url_dotgit,
             branch,
             repo_sparse_path,
+            stash_and_continue_if_wip,
     ):
         """
         Clone the repo with sparse checkout, only fetching the specified directories.
@@ -125,25 +133,40 @@ class GitHelper:
         (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
         """
         # Clone the repository with no checkout
-        git_clone_cmd_arr = [
+        git_clone_filter_nocheckout_cmd_arr = [
             'git', 'clone',
-            f'--filter=blob:none', '--no-checkout',
+            '--filter=blob:none', '--no-checkout',
             '--branch', branch,
             '-q', repo_url_dotgit, clone_to_path
         ]
-        run_subprocess_cmd(git_clone_cmd_arr, check_throw_on_cli_err=True)
+        run_subprocess_cmd(git_clone_filter_nocheckout_cmd_arr, check_throw_on_cli_err=True)
 
         # Initialize sparse checkout
-        sparse_checkout_init_cmd_arr = ['git', '-C', clone_to_path, 'sparse-checkout', 'set', '--cone',
-                                        repo_sparse_path]
+        sparse_checkout_init_cmd_arr = [
+            'git', '-C', clone_to_path,
+            'sparse-checkout', 'init', '--cone'
+        ]
         run_subprocess_cmd(sparse_checkout_init_cmd_arr, check_throw_on_cli_err=True)
 
-        # Pull the changes
-        self.git_checkout(clone_to_path, tag_or_branch=None, stash_and_continue_if_wip=True)
+        # Set the sparse checkout paths
+        sparse_checkout_set_cmd_arr = [
+            'git', '-C', clone_to_path,
+            'sparse-checkout', 'set', repo_sparse_path
+        ]
+        run_subprocess_cmd(sparse_checkout_set_cmd_arr, check_throw_on_cli_err=True)
+
+        # Pull the changes (checkout the branch)
+        self.git_checkout(
+            clone_to_path,
+            branch,
+            stash_and_continue_if_wip)
 
     @staticmethod
     def git_check_is_dirty(repo_path):
-        """ Check if the working directory is dirty (has WIP changes). """
+        """
+        Check if the working directory is dirty (has WIP changes).
+        :returns is_dirty
+        """
         try:
             GitHelper.throw_if_path_not_exists(repo_path)
             cmd_arr = ['git', '-C', repo_path, 'status', '--porcelain']
@@ -192,6 +215,31 @@ class GitHelper:
         run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
+    def git_add_to_exclude(rel_base_path, preserved_dirs):
+        """
+        Uses git update-index to prevent git from tracking changes to all paths except the preserved ones.
+        """
+        # Get all items in the base path
+        all_items = os.listdir(rel_base_path)
+
+        # Create a list of items to exclude (all items except the preserved ones)
+        items_to_exclude = [item for item in all_items if item not in preserved_dirs]
+
+        # Use git update-index to exclude these items
+        for item in items_to_exclude:
+            abs_path = (Path(rel_base_path) / item).resolve()
+            if abs_path.is_dir():
+                for sub_item in abs_path.rglob('*'):
+                    cmd_arr = [
+                        'git', '-C', rel_base_path,
+                        'update-index', '--assume-unchanged', str(sub_item)  # Absolute paths only
+                    ]
+                    run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
+            else:
+                cmd_arr = ['git', '-C', rel_base_path, 'update-index', '--assume-unchanged', str(abs_path)]
+                run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
+
+    @staticmethod
     def git_submodule_cmd(
             cmd,
             working_dir_repo_path,
@@ -210,7 +258,3 @@ class GitHelper:
         """ Throw an exception if the specified path does not exist. """
         if not os.path.exists(path):
             raise Exception(f"Path does not exist: '{brighten(path)}'")
-
-# Example usage:
-# git_helper = GitHelper()
-# git_helper.git_fetch(repo_path)

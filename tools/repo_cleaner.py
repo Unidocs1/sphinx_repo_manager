@@ -83,17 +83,26 @@ import shutil  # File/path manipulation
 import sys  # System-specific params/funcs
 
 # Constants
-REL_PROJECT_ROOT_PATH = Path(__file__).parent  # .resolve() turns into abs path
-REL_MANIFEST_PATH = Path('../repo_manifest.yml')
-ABS_MANIFEST_PATH = REL_PROJECT_ROOT_PATH.parent / REL_MANIFEST_PATH
+ABS_SCRIPT_PATH = Path(__file__).resolve()
+ABS_PROJECT_ROOT_PATH = ABS_SCRIPT_PATH.parent  # Assuming the script is in 'tools', and we need the parent directory
 
-TOP_DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
-TOP_DOCS_SOURCE_DIR_NAME = 'source'  # TODO: Parse from repo_manifest
-REL_TEMPLATE_REPO_PATH = Path('./template-doc')
+REL_MANIFEST_PATH = Path('../repo_manifest.yml')  # For logging only
+ABS_MANIFEST_PATH = ABS_PROJECT_ROOT_PATH / 'repo_manifest.yml'
+
+DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
+DOCS_SOURCE_DIR_NAME = 'source'  # TODO: Parse from repo_manifest
+DOCS_SOURCE_CONTENT_DIR_NAME = 'content'  # TODO: Parse from repo_manifest
+
+REL_TEMPLATE_REPO_PATH = Path('./template-doc')  # For logging only
+ABS_TEMPLATE_REPO_PATH = (ABS_PROJECT_ROOT_PATH / REL_TEMPLATE_REPO_PATH).resolve()
 
 # Add the path to the repo_manager extension
-repo_manager_path = REL_PROJECT_ROOT_PATH / 'repo_manager'
+repo_manager_path = ABS_PROJECT_ROOT_PATH / 'repo_manager'
 sys.path.insert(0, str(repo_manager_path))
+
+# Add the path to the log_styles module
+log_styles_path = ABS_PROJECT_ROOT_PATH / 'log_styles'
+sys.path.insert(0, str(log_styles_path))
 
 # Import the RepoManager and GitHelper from the repo_manager package
 from repo_manager import RepoManager
@@ -163,26 +172,41 @@ def ensure_dir_tree_exists(rel_tagged_repo_path):
         'docs/source/content'
     ]
     for dir_name in dirs_to_create:
-        Path(rel_tagged_repo_path, dir_name).resolve().mkdir(parents=True, exist_ok=True)
+        Path(rel_tagged_repo_path.resolve(), dir_name).resolve().mkdir(parents=True, exist_ok=True)
 
 
-def mv_existing_index_rst_to_docs_src_if_exists_else_copy_from_template(
-        rel_tagged_repo_docs_path,
+def mv_existing_index_rst_to_docs_src_if_exists(
+        rel_tagged_repo_docs_source_content_path,
         rel_tagged_repo_docs_source_path
 ):
-    """ Check for index.rst -- if exists, mv to docs/source; else, copy from template. """
-    for file in Path(rel_tagged_repo_docs_path).rglob('index.rst'):
-        dst_index_rst_path = Path(rel_tagged_repo_docs_source_path).resolve() / file.name
-        shutil.move(str(file), str(dst_index_rst_path))
+    """ Check for docs/source/content/index.rst -- if exists, mv docs/source; else, copy from template. """
+    abs_tagged_repo_docs_source_content_path = Path(rel_tagged_repo_docs_source_content_path).resolve()
+    abs_tagged_repo_docs_source_path = Path(rel_tagged_repo_docs_source_path).resolve()
+
+    # Check for index.rst @ docs/source/content
+    index_rst_path = abs_tagged_repo_docs_source_content_path / 'index.rst'
+    if index_rst_path.is_file():
+        # Remove existing index.rst in the target location if it exists
+        target_index_rst_path = abs_tagged_repo_docs_source_path / 'index.rst'
+        if target_index_rst_path.is_file():
+            target_index_rst_path.unlink()
+
+        # Move index.rst to docs/source
+        shutil.move(str(index_rst_path), str(abs_tagged_repo_docs_source_path / 'index.rst'))
         return
 
-    # Prep paths to copy "index.rst" "content" dir from template to source/
-    rel_src_index_rst_path = REL_TEMPLATE_REPO_PATH / 'docs/source/index.rst'
-    rel_src_content_path = REL_TEMPLATE_REPO_PATH / 'docs/source/content'
-    rel_dst_content_path = Path(rel_tagged_repo_docs_source_path) / 'content'
+    # Copy index.rst from template to docs/source
+    index_rst_template_path = ABS_TEMPLATE_REPO_PATH / 'docs/source/index.rst'
+    shutil.copy2(
+        str(index_rst_template_path),
+        str(abs_tagged_repo_docs_source_path / 'index.rst'))
 
-    # Copy index.rst from template to docs/source/
-    shutil.copy2(rel_src_index_rst_path, rel_tagged_repo_docs_source_path)
+    # Copy content dir (itself) from template to docs/source
+    content_template_path = ABS_TEMPLATE_REPO_PATH / 'docs/source/content'
+    shutil.copytree(
+        content_template_path,
+        abs_tagged_repo_docs_source_path / 'content',
+        dirs_exist_ok=True)
 
 
 def replace_placeholders(
@@ -202,7 +226,7 @@ def replace_placeholders(
     repo_name_dashed = repo_name.replace('_', '-')
 
     # Replace %REPO_NAME% @ docs/README.md
-    readme_path = (Path(rel_tagged_repo_docs_path) / 'README.md').resolve()
+    readme_path = (Path(rel_tagged_repo_docs_path).resolve() / 'README.md').resolve()
 
     # Validate
     if not readme_path.exists():
@@ -216,7 +240,7 @@ def replace_placeholders(
 
     # ------------------------------
     # Replace %REPO_NAME% in conf.py
-    conf_path = (Path(rel_tagged_repo_docs_source_path) / 'conf.py').resolve()
+    conf_path = (Path(rel_tagged_repo_docs_source_path).resolve() / 'conf.py').resolve()
 
     # Validate
     if not conf_path.exists():
@@ -244,30 +268,50 @@ def wipe_deprecated_files(repo_path):
         'Makefile',
     ]
     for file in deprecated_files:
-        wipe_file_if_exists(Path(repo_path) / file)
+        wipe_file_if_exists(Path(repo_path).resolve() / file)
 
 
-def mv_dirs(src_dirs, single_dst):
-    """ Move multiple dirs to a single destination using shutil. """
-    for src_dir in src_dirs:
-        src_dir_path = (Path(single_dst) / src_dir).resolve()
-        shutil.move(str(src_dir_path), str(single_dst))
+def mv_dirs_and_files(src_paths, dst_dir):
+    """ Move multiple directories and/or files to a single destination directory using shutil. """
+    for src_path in src_paths:
+        dst_path = Path(dst_dir) / src_path.name
+        shutil.move(str(src_path), str(dst_path))
+
+
+def copytree_no_overwrite(src, dst):
+    """
+    Recursively copy a directory tree from src to dst, without overwriting existing files.
+    """
+    src = Path(src)
+    dst = Path(dst)
+    if not dst.exists():
+        dst.mkdir(parents=True)
+    for item in src.iterdir():
+        s = src / item.name
+        d = dst / item.name
+        if s.is_dir():
+            copytree_no_overwrite(s, d)
+        else:
+            if not d.exists():
+                shutil.copy2(s, d)
 
 
 def clean_repo(
         repo_name,
         rel_tagged_repo_path,
         rel_tagged_repo_docs_path,
-        rel_tagged_repo_docs_source_path
+        rel_tagged_repo_docs_source_path,
+        rel_tagged_repo_docs_source_content_path,
 ):
     """
     Cleans and normalizes expected per-repo consistency.
     - repo_name | eg: 'account_services'
-    - rel_tagged_repo_path | eg: 'source/_repos-available/{tagged_repo_name}
+    - rel_tagged_repo_path | 'source/_repos-available/{tagged_repo_name}
         - If !tag, {tagged_repo_name} eg: 'source/_repos-available/account_services--master'
         - If tag, {tagged_repo_name} eg: 'source/_repos-available/account_services-1.0.0'
-    - rel_tagged_repo_docs_path | eg: 'source/_repos-available/{tagged_repo_name}/{TOP_DOCS_DIR_NAME}'
-    - rel_tagged_repo_docs_source_path | eg: 'source/_repos-available/{tagged_repo_name}/{TOP_DOCS_DIR_NAME}/{TOP_DOCS_SOURCE_DIR_NAME}'
+    - rel_tagged_repo_docs_path | 'source/_repos-available/{tagged_repo_name}/{DOCS_DIR_NAME}'
+    - rel_tagged_repo_docs_source_path | eg: 'source/_repos-available/{tagged_repo_name}/{DOCS_DIR_NAME}/{DOCS_SOURCE_DIR_NAME}'
+    - rel_tagged_repo_docs_source_content_path | 'source/_repos-available/{tagged_repo_name}/{DOCS_DIR_NAME}/{DOCS_SOURCE_DIR_NAME}/{DOCS_SOURCE_CONTENT_DIR_NAME}'
     """
     # --------------------------------------
     logger.info(f'{Fore.YELLOW}[wipe_deprecated_files]{Fore.RESET}\n'
@@ -275,37 +319,42 @@ def clean_repo(
     wipe_deprecated_files(rel_tagged_repo_docs_path)
 
     # --------------------------------------
-    # Get list of remaining dir paths at the top level docs (to mv later 1 down to /source)
+    # Get list of remaining files+dir paths at the top level docs (to mv later 1 down to /source/content),
+    # ensuring we exclude [ source, tools ]
     logger.info(f'{Fore.YELLOW}[ensure_dir_tree_exists]{Fore.RESET}\n'
                 f"- rel_tagged_repo_path: '{rel_tagged_repo_path}'")
-    dirs_before_ensure_dir_tree = [
-        d for d in Path(rel_tagged_repo_docs_path).iterdir()
-        if d.is_dir() and d.name != 'source' and d.name != 'tools'
+    files_or_dirs_before_ensure_dir_tree = [
+        item for item in Path(rel_tagged_repo_docs_path).iterdir()
+        if item.name not in ['source', 'tools']
     ]
 
-    ensure_dir_tree_exists(rel_tagged_repo_path)  # /docs, itself, may not even exist
+    ensure_dir_tree_exists(rel_tagged_repo_path)  # /docs, itself, may not even exist yet
 
     # --------------------------------------
-    # Mv dirs_before_ensure_dir_tree 1 down to /source
-    logger.info(f'{Fore.YELLOW}[dirs_before_ensure_dir_tree]{Fore.RESET} {dirs_before_ensure_dir_tree}')
-    if dirs_before_ensure_dir_tree:
-        mv_dirs(dirs_before_ensure_dir_tree, rel_tagged_repo_docs_source_path)
+    # Move dirs_before_ensure_dir_tree 1 down to /source/content
+    logger.info(f'{Fore.YELLOW}[dirs_before_ensure_dir_tree]{Fore.RESET} {files_or_dirs_before_ensure_dir_tree}')
+    if files_or_dirs_before_ensure_dir_tree:
+        mv_dirs_and_files(
+            files_or_dirs_before_ensure_dir_tree,
+            rel_tagged_repo_docs_source_content_path)
 
     # --------------------------------------
     # Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/
     logger.info(f'{Fore.YELLOW}[Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/]{Fore.RESET}\n'
                 f"- From: '{REL_TEMPLATE_REPO_PATH}'\n"
                 f"- To: '{rel_tagged_repo_path}'")
-    shutil.copytree(REL_TEMPLATE_REPO_PATH, rel_tagged_repo_path, dirs_exist_ok=True)
+
+    copytree_no_overwrite(ABS_TEMPLATE_REPO_PATH, rel_tagged_repo_path)
 
     # --------------------------------------
-    # If there's an existing index.rst, mv it -1 to /source
-    # Else, copy index+content placeholders from template to /source
+    # If there's an existing index.rst @ docs/source/content,
+    # rm placeholder there, then mv +1 to docs/source
     logger.info(f'{Fore.YELLOW}[mv_existing_index_rst_to_docs_src_if_exists_else_copy_from_template]{Fore.RESET}\n'
                 f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'\n"
                 f"- rel_tagged_repo_docs_source_path: '{rel_tagged_repo_docs_source_path}'")
-    mv_existing_index_rst_to_docs_src_if_exists_else_copy_from_template(
-        rel_tagged_repo_docs_path, rel_tagged_repo_docs_source_path)
+
+    mv_existing_index_rst_to_docs_src_if_exists(
+        rel_tagged_repo_docs_source_content_path, rel_tagged_repo_docs_source_path)
 
     # --------------------------------------
     logger.info(f'{Fore.YELLOW}[replace_placeholders]{Fore.RESET}\n'
@@ -324,8 +373,8 @@ def main():
     print(f'{Fore.LIGHTGREEN_EX}== repo_cleaner =={Fore.RESET}')
 
     # Ensure template path exists
-    if not REL_TEMPLATE_REPO_PATH.exists():
-        raise FileNotFoundError(f"Template path not found: {REL_TEMPLATE_REPO_PATH}")
+    if not ABS_TEMPLATE_REPO_PATH.exists():
+        raise FileNotFoundError(f"Template path not found: {ABS_TEMPLATE_REPO_PATH}")
 
     # Initialize the RepoManager with the path to the manifest file
     logger.info(f"📖 | Attempting to read manifest: '{REL_MANIFEST_PATH}' ...")
@@ -340,14 +389,22 @@ def main():
         logger.info("No repositories found in manifest.")
         return
 
-    # For each repo, clean it up
+    # Process each repository
+    process_repositories(repositories, rel_init_clone_path)
+
+    print(f"-------------------")
+    print(f"{Fore.GREEN}✅ | ALL JOBS DONE.{Fore.RESET}")
+    print()
+
+
+def process_repositories(repositories, rel_init_clone_path):
+    """ Process each repository defined in the manifest. """
     num_repos = len(repositories)
-    repo_i = 0
-    for repo_name, repo_data in repositories:
+    for repo_i, (repo_name, repo_data) in enumerate(repositories, start=1):
+        # Prep expected repo name, different based on branch or tag with some normalizations
         normalized_branch = (repo_data.get('branch', 'master')
                              .replace('/', '--')
                              .replace(' ', '-'))
-        repo_i += 1
         tag = repo_data.get('tag', None)
 
         # If tag, dir name == "{repo_name}-{tag}"
@@ -360,8 +417,9 @@ def main():
             continue
 
         # "{repo_path}/{TOP_DOCS_DIR_NAME}"
-        rel_tagged_repo_docs_path = (rel_tagged_repo_path / TOP_DOCS_DIR_NAME)
-        rel_tagged_repo_docs_source_path = (rel_tagged_repo_docs_path / TOP_DOCS_SOURCE_DIR_NAME)
+        rel_tagged_repo_docs_path = (rel_tagged_repo_path / DOCS_DIR_NAME)
+        rel_tagged_repo_docs_source_path = (rel_tagged_repo_docs_path / DOCS_SOURCE_DIR_NAME)
+        rel_tagged_repo_docs_source_content_path = (rel_tagged_repo_docs_source_path / DOCS_SOURCE_CONTENT_DIR_NAME)
 
         repo_i_of_max = f"{repo_i}/{num_repos}"
         print()
@@ -371,12 +429,9 @@ def main():
             repo_name,
             rel_tagged_repo_path,
             rel_tagged_repo_docs_path,
-            rel_tagged_repo_docs_source_path)
+            rel_tagged_repo_docs_source_path,
+            rel_tagged_repo_docs_source_content_path)
         print(f'{Fore.GREEN}🧹 | Finished Repo Clean.{Fore.RESET}')
-
-    print(f"-------------------")
-    print(f"{Fore.GREEN}✅ | ALL JOBS DONE.{Fore.RESET}")
-    print()
 
 
 # ENTRY POINT
