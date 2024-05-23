@@ -76,16 +76,33 @@ For each repo:
             * %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%
 """
 # CUSTOMIZE ACTIONS ##################################################################
+DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
+DOCS_SOURCE_DIR_NAME = 'source'  # TODO: Parse from repo_manifest
+DOCS_SOURCE_CONTENT_DIR_NAME = 'content'  # TODO: Parse from repo_manifest
+ENSURE_DIR_TREE_IGNORED_DIRS = [  # Requires: ACTION_ENSURE_DIR_TREE_SKELETON
+    'source',
+    'tools',
+]
+DEPRECATED_DOC_ROOT_FILES_TO_RM_REPLACED = [  # Requires: ACTION_WIPE_DEPRECATED_FILES
+    'conf.py',
+    'make.bat',
+    'Makefile',
+    '.gitignore',
+    'README.md',
+    'requirements.txt',
+]
+
+# ------------------------------
 # Shown in order of execution >>
 ACTION_WIPE_DEPRECATED_FILES = True
 ACTION_ENSURE_DIR_TREE_SKELETON = True
 ACTION_MV_DIRS_AND_FILES = True
 ACTION_MV_DOCS_ROOT_TO_SRC_DIR = True # Requires: ACTION_MV_DIRS_AND_FILES
-COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS = True
+COPY_FILES_FROM_TEMPLATE_NO_OVERWRITE = True
 CP_CONTEXT_FROM_TEMPLATE_NO_OVERWRITE = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS
-MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS; if this triggers, CP_INDEX_FROM_TEMPLATE_TO_SRC_IF_NONE will not
-CP_INDEX_FROM_TEMPLATE_TO_SRC_IF_NONE = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS; If this triggers, MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC will not
+MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS; if this triggers
 REPLACE_PLACEHOLDERS_IN_FILES = True
+
 
 # INIT ###############################################################################
 from colorama import Fore, Style
@@ -103,10 +120,6 @@ ABS_PROJECT_ROOT_PATH = ABS_SCRIPT_PATH.parent  # Assuming the script is in 'too
 
 REL_MANIFEST_PATH = Path('../repo_manifest.yml')  # For logging only
 ABS_MANIFEST_PATH = ABS_PROJECT_ROOT_PATH / 'repo_manifest.yml'
-
-DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
-DOCS_SOURCE_DIR_NAME = 'source'  # TODO: Parse from repo_manifest
-DOCS_SOURCE_CONTENT_DIR_NAME = 'content'  # TODO: Parse from repo_manifest
 
 REL_TEMPLATE_REPO_PATH = Path('./template-doc')  # For logging only
 ABS_TEMPLATE_REPO_PATH = (ABS_PROJECT_ROOT_PATH / REL_TEMPLATE_REPO_PATH).resolve()
@@ -219,7 +232,7 @@ def cp_dir(src, dest, overwrite):
                     shutil.copy2(src_file, dest_file)
 
 
-def mv_existing_index_rst_to_docs_src_if_exists(
+def mv_existing_docs_src_content_index_up_one(
         rel_tagged_repo_docs_source_content_path,
         rel_tagged_repo_docs_source_path
 ):
@@ -234,7 +247,10 @@ def mv_existing_index_rst_to_docs_src_if_exists(
 
     # Check for an old index.rst @ docs/source/content
     if content_index_rst_path.is_file():
+        print('*content_index_rst_path.is_file()')
         if MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC:
+            logger.info("💡 Found existing 'docs/source/content/index.rst' to be moved +1 up")
+
             # Remove placeholder index.rst @ docs/source (before moving the docs/source/content one)
             target_index_rst_path = abs_tagged_repo_docs_source_path / 'index.rst'
             if target_index_rst_path.is_file():
@@ -244,12 +260,6 @@ def mv_existing_index_rst_to_docs_src_if_exists(
             shutil.move(
                 str(content_index_rst_path),
                 str(abs_tagged_repo_docs_source_path / 'index.rst'))
-    elif CP_INDEX_FROM_TEMPLATE_TO_SRC_IF_NONE:
-        # No docs/source/content/index.rst found? Copy index.rst from template to docs/source
-        index_rst_template_path = ABS_TEMPLATE_REPO_PATH / 'docs/source/index.rst'
-        shutil.copy2(
-            str(index_rst_template_path),  # From template
-            str(abs_tagged_repo_docs_source_path / 'index.rst'))  # To docs/source/
 
 
 def replace_placeholders(
@@ -304,21 +314,28 @@ def replace_placeholders(
 
 
 def wipe_deprecated_files(repo_path):
-    """ Wipe deprecated files at the repo path. """
-    deprecated_files = [
-        'conf.py',
-        'make.bat',
-        'Makefile',
-    ]
-    for file in deprecated_files:
+    """ Wipe deprecated files at the repo path; we'll likely replace them from template. """
+    for file in DEPRECATED_DOC_ROOT_FILES_TO_RM_REPLACED:
         wipe_file_if_exists(Path(repo_path).resolve() / file)
 
 
-def mv_dirs_and_files(src_paths, dst_dir):
-    """ Move multiple directories and/or files to a single destination directory using shutil. """
+def mv_sphinx_dirs_and_files(src_paths, dst_dir):
+    """
+    Move multiple dirs and/or files to a single destination dir using shutil.
+
+    Only moves files ending with .rst or dirs containing .rst files.
+    """
     for src_path in src_paths:
-        dst_path = Path(dst_dir) / src_path.name
-        shutil.move(str(src_path), str(dst_path))
+        # Check if the path is a file and ends with .rst
+        if src_path.is_file() and src_path.suffix == '.rst':
+            dst_path = Path(dst_dir) / src_path.name
+            shutil.move(str(src_path), str(dst_path))
+        elif src_path.is_dir():  # Check if the path is a directory
+            # Check if the dir contains any .rst files
+            contains_rst = any(f.suffix == '.rst' for f in src_path.rglob('*') if f.is_file())
+            if contains_rst:
+                dst_path = Path(dst_dir) / src_path.name
+                shutil.move(str(src_path), str(dst_path))
 
 
 def clean_repo(
@@ -352,7 +369,7 @@ def clean_repo(
                     f"- rel_tagged_repo_path: '{rel_tagged_repo_path}'")
         files_or_dirs_before_ensure_dir_tree = [
             item for item in Path(rel_tagged_repo_docs_path).iterdir()
-            if item.name not in ['source', 'tools']
+            if item.name not in ENSURE_DIR_TREE_IGNORED_DIRS
         ]
 
         ensure_dir_tree_exists(rel_tagged_repo_path)  # /docs, itself, may not even exist yet
@@ -360,15 +377,16 @@ def clean_repo(
         # --------------------------------------
         # Move dirs_before_ensure_dir_tree 1 down to /source/content
         if ACTION_MV_DOCS_ROOT_TO_SRC_DIR:
-            logger.info(f'{Fore.YELLOW}[dirs_before_ensure_dir_tree]{Fore.RESET} {files_or_dirs_before_ensure_dir_tree}')
+            logger.info(f'{Fore.YELLOW}[dirs_before_ensure_dir_tree]{Fore.RESET}\n'
+                        f'- {files_or_dirs_before_ensure_dir_tree}')
             if files_or_dirs_before_ensure_dir_tree:
-                mv_dirs_and_files(
+                mv_sphinx_dirs_and_files(
                     files_or_dirs_before_ensure_dir_tree,
                     rel_tagged_repo_docs_source_content_path)
 
     # --------------------------------------
-    # Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/
-    if COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS:
+    # Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/ for whatever is missing (!overwrite)
+    if COPY_FILES_FROM_TEMPLATE_NO_OVERWRITE:
         logger.info(f'{Fore.YELLOW}[Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/]{Fore.RESET}\n'
                     f"- From: '{REL_TEMPLATE_REPO_PATH}'\n"
                     f"- To: '{rel_tagged_repo_path}'")
@@ -382,11 +400,12 @@ def clean_repo(
     # If there's an existing index.rst @ docs/source/content,
     # rm placeholder there, then mv +1 to docs/source
     logger.info(f'{Fore.YELLOW}[mv_existing_index_rst_to_docs_src_if_exists_else_copy_from_template]{Fore.RESET}\n'
-                f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'\n"
+                f"- rel_tagged_repo_docs_source_content_path: '{rel_tagged_repo_docs_source_content_path}'\n"
                 f"- rel_tagged_repo_docs_source_path: '{rel_tagged_repo_docs_source_path}'")
 
-    mv_existing_index_rst_to_docs_src_if_exists(
-        rel_tagged_repo_docs_source_content_path, rel_tagged_repo_docs_source_path)
+    mv_existing_docs_src_content_index_up_one(
+        rel_tagged_repo_docs_source_content_path,
+        rel_tagged_repo_docs_source_path)
 
     # --------------------------------------
     if REPLACE_PLACEHOLDERS_IN_FILES:
