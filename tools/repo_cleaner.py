@@ -1,6 +1,8 @@
 """
 repo_cleaner.py
 - This migrates repos to the correct architecture for the new doc system.
+- This could theoretically be used for mass repo changes (beyond just migration).
+- Set constant prefs below (all True, by default).
 After cleaning, check git diff to ensure the correct architecture is in place.
 - Script to hook into repo_manager and git_manager tooling,
 and reading the ../repo_manifest.yml file
@@ -73,11 +75,24 @@ For each repo:
             * %REPO_NAME%
             * %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%
 """
+# CUSTOMIZE ACTIONS ##################################################################
+# Shown in order of execution >>
+ACTION_WIPE_DEPRECATED_FILES = True
+ACTION_ENSURE_DIR_TREE_SKELETON = True
+ACTION_MV_DIRS_AND_FILES = True
+ACTION_MV_DOCS_ROOT_TO_SRC_DIR = True # Requires: ACTION_MV_DIRS_AND_FILES
+COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS = True
+CP_CONTEXT_FROM_TEMPLATE_NO_OVERWRITE = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS
+MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS; if this triggers, CP_INDEX_FROM_TEMPLATE_TO_SRC_IF_NONE will not
+CP_INDEX_FROM_TEMPLATE_TO_SRC_IF_NONE = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS; If this triggers, MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC will not
+REPLACE_PLACEHOLDERS_IN_FILES = True
+
 # INIT ###############################################################################
 from colorama import Fore, Style
 from colorama import init
 import logging
 import re  # Regex
+import os
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 import shutil  # File/path manipulation
 import sys  # System-specific params/funcs
@@ -175,38 +190,66 @@ def ensure_dir_tree_exists(rel_tagged_repo_path):
         Path(rel_tagged_repo_path.resolve(), dir_name).resolve().mkdir(parents=True, exist_ok=True)
 
 
+def cp_dir(src, dest, overwrite):
+    """
+    Copy a directory from src to dest.
+
+    Parameters:
+    - src: Source directory path.
+    - dest: Destination directory path.
+    - overwrite: If True, overwrite existing files. If False, do not overwrite existing files.
+    """
+    src_path = Path(src)
+    dest_path = Path(dest)
+
+    if overwrite:
+        # Copy the entire directory tree and overwrite existing files
+        shutil.copytree(src_path, dest_path, dirs_exist_ok=True)
+    else:
+        # Walk through the source directory
+        for root, dirs, files in os.walk(src_path):
+            for file_name in files:
+                src_file = Path(root) / file_name
+                relative_path = src_file.relative_to(src_path)
+                dest_file = dest_path / relative_path
+
+                # If the destination file does not exist, copy the file
+                if not dest_file.exists():
+                    dest_file.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(src_file, dest_file)
+
+
 def mv_existing_index_rst_to_docs_src_if_exists(
         rel_tagged_repo_docs_source_content_path,
         rel_tagged_repo_docs_source_path
 ):
-    """ Check for docs/source/content/index.rst -- if exists, mv docs/source; else, copy from template. """
+    """
+    Check for existing docs/source/content/index.rst.
+    - if exists, mv it +1 to docs/source
+    - else, copy from template
+    """
     abs_tagged_repo_docs_source_content_path = Path(rel_tagged_repo_docs_source_content_path).resolve()
     abs_tagged_repo_docs_source_path = Path(rel_tagged_repo_docs_source_path).resolve()
+    content_index_rst_path = abs_tagged_repo_docs_source_content_path / 'index.rst'
 
-    # Check for index.rst @ docs/source/content
-    index_rst_path = abs_tagged_repo_docs_source_content_path / 'index.rst'
-    if index_rst_path.is_file():
-        # Remove existing index.rst in the target location if it exists
-        target_index_rst_path = abs_tagged_repo_docs_source_path / 'index.rst'
-        if target_index_rst_path.is_file():
-            target_index_rst_path.unlink()
+    # Check for an old index.rst @ docs/source/content
+    if content_index_rst_path.is_file():
+        if MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC:
+            # Remove placeholder index.rst @ docs/source (before moving the docs/source/content one)
+            target_index_rst_path = abs_tagged_repo_docs_source_path / 'index.rst'
+            if target_index_rst_path.is_file():
+                target_index_rst_path.unlink()  # Delete
 
-        # Move index.rst to docs/source
-        shutil.move(str(index_rst_path), str(abs_tagged_repo_docs_source_path / 'index.rst'))
-        return
-
-    # Copy index.rst from template to docs/source
-    index_rst_template_path = ABS_TEMPLATE_REPO_PATH / 'docs/source/index.rst'
-    shutil.copy2(
-        str(index_rst_template_path),
-        str(abs_tagged_repo_docs_source_path / 'index.rst'))
-
-    # Copy content dir (itself) from template to docs/source
-    content_template_path = ABS_TEMPLATE_REPO_PATH / 'docs/source/content'
-    shutil.copytree(
-        content_template_path,
-        abs_tagged_repo_docs_source_path / 'content',
-        dirs_exist_ok=True)
+            # Move docs/source/content/index.rst to docs/source/
+            shutil.move(
+                str(content_index_rst_path),
+                str(abs_tagged_repo_docs_source_path / 'index.rst'))
+    elif CP_INDEX_FROM_TEMPLATE_TO_SRC_IF_NONE:
+        # No docs/source/content/index.rst found? Copy index.rst from template to docs/source
+        index_rst_template_path = ABS_TEMPLATE_REPO_PATH / 'docs/source/index.rst'
+        shutil.copy2(
+            str(index_rst_template_path),  # From template
+            str(abs_tagged_repo_docs_source_path / 'index.rst'))  # To docs/source/
 
 
 def replace_placeholders(
@@ -278,24 +321,6 @@ def mv_dirs_and_files(src_paths, dst_dir):
         shutil.move(str(src_path), str(dst_path))
 
 
-def copytree_no_overwrite(src, dst):
-    """
-    Recursively copy a directory tree from src to dst, without overwriting existing files.
-    """
-    src = Path(src)
-    dst = Path(dst)
-    if not dst.exists():
-        dst.mkdir(parents=True)
-    for item in src.iterdir():
-        s = src / item.name
-        d = dst / item.name
-        if s.is_dir():
-            copytree_no_overwrite(s, d)
-        else:
-            if not d.exists():
-                shutil.copy2(s, d)
-
-
 def clean_repo(
         repo_name,
         rel_tagged_repo_path,
@@ -314,37 +339,44 @@ def clean_repo(
     - rel_tagged_repo_docs_source_content_path | 'source/_repos-available/{tagged_repo_name}/{DOCS_DIR_NAME}/{DOCS_SOURCE_DIR_NAME}/{DOCS_SOURCE_CONTENT_DIR_NAME}'
     """
     # --------------------------------------
-    logger.info(f'{Fore.YELLOW}[wipe_deprecated_files]{Fore.RESET}\n'
-                f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'")
-    wipe_deprecated_files(rel_tagged_repo_docs_path)
+    if ACTION_WIPE_DEPRECATED_FILES:
+        logger.info(f'{Fore.YELLOW}[wipe_deprecated_files]{Fore.RESET}\n'
+                    f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'")
+        wipe_deprecated_files(rel_tagged_repo_docs_path)
 
     # --------------------------------------
     # Get list of remaining files+dir paths at the top level docs (to mv later 1 down to /source/content),
     # ensuring we exclude [ source, tools ]
-    logger.info(f'{Fore.YELLOW}[ensure_dir_tree_exists]{Fore.RESET}\n'
-                f"- rel_tagged_repo_path: '{rel_tagged_repo_path}'")
-    files_or_dirs_before_ensure_dir_tree = [
-        item for item in Path(rel_tagged_repo_docs_path).iterdir()
-        if item.name not in ['source', 'tools']
-    ]
+    if ACTION_ENSURE_DIR_TREE_SKELETON:
+        logger.info(f'{Fore.YELLOW}[ensure_dir_tree_exists]{Fore.RESET}\n'
+                    f"- rel_tagged_repo_path: '{rel_tagged_repo_path}'")
+        files_or_dirs_before_ensure_dir_tree = [
+            item for item in Path(rel_tagged_repo_docs_path).iterdir()
+            if item.name not in ['source', 'tools']
+        ]
 
-    ensure_dir_tree_exists(rel_tagged_repo_path)  # /docs, itself, may not even exist yet
+        ensure_dir_tree_exists(rel_tagged_repo_path)  # /docs, itself, may not even exist yet
 
-    # --------------------------------------
-    # Move dirs_before_ensure_dir_tree 1 down to /source/content
-    logger.info(f'{Fore.YELLOW}[dirs_before_ensure_dir_tree]{Fore.RESET} {files_or_dirs_before_ensure_dir_tree}')
-    if files_or_dirs_before_ensure_dir_tree:
-        mv_dirs_and_files(
-            files_or_dirs_before_ensure_dir_tree,
-            rel_tagged_repo_docs_source_content_path)
+        # --------------------------------------
+        # Move dirs_before_ensure_dir_tree 1 down to /source/content
+        if ACTION_MV_DOCS_ROOT_TO_SRC_DIR:
+            logger.info(f'{Fore.YELLOW}[dirs_before_ensure_dir_tree]{Fore.RESET} {files_or_dirs_before_ensure_dir_tree}')
+            if files_or_dirs_before_ensure_dir_tree:
+                mv_dirs_and_files(
+                    files_or_dirs_before_ensure_dir_tree,
+                    rel_tagged_repo_docs_source_content_path)
 
     # --------------------------------------
     # Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/
-    logger.info(f'{Fore.YELLOW}[Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/]{Fore.RESET}\n'
-                f"- From: '{REL_TEMPLATE_REPO_PATH}'\n"
-                f"- To: '{rel_tagged_repo_path}'")
+    if COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS:
+        logger.info(f'{Fore.YELLOW}[Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/]{Fore.RESET}\n'
+                    f"- From: '{REL_TEMPLATE_REPO_PATH}'\n"
+                    f"- To: '{rel_tagged_repo_path}'")
 
-    copytree_no_overwrite(ABS_TEMPLATE_REPO_PATH, rel_tagged_repo_path)
+        cp_dir(
+            ABS_TEMPLATE_REPO_PATH,
+            rel_tagged_repo_path,
+            overwrite=False)
 
     # --------------------------------------
     # If there's an existing index.rst @ docs/source/content,
@@ -357,14 +389,15 @@ def clean_repo(
         rel_tagged_repo_docs_source_content_path, rel_tagged_repo_docs_source_path)
 
     # --------------------------------------
-    logger.info(f'{Fore.YELLOW}[replace_placeholders]{Fore.RESET}\n'
-                f"- repo_name: '{repo_name}'\n"
-                f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'\n"
-                f"- rel_tagged_repo_docs_source_path: '{rel_tagged_repo_docs_source_path}'")
-    replace_placeholders(
-        repo_name,
-        rel_tagged_repo_docs_path,
-        rel_tagged_repo_docs_source_path)
+    if REPLACE_PLACEHOLDERS_IN_FILES:
+        logger.info(f'{Fore.YELLOW}[replace_placeholders]{Fore.RESET}\n'
+                    f"- repo_name: '{repo_name}'\n"
+                    f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'\n"
+                    f"- rel_tagged_repo_docs_source_path: '{rel_tagged_repo_docs_source_path}'")
+        replace_placeholders(
+            repo_name,
+            rel_tagged_repo_docs_path,
+            rel_tagged_repo_docs_source_path)
 
 
 def main():

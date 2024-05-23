@@ -49,12 +49,10 @@ if errorlevel 1 (
     goto end
 ) else (
     echo.
-    echo.The HTML pages are in %BUILDDIR%\html.
-    echo.
     echo.Build succeeded. The documentation has been generated at:
     echo.%~dp0%BUILDDIR%\html\index.html
     echo.
-    set /p "userInput=Press 'B' to launch 'build/html/index.html', or ENTER to quit: "
+    set /p "userInput=Press 'b' to launch 'build/html/index.html', or ENTER to quit: "
     if /i "%userInput%"=="b" (
         start "" "%~dp0%BUILDDIR%\html\index.html"
     )
