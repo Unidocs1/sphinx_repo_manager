@@ -65,3 +65,5 @@ tools/repo_manager
 
 # Ensure docs content
 !docs/source/content
+source/_repos-available
+source/content
