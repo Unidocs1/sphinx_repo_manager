@@ -1,4 +1,5 @@
 import os
+import re  # Regex
 import shutil
 import subprocess
 import shlex  # CLI helper
@@ -239,18 +240,94 @@ class GitHelper:
                 run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
+    def git_get_latest_tag_ver(
+            working_dir_repo_path,
+            version_regex_pattern=None,
+            quiet=False
+    ):
+        """
+        Retrieves the latest tag version from the specified Git repository, optionally ignoring
+        tags that do not match the regex pattern.
+
+        Args:
+            working_dir_repo_path (str): The path to the working directory of the Git repository.
+            version_regex_pattern ([str]): A regex pattern to match tag versions. If None or empty, no filtering is applied.
+            quiet ([bool]): If True, suppress command output.
+
+        Returns:
+            str | None: The latest tag version, `None` if no tags on this repo, or an error message if the command fails.
+        """
+        git_cmd_arr = ['tag', '--list']
+
+        try:
+            stdout, stderr = GitHelper.git_submodule_cmd(
+                git_cmd_arr,
+                working_dir_repo_path,
+                quiet,
+                check_throw_on_cli_err=True)
+
+            tags = stdout.splitlines()
+
+            if version_regex_pattern:
+                regex = re.compile(version_regex_pattern)
+                filtered_tags = [tag for tag in tags if regex.match(tag)]
+            else:
+                filtered_tags = tags
+
+            def _parse_version(tag):
+                """
+                Parses a version string into a tuple of integers.
+                Example: 'v1.2.3' -> (1, 2, 3)
+                """
+                return tuple(map(int, re.findall(r'\d+', tag)))
+
+            # Sort the tags and return the latest one
+            filtered_tags.sort(key=_parse_version)
+
+            if filtered_tags:
+                return filtered_tags[-1]
+            else:
+                return None
+        except subprocess.CalledProcessError as e:
+            return f"Error: {e.stderr.strip()}"
+
+    @staticmethod
     def git_submodule_cmd(
             cmd,
             working_dir_repo_path,
             quiet,
             check_throw_on_cli_err=True,
     ):
-        """ Run a git command in the specified sub-repo path, ensuring it's run from that working dir. """
+        """
+        Run a git command in the specified sub-repo path, ensuring it's run from that working dir.
+
+        Args:
+            cmd (list): The git command to run.
+            working_dir_repo_path (str): The path to the working directory of the Git repository.
+            quiet (bool): If True, suppress command output.
+            check_throw_on_cli_err (bool): If True, raise an error on CLI error.
+
+        Returns:
+            tuple: (output, error) - The stdout and stderr from the command.
+        """
         if quiet:
             cmd += ['--quiet']
         cmd_prefix_arr = ['git', '-C', working_dir_repo_path]
         full_cmd = cmd_prefix_arr + cmd
-        run_subprocess_cmd(full_cmd, check_throw_on_cli_err=check_throw_on_cli_err)
+        result = subprocess.run(
+            full_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        if check_throw_on_cli_err and result.returncode != 0:
+            raise subprocess.CalledProcessError(
+                result.returncode,
+                full_cmd,
+                output=result.stdout,
+                stderr=result.stderr
+            )
+        return result.stdout, result.stderr
 
     @staticmethod
     def throw_if_path_not_exists(path):

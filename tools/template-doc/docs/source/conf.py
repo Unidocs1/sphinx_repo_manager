@@ -14,7 +14,11 @@
 project = '%REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = '%LATEST_LTS_TAG_VER%-test'  # This should match your branch name (unless latest/master/main)
+
+# This should likely match your branch name:
+# - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
+#   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
+release = '%GIT_TAG%'
 
 # -- Path setup --------------------------------------------------------------
 

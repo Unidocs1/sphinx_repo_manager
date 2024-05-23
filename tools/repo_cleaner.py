@@ -74,6 +74,7 @@ For each repo:
         - conf.py
             * %REPO_NAME%
             * %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%
+            * %GIT_TAG%
 """
 # CUSTOMIZE ACTIONS ##################################################################
 DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
@@ -92,6 +93,9 @@ DEPRECATED_DOC_ROOT_FILES_TO_RM_REPLACED = [  # Requires: ACTION_WIPE_DEPRECATED
     'README.md',
     'requirements.txt',
 ]
+GIT_TAG_OVERRIDE = 'latest'  # None == We'll search for the latest ver tag [with optional regex whitelist pattern below + append optional suffix]
+GIT_TAG_REGEX_PATTERN = None  # None == Grab the latest tag of any syntax # v1.2.3 == r"^v\d+\.\d+\.\d+$"`
+GIT_TAG_SUFFIX = '-doc'  # If we use tag 'v1.0.0-lts' and this val is "-doc", result == "v1.0.0-lts-doc"
 
 # ------------------------------
 # Shown in order of execution >>
@@ -262,12 +266,26 @@ def mv_existing_docs_src_content_index_up_one(
                 str(abs_tagged_repo_docs_source_path / 'index.rst'))
 
 
+def get_git_tag_for_confpy_release_var_placeholder_swap(rel_tagged_repo_docs_path):
+    """  """
+    if GIT_TAG_OVERRIDE:
+        return GIT_TAG_OVERRIDE
+
+    latest_git_tag = GitHelper.git_get_latest_tag_ver(rel_tagged_repo_docs_path, GIT_TAG_REGEX_PATTERN)
+    logger.info(f"- 🏷️ | Latest git tag: {latest_git_tag}")
+
+    # Add the hard-coded GIT_TAG_SUFFIX const and fallback to '' if no tag
+    latest_git_tag_with_suffix = f"{latest_git_tag}{GIT_TAG_SUFFIX}" if latest_git_tag else ''
+    return latest_git_tag_with_suffix
+
+
 def replace_placeholders(
         repo_name,
         rel_tagged_repo_docs_path,
-        rel_tagged_repo_docs_source_path):
+        rel_tagged_repo_docs_source_path
+):
     """
-    Ensures the following %PLACEHOLDERS% are replaced at files:
+    Ensures the following %PLACEHOLDERS% are replaced in files:
     - docs
     - README.md
         * %REPO_NAME%
@@ -275,42 +293,46 @@ def replace_placeholders(
         - conf.py
             * %REPO_NAME%
             * %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%
+            * %GIT_TAG%
     """
     repo_name_dashed = repo_name.replace('_', '-')
 
     # ------------------------------
-    # Replace %REPO_NAME% @ docs/README.md
+    # docs/README.md:
+    # - Replace %REPO_NAME%
     readme_path = (Path(rel_tagged_repo_docs_path).resolve() / 'README.md').resolve()
 
     # Validate
     if not readme_path.exists():
-        logger.info(f"README.md not found: {readme_path}")
+        logger.info(f'README.md not found: {readme_path}')
         return
 
     # Read the file content -> Replace %REPO_NAME% in the file README.md -> Write back
     content = readme_path.read_text(encoding='utf-8')
-    new_content = re.sub(r"%REPO_NAME%", repo_name, content)
+    new_content = re.sub(r'%REPO_NAME%', repo_name, content)
     readme_path.write_text(new_content, encoding='utf-8')
 
     # ------------------------------
-    # Replace %REPO_NAME% in conf.py
+    # docs/source/conf.py
+    # - Replace %REPO_NAME%
+    # - Replace %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%
+    # - Replace %GIT_TAG%
     conf_path = (Path(rel_tagged_repo_docs_source_path).resolve() / 'conf.py').resolve()
 
     # Validate
     if not conf_path.exists():
-        logger.info(f"conf.py not found: {conf_path}")
+        logger.info(f'conf.py not found: {conf_path}')
         return
 
-    # Read the file content -> Replace %REPO_NAME% in the file conf.py -> Write back
+    # Read the file content -> Replace %PLACEHOLDERS%
     content = conf_path.read_text(encoding='utf-8')
-    new_content = re.sub(r"%REPO_NAME%", repo_name, content)
-    conf_path.write_text(new_content, encoding='utf-8')
+    new_content = re.sub(r'%REPO_NAME%', repo_name, content)
+    new_content = re.sub(r'%REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%', repo_name_dashed, new_content)
 
-    # ------------------------------
-    # Replace %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH% in conf.py
-    # Read the file content -> Replace %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH% in the file conf.py -> Write back
-    content = conf_path.read_text(encoding='utf-8')
-    new_content = re.sub(r"%REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%", repo_name_dashed, content)
+    # Find the latest tag with regex filter -- then apply an optional suffix
+    release_tag = get_git_tag_for_confpy_release_var_placeholder_swap(rel_tagged_repo_docs_path)
+    new_content = re.sub(r'%GIT_TAG%', release_tag, new_content)
+
     conf_path.write_text(new_content, encoding='utf-8')
 
 
