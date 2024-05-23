@@ -1,9 +1,8 @@
 @ECHO OFF
-
 pushd %~dp0
 
 REM ###############################################################################
-REM - Command file for Sphinx documentation
+REM - Command file for Sphinx docs
 REM - Essentially an abstracted form of `sphinx-build -b html source_dir build_dir`
 REM - Originally generated via `sphinx-quickstart`
 REM - Requires make: `choco install make -y`
@@ -17,6 +16,7 @@ if "%SPHINXBUILD%" == "" (
 
 set SOURCEDIR=source
 set BUILDDIR=build
+set BUILDPATH=%~dp0%BUILDDIR%\html\index.html
 
 REM If no argument is provided, default to 'html'
 if "%1" == "" (
@@ -49,13 +49,18 @@ if errorlevel 1 (
     goto end
 ) else (
     echo.
-    echo.Build succeeded. The documentation has been generated at:
-    echo.%~dp0%BUILDDIR%\html\index.html
+    echo.Build succeeded. The docs have been generated at:
+    echo.%BUILDPATH%
     echo.
-    set /p "userInput=Press 'b' to launch 'build/html/index.html', or ENTER to quit: "
-    if /i "%userInput%"=="b" (
-        start "" "%~dp0%BUILDDIR%\html\index.html"
+    set "userInput="
+    set /p "userInput=Launch index.html? (Y/n) "
+    if /i "%userInput%"=="n" (
+        echo Not launching browser.
+    ) else (
+        echo Launching browser tab to index.html ...
+        start "" "%BUILDPATH%"
     )
 )
+
 :end
 popd

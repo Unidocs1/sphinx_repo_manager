@@ -81,6 +81,7 @@ DOCS_SOURCE_DIR_NAME = 'source'  # TODO: Parse from repo_manifest
 DOCS_SOURCE_CONTENT_DIR_NAME = 'content'  # TODO: Parse from repo_manifest
 ENSURE_DIR_TREE_IGNORED_DIRS = [  # Requires: ACTION_ENSURE_DIR_TREE_SKELETON
     'source',
+    'build',
     'tools',
 ]
 DEPRECATED_DOC_ROOT_FILES_TO_RM_REPLACED = [  # Requires: ACTION_WIPE_DEPRECATED_FILES
@@ -247,7 +248,6 @@ def mv_existing_docs_src_content_index_up_one(
 
     # Check for an old index.rst @ docs/source/content
     if content_index_rst_path.is_file():
-        print('*content_index_rst_path.is_file()')
         if MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC:
             logger.info("💡 Found existing 'docs/source/content/index.rst' to be moved +1 up")
 
@@ -278,6 +278,7 @@ def replace_placeholders(
     """
     repo_name_dashed = repo_name.replace('_', '-')
 
+    # ------------------------------
     # Replace %REPO_NAME% @ docs/README.md
     readme_path = (Path(rel_tagged_repo_docs_path).resolve() / 'README.md').resolve()
 
@@ -288,7 +289,7 @@ def replace_placeholders(
 
     # Read the file content -> Replace %REPO_NAME% in the file README.md -> Write back
     content = readme_path.read_text(encoding='utf-8')
-    new_content = re.sub(r"%REPO_NAME%", repo_name_dashed, content)
+    new_content = re.sub(r"%REPO_NAME%", repo_name, content)
     readme_path.write_text(new_content, encoding='utf-8')
 
     # ------------------------------

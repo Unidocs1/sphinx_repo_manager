@@ -116,7 +116,6 @@ class GitHelper:
         docs_dir = sparse_parts[0]
 
         # Remove everything except the .git and docs dir at root level
-        print(f"*docs_dir: {docs_dir}")
         GitHelper.clean_exclude_root_level(repo_path, docs_dir)
 
     def git_sparse_clone(
