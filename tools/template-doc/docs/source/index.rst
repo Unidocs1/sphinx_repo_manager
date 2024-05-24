@@ -7,4 +7,6 @@ Foo Services
 
     content/concepts/index
 
-This is the repo root index body placeholder.
+.. jinja:: general
+
+   Welcome to {{repo_name}}!

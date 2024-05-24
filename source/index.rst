@@ -1,7 +1,6 @@
 ==============
 Xsolla Backend
 ==============
-Test!
 
 .. image:: /_static/images/features_banner.png
 
