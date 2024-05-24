@@ -76,16 +76,31 @@ For each repo:
             * %REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%
             * %GIT_TAG%
 """
+from colorama import Fore, Style
+from colorama import init
+import logging
+import re  # Regex
+import os
+from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
+import shutil  # File/path manipulation
+import sys  # System-specific params/funcs
+from repo_manager import RepoManager
+from repo_manager import GitHelper
+
 # CUSTOMIZE ACTIONS ##################################################################
 DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
 DOCS_SOURCE_DIR_NAME = 'source'  # TODO: Parse from repo_manifest
 DOCS_SOURCE_CONTENT_DIR_NAME = 'content'  # TODO: Parse from repo_manifest
-ENSURE_DIR_TREE_IGNORED_DIRS = [  # Requires: ACTION_ENSURE_DIR_TREE_SKELETON
+FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST = [  # Used for: ACTION_WIPE_DEPRECATED_FILES
+    '.md',
+    '.rst',
+]
+ENSURE_DIR_TREE_IGNORED_DIRS = [  # Used for: ACTION_MV_DOCS_ROOT_TO_SRC_DIR
     'source',
     'build',
     'tools',
 ]
-DEPRECATED_DOC_ROOT_FILES_TO_RM_REPLACED = [  # Requires: ACTION_WIPE_DEPRECATED_FILES
+DEPRECATED_DOC_ROOT_FILES_TO_RM_REPLACED = [  # Used for: ACTION_WIPE_DEPRECATED_FILES
     'conf.py',
     'make.bat',
     'Makefile',
@@ -98,27 +113,17 @@ GIT_TAG_REGEX_PATTERN = None  # None == Grab the latest tag of any syntax # v1.2
 GIT_TAG_SUFFIX = '-doc'  # If we use tag 'v1.0.0-lts' and this val is "-doc", result == "v1.0.0-lts-doc"
 
 # ------------------------------
-# Shown in order of execution >>
+# Shown in order of execution >> Set pref, then CTRL+F to view action block if customization is required
 ACTION_WIPE_DEPRECATED_FILES = True
 ACTION_ENSURE_DIR_TREE_SKELETON = True
 ACTION_MV_DIRS_AND_FILES = True
-ACTION_MV_DOCS_ROOT_TO_SRC_DIR = True # Requires: ACTION_MV_DIRS_AND_FILES
+ACTION_MV_DOCS_ROOT_TO_SRC_DIR = True  # Requires: ACTION_MV_DIRS_AND_FILES
 COPY_FILES_FROM_TEMPLATE_NO_OVERWRITE = True
 CP_CONTEXT_FROM_TEMPLATE_NO_OVERWRITE = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS
 MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS; if this triggers
 REPLACE_PLACEHOLDERS_IN_FILES = True
 
-
 # INIT ###############################################################################
-from colorama import Fore, Style
-from colorama import init
-import logging
-import re  # Regex
-import os
-from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
-import shutil  # File/path manipulation
-import sys  # System-specific params/funcs
-
 # Constants
 ABS_SCRIPT_PATH = Path(__file__).resolve()
 ABS_PROJECT_ROOT_PATH = ABS_SCRIPT_PATH.parent  # Assuming the script is in 'tools', and we need the parent directory
@@ -136,10 +141,6 @@ sys.path.insert(0, str(repo_manager_path))
 # Add the path to the log_styles module
 log_styles_path = ABS_PROJECT_ROOT_PATH / 'log_styles'
 sys.path.insert(0, str(log_styles_path))
-
-# Import the RepoManager and GitHelper from the repo_manager package
-from repo_manager import RepoManager
-from repo_manager import GitHelper
 
 
 # Remove the spammy/redundant "INFO: " from logger
@@ -345,18 +346,22 @@ def wipe_deprecated_files(repo_path):
 def mv_sphinx_dirs_and_files(src_paths, dst_dir):
     """
     Move multiple dirs and/or files to a single destination dir using shutil.
-
-    Only moves files ending with .rst or dirs containing .rst files.
+    Only moves files ending with an extension from FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST
+    (or dirs containing such files).
     """
     for src_path in src_paths:
-        # Check if the path is a file and ends with .rst
-        if src_path.is_file() and src_path.suffix == '.rst':
+        # Check if the path is a file and its extension is in the whitelist
+        if src_path.is_file() and src_path.suffix in FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST:
             dst_path = Path(dst_dir) / src_path.name
             shutil.move(str(src_path), str(dst_path))
         elif src_path.is_dir():  # Check if the path is a directory
-            # Check if the dir contains any .rst files
-            contains_rst = any(f.suffix == '.rst' for f in src_path.rglob('*') if f.is_file())
-            if contains_rst:
+            # Check if the dir contains any files with extensions in the whitelist
+            contains_whitelisted_file = any(
+                f.suffix in FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST
+                for f in src_path.rglob('*')
+                if f.is_file()
+            )
+            if contains_whitelisted_file:
                 dst_path = Path(dst_dir) / src_path.name
                 shutil.move(str(src_path), str(dst_path))
 
