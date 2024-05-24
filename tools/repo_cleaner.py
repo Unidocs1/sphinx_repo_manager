@@ -84,8 +84,7 @@ import os
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 import shutil  # File/path manipulation
 import sys  # System-specific params/funcs
-from repo_manager import RepoManager
-from repo_manager import GitHelper
+# Our own modules will be imported below the constants >>
 
 # CUSTOMIZE ACTIONS ##################################################################
 DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
@@ -141,6 +140,9 @@ sys.path.insert(0, str(repo_manager_path))
 # Add the path to the log_styles module
 log_styles_path = ABS_PROJECT_ROOT_PATH / 'log_styles'
 sys.path.insert(0, str(log_styles_path))
+
+from repo_manager import RepoManager
+from repo_manager import GitHelper
 
 
 # Remove the spammy/redundant "INFO: " from logger

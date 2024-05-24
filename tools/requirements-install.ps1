@@ -11,7 +11,7 @@ try {
 
     # Create the virtual environment
     python3 -m venv "$projRoot/venv"
-    Write-Host "Virtual environment created."
+    Write-Host "Virtual environment created at: '$projRoot/venv'"
 
     # Check if the activation script exists
     $venvActivateScript = "$projRoot/venv/Scripts/Activate.ps1"
@@ -23,17 +23,22 @@ try {
     # Activate the virtual environment
     & $venvActivateScript
     Write-Host "Virtual environment activated."
+    Write-Host ""
 
     # Install requirements
+    Write-Host ""
+    Write-Host "Installing requirements from '$projRoot/requirements.txt' ..."
+    Write-Host ""
+    Write-Host "-----------------------------------"
     python3 -m pip install -r "$projRoot/requirements.txt"
 	
 	# Create a symbolic link to repo_manager for tooling
 	Write-Host
 	Write-Host "Creating symbolic link to repo_manager for tooling..."
 	python3 ./symlink_to_repo_manager.py
-
-    Write-Host ""
-    Read-Host "Done. Press Enter to quit"
 } catch {
     Write-Host "An error occurred. Try deleting the project root proj root 'venv' directory and run the script again."
 }
+
+Write-Host ""
+Read-Host "Done. Press Enter to quit"
