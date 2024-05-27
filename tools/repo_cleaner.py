@@ -95,15 +95,19 @@ FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST = [  # Used for: ACTION_WIPE_DEPRECATED_F
     '.rst',
 ]
 ENSURE_DIR_TREE_IGNORED_DIRS = [  # Used for: ACTION_MV_DOCS_ROOT_TO_SRC_DIR
-    'source',
+    '.idea',
     'build',
+    'content'
+    'source',
     'tools',
+    'venv',
 ]
 DEPRECATED_DOC_ROOT_FILES_TO_RM_REPLACED = [  # Used for: ACTION_WIPE_DEPRECATED_FILES
-    'conf.py',
-    'make.bat',
-    'Makefile',
     '.gitignore',
+    '.idea'
+    'conf.py',
+    'Makefile',
+    'make.bat',
     'README.md',
     'requirements.txt',
 ]
@@ -115,9 +119,13 @@ GIT_TAG_SUFFIX = '-doc'  # If we use tag 'v1.0.0-lts' and this val is "-doc", re
 # Shown in order of execution >> Set pref, then CTRL+F to view action block if customization is required
 ACTION_WIPE_DEPRECATED_FILES = True
 ACTION_ENSURE_DIR_TREE_SKELETON = True
-ACTION_MV_DIRS_AND_FILES = True
-ACTION_MV_DOCS_ROOT_TO_SRC_DIR = True  # Requires: ACTION_MV_DIRS_AND_FILES
-COPY_FILES_FROM_TEMPLATE_NO_OVERWRITE = True
+ACTION_MV_DOCS_ROOT_TO_SRC_DIR = True  # Requires: ACTION_ENSURE_DIR_TREE_SKELETON
+DEL_DOT_IDEA_DIR_RECURSIVELY = True
+DEL_DOCS_BUILD_DIRS = True
+MV_DOCS_IMAGES_TO_SRC_STATIC = True
+COPY_FILES_FROM_TEMPLATE_NO_OVERWRITE_EXCEPT_CONF = True
+MV_EXISTING_DOCS_CONTENT_TO_SRC_CONTENT = True
+FORCE_COPY_CONF_PY_FROM_TEMPLATE = True
 CP_CONTEXT_FROM_TEMPLATE_NO_OVERWRITE = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS
 MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC = True  # Requires: COPY_FILES_FROM_TEMPLATE_REPO_IF_NOT_EXISTS; if this triggers
 REPLACE_PLACEHOLDERS_IN_FILES = True
@@ -256,7 +264,8 @@ def mv_existing_docs_src_content_index_up_one(
     # Check for an old index.rst @ docs/source/content
     if content_index_rst_path.is_file():
         if MV_EXISTING_SRC_CONTENT_INDEX_TO_SRC:
-            logger.info("💡 Found existing 'docs/source/content/index.rst' to be moved +1 up")
+            logger.info(f'{Fore.YELLOW}[mv_existing_index_rst_to_docs_src_if_exists_else_copy_from_template]{Fore.RESET}\n'
+                        f"- Found existing index.rst to be moved +1 at: '{content_index_rst_path}'")
 
             # Remove placeholder index.rst @ docs/source (before moving the docs/source/content one)
             target_index_rst_path = abs_tagged_repo_docs_source_path / 'index.rst'
@@ -352,18 +361,15 @@ def mv_sphinx_dirs_and_files(src_paths, dst_dir):
     (or dirs containing such files).
     """
     for src_path in src_paths:
+        logger.info(f"- Moving dir: '{src_path}'")
         # Check if the path is a file and its extension is in the whitelist
         if src_path.is_file() and src_path.suffix in FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST:
             dst_path = Path(dst_dir) / src_path.name
             shutil.move(str(src_path), str(dst_path))
         elif src_path.is_dir():  # Check if the path is a directory
             # Check if the dir contains any files with extensions in the whitelist
-            contains_whitelisted_file = any(
-                f.suffix in FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST
-                for f in src_path.rglob('*')
-                if f.is_file()
-            )
-            if contains_whitelisted_file:
+            files_in_dir = [f for f in src_path.iterdir() if f.suffix in ENSURE_DIR_TREE_IGNORED_DIRS]
+            if files_in_dir:
                 dst_path = Path(dst_dir) / src_path.name
                 shutil.move(str(src_path), str(dst_path))
 
@@ -405,19 +411,57 @@ def clean_repo(
         ensure_dir_tree_exists(rel_tagged_repo_path)  # /docs, itself, may not even exist yet
 
         # --------------------------------------
-        # Move dirs_before_ensure_dir_tree 1 down to /source/content
+        # Move files_or_dirs_before_ensure_dir_tree 2 down to /source/content
         if ACTION_MV_DOCS_ROOT_TO_SRC_DIR:
-            logger.info(f'{Fore.YELLOW}[dirs_before_ensure_dir_tree]{Fore.RESET}\n'
-                        f'- {files_or_dirs_before_ensure_dir_tree}')
+            logger.info(f'{Fore.YELLOW}[files_or_dirs_before_ensure_dir_tree_2_down_to_src_content]{Fore.RESET}\n'
+                        f"- Target dir: '{rel_tagged_repo_docs_source_content_path}'")
             if files_or_dirs_before_ensure_dir_tree:
                 mv_sphinx_dirs_and_files(
                     files_or_dirs_before_ensure_dir_tree,
                     rel_tagged_repo_docs_source_content_path)
 
     # --------------------------------------
+    # Delete /.idea dir recursively
+    if DEL_DOT_IDEA_DIR_RECURSIVELY:
+        logger.info(f'{Fore.YELLOW}[del_dot_idea_dir_recursively]{Fore.RESET}\n'
+                    f"- rel_tagged_repo_path: '{rel_tagged_repo_path}'")
+        dot_idea_path = rel_tagged_repo_path / '.idea'
+        if dot_idea_path.exists():
+            shutil.rmtree(dot_idea_path)
+
+    # --------------------------------------
+    # Delete /docs/build and /docs/_build dirs
+    if DEL_DOCS_BUILD_DIRS:
+        docs_build_path = rel_tagged_repo_docs_path / 'build'
+        docs_underscore_build_path = rel_tagged_repo_docs_path / '_build'
+
+        if docs_build_path or docs_underscore_build_path:
+            logger.info(f'{Fore.YELLOW}[del_docs_build_dir]{Fore.RESET}')
+
+        if docs_build_path.exists():
+            logger.info(f"- Rm docs_build_path: '{docs_build_path}'")
+            shutil.rmtree(docs_build_path)
+        if docs_underscore_build_path.exists():
+            logger.info(f"- Rm docs_underscore_build_path: '{docs_underscore_build_path}'")
+            shutil.rmtree(docs_build_path)
+
+    # --------------------------------------
+    # Mv /docs/images dir to source/_static/ (no overwrite)
+    if MV_DOCS_IMAGES_TO_SRC_STATIC:
+        docs_images_path = rel_tagged_repo_docs_path / 'images'
+        if docs_images_path.exists():
+            # Move the images dir to source/_static
+            logger.info(f'{Fore.YELLOW}[mv_docs_images_to_src_static]{Fore.RESET}\n'
+                        f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'")
+
+            shutil.move(
+                str(docs_images_path.resolve()),
+                str(rel_tagged_repo_docs_source_path / '_static' / 'images'))
+
+    # --------------------------------------
     # Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/ for whatever is missing (!overwrite)
-    if COPY_FILES_FROM_TEMPLATE_NO_OVERWRITE:
-        logger.info(f'{Fore.YELLOW}[Copy TEMPLATE_REPO_PATH/* to rel_tagged_repo_path/]{Fore.RESET}\n'
+    if COPY_FILES_FROM_TEMPLATE_NO_OVERWRITE_EXCEPT_CONF:
+        logger.info(f'{Fore.YELLOW}[copy_template_repo_path_files_to_tagged_repo_path]{Fore.RESET}\n'
                     f"- From: '{REL_TEMPLATE_REPO_PATH}'\n"
                     f"- To: '{rel_tagged_repo_path}'")
 
@@ -427,12 +471,37 @@ def clean_repo(
             overwrite=False)
 
     # --------------------------------------
+    # If there was an existing content dir at docs/, merge it with docs/source/content
+    if MV_EXISTING_DOCS_CONTENT_TO_SRC_CONTENT:
+        docs_content_path = rel_tagged_repo_docs_path / 'content'
+        if docs_content_path.exists():
+            # Move the content dir to source/content
+            logger.info(f'{Fore.YELLOW}[mv_existing_docs_content_to_src_content]{Fore.RESET}\n'
+                        f"- rel_tagged_repo_docs_path: '{rel_tagged_repo_docs_path}'\n"
+                        f"- rel_tagged_repo_docs_source_content_path: '{rel_tagged_repo_docs_source_content_path}'")
+
+            shutil.move(
+                str(docs_content_path.resolve()),
+                str(rel_tagged_repo_docs_source_content_path))
+
+    # --------------------------------------
+    # force copy conf.py to overwrite the existing one?
+    if FORCE_COPY_CONF_PY_FROM_TEMPLATE:
+        rel_template_conf_py_path = REL_TEMPLATE_REPO_PATH / DOCS_DIR_NAME / DOCS_SOURCE_DIR_NAME / 'conf.py'
+
+        logger.info(f'{Fore.YELLOW}[force_copy_conf_py_from_template]{Fore.RESET}\n'
+                    f"- rel_template_conf_py_path: '{rel_template_conf_py_path}'")
+
+        shutil.copy(
+            str(rel_template_conf_py_path.resolve()),
+            str(rel_tagged_repo_docs_source_path.resolve()))
+
+    # --------------------------------------
+    # TODO(?): Rename docs/source/content/reference to context
+
+    # --------------------------------------
     # If there's an existing index.rst @ docs/source/content,
     # rm placeholder there, then mv +1 to docs/source
-    logger.info(f'{Fore.YELLOW}[mv_existing_index_rst_to_docs_src_if_exists_else_copy_from_template]{Fore.RESET}\n'
-                f"- rel_tagged_repo_docs_source_content_path: '{rel_tagged_repo_docs_source_content_path}'\n"
-                f"- rel_tagged_repo_docs_source_path: '{rel_tagged_repo_docs_source_path}'")
-
     mv_existing_docs_src_content_index_up_one(
         rel_tagged_repo_docs_source_content_path,
         rel_tagged_repo_docs_source_path)
