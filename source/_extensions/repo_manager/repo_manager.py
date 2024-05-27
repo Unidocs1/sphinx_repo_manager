@@ -77,18 +77,13 @@ class RepoManager:
         logger.info(colorize_path(f"   - Base Path: '{brighten(ABS_BASE_PATH)}'"))
         logger.info(colorize_path(f"   - Manifest Src: '{brighten(MANIFEST_NAME)}'"))
 
-        # Read manifest file; exit if !found
+        # Read manifest file
         if not os.path.exists(self.manifest_path):
             logger.warning(f"repo_manifest.yml !found @ '{brighten(self.manifest_path)}' - skipping extension!")
             sys.exit(0)
 
         with open(self.manifest_path, 'r') as file:
             manifest = yaml.safe_load(file)
-
-        # Is this extension enabled (default true)?
-        if not manifest.get('enable_repo_manager', True):
-            logger.warning("[repo_manager] Extension disabled in manifest (enable_repo_manager) - skipping extension!")
-            sys.exit(0)
 
         # Remove .git from urls; inject hidden _meta prop per repo, etc
         # (!) Exits if repositories are empty
@@ -259,6 +254,13 @@ class RepoManager:
         logger.info(colorize_success(f"\n══{brighten('BEGIN REPO_MANAGER')}══\n"))
         try:
             manifest = self.read_manifest()
+
+            # Is this extension enabled (default true)?
+            enable_repo_manager = manifest.get('enable_repo_manager', True)
+            if not enable_repo_manager:
+                logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
+                return
+
             self.init_dir_tree(manifest)
             self.manage_repositories(manifest)
         except Exception as e:
