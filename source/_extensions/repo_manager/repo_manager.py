@@ -85,6 +85,11 @@ class RepoManager:
         with open(self.manifest_path, 'r') as file:
             manifest = yaml.safe_load(file)
 
+        # Is this extension enabled (default true)?
+        if not manifest.get('enable_repo_manager', True):
+            logger.warning("[repo_manager] Extension disabled in manifest (enable_repo_manager) - skipping extension!")
+            sys.exit(0)
+
         # Remove .git from urls; inject hidden _meta prop per repo, etc
         # (!) Exits if repositories are empty
         manifest = self.validate_normalize_manifest_set_meta(manifest)
