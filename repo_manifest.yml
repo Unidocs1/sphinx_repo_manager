@@ -1,29 +1,117 @@
 %YAML 1.2
 ---
-################################################################################################
-## This YAML file configures repository settings for the Sphinx documentation system.         ##
-## - Specifies base path for cloning and details for each version-controlled set of docs.     ##
-## - Keep 1st child repository heavily commented with all optional props for collaborator FYI ##
-## - For macro_versions, minor patches should just override the minor versions                ##
-################################################################################################
-debug_mode: false                           # [Optional] Verbose logging, mostly
-stash_and_continue_if_wip: true             # [Optional] If true, will stash and continue if working directory is dirty; defaults to false, if omitted
-init_clone_path: "source/_repos-available"  # [Optional] Default base for cloning; use /forward slashes; defaults to source/_repos-available, if omitted
-base_symlink_path: "source/content"         # [Optional] Default base path for cloning repos relative to this file; use /forward slashes; defaults to "source/content", if omitted
-default_branch: "master"                    # [Optional] If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
-repo_path_to_doc_content: "docs/content"    # [Optional] Path to individual repo files (where index.rst exists); this should be consistent between all repos; defaults to "docs/content/index", if omitted
-macro_versions:                             # Dirs will be created per-macro version; dupes (like xbe-static-docs) with same (or no) ver will be consolidated into 1 src
-  "2024.07.0-TEST":  # (!) 1ST ENTRY == DEFAULT; create a matching branch for each macro_version. Add quotes if !contains alpha chars 
-    repositories:
-      account_services:
-        url: "https://gitlab.acceleratxr.com/Core/account_services"  # .git suffix == optional
-        #tag: "v2.1.0"                        # [Optional] You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
-        symlink_path: "account_services"      # [Optional] Relative to baseClonePath; use /forward slashes; default "{repo_name}-{tag}"
-        branch: "dylan/refactor/docs-revamp"  # [Optional] Default {default_branch}, if omitted
-        active: true                          # [Optional] Default true, if omitted
-  "2024.06.0-TEST":
-    repositories:
-      account_services:
-        url: "https://gitlab.acceleratxr.com/Core/account_services"
-        tag: "v2.0.1"
-        symlink_path: "account_services"
+#################################################################################################
+## This YAML file configures repository settings for the Sphinx documentation system.          ##
+## - Specifies base path for cloning and details for each version-controlled set of docs.      ##
+## - Keep 1st child repository heavily commented with all optional props for collaborator FYI. ##
+## - Most all properties are OPTIONAL; see comment for fallback vals.                          ##
+## - Most path/slashes/are/normalized for you to prevent confusion; use whichever.             ##
+## - Most path/slashes/are/normalized for you; use whichever.                                  ##
+## - [Versioned] Both src clone + symlinked dir names will look like "{repo_name}-{tag}"       ##
+## - [Unversioned] Both src clone + symlinked dir names will look like "{repo_name}--{branch}" ##
+## - [Unversioned] Double dashes replcae slashes. Eg: {repo_name}--foo--branch}}               ## 
+## - It *is safe* to wipe your source/_repos-available + source/content dirs.                  ##
+#################################################################################################
+enable_repo_manager: false                  # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
+debug_mode: false                           # More-verbose logging or debugging
+stash_and_continue_if_wip: true             # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
+init_clone_path: "source/_repos-available"  # Default base for cloning; normalizes "os/path/slashes"; defaults to source/_repos-available, if omitted
+base_symlink_path: "source/content"         # Default base path for cloning repos relative to this file; normalizes "os/path/slashes"; defaults to "source/content", if omitted
+default_branch: "master"                    # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
+repo_sparse_paths: "docs"                   # Path to individual repo dirs we want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; default to "docs/source/content", if omitted 
+repositories:                               # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
+  # Static >>
+  xbe-static-docs:
+    url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"  # .git suffix == optional
+    #tag: "v1.0.0"                          # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+    symlink_path: "xbe-static-docs"         # Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"; defaults to repo name, if omitted
+    branch: "main"                          # Normalizes os/path/slashes; Default {default_branch}, if omitted
+    active: true                            # Default true, if omitted
+  # Services >>
+  account_services:
+    url: "https://gitlab.acceleratxr.com/Core/account_services"
+    branch: "dylan/refactor/docs-revamp"
+  achievements_services:
+    url: "https://gitlab.acceleratxr.com/Core/achievements_services"
+    branch: "dylan/refactor/docs-revamp"
+  asset_services:
+    url: "https://gitlab.acceleratxr.com/Core/asset_services"
+    branch: "dylan/refactor/docs-revamp"
+  backup_services:
+    url: "https://gitlab.acceleratxr.com/Core/backup_services"
+    branch: "dylan/refactor/docs-revamp"
+  economy_services:
+    url: "https://gitlab.acceleratxr.com/Core/economy_services"
+    branch: "dylan/refactor/docs-revamp"
+  leaderboard_services:
+    url: "https://gitlab.acceleratxr.com/Core/leaderboard_services"
+    branch: "dylan/refactor/docs-revamp"
+  matchmaking_services:
+    url: "https://gitlab.acceleratxr.com/Core/matchmaking_services"
+    branch: "dylan/refactor/docs-revamp"
+  notification_services:
+    url: "https://gitlab.acceleratxr.com/Core/notification_services"
+    branch: "dylan/refactor/docs-revamp"
+  persona_services:
+    url: "https://gitlab.acceleratxr.com/Core/persona_services"
+    branch: "dylan/refactor/docs-revamp"
+  progression_services:
+    url: "https://gitlab.acceleratxr.com/Core/progression_services"
+    branch: "dylan/refactor/docs-revamp"
+  purchasing_services:
+    url: "https://gitlab.acceleratxr.com/Core/purchasing_services"
+    branch: "dylan/refactor/docs-revamp"
+  quest_services:
+    url: "https://gitlab.acceleratxr.com/Core/quest_services"
+    branch: "dylan/refactor/docs-revamp"
+  reporting_services:
+    url: "https://gitlab.acceleratxr.com/Core/reporting_services"
+    branch: "dylan/refactor/docs-revamp"
+  scripting_services:
+    url: "https://gitlab.acceleratxr.com/Core/scripting_services"
+    branch: "dylan/refactor/docs-revamp"
+  server_instance_services:
+    url: "https://gitlab.acceleratxr.com/Core/server_instance_services"
+    branch: "dylan/refactor/docs-revamp"
+  session_services:
+    url: "https://gitlab.acceleratxr.com/Core/session_services"
+    branch: "dylan/refactor/docs-revamp"
+  social_services:
+    url: "https://gitlab.acceleratxr.com/Core/social_services"
+    branch: "dylan/refactor/docs-revamp"
+  telemetry_services:
+    url: "https://gitlab.acceleratxr.com/Core/telemetry_services"
+    branch: "dylan/refactor/docs-revamp"
+  validation_services:
+    url: "https://gitlab.acceleratxr.com/Core/validation_services"
+    branch: "dylan/refactor/docs-revamp"
+  # Sdks >>
+  sdk_cpp:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
+    branch: "dylan/refactor/docs-revamp"
+  sdk_csharp:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
+    branch: "dylan/refactor/docs-revamp"
+    
+##############################
+## 1. account_services
+## 2. achievements_services
+## 3. asset_services
+## 4. backup_services
+## 5. economy_services
+## 6. leaderboard_services
+## 7. matchmaking_services
+## 8. notification_services
+## 9. persona_services
+## 10. progression_services
+## 11. purchasing_services
+## 12. quest_services
+## 13. reporting_services
+## 14. scripting_services
+## 15. server_instance_services   
+## 16. session_services
+## 17. social_services
+## 18. telemetry_services
+## 19. validation_services
+## 20. world_services
+##############################

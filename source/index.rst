@@ -1,38 +1,37 @@
 ==============
 Xsolla Backend
 ==============
-Test!
 
-.. image:: /images/features_banner.png
+.. image:: /_static/images/features_banner.png
 
 .. toctree::
    :hidden:
    :caption: About
 
-   _repos-available/_unversioned/features
-   _repos-available/_unversioned/eula/index
+   Features <_repos-available/xbe-static-docs--main/docs/source/content/features>
+   EULA <_repos-available/xbe-static-docs--main/docs/source/content/eula/index>
 
 .. toctree::
    :hidden:
    :caption: Learn
 
-   _repos-available/_unversioned/getting_started/index
-   content/2024.2/account_services-v2.1.0/docs/content/index
-   Social <https://acceleratxr.io/projects/social-services/en/latest/content>
-   _repos-available/_unversioned/gameplay
-   _repos-available/_unversioned/multiplayer
-   _repos-available/_unversioned/content
-   _repos-available/_unversioned/commerce
-   _repos-available/_unversioned/liveops
-   _repos-available/_unversioned/samples_and_tutorials/index
-   _repos-available/_unversioned/tools
+   Getting Started <_repos-available/xbe-static-docs--main/docs/source/content/getting_started/index>
+   Accounts <_repos-available/account_services--dylan--refactor--docs-revamp/docs/source/index>
+   Social <_repos-available/social_services--dylan--refactor--docs-revamp/docs/source/content/index>
+   Gameplay <_repos-available/xbe-static-docs--main/docs/source/content/gameplay>
+   Multiplayer <_repos-available/xbe-static-docs--main/docs/source/content/multiplayer>
+   Content <_repos-available/xbe-static-docs--main/docs/source/content/content>
+   Commerce <_repos-available/xbe-static-docs--main/docs/source/content/commerce>
+   LiveOps <_repos-available/xbe-static-docs--main/docs/source/content/liveops>
+   Samples & Tutorials <_repos-available/xbe-static-docs--main/docs/source/content/samples_and_tutorials/index>
+   Tools <_repos-available/xbe-static-docs--main/docs/source/content/tools>
 
 .. toctree::
    :hidden:
    :caption: API Reference
    
-   C++ SDK <https://acceleratxr.io/projects/sdk-cpp/en/latest/api>
-   C# SDK <https://acceleratxr.io/projects/sdk-csharp/en/latest/api/namespacelist.html>
+   C++ SDK <_repos-available/sdk_cpp--dylan--refactor--docs-revamp/docs/source/index>
+   C# SDK <_repos-available/sdk_csharp--dylan--refactor--docs-revamp/docs/source/index>
 
 .. toctree::
    :hidden:
@@ -51,11 +50,11 @@ Test!
    :hidden:
    :caption: Other Links
 
-   _repos-available/_unversioned/demo
+   Demo <_repos-available/xbe-static-docs--main/docs/source/content/demo>
    Company <https://xsolla.com/backend>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
-The platform offers a *huge* list of :doc:`features <_repos-available/_unversioned/features>` covering everything from account management, matchmaking to questing.
+The platform offers a *huge* list of :doc:`features <_repos-available/xbe-static-docs--main/docs/source/content/features>` covering everything from account management, matchmaking to questing.
 XBE enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of the time and cost of other solutions.
 
 * Pay only 5% of gross sales

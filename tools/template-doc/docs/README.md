@@ -1,4 +1,4 @@
-# xbe-docs
+# %REPO_NAME%/docs
 
 Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
@@ -15,9 +15,7 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 ## Setup
 
-1. Run `tools/requirements-install.ps1` as a normal user
-
-2. Configure the `repo_manifest.yml` with your desired versioning/cloning.
+Run `tools/requirements-install.ps1` as a normal user
 
 ## Build
 
@@ -33,17 +31,15 @@ make html
 
 ### Main Doc
 
-In this repo, we want to merge multiple docs into a single doc:
-
-Open the built index via `build/html/index.html`
+This repo's docs/source/content/ will be of many collectively combined into [a "main" doc](https://gitlab.acceleratxr.com/Core/acceleratxr.io).
 
 ### Single Doc
 
-Source repo docs/  layout tree should be structured as follows, with example content:
+The source layout tree should be structured as follows, with example content:
 
 ```
 <repo root>/docs
-└───source
+└─docs/source
     │   conf.py
     │   index.rst
     │
@@ -102,9 +98,6 @@ Delete these to regenerate them when you build again:
 
 1. Delete `build` (or `make clean` via CLI)
 2. Delete `source/content`
-3. Delete `source/_repos-available` (for use with `repo_manager`)
-
-### Python Install Path
 
 As this can easily get error-prone, especially for new Python users, see below to install Python 3.10 from scratch:
 

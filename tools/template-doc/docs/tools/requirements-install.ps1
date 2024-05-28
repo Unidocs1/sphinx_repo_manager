@@ -31,14 +31,10 @@ try {
     Write-Host ""
     Write-Host "-----------------------------------"
     python3 -m pip install -r "$projRoot/requirements.txt"
-	
-	# Create a symbolic link to repo_manager for tooling
-	Write-Host
-	Write-Host "Creating symbolic link to repo_manager for tooling..."
-	python3 ./symlink_to_repo_manager.py
 } catch {
     Write-Host "An error occurred. Try deleting the project root proj root 'venv' directory and run the script again."
 }
 
+Write-Host "-----------------------------------"
 Write-Host ""
 Read-Host "Done. Press Enter to quit"

@@ -1,34 +1,27 @@
 ##############################################################################
 # Configuration file for the Sphinx documentation builder.
+# (!) THIS FILE IS IGNORED IF PULLED BY THE MAIN DOC - USED FOR LOCAL TESTING
 #
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 #
 ##############################################################################
-# XBE Custom Extension: repo_manager
-#
-# At build time, clones tagged versions from ../repo_manifest.yml into the
-# specified directories. This allows us to build documentation for multiple
-# versions of the same service.
-#
-# DEFAULTS:
-# - Src clone dir: `./repos_available`
-# - Target symlinked content: `./content/{macro_version}/{repo}-{tag}`
-#
-##############################################################################
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'xbe'
+project = '%REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = '2024.07.0-TEST'  # This should match your branch name (unless latest/master/main)
 
+# This should likely match your branch name:
+# - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
+#   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
+release = '%GIT_TAG%'
 
 # -- Path setup --------------------------------------------------------------
-#
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -37,25 +30,22 @@ import os
 import sys
 # import yaml
 
-sys.path.append(os.path.abspath(
-    os.path.join('_extensions', 'repo_manager')))
-sys.path.insert(0, os.path.abspath('.'))
-# sys.path.insert(0, os.path.abspath(f'./multiplayer/account_services/docs/content'))
-# sys.path.insert(0, os.path.abspath('./multiplayer/quest_services/docs/content'))
+sys.path.insert(0, os.path.abspath(''))
 
 
 # -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
+# Check if we're running on Read the Docs' servers
+read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
+
 extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
-    'repo_manager',  # Our own custom extension
-    'sphinx_jinja2',  # {{Templating}}
+    'sphinx_jinja2',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -67,7 +57,7 @@ templates_path = ['_templates']
 exclude_patterns = [
     '_build',
     'Thumbs.db',
-    '.DS_Store',
+    '.DS_Store'
 ]
 
 master_doc = 'index'
@@ -77,11 +67,10 @@ master_doc = 'index'
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 # Centralized link constants
 
-# Link constants shared across multiple docs
-intersphinx_mapping = {
-    'sdk-cpp': ('https://sdk-cpp.acceleratxr.io/en/latest/', None),
-    'sdk-csharp': ('https://sdk-csharp.acceleratxr.io/en/latest/', None)
-}
+# # Link constants shared across multiple docs
+# intersphinx_mapping = {
+#     'some-link-ref': ('https://some-link-ref.acceleratxr.io/en/latest/', None),
+# }
 
 # We recommend adding the following config value.
 # Sphinx defaults to automatically resolve *unresolved* labels using all your Intersphinx mappings.
@@ -89,7 +78,7 @@ intersphinx_mapping = {
 # suddenly resolve to an external location.
 # See also:
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
-intersphinx_disabled_reftypes = ['*']
+# intersphinx_disabled_reftypes = ['*']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -104,8 +93,8 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
-html_logo = '_static/images/logo.png'
-html_favicon = '_static/images/favicon.ico'
+html_logo = 'https://docs.xsolla.cloud/en/latest/_static/logo.png'
+html_favicon = 'https://docs.xsolla.cloud/en/latest/_static/favicon.ico'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -122,7 +111,7 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
@@ -135,8 +124,8 @@ html_context = {
     'display_gitlab': True,  # Integrate Gitlab
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
-    'gitlab_repo': 'acceleratxr.io',  # Repo name
-    'gitlab_version': 'master'  # Version
+    'gitlab_repo': '%REPO_NAME%',  # Repo name
+    'gitlab_version': 'master',  # Version
 }
 
 
@@ -183,8 +172,3 @@ jinja_general['badge_base_url'] = badge_base_url
 
 jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
 jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
-
-# Jinja env opts
-jinja_globals = {
-    'release': release,
-}
