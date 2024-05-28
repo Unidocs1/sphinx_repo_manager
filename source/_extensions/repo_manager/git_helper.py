@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def log_pretty_cli_cmd(cmd_arr):
-    """ Log a pretty CLI command. """
+    """ Log a pretty CLI command to logs. """
     pretty_cmd = shlex.join(cmd_arr)
     logger.info(colorize_cli_cmd(f"  - CLI: `{brighten(pretty_cmd)}`"))
 
