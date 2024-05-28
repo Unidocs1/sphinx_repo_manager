@@ -38,6 +38,9 @@ sys.path.insert(0, os.path.abspath(''))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
+# Check if we're running on Read the Docs' servers
+read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
+
 extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
@@ -169,8 +172,3 @@ jinja_general['badge_base_url'] = badge_base_url
 
 jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
 jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
-
-# Jinja env opts
-jinja_globals = {
-    'release': release,
-}

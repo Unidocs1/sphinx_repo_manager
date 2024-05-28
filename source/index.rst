@@ -30,8 +30,8 @@ Xsolla Backend
    :hidden:
    :caption: API Reference
    
-   C++ SDK <_repos-available/sdk_cpp--dylan--refactor--docs-revamp/docs/source/content/tools>
-   C# SDK <_repos-available/sdk_csharp--dylan--refactor--docs-revamp/docs/source/content/tools>
+   C++ SDK <_repos-available/sdk_cpp--dylan--refactor--docs-revamp/docs/source/index>
+   C# SDK <_repos-available/sdk_csharp--dylan--refactor--docs-revamp/docs/source/index>
 
 .. toctree::
    :hidden:
