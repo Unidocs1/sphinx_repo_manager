@@ -4,14 +4,25 @@ build:
   os: ubuntu-lts-latest
   tools:
     python: '3.10'
-  environment:
-    - GITLAB_ACCESS_TOKEN
-  commands:
-    - |
-      # If testing, read GITLAB_ACCESS_TOKEN and inject into https git urls
-      if [ "$READTHEDOCS_PROJECT" = "xbe-docs-test" ]; then
-        git config --global url."https://$GITLAB_ACCESS_TOKEN:@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
-      fi
+  jobs:
+    pre_build:
+      - |
+        # If an access token is found, inject it into the gitlab.acceleratxr.com urls
+        # This is only useful for private repos on a free test account
+        if [ -n "$GITLAB_ACCESS_TOKEN" ]; then
+          echo "Injecting GitLab access token into the repository URL..."
+          git config --global url."https://$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
+        else
+          echo "GITLAB_ACCESS_TOKEN is not set. Skipping access token injection."
+        fi
+
+#  commands:  # (!) If you add commands, you'll need to manually sphinx build below
+#    - |
+#      # Run the Sphinx build command
+#      echo "Starting Sphinx build process..."
+#      sphinx-build -b html source build/html -v -T  # Enable verbose logging
+#    - |
+#      echo "Sphinx build process completed."
 
 python:
   install:
@@ -20,3 +31,4 @@ python:
 sphinx:
   builder: html
   configuration: source/conf.py
+  fail_on_warning: false  # TODO: We eventually want this to be true
