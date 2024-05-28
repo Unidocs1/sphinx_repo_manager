@@ -163,7 +163,7 @@ class RepoManager:
                 'tag_versioned_clone_src_path': ''     # "{init_clone_path}/{tag_versioned_repo_name}"
             }
 
-        # url: Req'd - Strip ".git" from suffix, if any
+        # url: Req'd - Strip ".git" from suffix, if any (including SSH urls; we'll add it back via url_dotgit)
         url = repo_info.get('url', None)
         if not url:
             logger.error(f"Missing 'url' for repo '{repo_name}'")

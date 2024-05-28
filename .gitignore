@@ -67,3 +67,6 @@ tools/repo_manager
 !docs/source/content
 source/_repos-available
 source/content
+
+# Env var handling for when RTD has no access to private repos
+.env

@@ -17,6 +17,10 @@
 # - Target symlinked content: `./content/{macro_version}/{repo}-{tag}`
 #
 ##############################################################################
+import logging
+import os
+import sys
+# import yaml
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -33,15 +37,22 @@ release = '2024.07.0-TEST'  # This should match your branch name (unless latest/
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import os
-import sys
-# import yaml
-
 sys.path.append(os.path.abspath(
     os.path.join('_extensions', 'repo_manager')))
 sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath(f'./multiplayer/account_services/docs/content'))
 # sys.path.insert(0, os.path.abspath('./multiplayer/quest_services/docs/content'))
+
+
+# -- ReadTheDocs (RTD) Config ------------------------------------------------
+
+# Check if we're running on Read the Docs' servers
+read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
+
+if read_the_docs_build:
+    gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
+    if not gitlab_access_token:
+        print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
 
 
 # -- General configuration ---------------------------------------------------
@@ -184,7 +195,5 @@ jinja_general['badge_base_url'] = badge_base_url
 jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
 jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
 
-# Jinja env opts
-jinja_globals = {
-    'release': release,
-}
+# -- Append rst_epilog to the bottom of *every* doc file ---------------------
+# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
