@@ -172,3 +172,6 @@ jinja_general['badge_base_url'] = badge_base_url
 
 jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
 jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
+
+# -- Append rst_epilog to the bottom of *every* doc file ---------------------
+# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
