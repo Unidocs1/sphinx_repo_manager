@@ -1,11 +1,22 @@
+version: 2
+
 build:
   os: ubuntu-lts-latest
   tools:
     python: '3.10'
+  environment:
+    - GITLAB_ACCESS_TOKEN
+  commands:
+    - |
+      # If testing, read GITLAB_ACCESS_TOKEN and inject into https git urls
+      if [ "$READTHEDOCS_PROJECT" = "xbe-docs-test" ]; then
+        git config --global url."https://$GITLAB_ACCESS_TOKEN:@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
+      fi
+
 python:
   install:
-  - requirements: requirements.txt
+    - requirements: requirements.txt
+
 sphinx:
   builder: html
   configuration: source/conf.py
-version: 2

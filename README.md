@@ -4,6 +4,8 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 ## Prerequisites
 
+### Required
+
 1. [Chocolatey](https://chocolatey.org/) CLI tool
 	- Once you have Choco, install `make` in an **ADMIN** terminal:
 		```powershell
@@ -12,6 +14,14 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 2. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
 	- See a recommended path to installing Python [below](#python-install-path)
+
+### Optional
+	
+1. If you want macro versionining with ReadTheDocs (RTD), [create an account](https://about.readthedocs.com/?ref=readthedocs.org)
+
+2. RTD works best with public repos, but to use _private_ repos:
+	1. Login to RTD dashboard and create a new env var named `GITLAB_ACCESS_TOKEN` (be aware this _may_ add plaintext server logs)
+	2. Update the .readthedocs.yaml `$READTHEDOCS_PROJECT` name
 
 ## Setup
 

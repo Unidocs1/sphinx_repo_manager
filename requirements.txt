@@ -10,5 +10,6 @@ sphinx_tabs>=3.4.5
 sphinx_jinja2==0.0.1  # Allows for {{ templating }}, using vars from conf.py # https://pypi.org/project/sphinx-jinja2
 
 # For this main multi-versioning multi-repo doc only >>
-PyYAML==6.0.1        # Req'd for repo_manager ext
-colorama==0.4.6      # Req'd for repo_manager ext
+PyYAML==6.0.1         # Req'd for repo_manager ext
+colorama==0.4.6       # Req'd for repo_manager ext
+#python-dotenv>=1.0.0  # Perhaps useful later if we need to add an .env file
