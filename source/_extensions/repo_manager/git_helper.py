@@ -16,21 +16,34 @@ def log_pretty_cli_cmd(cmd_arr):
     logger.info(colorize_cli_cmd(f"  - CLI: `{brighten(pretty_cmd)}`"))
 
 
+def redact_url_secret(url):
+    """ Redact any credentials in the URL. """
+    url_pattern = re.compile(r'https://([^:/]*:[^@]*)@')
+    return url_pattern.sub('https://REDACTED-SECRET@', url)
+
+
 def run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True):
     """ Run a subprocess command and handle errors. """
-    log_pretty_cli_cmd(cmd_arr)
+
+    # Redact URLs in the command before logging
+    redacted_cmd_arr = [redact_url_secret(part) for part in cmd_arr]
+    log_pretty_cli_cmd(redacted_cmd_arr)
+
     try:
         result = subprocess.run(cmd_arr, capture_output=True, text=True)
+
         if result.returncode != 0:
             error_message = result.stderr.strip()
             logger.error(f"Command failed:\n{brighten(error_message)}")
+
             if check_throw_on_cli_err:
-                pretty_cmd = shlex.join(cmd_arr)
+                pretty_cmd = shlex.join(redacted_cmd_arr)
                 raise Exception(f"Command failed: '{pretty_cmd}'\nError: '{brighten(error_message)}'")
+
         return result.stdout
     except FileNotFoundError as e:
         logger.error(f"Command not found: '{brighten(e)}'")
-        pretty_cmd = shlex.join(cmd_arr)
+        pretty_cmd = shlex.join(redacted_cmd_arr)
         raise Exception(f"Command not found: {pretty_cmd}\nError: '{brighten(e)}'")
 
 
