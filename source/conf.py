@@ -18,6 +18,7 @@
 #
 ##############################################################################
 import logging
+import jinja2
 import os
 import sys
 # import yaml
@@ -66,7 +67,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'repo_manager',  # Our own custom extension
-    'sphinx_jinja2',  # {{Templating}}
+    'sphinx_jinja',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -79,6 +80,7 @@ exclude_patterns = [
     '_build',
     'Thumbs.db',
     '.DS_Store',
+    'venv'
 ]
 
 master_doc = 'index'
@@ -131,6 +133,7 @@ html_theme_options = {
     # Toc options >>
     'collapse_navigation': True,
     'sticky_navigation': True,
+    'show_nav_level': 1,
     'navigation_depth': 4,
     'includehidden': True,
     'titles_only': False
@@ -152,18 +155,10 @@ html_context = {
 
 
 # -- Options for Jinja Templating --------------------------------------------
-# https://pypi.org/project/sphinx-jinja/
-# https://www.sphinx-doc.org/en/master/usage/extensions/jinja.html
-# When 'sphinx_jinja' is added to 'extensions' var above (+installed via pip):
-# Swap out {{templated}} vars and {% for % } ops in .rst (vars declared below).
+# Swap out {{templated}} vars and {% for % } ops in .rst.
+# Declare the vars at `jinja_contexts`.
 
-# This is passed to .rst files
-# USAGE with `jinja_context['general']['release']`
-# ----------------------------------------------------
-# .. jinja:: general
-#    You are now seeing release version: {{ release }}
-# ----------------------------------------------------
-jinja2_contexts = {
+jinja_contexts = {
     'general': {
         'release': release,
         'repo_name': html_context['gitlab_repo'],
@@ -174,11 +169,32 @@ jinja2_contexts = {
         'badge_base_url': '',  # With no trailing slash
         'coverage_badge_svg_url': '',
         'pipeline_badge_svg_url': '',
+    },
+    'repos': {
+        'features': '_repos-available/xbe-static-docs--main/docs/source/content/features',
+        'eula': '_repos-available/xbe-static-docs--main/docs/source/content/eula/index',
+        'getting_started': '_repos-available/xbe-static-docs--main/docs/source/content/getting_started/index',
+        'accounts': '_repos-available/account_services--dylan--refactor--docs-revamp/docs/source/index',
+        'social': '_repos-available/social_services--dylan--refactor--docs-revamp/docs/source/content/index',
+        'gameplay': '_repos-available/xbe-static-docs--main/docs/source/content/gameplay',
+        'multiplayer': '_repos-available/xbe-static-docs--main/docs/source/content/multiplayer',
+        'content': '_repos-available/xbe-static-docs--main/docs/source/content/content',
+        'commerce': '_repos-available/xbe-static-docs--main/docs/source/content/commerce',
+        'liveops': '_repos-available/xbe-static-docs--main/docs/source/content/liveops',
+        'samples': '_repos-available/xbe-static-docs--main/docs/source/content/samples_and_tutorials/index',
+        'tools': '_repos-available/xbe-static-docs--main/docs/source/content/tools',
+        'cpp_sdk': '_repos-available/sdk_cpp--dylan--refactor--docs-revamp/docs/source/index',
+        'csharp_sdk': '_repos-available/sdk_csharp--dylan--refactor--docs-revamp/docs/source/index',
+        'gitlab': 'https://gitlab.acceleratxr.com',
+        'discord': 'https://discord.gg/wrfBR2Q',
+        'partner_support': 'https://xsolla.com/partner-support',
+        'demo': '_repos-available/xbe-static-docs--main/docs/source/content/demo',
+        'company': 'https://xsolla.com/backend',
     }
 }
 
 # Add more dynamic props
-jinja_general = jinja2_contexts['general']
+jinja_general = jinja_contexts['general']
 
 # eg: https://gitlab.acceleratxr.com/Core/acceleratxr.io
 gitlab_url = ('https://'
@@ -195,5 +211,12 @@ jinja_general['badge_base_url'] = badge_base_url
 jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
 jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
 
+
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
-# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
+# However, it's more-recommended to use the following at the top of your RST files (notice the `_` underscore prefix):
+# `.. _company: https://xsolla.com/backend`
+# Then to use it: `Company <company>`
+
+# rst_prolog = """
+# .. |company| replace:: https://xsolla.com/backend
+# """

@@ -47,7 +47,7 @@ extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
-    'sphinx_jinja2',
+    'sphinx_jinja',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -129,51 +129,6 @@ html_context = {
     'gitlab_repo': '%REPO_NAME%',  # Repo name
     'gitlab_version': 'master',  # Version
 }
-
-
-# -- Options for Jinja Templating --------------------------------------------
-# https://pypi.org/project/sphinx-jinja/
-# https://www.sphinx-doc.org/en/master/usage/extensions/jinja.html
-# When 'sphinx_jinja' is added to 'extensions' var above (+installed via pip):
-# Swap out {{templated}} vars and {% for % } ops in .rst (vars declared below).
-
-# This is passed to .rst files
-# USAGE with `jinja_context['general']['release']`
-# ----------------------------------------------------
-# .. jinja:: general
-#    You are now seeing release version: {{ release }}
-# ----------------------------------------------------
-jinja2_contexts = {
-    'general': {
-        'release': release,
-        'repo_name': html_context['gitlab_repo'],
-        'gitlab_domain': 'gitlab.acceleratxr.com',
-        'gitlab_org': 'Core',
-        # -- Dynamic; set below --
-        'gitlab_url': '',
-        'badge_base_url': '',  # With no trailing slash
-        'coverage_badge_svg_url': '',
-        'pipeline_badge_svg_url': '',
-    }
-}
-
-# Add more dynamic props
-jinja_general = jinja2_contexts['general']
-
-# eg: https://gitlab.acceleratxr.com/Core/acceleratxr.io
-gitlab_url = ('https://'
-              f"{jinja_general['gitlab_domain']}/"
-              f"{jinja_general['gitlab_org']}/"
-              f"{jinja_general['repo_name']}")
-jinja_general['gitlab_url'] = gitlab_url
-
-# eg: https://gitlab.acceleratxr.com/Core/account_services/badges/master/pipeline.svg
-badge_base_url = (f"{gitlab_url}/badges/"
-                  f"{html_context['gitlab_version']}")
-jinja_general['badge_base_url'] = badge_base_url
-
-jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
-jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
 # rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)

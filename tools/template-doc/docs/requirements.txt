@@ -3,7 +3,6 @@ sphinx==7.3.7
 sphinx_rtd_theme>=2.0.0
 myst_parser>=0.18.0  # `recommonmark` successor
 sphinx_tabs>=3.4.5
-sphinx_jinja2==0.0.1  # Allows for {{ templating }}, using vars from conf.py # https://pypi.org/project/sphinx-jinja2
 #breathe==4.35.0  # API DocGen: Provides bridge between Doxygen xml doc gen + sphinx (for C* languages)
 #exhale==0.3.7  # Builds on top of breathe to provide a simpler way to generate API docs for C++ projects
 #sphinx_csharp==0.1.8  # For DocGen (C#): syntax highlighting, auto-documentation
