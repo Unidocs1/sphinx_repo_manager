@@ -80,10 +80,10 @@ exclude_patterns = [
     '_build',
     'Thumbs.db',
     '.DS_Store',
-    'venv'
+    'venv',
 ]
 
-master_doc = 'index'
+master_doc = 'index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
 
 
 # -- Intersphinx Mapping -------------------------------------------------
@@ -150,7 +150,7 @@ html_context = {
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
     'gitlab_repo': 'acceleratxr.io',  # Repo name
-    'gitlab_version': 'master'  # Version
+    'gitlab_version': 'master',  # Version
 }
 
 

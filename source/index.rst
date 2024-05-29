@@ -11,7 +11,7 @@ Xsolla Backend
       :hidden:
 
       Features <{{features}}>
-      EULA <{{eula}}>
+      Eula <{{eula}}>
 
    .. toctree::
       :caption: Learn

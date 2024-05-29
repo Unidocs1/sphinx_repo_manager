@@ -47,7 +47,6 @@ extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
-    'sphinx_jinja',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -59,7 +58,7 @@ templates_path = ['_templates']
 exclude_patterns = [
     '_build',
     'Thumbs.db',
-    '.DS_Store'
+    '.DS_Store',
 ]
 
 master_doc = 'index'
@@ -119,7 +118,6 @@ html_theme_options = {
 # This swaps vals in the actual built HTML (NOT the rst files).
 # Eg: This is used with themes and third-party extensions;
 # (!) `{{templating}}` in rst files with these *won't* work here:
-#     If templating, see `jinja_contexts`
 html_context = {
     'conf_py_path': '/source/',  # Path in the checkout to the docs root
     # Edit on GitLab >>
