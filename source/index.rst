@@ -4,29 +4,36 @@ Xsolla Backend
 
 .. image:: /_static/images/features_banner.png
 
-.. jinja:: repos
+.. jinja:: content
 
    .. toctree::
-      :caption: About
+      :caption: New to XBE?
       :hidden:
+      :titlesonly:
 
-      Features <{{features}}>
-      Eula <{{eula}}>
+      Introduction <{{getting_started}}>
+      Feature List <{{features}}>
 
    .. toctree::
       :caption: Learn
       :hidden:
 
-      Getting Started <{{getting_started}}>
-      Accounts <{{accounts}}>
-      Social <{{social}}>
+      Accounts <{{account_services}}>
+      Social <{{social_services}}>
       Gameplay <{{gameplay}}>
       Multiplayer <{{multiplayer}}>
       Content <{{content}}>
       Commerce <{{commerce}}>
       LiveOps <{{liveops}}>
-      Samples & Tutorials <{{samples}}>
+
+   .. toctree::
+      :caption: Demos & Source
+      :hidden:
+
+      Tutorials <{{samples}}>
+      Platform Demos <{{demo}}>
       Tools <{{tools}}>
+      GitLab<{{gitlab}}>
 
    .. toctree::
       :caption: API Reference
@@ -36,12 +43,6 @@ Xsolla Backend
       C# SDK <{{csharp_sdk}}>
    
    .. toctree::
-      :caption: Get the Code
-      :hidden:
-
-      GitLab <{{gitlab}}>
-   
-   .. toctree::
       :caption: Support
       :hidden:
 
@@ -49,11 +50,11 @@ Xsolla Backend
       Xsolla Partner Support <{{partner_support}}>
    
    .. toctree::
-      :caption: Other Links
+      :caption: About
       :hidden:
 
-      Demo <{{demo}}>
       Company <{{company}}>
+      Eula <{{eula}}>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
 The platform offers a *huge* list of :doc:`features <{{features}}>` covering everything from account management, matchmaking to questing.

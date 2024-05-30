@@ -63,7 +63,7 @@ class RepoManager:
         self.manifest_path = manifest_path
         self.manifest = None
 
-    def read_manifest(self):
+    def read_normalize_manifest(self):
         """
         Read and return the repository manifest from YAML file.
         - validate_normalize_manifest_set_meta():
@@ -253,7 +253,7 @@ class RepoManager:
         """
         logger.info(colorize_success(f"\n══{brighten('BEGIN REPO_MANAGER')}══\n"))
         try:
-            manifest = self.read_manifest()
+            manifest = self.read_normalize_manifest()
 
             # Is this extension enabled (default true)?
             enable_repo_manager = manifest.get('enable_repo_manager', True)

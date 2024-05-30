@@ -18,10 +18,8 @@
 #
 ##############################################################################
 import logging
-import jinja2
 import os
 import sys
-# import yaml
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -43,6 +41,16 @@ sys.path.append(os.path.abspath(
 sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath(f'./multiplayer/account_services/docs/content'))
 # sys.path.insert(0, os.path.abspath('./multiplayer/quest_services/docs/content'))
+
+
+# -- Extension: repo_manager --------------------------------------------------------------
+# This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
+# This allows us to build documentation for multiple versions of the same service.
+
+# Initialize the RepoManager instance with the manifest path
+manifest_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'repo_manifest.yml'))
+repo_manager = RepoManager(manifest_path)
+manifest = repo_manager.read_normalize_manifest()
 
 
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
@@ -170,28 +178,56 @@ jinja_contexts = {
         'coverage_badge_svg_url': '',
         'pipeline_badge_svg_url': '',
     },
-    'repos': {
-        'features': '_repos-available/xbe-static-docs--main/docs/source/content/features',
-        'eula': '_repos-available/xbe-static-docs--main/docs/source/content/eula/index',
-        'getting_started': '_repos-available/xbe-static-docs--main/docs/source/content/getting_started/index',
-        'accounts': '_repos-available/account_services--dylan--refactor--docs-revamp/docs/source/index',
-        'social': '_repos-available/social_services--dylan--refactor--docs-revamp/docs/source/content/index',
-        'gameplay': '_repos-available/xbe-static-docs--main/docs/source/content/gameplay',
-        'multiplayer': '_repos-available/xbe-static-docs--main/docs/source/content/multiplayer',
-        'content': '_repos-available/xbe-static-docs--main/docs/source/content/content',
+    'content': {
+        ## Repos >> TODO: Swap these out dynamically from repo_manifest.yml
+        # 'account_services': f'_repos-available/account_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'achievements_services': '_repos-available/achievements_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'asset_services': '_repos-available/asset_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'backup_services': '_repos-available/backup_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'economy_services': '_repos-available/economy_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'leaderboard_services': '_repos-available/leaderboard_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'matchmaking_services': '_repos-available/matchmaking_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'notification_services': '_repos-available/notification_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'persona_services': '_repos-available/persona_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'progression_services': '_repos-available/progression_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'purchasing_services': '_repos-available/purchasing_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'quest_services': '_repos-available/quest_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'reporting_services': '_repos-available/reporting_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'scripting_services': '_repos-available/scripting_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'server_instance_services': '_repos-available/server_instance_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'social_services': '_repos-available/social_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'telemetry_services': '_repos-available/telemetry_services--dylan--refactor--docs-revamp/docs/source/index',
+        # 'validation_services': '_repos-available/validation_services--dylan--refactor--docs-revamp/docs/source/index',
+        #
+        # # SDKs >>
+        # 'cpp_sdk': '_repos-available/sdk_cpp--dylan--refactor--docs-revamp/docs/source/index',
+        # 'csharp_sdk': '_repos-available/sdk_csharp--dylan--refactor--docs-revamp/docs/source/index',
+        #
+        # Static >>
         'commerce': '_repos-available/xbe-static-docs--main/docs/source/content/commerce',
+        'content': '_repos-available/xbe-static-docs--main/docs/source/content/content',
+        'demo': '_repos-available/xbe-static-docs--main/docs/source/content/demo',
+        'eula': '_repos-available/xbe-static-docs--main/docs/source/content/eula/index',
+        'features': '_repos-available/xbe-static-docs--main/docs/source/content/features',
+        'gameplay': '_repos-available/xbe-static-docs--main/docs/source/content/gameplay',
+        'getting_started': '_repos-available/xbe-static-docs--main/docs/source/content/getting_started/index',
         'liveops': '_repos-available/xbe-static-docs--main/docs/source/content/liveops',
+        'multiplayer': '_repos-available/xbe-static-docs--main/docs/source/content/multiplayer',
         'samples': '_repos-available/xbe-static-docs--main/docs/source/content/samples_and_tutorials/index',
         'tools': '_repos-available/xbe-static-docs--main/docs/source/content/tools',
-        'cpp_sdk': '_repos-available/sdk_cpp--dylan--refactor--docs-revamp/docs/source/index',
-        'csharp_sdk': '_repos-available/sdk_csharp--dylan--refactor--docs-revamp/docs/source/index',
-        'gitlab': 'https://gitlab.acceleratxr.com',
+        # External links >>
         'discord': 'https://discord.gg/wrfBR2Q',
-        'partner_support': 'https://xsolla.com/partner-support',
-        'demo': '_repos-available/xbe-static-docs--main/docs/source/content/demo',
+        'gitlab': 'https://gitlab.acceleratxr.com',
         'company': 'https://xsolla.com/backend',
     }
 }
+
+# # For each manifest repo
+# for repo in repo_manifest:
+#     repo_name = repo['name']
+#     repo_url = repo['url']
+# 
+#     # TODO: Finish this
 
 # Add more dynamic props
 jinja_general = jinja_contexts['general']

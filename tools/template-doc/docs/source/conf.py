@@ -128,5 +128,25 @@ html_context = {
     'gitlab_version': 'master',  # Version
 }
 
+source_suffix = ['.rst', '.md']
+
+
+# -- MyST configuration ------------------------------------------------------
+# recommonmark successor to parse .md to .rst
+
+# Configuration for MyST-Parser
+myst_enable_extensions = [
+    "amsmath",          # Enable parsing and rendering of AMS math syntax
+    "dollarmath",       # Enable dollar math syntax
+    "html_admonition",  # Enable HTML admonitions
+    "html_image",       # Enable HTML image tags
+    "colon_fence",      # Enable colon fences for directives/roles
+    "smartquotes",      # Enable smart quotes
+    "replacements",     # Enable replacements syntax
+    "strikethrough",    # Enable strikethrough syntax
+    "tasklist",         # Enable task list syntax
+]
+
+
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
 # rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
