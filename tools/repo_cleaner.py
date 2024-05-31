@@ -36,7 +36,7 @@ For each repo:
         - source
             - _static
             - _templates
-            - content  # Actual dir here pulled from {repo_sparse_paths}
+            - content  # Actual dir here pulled from {repo_sparse_path}
 
 4. If any dirs (minus the exceptions) existed from step #2 at docs/, mv 1 down (docs/source)
 
@@ -60,7 +60,7 @@ For each repo:
     - docs
         - content
 
-5. If index.rst found, ensure it's +1 up from repo_sparse_paths; eg: "docs/source/index.rst" (mv, if not there)
+5. If index.rst found, ensure it's +1 up from repo_sparse_path; eg: "docs/source/index.rst" (mv, if not there)
 
 6. If !index.rst found:
     - Copy `{TEMPLATE_REPO_PATH}/docs/source/index.rst` to `docs/source/`

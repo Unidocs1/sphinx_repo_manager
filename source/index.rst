@@ -11,36 +11,36 @@ Xsolla Backend
       :hidden:
       :titlesonly:
 
-      Introduction <{{getting_started}}>
-      Feature List <{{features}}>
+      Introduction <{{xbe_static_docs}}/content/getting_started/index>
+      Feature List <{{xbe_static_docs}}/content/features>
 
    .. toctree::
       :caption: Learn
       :hidden:
 
-      Accounts <{{account_services}}>
-      Social <{{social_services}}>
-      Gameplay <{{gameplay}}>
-      Multiplayer <{{multiplayer}}>
-      Content <{{content}}>
-      Commerce <{{commerce}}>
-      LiveOps <{{liveops}}>
+      Accounts <{{account_services}}/index>
+      Social <{{social_services}}/index>
+      Gameplay <{{xbe_static_docs}}/content/gameplay>
+      Multiplayer <{{xbe_static_docs}}/content/multiplayer>
+      Content <{{xbe_static_docs}}/content/content>
+      Commerce <{{xbe_static_docs}}/content/commerce>
+      LiveOps <{{xbe_static_docs}}/content/liveops>
 
    .. toctree::
       :caption: Demos & Source
       :hidden:
 
-      Tutorials <{{samples}}>
-      Platform Demos <{{demo}}>
-      Tools <{{tools}}>
+      Tutorials <{{xbe_static_docs}}/content/samples_and_tutorials/index>
+      Platform Demos <{{xbe_static_docs}}/content/demo>
+      Tools <{{xbe_static_docs}}/content/tools>
       GitLab<{{gitlab}}>
 
    .. toctree::
       :caption: API Reference
       :hidden:
 
-      C++ SDK <{{cpp_sdk}}>
-      C# SDK <{{csharp_sdk}}>
+      C++ SDK <{{cpp_sdk}}/index>
+      C# SDK <{{csharp_sdk}}/index>
    
    .. toctree::
       :caption: Support
@@ -54,10 +54,10 @@ Xsolla Backend
       :hidden:
 
       Company <{{company}}>
-      Eula <{{eula}}>
+      Eula <{{xbe_static_docs}}/content/eula/index>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
-The platform offers a *huge* list of :doc:`features <{{features}}>` covering everything from account management, matchmaking to questing.
+The platform offers a *huge* list of :doc:`features <{{xbe_static_docs}}/content/features>` covering everything from account management, matchmaking to questing.
 XBE enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of the time and cost of other solutions.
 
 * Pay only 5% of gross sales

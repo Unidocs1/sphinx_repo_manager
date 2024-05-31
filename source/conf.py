@@ -17,8 +17,9 @@
 # - Target symlinked content: `./content/{macro_version}/{repo}-{tag}`
 #
 ##############################################################################
-import logging
+import json
 import os
+from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 import sys
 
 # -- Project information -----------------------------------------------------
@@ -36,28 +37,39 @@ release = '2024.07.0-TEST'  # This should match your branch name (unless latest/
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-sys.path.append(os.path.abspath(
-    os.path.join('_extensions', 'repo_manager')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'repo_manager')))
 sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath(f'./multiplayer/account_services/docs/content'))
 # sys.path.insert(0, os.path.abspath('./multiplayer/quest_services/docs/content'))
+
+abs_conf_working_dir = Path(__file__).resolve().parent  # If you temp change the working dir, revert it here
 
 
 # -- Extension: repo_manager --------------------------------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
 
+from _extensions.repo_manager import RepoManager
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'tools', 'repo_manager')))
+
 # Initialize the RepoManager instance with the manifest path
-manifest_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'repo_manifest.yml'))
+manifest_path = Path('..', 'repo_manifest.yml').resolve()
 repo_manager = RepoManager(manifest_path)
 manifest = repo_manager.read_normalize_manifest()
 
+# Extract common props
+repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active }
+print(f'[conf.py::repo_manager] Num repos found: {len(repos)}')
+
+base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
+repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
 
+# Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
 if read_the_docs_build:
     gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
     if not gitlab_access_token:
@@ -166,70 +178,51 @@ html_context = {
 # Swap out {{templated}} vars and {% for % } ops in .rst.
 # Declare the vars at `jinja_contexts`.
 
+# Reserved child key names: repos[i]['name']
 jinja_contexts = {
     'general': {
         'release': release,
         'repo_name': html_context['gitlab_repo'],
         'gitlab_domain': 'gitlab.acceleratxr.com',
         'gitlab_org': 'Core',
-        # -- Dynamic; set below --
+        # -- Dynamic set below --
         'gitlab_url': '',
         'badge_base_url': '',  # With no trailing slash
         'coverage_badge_svg_url': '',
         'pipeline_badge_svg_url': '',
     },
     'content': {
-        ## Repos >> TODO: Swap these out dynamically from repo_manifest.yml
-        # 'account_services': f'_repos-available/account_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'achievements_services': '_repos-available/achievements_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'asset_services': '_repos-available/asset_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'backup_services': '_repos-available/backup_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'economy_services': '_repos-available/economy_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'leaderboard_services': '_repos-available/leaderboard_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'matchmaking_services': '_repos-available/matchmaking_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'notification_services': '_repos-available/notification_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'persona_services': '_repos-available/persona_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'progression_services': '_repos-available/progression_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'purchasing_services': '_repos-available/purchasing_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'quest_services': '_repos-available/quest_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'reporting_services': '_repos-available/reporting_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'scripting_services': '_repos-available/scripting_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'server_instance_services': '_repos-available/server_instance_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'social_services': '_repos-available/social_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'telemetry_services': '_repos-available/telemetry_services--dylan--refactor--docs-revamp/docs/source/index',
-        # 'validation_services': '_repos-available/validation_services--dylan--refactor--docs-revamp/docs/source/index',
-        #
-        # # SDKs >>
-        # 'cpp_sdk': '_repos-available/sdk_cpp--dylan--refactor--docs-revamp/docs/source/index',
-        # 'csharp_sdk': '_repos-available/sdk_csharp--dylan--refactor--docs-revamp/docs/source/index',
-        #
-        # Static >>
-        'commerce': '_repos-available/xbe-static-docs--main/docs/source/content/commerce',
-        'content': '_repos-available/xbe-static-docs--main/docs/source/content/content',
-        'demo': '_repos-available/xbe-static-docs--main/docs/source/content/demo',
-        'eula': '_repos-available/xbe-static-docs--main/docs/source/content/eula/index',
-        'features': '_repos-available/xbe-static-docs--main/docs/source/content/features',
-        'gameplay': '_repos-available/xbe-static-docs--main/docs/source/content/gameplay',
-        'getting_started': '_repos-available/xbe-static-docs--main/docs/source/content/getting_started/index',
-        'liveops': '_repos-available/xbe-static-docs--main/docs/source/content/liveops',
-        'multiplayer': '_repos-available/xbe-static-docs--main/docs/source/content/multiplayer',
-        'samples': '_repos-available/xbe-static-docs--main/docs/source/content/samples_and_tutorials/index',
-        'tools': '_repos-available/xbe-static-docs--main/docs/source/content/tools',
         # External links >>
         'discord': 'https://discord.gg/wrfBR2Q',
         'gitlab': 'https://gitlab.acceleratxr.com',
         'company': 'https://xsolla.com/backend',
-    }
+        # Dynamic repos set further below >> eg:
+        # 'validation_services': 'content/validation_services/docs/source'
+        # 'xbe_static_docs': 'content/xbe_static_docs/docs/source'
+        # (!) ^ Notice the above jinja nuance: xbe-static-docs dashes are converted_to_underscore
+    },
 }
 
-# # For each manifest repo
-# for repo in repo_manifest:
-#     repo_name = repo['name']
-#     repo_url = repo['url']
-# 
-#     # TODO: Finish this
 
-# Add more dynamic props
+# From repo_manifest.yml working dir,
+# for each manifest repo, add to jinja_contexts content of "{repo_name}": "{repo_path}" (normalizing_to_underscores)
+# Eg: 'account_services': 'content/account_services/docs/source'
+print("[conf.py] Setting up dynamic jinja_contexts['content'] for {{templating}} from repo_manifest.yaml...")
+print()
+
+jinja_content = jinja_contexts['content']
+for repo_name, repo_data in repos.items():
+    repo_path = f'content/{repo_name}/docs/source'
+    normalized_repo_name = repo_name.replace('-', '_').replace(' ', '_')
+    # print(f"[conf.py] Jinja {{{{{normalized_repo_name}}}}} -> '{repo_path}'")
+    jinja_content[normalized_repo_name] = repo_path
+
+pretty_jinja_content = json.dumps(jinja_content, indent=2)
+print(f"#Use jinja for .rst {{{{templating}}}}:\njinja_contexts['content']=={pretty_jinja_content}")
+print()
+
+
+# Add more dynamic props to general >>
 jinja_general = jinja_contexts['general']
 
 # eg: https://gitlab.acceleratxr.com/Core/acceleratxr.io
