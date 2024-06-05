@@ -89,13 +89,13 @@ class GitHelper:
         run_subprocess_cmd(git_clone_cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
-    def remove_except(base_path, exclude_dirs):
+    def remove_except(base_path, exclude_dirs_files):
         """
         Remove all items in the base_path except those in exclude_dirs.
         """
         for item in os.listdir(base_path):
             item_path = os.path.join(base_path, item)
-            if item not in exclude_dirs:
+            if item not in exclude_dirs_files:
                 if os.path.isdir(item_path):
                     shutil.rmtree(item_path)
                 else:
@@ -104,17 +104,17 @@ class GitHelper:
     @staticmethod
     def clean_exclude_root_level(repo_path, sparse_first_level):
         """
-        Clean the root level of the repo_path, leaving only .git and sparse_first_level directories.
+        Clean the root level of the repo_path, leaving only [.git, docs] at root level and sparse_first_level directories.
         """
-        # These dirs won't be touched
-        preserved_dirs = ['.git', sparse_first_level]
+        # These dirs/files won't be touched
+        preserved_dirs_files = ['.git', 'RELEASE_NOTES.rst', sparse_first_level]
 
         # Add non-preserved dirs to .git/info/exclude before wiping
         # We don't want it to show on git diff -- this is *just* local to us
-        GitHelper.git_add_to_exclude(repo_path, preserved_dirs)
+        GitHelper.git_add_to_exclude(repo_path, preserved_dirs_files)
 
-        # Remove all items except those in exclude_dirs
-        GitHelper.remove_except(repo_path, preserved_dirs)
+        # Remove all items except preserved_dirs_files
+        GitHelper.remove_except(repo_path, preserved_dirs_files)
 
     @staticmethod
     def git_clean_sparse_docs_clone(repo_path, repo_sparse_path):
@@ -129,7 +129,7 @@ class GitHelper:
         sparse_parts = Path(repo_sparse_path).parts
         docs_dir = sparse_parts[0]
 
-        # Remove everything except the .git and docs dir at root level
+        # Remove everything except [.git, docs, RELEASE_NOTES.rst] at root level
         GitHelper.clean_exclude_root_level(repo_path, docs_dir)
 
     def git_sparse_clone(

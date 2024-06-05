@@ -11,7 +11,7 @@ Xsolla Backend
 
       Introduction <{{xbe_static_docs}}/content/getting_started/index>
       Features <{{xbe_static_docs}}/content/features>
-      Changelog <{{xbe_static_docs}}/content/changelog/index>
+      Changelog <{{xbe_static_docs}}/content/changelogs/index>
 
    .. toctree::
       :caption: About

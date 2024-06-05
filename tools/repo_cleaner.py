@@ -27,6 +27,7 @@ For each repo:
 
 2. Get list of remaining dir paths at the top level docs (to mv later 1 down to /source),
    with the EXCEPTION of:
+    - RELEASE_NOTES.rst
     - docs
         - source
         - tools
@@ -90,7 +91,7 @@ import sys  # System-specific params/funcs
 DOCS_DIR_NAME = 'docs'  # TODO: Parse from repo_manifest
 DOCS_SOURCE_DIR_NAME = 'source'  # TODO: Parse from repo_manifest
 DOCS_SOURCE_CONTENT_DIR_NAME = 'content'  # TODO: Parse from repo_manifest
-FILE_EXT_MV_FROM_ROOT_TO_SRC_WHITELIST = [  # Used for: ACTION_WIPE_DEPRECATED_FILES
+FILE_EXT_MV_FROM_DOCS_TO_SRC_WHITELIST = [  # Used for: ACTION_WIPE_DEPRECATED_FILES
     '.md',
     '.rst',
 ]

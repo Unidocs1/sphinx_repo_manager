@@ -154,7 +154,7 @@ html_theme_options = {
     'collapse_navigation': False,
     'sticky_navigation': True,
     'show_nav_level': 1,
-    'navigation_depth': 2,
+    'navigation_depth': 4,  # (!) max depth; NOT default
     'includehidden': True,
     'titles_only': False
 }

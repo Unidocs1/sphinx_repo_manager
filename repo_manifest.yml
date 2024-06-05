@@ -99,15 +99,37 @@ repositories:                               # Dictionary of <repo_name, repo_dat
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
     branch: "dylan/refactor/docs-revamp"
   sdk_unity:
-    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
+      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
+      branch: "dylan/refactor/docs-revamp"
+  sdk_unreal:
+      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
+      branch: "dylan/refactor/docs-revamp"
+  # Composer >>
+  service-core:
+    url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
     branch: "dylan/refactor/docs-revamp"
-  sdk_unity:
-    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
-    branch: "dylan/refactor/docs-revamp"
-  # Composer >> TODO?
-  # Other Products >>
+  # Other Products/Apps >>
   service_monitor:
     url: "https://gitlab.acceleratxr.com/Core/service_monitor"
+    branch: "dylan/refactor/docs-revamp"
+  launcher:
+    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
+    branch: "dylan/refactor/docs-revamp"
+  console:
+    url: "https://gitlab.acceleratxr.com/Core/apps/console"
+    branch: "dylan/refactor/docs-revamp"
+  xbeapp:
+    url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
+    branch: "dylan/refactor/docs-revamp"
+  # Libs/WebApps >>
+  appconfig:
+    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
+    branch: "dylan/refactor/docs-revamp"
+  react-shared:
+    url: "https://gitlab.acceleratxr.com/Core/tools/react-shared"
+    branch: "dylan/refactor/docs-revamp"
+  electron-shared:
+    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
     branch: "dylan/refactor/docs-revamp"
   # Demos >>
   unitychessgame:
@@ -116,3 +138,4 @@ repositories:                               # Dictionary of <repo_name, repo_dat
   lyrastartergame:
     url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
     branch: "dylan/refactor/docs-revamp"
+  # TODO: service-core? https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core
