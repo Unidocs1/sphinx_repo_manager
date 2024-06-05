@@ -151,10 +151,10 @@ html_theme_options = {
     'style_external_links': True,
     'style_nav_header_background': '#2D2926',
     # Toc options >>
-    'collapse_navigation': True,
+    'collapse_navigation': False,
     'sticky_navigation': True,
     'show_nav_level': 1,
-    'navigation_depth': 4,
+    'navigation_depth': 2,
     'includehidden': True,
     'titles_only': False
 }
@@ -193,9 +193,10 @@ jinja_contexts = {
     },
     'content': {
         # External links >>
+        'company': 'https://xsolla.com/backend',
         'discord': 'https://discord.gg/wrfBR2Q',
         'gitlab': 'https://gitlab.acceleratxr.com',
-        'company': 'https://xsolla.com/backend',
+        'partner_support': 'https://xsolla.com/partner-support',
         # Dynamic repos set further below >> eg:
         # 'validation_services': 'content/validation_services/docs/source'
         # 'xbe_static_docs': 'content/xbe_static_docs/docs/source'

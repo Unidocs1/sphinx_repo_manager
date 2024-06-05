@@ -95,25 +95,24 @@ repositories:                               # Dictionary of <repo_name, repo_dat
   sdk_csharp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
     branch: "dylan/refactor/docs-revamp"
-#############################
-# 1. account_services
-# 2. achievements_services
-# 3. asset_services
-# 4. backup_services
-# 5. economy_services
-# 6. leaderboard_services
-# 7. matchmaking_services
-# 8. notification_services
-# 9. persona_services
-# 10. progression_services
-# 11. purchasing_services
-# 12. quest_services
-# 13. reporting_services
-# 14. scripting_services
-# 15. server_instance_services   
-# 16. session_services
-# 17. social_services
-# 18. telemetry_services
-# 19. validation_services
-# 20. world_services
-#############################
+  sdk_nodejs:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
+    branch: "dylan/refactor/docs-revamp"
+  sdk_unity:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
+    branch: "dylan/refactor/docs-revamp"
+  sdk_unity:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
+    branch: "dylan/refactor/docs-revamp"
+  # Composer >> TODO?
+  # Other Products >>
+  service_monitor:
+    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
+    branch: "dylan/refactor/docs-revamp"
+  # Demos >>
+  unitychessgame:
+    url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
+    branch: "dylan/refactor/docs-revamp"
+  lyrastartergame:
+    url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
+    branch: "dylan/refactor/docs-revamp"
