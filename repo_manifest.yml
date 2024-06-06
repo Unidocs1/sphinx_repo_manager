@@ -12,7 +12,7 @@
 # - [Unversioned] Double dashes replace slashes. Eg: {repo_name}--foo--branch}}                # 
 # - It *is safe* to wipe your source/_repos-available + source/content dirs.                   #
 ################################################################################################
-enable_repo_manager: true                  # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
+enable_repo_manager: true                   # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
 debug_mode: false                           # More-verbose logging or debugging; defaults to false, if omitted
 stash_and_continue_if_wip: true             # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
 init_clone_path: "source/_repos-available"  # Default base for cloning; normalizes "os/path/slashes"; defaults to source/_repos-available, if omitted
@@ -31,110 +31,110 @@ repositories:                               # Dictionary of <repo_name, repo_dat
     branch: "main"                          # Normalizes os/path/slashes; Default {default_branch}, if omitted
     active: true                            # Default true, if omitted
   # Services >>
-#  account_services:
-#    url: "https://gitlab.acceleratxr.com/Core/account_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  achievements_services:
-#    url: "https://gitlab.acceleratxr.com/Core/achievements_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  asset_services:
-#    url: "https://gitlab.acceleratxr.com/Core/asset_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  backup_services:
-#    url: "https://gitlab.acceleratxr.com/Core/backup_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  economy_services:
-#    url: "https://gitlab.acceleratxr.com/Core/economy_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  leaderboard_services:
-#    url: "https://gitlab.acceleratxr.com/Core/leaderboard_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  matchmaking_services:
-#    url: "https://gitlab.acceleratxr.com/Core/matchmaking_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  notification_services:
-#    url: "https://gitlab.acceleratxr.com/Core/notification_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  persona_services:
-#    url: "https://gitlab.acceleratxr.com/Core/persona_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  progression_services:
-#    url: "https://gitlab.acceleratxr.com/Core/progression_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  purchasing_services:
-#    url: "https://gitlab.acceleratxr.com/Core/purchasing_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  quest_services:
-#    url: "https://gitlab.acceleratxr.com/Core/quest_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  reporting_services:
-#    url: "https://gitlab.acceleratxr.com/Core/reporting_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  scripting_services:
-#    url: "https://gitlab.acceleratxr.com/Core/scripting_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  server_instance_services:
-#    url: "https://gitlab.acceleratxr.com/Core/server_instance_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  session_services:
-#    url: "https://gitlab.acceleratxr.com/Core/session_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  social_services:
-#    url: "https://gitlab.acceleratxr.com/Core/social_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  telemetry_services:
-#    url: "https://gitlab.acceleratxr.com/Core/telemetry_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  validation_services:
-#    url: "https://gitlab.acceleratxr.com/Core/validation_services"
-#    branch: "dylan/refactor/docs-revamp"
-#  # Sdks >>
-#  sdk_cpp:
-#    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
-#    branch: "dylan/refactor/docs-revamp"
-#  sdk_csharp:
-#    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
-#    branch: "dylan/refactor/docs-revamp"
-#  sdk_nodejs:
-#    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
-#    branch: "dylan/refactor/docs-revamp"
-#  sdk_unity:
-#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
-#      branch: "dylan/refactor/docs-revamp"
-#  sdk_unreal:
-#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
-#      branch: "dylan/refactor/docs-revamp"
-#  # Composer >>
-#  service-core:
-#    url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
-#    branch: "dylan/refactor/docs-revamp"
-#  # Other Products/Apps >>
-#  service_monitor:
-#    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
-#    branch: "dylan/refactor/docs-revamp"
-#  launcher:
-#    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
-#    branch: "dylan/refactor/docs-revamp"
-#  console:
-#    url: "https://gitlab.acceleratxr.com/Core/apps/console"
-#    branch: "dylan/refactor/docs-revamp"
-#  xbeapp:
-#    url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
-#    branch: "dylan/refactor/docs-revamp"
-#  # Libs/WebApps >>
-#  appconfig:
-#    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
-#    branch: "dylan/refactor/docs-revamp"
-#  react-shared:
-#    url: "https://gitlab.acceleratxr.com/Core/tools/react-shared"
-#    branch: "dylan/refactor/docs-revamp"
-#  electron-shared:
-#    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
-#    branch: "dylan/refactor/docs-revamp"
-#  # Demos >>
-#  unitychessgame:
-#    url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
-#    branch: "dylan/refactor/docs-revamp"
-#  lyrastartergame:
-#    url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
-#    branch: "dylan/refactor/docs-revamp"
+  account_services:
+    url: "https://gitlab.acceleratxr.com/Core/account_services"
+    branch: "dylan/refactor/docs-revamp"
+  achievements_services:
+    url: "https://gitlab.acceleratxr.com/Core/achievements_services"
+    branch: "dylan/refactor/docs-revamp"
+  asset_services:
+    url: "https://gitlab.acceleratxr.com/Core/asset_services"
+    branch: "dylan/refactor/docs-revamp"
+  backup_services:
+    url: "https://gitlab.acceleratxr.com/Core/backup_services"
+    branch: "dylan/refactor/docs-revamp"
+  economy_services:
+    url: "https://gitlab.acceleratxr.com/Core/economy_services"
+    branch: "dylan/refactor/docs-revamp"
+  leaderboard_services:
+    url: "https://gitlab.acceleratxr.com/Core/leaderboard_services"
+    branch: "dylan/refactor/docs-revamp"
+  matchmaking_services:
+    url: "https://gitlab.acceleratxr.com/Core/matchmaking_services"
+    branch: "dylan/refactor/docs-revamp"
+  notification_services:
+    url: "https://gitlab.acceleratxr.com/Core/notification_services"
+    branch: "dylan/refactor/docs-revamp"
+  persona_services:
+    url: "https://gitlab.acceleratxr.com/Core/persona_services"
+    branch: "dylan/refactor/docs-revamp"
+  progression_services:
+    url: "https://gitlab.acceleratxr.com/Core/progression_services"
+    branch: "dylan/refactor/docs-revamp"
+  purchasing_services:
+    url: "https://gitlab.acceleratxr.com/Core/purchasing_services"
+    branch: "dylan/refactor/docs-revamp"
+  quest_services:
+    url: "https://gitlab.acceleratxr.com/Core/quest_services"
+    branch: "dylan/refactor/docs-revamp"
+  reporting_services:
+    url: "https://gitlab.acceleratxr.com/Core/reporting_services"
+    branch: "dylan/refactor/docs-revamp"
+  scripting_services:
+    url: "https://gitlab.acceleratxr.com/Core/scripting_services"
+    branch: "dylan/refactor/docs-revamp"
+  server_instance_services:
+    url: "https://gitlab.acceleratxr.com/Core/server_instance_services"
+    branch: "dylan/refactor/docs-revamp"
+  session_services:
+    url: "https://gitlab.acceleratxr.com/Core/session_services"
+    branch: "dylan/refactor/docs-revamp"
+  social_services:
+    url: "https://gitlab.acceleratxr.com/Core/social_services"
+    branch: "dylan/refactor/docs-revamp"
+  telemetry_services:
+    url: "https://gitlab.acceleratxr.com/Core/telemetry_services"
+    branch: "dylan/refactor/docs-revamp"
+  validation_services:
+    url: "https://gitlab.acceleratxr.com/Core/validation_services"
+    branch: "dylan/refactor/docs-revamp"
+  # Sdks >>
+  sdk_cpp:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
+    branch: "dylan/refactor/docs-revamp"
+  sdk_csharp:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
+    branch: "dylan/refactor/docs-revamp"
+  sdk_nodejs:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
+    branch: "dylan/refactor/docs-revamp"
+  sdk_unity:
+      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
+      branch: "dylan/refactor/docs-revamp"
+  sdk_unreal:
+      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
+      branch: "dylan/refactor/docs-revamp"
+  # Composer >>
+  service-core:
+    url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
+    branch: "dylan/refactor/docs-revamp"
+  # Other Products/Apps >>
+  service_monitor:
+    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
+    branch: "dylan/refactor/docs-revamp"
+  launcher:
+    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
+    branch: "dylan/refactor/docs-revamp"
+  console:
+    url: "https://gitlab.acceleratxr.com/Core/apps/console"
+    branch: "dylan/refactor/docs-revamp"
+  xbeapp:
+    url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
+    branch: "dylan/refactor/docs-revamp"
+  # Libs/WebApps >>
+  appconfig:
+    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
+    branch: "dylan/refactor/docs-revamp"
+  react-shared:
+    url: "https://gitlab.acceleratxr.com/Core/tools/react-shared"
+    branch: "dylan/refactor/docs-revamp"
+  electron-shared:
+    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
+    branch: "dylan/refactor/docs-revamp"
+  # Demos >>
+  unitychessgame:
+    url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
+    branch: "dylan/refactor/docs-revamp"
+  lyrastartergame:
+    url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
+    branch: "dylan/refactor/docs-revamp"
