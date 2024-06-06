@@ -16,7 +16,7 @@ build:
           echo "GITLAB_ACCESS_TOKEN is not set. Skipping access token injection."
         fi
 
-#  commands:  # (!) If you add commands, you'll need to manually sphinx build below
+#  commands:  # (!) If you add commands, you'll need to manually sphinx build below:
 #    - |
 #      # Run the Sphinx build command
 #      echo "Starting Sphinx build process..."
