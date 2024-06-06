@@ -5,15 +5,19 @@ build:
   tools:
     python: '3.10'
   jobs:
-    pre_build:
+    post_create_environment:
       - |
-        # Inject the GitLab access token into repository URLs if set
+        echo "[post_create_environment] Running post_create_environment setup..."
+        set -e
         # This is only useful for private repos on a free test account
-        if [ -n "$GITLAB_ACCESS_TOKEN" ]; then
-          echo "Injecting GitLab access token into the repository URL..."
-          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
+        if [ -z "$GITLAB_ACCESS_TOKEN" ]; then
+          echo "[GITLAB_ACCESS_TOKEN] Not set. Skipping access token injection."
         else
-          echo "GITLAB_ACCESS_TOKEN is not set. Skipping access token injection."
+          echo "[GITLAB_ACCESS_TOKEN] Injecting GitLab access token into the repository URL..."
+          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
+          echo "Verifying the URL swap..."
+          # Verify by using git to clone a small repo or fetch info
+          git ls-remote https://gitlab.acceleratxr.com/Core/acceleratxr.io.git || { echo "GITLAB_ACCESS_TOKEN_ URL swap verification failed: Bad perms? Expired?"; exit 1; }
         fi
 
 python:

@@ -30,7 +30,6 @@ def run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True):
     log_pretty_cli_cmd(redacted_cmd_arr)
 
     try:
-        log_pretty_cli_cmd(f"*TEST: cmd_arr=={' '.join(map(str, cmd_arr))}")  # DEL ME AFTER TEST
         result = subprocess.run(cmd_arr, capture_output=True, text=True)
 
         if result.returncode != 0:
