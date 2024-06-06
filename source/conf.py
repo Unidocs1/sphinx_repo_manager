@@ -42,8 +42,6 @@ sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath(f'./multiplayer/account_services/docs/content'))
 # sys.path.insert(0, os.path.abspath('./multiplayer/quest_services/docs/content'))
 
-abs_conf_working_dir = Path(__file__).resolve().parent  # If you temp change the working dir, revert it here
-
 
 # -- Extension: repo_manager --------------------------------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
