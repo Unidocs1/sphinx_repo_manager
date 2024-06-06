@@ -11,7 +11,7 @@ build:
         # This is only useful for private repos on a free test account
         if [ -n "$GITLAB_ACCESS_TOKEN" ]; then
           echo "Injecting GitLab access token into the repository URL..."
-          git config --global url."https://$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
+          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
         else
           echo "GITLAB_ACCESS_TOKEN is not set. Skipping access token injection."
         fi

@@ -158,7 +158,7 @@ class RepoManager:
                 'url_dotgit': '',                         # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
                 'repo_name': '',                          # eg: "account_services"
                 'has_tag': False,                         # True if tag exists
-                'rel_symlinked_repo_path': '',     # "{base_symlink_path}{symlink_path}-{tag_or_branch}"; eg: "source/content/account_services" (no tag)
+                'rel_symlinked_repo_path': '',            # "{base_symlink_path}{symlink_path}-{tag_or_branch}"; eg: "source/content/account_services" (no tag)
                 'tag_versioned_clone_src_repo_name': '',  # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
                 'tag_versioned_clone_src_path': '',       # "{init_clone_path}/{tag_versioned_clone_src_repo_name}";
                                                           # - eg: "source/_repos-available/account_services-v2.1.0"

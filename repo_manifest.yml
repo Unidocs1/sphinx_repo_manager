@@ -21,11 +21,11 @@ default_branch: "master"                    # If repository omits 'branch', this
 repo_sparse_path: "docs"                    # Path to individual repo dirs we [mostly] want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; use `tools/repo_cleaner.py` to clean what sparse cannot; (!) don't change this unless you've backed up WIP; default to "docs", if omitted
 
 # -------------------------------------------
-# For private repo access when testing with a !premium RTD account, set GITLAB_ACCESS_TOKEN in RTD's web dashboard and use SSH URLs
+# For private repo access when testing with a !premium RTD account, set GITLAB_ACCESS_TOKEN in RTD's web dashboard (still use HTTPS urls); creds will be swapped @ .readthedocs.yaml
 repositories:                               # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
   # Static >>
   xbe-static-docs:
-    url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"  # .git suffix == optional; can be SSH or HTTPS; if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
+    url: "https://gitlab.acceleratxr.com/Core/xbe-static-docs"  # .git suffix == optional; HTTPS only (until we add cert support in RTD); if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
     #tag: "v1.0.0"                          # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
     symlink_path: "xbe-static-docs"         # Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"; defaults to repo name, if omitted
     branch: "main"                          # Normalizes os/path/slashes; Default {default_branch}, if omitted
