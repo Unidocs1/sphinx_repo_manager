@@ -9,6 +9,14 @@ Xsolla Backend
 .. Use :maxdepth: 2 to limit the toc children shown to 2 levels deep 
 
 .. toctree::
+  :caption: Test
+  :hidden:
+
+  Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
+  Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
+  Test3 <content/xbe_static_docs/docs/source/content/liveops>
+
+.. toctree::
   :caption: Welcome
   :hidden:
 
