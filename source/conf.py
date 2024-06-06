@@ -61,6 +61,7 @@ manifest = repo_manager.read_normalize_manifest()
 repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active }
 print(f'[conf.py::repo_manager] Num repos found: {len(repos)}')
 
+# TODO: Use these below for dynamic info pulled from repo_manager.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
 repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
@@ -87,7 +88,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'repo_manager',  # Our own custom extension
-    'sphinx_jinja',
+    # 'sphinx_jinja',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -174,72 +175,72 @@ html_context = {
 }
 
 
-# -- Options for Jinja Templating --------------------------------------------
-# Swap out {{templated}} vars and {% for % } ops in .rst.
-# Declare the vars at `jinja_contexts`.
-
-# Reserved child key names: repos[i]['name']
-jinja_contexts = {
-    'general': {
-        'release': release,
-        'repo_name': html_context['gitlab_repo'],
-        'gitlab_domain': 'gitlab.acceleratxr.com',
-        'gitlab_org': 'Core',
-        # -- Dynamic set below --
-        'gitlab_url': '',
-        'badge_base_url': '',  # With no trailing slash
-        'coverage_badge_svg_url': '',
-        'pipeline_badge_svg_url': '',
-    },
-    'content': {
-        # External links >>
-        'company': 'https://xsolla.com/backend',
-        'discord': 'https://discord.gg/wrfBR2Q',
-        'gitlab': 'https://gitlab.acceleratxr.com',
-        'partner_support': 'https://xsolla.com/partner-support',
-        # Dynamic repos set further below >> eg:
-        # 'validation_services': 'content/validation_services/docs/source'
-        # 'xbe_static_docs': 'content/xbe_static_docs/docs/source'
-        # (!) ^ Notice the above jinja nuance: xbe-static-docs dashes are converted_to_underscore
-    },
-}
-
-
-# From repo_manifest.yml working dir,
-# for each manifest repo, add to jinja_contexts content of "{repo_name}": "{repo_path}" (normalizing_to_underscores)
-# Eg: 'account_services': 'content/account_services/docs/source'
-print("[conf.py] Setting up dynamic jinja_contexts['content'] for {{templating}} from repo_manifest.yaml...")
-print()
-
-jinja_content = jinja_contexts['content']
-for repo_name, repo_data in repos.items():
-    repo_path = f'content/{repo_name}/docs/source'
-    normalized_repo_name = repo_name.replace('-', '_').replace(' ', '_')
-    # print(f"[conf.py] Jinja {{{{{normalized_repo_name}}}}} -> '{repo_path}'")
-    jinja_content[normalized_repo_name] = repo_path
-
-pretty_jinja_content = json.dumps(jinja_content, indent=2)
-print(f"#Use jinja for .rst {{{{templating}}}}:\njinja_contexts['content']=={pretty_jinja_content}")
-print()
-
-
-# Add more dynamic props to general >>
-jinja_general = jinja_contexts['general']
-
-# eg: https://gitlab.acceleratxr.com/Core/acceleratxr.io
-gitlab_url = ('https://'
-              f"{jinja_general['gitlab_domain']}/"
-              f"{jinja_general['gitlab_org']}/"
-              f"{jinja_general['repo_name']}")
-jinja_general['gitlab_url'] = gitlab_url
-
-# eg: https://gitlab.acceleratxr.com/Core/account_services/badges/master/pipeline.svg
-badge_base_url = (f"{gitlab_url}/badges/"
-                  f"{html_context['gitlab_version']}")
-jinja_general['badge_base_url'] = badge_base_url
-
-jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
-jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
+# # -- Options for Jinja Templating (!) WORKS IN SPHINX; NOT RTD (!) -----------------
+# # Swap out {{templated}} vars and {% for % } ops in .rst.
+# # Declare the vars at `jinja_contexts`.
+#
+# # Reserved child key names: repos[i]['name']
+# jinja_contexts = {
+#     'general': {
+#         'release': release,
+#         'repo_name': html_context['gitlab_repo'],
+#         'gitlab_domain': 'gitlab.acceleratxr.com',
+#         'gitlab_org': 'Core',
+#         # -- Dynamic set below --
+#         'gitlab_url': '',
+#         'badge_base_url': '',  # With no trailing slash
+#         'coverage_badge_svg_url': '',
+#         'pipeline_badge_svg_url': '',
+#     },
+#     'content': {
+#         # External links >>
+#         'company': 'https://xsolla.com/backend',
+#         'discord': 'https://discord.gg/wrfBR2Q',
+#         'gitlab': 'https://gitlab.acceleratxr.com',
+#         'partner_support': 'https://xsolla.com/partner-support',
+#         # Dynamic repos set further below >> eg:
+#         # 'validation_services': 'content/validation_services/docs/source'
+#         # 'xbe_static_docs': 'content/xbe_static_docs/docs/source'
+#         # (!) ^ Notice the above jinja nuance: xbe_static_docs dashes are converted_to_underscore
+#     },
+# }
+#
+#
+# # From repo_manifest.yml working dir,
+# # for each manifest repo, add to jinja_contexts content of "{repo_name}": "{repo_path}" (normalizing_to_underscores)
+# # Eg: 'account_services': 'content/account_services/docs/source'
+# print("[conf.py] Setting up dynamic jinja_contexts['content'] for {{templating}} from repo_manifest.yaml...")
+# print()
+#
+# jinja_content = jinja_contexts['content']
+# for repo_name, repo_data in repos.items():
+#     repo_path = f'content/{repo_name}/docs/source'
+#     normalized_repo_name = repo_name.replace('-', '_').replace(' ', '_')
+#     # print(f"[conf.py] Jinja {{{{{normalized_repo_name}}}}} -> '{repo_path}'")
+#     jinja_content[normalized_repo_name] = repo_path
+#
+# pretty_jinja_content = json.dumps(jinja_content, indent=2)
+# print(f"#Use jinja for .rst {{{{templating}}}}:\njinja_contexts['content']=={pretty_jinja_content}")
+# print()
+#
+#
+# # Add more dynamic props to general >>
+# jinja_general = jinja_contexts['general']
+#
+# # eg: https://gitlab.acceleratxr.com/Core/acceleratxr.io
+# gitlab_url = ('https://'
+#               f"{jinja_general['gitlab_domain']}/"
+#               f"{jinja_general['gitlab_org']}/"
+#               f"{jinja_general['repo_name']}")
+# jinja_general['gitlab_url'] = gitlab_url
+#
+# # eg: https://gitlab.acceleratxr.com/Core/account_services/badges/master/pipeline.svg
+# badge_base_url = (f"{gitlab_url}/badges/"
+#                   f"{html_context['gitlab_version']}")
+# jinja_general['badge_base_url'] = badge_base_url
+#
+# jinja_general['coverage_badge_svg_url'] = f"{badge_base_url}/coverage.svg"
+# jinja_general['pipeline_badge_svg_url'] = f"{badge_base_url}/pipeline.svg"
 
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------

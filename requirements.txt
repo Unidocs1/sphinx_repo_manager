@@ -12,4 +12,4 @@ sphinx_jinja2==0.0.1  # Allows for {{ templating }}, using vars from conf.py # h
 # For this main multi-versioning multi-repo doc only >>
 PyYAML==6.0.1        # Req'd for repo_manager ext
 colorama==0.4.6      # Req'd for repo_manager ext
-sphinx-jinja==2.0.2  # Allows for {{templating}} and for loops in .rst files via declared conf.py `jinja_contexts` var
+#sphinx-jinja==2.0.2  # (!) Doesn't work in RTD; allows for {{templating}} and for loops in .rst files via declared conf.py `jinja_contexts` var
