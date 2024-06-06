@@ -7,7 +7,7 @@ build:
   jobs:
     pre_build:
       - |
-        # If an access token is found, inject it into the gitlab.acceleratxr.com urls
+        # Inject the GitLab access token into repository URLs if set
         # This is only useful for private repos on a free test account
         if [ -n "$GITLAB_ACCESS_TOKEN" ]; then
           echo "Injecting GitLab access token into the repository URL..."
@@ -16,14 +16,6 @@ build:
           echo "GITLAB_ACCESS_TOKEN is not set. Skipping access token injection."
         fi
 
-#  commands:  # (!) If you add commands, you'll need to manually sphinx build below:
-#    - |
-#      # Run the Sphinx build command
-#      echo "Starting Sphinx build process..."
-#      sphinx-build -b html source build/html -v -T  # Enable verbose logging
-#    - |
-#      echo "Sphinx build process completed."
-
 python:
   install:
     - requirements: requirements.txt
@@ -31,4 +23,4 @@ python:
 sphinx:
   builder: html
   configuration: source/conf.py
-  fail_on_warning: false  # TODO: We eventually want this to be true
+  fail_on_warning: false  # TODO: Set this to true after fixing all warnings
