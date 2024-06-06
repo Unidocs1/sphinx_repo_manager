@@ -7,6 +7,4 @@ Foo Services
 
     content/concepts/index
 
-.. jinja:: general
-
-   Welcome to {{repo_name}}!
+Hello World!
