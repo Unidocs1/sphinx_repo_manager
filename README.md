@@ -25,9 +25,9 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 ## Setup
 
-1. Run `tools/requirements-install.ps1` as a normal user.
+1. Run `tools/requirements-install.ps1` as a normal user
 
-2. Configure the `repo_manifest.yml` (well-commented within) with your desired versioning/cloning.
+2. Configure the `repo_manifest.yml` with your desired versioning/cloning.
 
 ## Build
 
@@ -38,10 +38,6 @@ make html
 ```
 
 2. Open the built index via `build/html/index.html`
-
-### Speedy Build
-
-If you _just_ updated and want to build without going through `repo_manager`, simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
 
 ## Typical Structure
 
@@ -56,21 +52,24 @@ Open the built index via `build/html/index.html`
 Source repo docs/  layout tree should be structured as follows, with example content:
 
 ```
-- .git
-- RELEASE_NOTES.rst
-- <repo root>/docs/
-   - source/
-      - conf.py
-      - index.rst
-      - _static/
-         - images/
-            - foo.png
-         - css/
-            - someStyle.css
-         
-      - _templates/
-      - content/
-         - foo.rst 
+<repo root>/docs
+└───source
+    │   conf.py
+    │   index.rst
+    │
+    ├───content
+    │   ├───foo
+    │   │       index.rst
+    │   │       arbitrary.rst
+    │   │
+    │   └───bar.rst
+    │
+    ├───_static
+	│		images/foo.png
+	│		css/someStyle.css
+    │
+    └───_templates
+            _templates go here
 ```
 
 ## Apps & Extensions

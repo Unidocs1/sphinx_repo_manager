@@ -12,25 +12,25 @@
 # - [Unversioned] Double dashes replace slashes. Eg: {repo_name}--foo--branch}}                # 
 # - It *is safe* to wipe your source/_repos-available + source/content dirs.                   #
 ################################################################################################
-enable_repo_manager: true                  # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
-debug_mode: false                           # More-verbose logging or debugging; defaults to false, if omitted
+enable_repo_manager: true                   # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
+debug_mode: false                           # More-verbose logging or debugging
 stash_and_continue_if_wip: true             # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
 init_clone_path: "source/_repos-available"  # Default base for cloning; normalizes "os/path/slashes"; defaults to source/_repos-available, if omitted
 base_symlink_path: "source/content"         # Default base path for cloning repos relative to this file; normalizes "os/path/slashes"; defaults to "source/content", if omitted
 default_branch: "master"                    # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
-repo_sparse_path: "docs"                    # Path to individual repo dirs we [mostly] want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; use `tools/repo_cleaner.py` for initial "deep" cleaning, if you've backed up; default to "docs", if omitted
+repo_sparse_paths: "docs"                   # Path to individual repo dirs we want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; default to "docs/source/content", if omitted
 
 # -------------------------------------------
-# For private repo access when testing with a !premium RTD account, set GITLAB_ACCESS_TOKEN in RTD's web dashboard (still use HTTPS urls); creds will be swapped @ .readthedocs.yaml
+# For private repo access when testing with a !premium RTD account, set GITLAB_ACCESS_TOKEN in RTD's web dashboard and use SSH URLs
 repositories:                               # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
   # Static >>
   xbe_static_docs:
-    url: "https://gitlab.acceleratxr.com/Core/xbe_static_docs"  # .git suffix == optional; HTTPS only (until we add cert support in RTD); if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
+    url: "https://gitlab.acceleratxr.com/Core/xbe_static_docs"  # .git suffix == optional; can be SSH or HTTPS; if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
     #tag: "v1.0.0"                          # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
     symlink_path: "xbe_static_docs"         # Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"; defaults to repo name, if omitted
     branch: "main"                          # Normalizes os/path/slashes; Default {default_branch}, if omitted
     active: true                            # Default true, if omitted
-  # Services >>
+#  # Services >>
 #  account_services:
 #    url: "https://gitlab.acceleratxr.com/Core/account_services"
 #    branch: "dylan/refactor/docs-revamp"
@@ -95,46 +95,25 @@ repositories:                               # Dictionary of <repo_name, repo_dat
 #  sdk_csharp:
 #    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
 #    branch: "dylan/refactor/docs-revamp"
-#  sdk_nodejs:
-#    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
-#    branch: "dylan/refactor/docs-revamp"
-#  sdk_unity:
-#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
-#      branch: "dylan/refactor/docs-revamp"
-#  sdk_unreal:
-#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
-#      branch: "dylan/refactor/docs-revamp"
-#  # Composer >>
-#  service-core:
-#    url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
-#    branch: "dylan/refactor/docs-revamp"
-#  # Other Products/Apps >>
-#  service_monitor:
-#    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
-#    branch: "dylan/refactor/docs-revamp"
-#  launcher:
-#    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
-#    branch: "dylan/refactor/docs-revamp"
-#  console:
-#    url: "https://gitlab.acceleratxr.com/Core/apps/console"
-#    branch: "dylan/refactor/docs-revamp"
-#  xbeapp:
-#    url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
-#    branch: "dylan/refactor/docs-revamp"
-#  # Libs/WebApps >>
-#  appconfig:
-#    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
-#    branch: "dylan/refactor/docs-revamp"
-#  react-shared:
-#    url: "https://gitlab.acceleratxr.com/Core/tools/react-shared"
-#    branch: "dylan/refactor/docs-revamp"
-#  electron-shared:
-#    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
-#    branch: "dylan/refactor/docs-revamp"
-#  # Demos >>
-#  unitychessgame:
-#    url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
-#    branch: "dylan/refactor/docs-revamp"
-#  lyrastartergame:
-#    url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
-#    branch: "dylan/refactor/docs-revamp"
+##############################
+## 1. account_services
+## 2. achievements_services
+## 3. asset_services
+## 4. backup_services
+## 5. economy_services
+## 6. leaderboard_services
+## 7. matchmaking_services
+## 8. notification_services
+## 9. persona_services
+## 10. progression_services
+## 11. purchasing_services
+## 12. quest_services
+## 13. reporting_services
+## 14. scripting_services
+## 15. server_instance_services   
+## 16. session_services
+## 17. social_services
+## 18. telemetry_services
+## 19. validation_services
+## 20. world_services
+##############################

@@ -21,7 +21,7 @@ author = 'Xsolla'
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
-release = '%GIT_TAG%'
+release = 'latest'
 
 # -- Path setup --------------------------------------------------------------
 
@@ -58,7 +58,7 @@ templates_path = ['_templates']
 exclude_patterns = [
     '_build',
     'Thumbs.db',
-    '.DS_Store',
+    '.DS_Store'
 ]
 
 master_doc = 'index'
@@ -110,7 +110,7 @@ html_theme_options = {
     # Toc options >>
     'collapse_navigation': True,
     'sticky_navigation': True,
-    'navigation_depth': 4,  # (!) max depth; NOT default
+    'navigation_depth': 4,
     'includehidden': True,
     'titles_only': False,
 }
@@ -118,6 +118,7 @@ html_theme_options = {
 # This swaps vals in the actual built HTML (NOT the rst files).
 # Eg: This is used with themes and third-party extensions;
 # (!) `{{templating}}` in rst files with these *won't* work here:
+#     If templating, see `jinja_contexts`
 html_context = {
     'conf_py_path': '/source/',  # Path in the checkout to the docs root
     # Edit on GitLab >>
@@ -127,26 +128,6 @@ html_context = {
     'gitlab_repo': '%REPO_NAME%',  # Repo name
     'gitlab_version': 'master',  # Version
 }
-
-source_suffix = ['.rst', '.md']
-
-
-# -- MyST configuration ------------------------------------------------------
-# recommonmark successor to parse .md to .rst
-
-# Configuration for MyST-Parser
-myst_enable_extensions = [
-    "amsmath",          # Enable parsing and rendering of AMS math syntax
-    "dollarmath",       # Enable dollar math syntax
-    "html_admonition",  # Enable HTML admonitions
-    "html_image",       # Enable HTML image tags
-    "colon_fence",      # Enable colon fences for directives/roles
-    "smartquotes",      # Enable smart quotes
-    "replacements",     # Enable replacements syntax
-    "strikethrough",    # Enable strikethrough syntax
-    "tasklist",         # Enable task list syntax
-]
-
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
 # rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)

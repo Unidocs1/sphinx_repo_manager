@@ -5,25 +5,24 @@ build:
   tools:
     python: '3.10'
   jobs:
-    post_create_environment:
+    pre_build:
       - |
-        echo "[post_create_environment] Running post_create_environment setup..."
-        set -e
+        # If an access token is found, inject it into the gitlab.acceleratxr.com urls
         # This is only useful for private repos on a free test account
-        if [ -z "$GITLAB_ACCESS_TOKEN" ]; then
-          echo "[GITLAB_ACCESS_TOKEN] Not set. Skipping access token injection."
+        if [ -n "$GITLAB_ACCESS_TOKEN" ]; then
+          echo "Injecting GitLab access token into the repository URL..."
+          git config --global url."https://$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
         else
-          echo "[GITLAB_ACCESS_TOKEN] Injecting GitLab access token into the repository URL..."
-          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
-          echo "Verifying the URL swap..."
-          # Verify by using git to clone a small repo or fetch info
-          git ls-remote https://gitlab.acceleratxr.com/Core/acceleratxr.io.git || { echo "GITLAB_ACCESS_TOKEN_ URL swap verification failed: Bad perms? Expired?"; exit 1; }
+          echo "GITLAB_ACCESS_TOKEN is not set. Skipping access token injection."
         fi
-    post_build:
-      - |
-        echo "[post_build] Running post_build logs for dir trees..."
-        - apt-get update && apt-get install -y tree
-        - tree . || ls -R .
+
+#  commands:  # (!) If you add commands, you'll need to manually sphinx build below
+#    - |
+#      # Run the Sphinx build command
+#      echo "Starting Sphinx build process..."
+#      sphinx-build -b html source build/html -v -T  # Enable verbose logging
+#    - |
+#      echo "Sphinx build process completed."
 
 python:
   install:
@@ -32,4 +31,4 @@ python:
 sphinx:
   builder: html
   configuration: source/conf.py
-  fail_on_warning: false  # TODO: Set this to true after fixing all warnings
+  fail_on_warning: false  # TODO: We eventually want this to be true
