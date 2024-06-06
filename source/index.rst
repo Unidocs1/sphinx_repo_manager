@@ -9,84 +9,87 @@ Xsolla Backend
 .. Use :maxdepth: 2 to limit the toc children shown to 2 levels deep 
 
 .. toctree::
-  :caption: Test
-  :hidden:
+   :caption: Test
+   :maxdepth: 2
 
-  Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
-  Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
-  Test3 <content/xbe_static_docs/docs/source/content/liveops>
-
-.. toctree::
-  :caption: Welcome
-  :hidden:
-
-  Introduction <content/xbe_static_docs/docs/source/content/getting_started/index>
-  Features <content/xbe_static_docs/docs/source/content/features>
-  Changelog <content/xbe_static_docs/docs/source/content/changelogs/index>
+   Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
+   Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
+   Test3 <content/xbe_static_docs/docs/source/content/liveops>
+   Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
+   Test1 <_repos-available/xbe_static_docs--main/docs/source/content/liveops>
+   Test3 <content/xbe_static_docs/docs/source/content/liveops>
 
 .. toctree::
-  :caption: About
-  :hidden:
+   :caption: Welcome
+   :hidden:
 
-  Commerce <content/xbe_static_docs/docs/source/content/commerce>
-  Content <content/xbe_static_docs/docs/source/content/content>
-  Gameplay <content/xbe_static_docs/docs/source/content/gameplay>
-  LiveOps <content/xbe_static_docs/docs/source/content/liveops>
-  Multiplayer <content/xbe_static_docs/docs/source/content/multiplayer>
+   Introduction <content/xbe_static_docs/docs/source/content/getting_started/index>
+   Features <content/xbe_static_docs/docs/source/content/features>
+   Changelog <content/xbe_static_docs/docs/source/content/changelogs/index>
 
 .. toctree::
-  :caption: Learn
-  :hidden:
+   :caption: About
+   :hidden:
 
-  GitLab <content/gitlab/docs/source>
-  Platform Demos <content/xbe_static_docs/docs/source/content/demo>
-  Tools <content/xbe_static_docs/docs/source/content/tools>
-  Tutorials <content/xbe_static_docs/docs/source/content/samples_and_tutorials/index>
-
-.. toctree::
-  :caption: API
-  :hidden:
-
-  C++ SDK <content/cpp_sdk/docs/source/index>
-  C# SDK <content/csharp_sdk/docs/source/index>
+   Commerce <content/xbe_static_docs/docs/source/content/commerce>
+   Content <content/xbe_static_docs/docs/source/content/content>
+   Gameplay <content/xbe_static_docs/docs/source/content/gameplay>
+   LiveOps <content/xbe_static_docs/docs/source/content/liveops>
+   Multiplayer <content/xbe_static_docs/docs/source/content/multiplayer>
 
 .. toctree::
-  :caption: Services
-  :hidden:
+   :caption: Learn
+   :hidden:
 
-  Account <content/account_services/docs/source/index>
-  Achievements <content/achievements_services/docs/source/index>
-  Asset <content/asset_services/docs/source/index>
-  Backup <content/backup_services/docs/source/index>
-  Economy <content/economy_services/docs/source/index>
-  Leaderboard <content/leaderboard_services/docs/source/index>
-  Matchmaking <content/matchmaking_services/docs/source/index>
-  Notification <content/notification_services/docs/source/index>
-  Persona <content/persona_services/docs/source/index>
-  Progression <content/progression_services/docs/source/index>
-  Purchasing <content/purchasing_services/docs/source/index>
-  Quest <content/quest_services/docs/source/index>
-  Reporting <content/reporting_services/docs/source/index>
-  Scripting <content/scripting_services/docs/source/index>
-  Server Instance <content/server_instance_services/docs/source/index>
-  Session <content/session_services/docs/source/index>
-  Social <content/social_services/docs/source/index>
-  Telemetry <content/telemetry_services/docs/source/index>
-  Validation <content/validation_services/docs/source/index>
+   GitLab <content/gitlab/docs/source>
+   Platform Demos <content/xbe_static_docs/docs/source/content/demo>
+   Tools <content/xbe_static_docs/docs/source/content/tools>
+   Tutorials <content/xbe_static_docs/docs/source/content/samples_and_tutorials/index>
 
 .. toctree::
-  :caption: Support
-  :hidden:
+   :caption: API
+   :hidden:
 
-  Discord <content/discord/docs/source>
-  Xsolla Partner Support <content/partner_support/docs/source>
+   C++ SDK <content/cpp_sdk/docs/source/index>
+   C# SDK <content/csharp_sdk/docs/source/index>
 
 .. toctree::
-  :caption: About
-  :hidden:
+   :caption: Services
+   :hidden:
 
-  Company <content/company/docs/source>
-  Eula <content/xbe_static_docs/docs/source/content/eula/index>
+   Account <content/account_services/docs/source/index>
+   Achievements <content/achievements_services/docs/source/index>
+   Asset <content/asset_services/docs/source/index>
+   Backup <content/backup_services/docs/source/index>
+   Economy <content/economy_services/docs/source/index>
+   Leaderboard <content/leaderboard_services/docs/source/index>
+   Matchmaking <content/matchmaking_services/docs/source/index>
+   Notification <content/notification_services/docs/source/index>
+   Persona <content/persona_services/docs/source/index>
+   Progression <content/progression_services/docs/source/index>
+   Purchasing <content/purchasing_services/docs/source/index>
+   Quest <content/quest_services/docs/source/index>
+   Reporting <content/reporting_services/docs/source/index>
+   Scripting <content/scripting_services/docs/source/index>
+   Server Instance <content/server_instance_services/docs/source/index>
+   Session <content/session_services/docs/source/index>
+   Social <content/social_services/docs/source/index>
+   Telemetry <content/telemetry_services/docs/source/index>
+   Validation <content/validation_services/docs/source/index>
+
+.. toctree::
+   :caption: Support
+   :hidden:
+
+   Discord <content/discord/docs/source>
+   Xsolla Partner Support <content/partner_support/docs/source>
+
+.. toctree::
+   :caption: About
+   :hidden:
+
+   Company <content/company/docs/source>
+   Eula <content/xbe_static_docs/docs/source/content/eula/index>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
 The platform offers a *huge* list of :doc:`features <content/xbe-static-docs/docs/source/content/features>` covering everything from account management, matchmaking to questing.
