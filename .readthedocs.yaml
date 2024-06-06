@@ -19,6 +19,11 @@ build:
           # Verify by using git to clone a small repo or fetch info
           git ls-remote https://gitlab.acceleratxr.com/Core/acceleratxr.io.git || { echo "GITLAB_ACCESS_TOKEN_ URL swap verification failed: Bad perms? Expired?"; exit 1; }
         fi
+    post_build:
+      - |
+        echo "[post_build] Running post_build logs for dir trees..."
+        - apt-get update && apt-get install -y tree
+        - tree . || ls -R .
 
 python:
   install:
