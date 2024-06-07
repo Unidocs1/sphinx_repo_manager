@@ -91,7 +91,7 @@ repositories:                               # Dictionary of <repo_name, repo_dat
   # Sdks >>
   sdk_cpp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
-    branch: "dev"
+    branch: "dylan/refactor/docs-revamp" # TODO: `dev` branch !exists
   sdk_csharp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
     branch: "dev"
@@ -137,4 +137,4 @@ repositories:                               # Dictionary of <repo_name, repo_dat
     branch: "dev"
   lyrastartergame:
     url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
-    branch: "dylan/refactor/docs-revamp"  # TODO: `dev` branch !exists; where to push?
+    branch: "dev"

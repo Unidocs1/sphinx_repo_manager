@@ -17,11 +17,11 @@ Xsolla Backend
    :caption: About
    :hidden:
 
-   .. Removed: Commerce <source/content/xbe_static_docs/docs/source/content/commerce>
-   .. Removed: Content <source/content/xbe_static_docs/docs/source/content/content>
-   .. Removed: Gameplay <source/content/xbe_static_docs/docs/source/content/gameplay>
-   .. Removed: LiveOps <source/content/xbe_static_docs/docs/source/content/liveops>
-   .. Removed: Multiplayer <source/content/xbe_static_docs/docs/source/content/multiplayer>
+.. Removed: Commerce <source/content/xbe_static_docs/docs/source/content/commerce>
+.. Removed: Content <source/content/xbe_static_docs/docs/source/content/content>
+.. Removed: Gameplay <source/content/xbe_static_docs/docs/source/content/gameplay>
+.. Removed: LiveOps <source/content/xbe_static_docs/docs/source/content/liveops>
+.. Removed: Multiplayer <source/content/xbe_static_docs/docs/source/content/multiplayer>
 
 .. toctree::
    :caption: Learn
