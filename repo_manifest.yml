@@ -121,16 +121,16 @@ repositories:                               # Dictionary of <repo_name, repo_dat
   xbeapp:
     url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
     branch: "dylan/refactor/docs-revamp"
-  # Libs/WebApps >>
-  appconfig:
-    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
-    branch: "dylan/refactor/docs-revamp"
-  react-shared:
-    url: "https://gitlab.acceleratxr.com/Core/tools/react-shared"
-    branch: "dylan/refactor/docs-revamp"
-  electron-shared:
-    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
-    branch: "dylan/refactor/docs-revamp"
+#  # Libs/WebApps >>
+#  appconfig:
+#    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
+#    branch: "dylan/refactor/docs-revamp"
+#  react-shared:
+#    url: "https://gitlab.acceleratxr.com/Core/tools/react-shared"
+#    branch: "dylan/refactor/docs-revamp"
+#  electron-shared:
+#    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
+#    branch: "dylan/refactor/docs-revamp"
   # Demos >>
   unitychessgame:
     url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"

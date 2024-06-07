@@ -9,6 +9,7 @@ Xsolla Backend
    :hidden:
 
    Introduction <source/content/xbe_static_docs/docs/source/content/getting_started/index>
+   Installation <source/content/xbe_static_docs/docs/source/content/install/index>
    Features <source/content/xbe_static_docs/docs/source/content/features>
    Changelog <source/content/xbe_static_docs/docs/source/content/changelogs/index>
 
@@ -16,16 +17,17 @@ Xsolla Backend
    :caption: About
    :hidden:
 
-   Commerce <source/content/xbe_static_docs/docs/source/content/commerce>
-   Content <source/content/xbe_static_docs/docs/source/content/content>
-   Gameplay <source/content/xbe_static_docs/docs/source/content/gameplay>
-   LiveOps <source/content/xbe_static_docs/docs/source/content/liveops>
-   Multiplayer <source/content/xbe_static_docs/docs/source/content/multiplayer>
+   .. Removed: Commerce <source/content/xbe_static_docs/docs/source/content/commerce>
+   .. Removed: Content <source/content/xbe_static_docs/docs/source/content/content>
+   .. Removed: Gameplay <source/content/xbe_static_docs/docs/source/content/gameplay>
+   .. Removed: LiveOps <source/content/xbe_static_docs/docs/source/content/liveops>
+   .. Removed: Multiplayer <source/content/xbe_static_docs/docs/source/content/multiplayer>
 
 .. toctree::
    :caption: Learn
    :hidden:
 
+   Concepts <source/content/xbe_static_docs/docs/source/content/concepts/index>
    GitLab <source/content/gitlab/docs/source>
    Platform Demos <source/content/xbe_static_docs/docs/source/content/demo>
    Tools <source/content/xbe_static_docs/docs/source/content/tools>
@@ -70,7 +72,7 @@ Xsolla Backend
    Xsolla Partner Support <source/content/partner_support/docs/source>
 
 .. toctree::
-   :caption: About
+   :caption: Legal
    :hidden:
 
    Company <source/content/company/docs/source>
