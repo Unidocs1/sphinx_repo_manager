@@ -33,108 +33,108 @@ repositories:                               # Dictionary of <repo_name, repo_dat
   # Services >>
   account_services:
     url: "https://gitlab.acceleratxr.com/Core/account_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   achievements_services:
     url: "https://gitlab.acceleratxr.com/Core/achievements_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   asset_services:
     url: "https://gitlab.acceleratxr.com/Core/asset_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   backup_services:
     url: "https://gitlab.acceleratxr.com/Core/backup_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   economy_services:
     url: "https://gitlab.acceleratxr.com/Core/economy_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   leaderboard_services:
     url: "https://gitlab.acceleratxr.com/Core/leaderboard_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   matchmaking_services:
     url: "https://gitlab.acceleratxr.com/Core/matchmaking_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   notification_services:
     url: "https://gitlab.acceleratxr.com/Core/notification_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   persona_services:
     url: "https://gitlab.acceleratxr.com/Core/persona_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   progression_services:
     url: "https://gitlab.acceleratxr.com/Core/progression_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   purchasing_services:
     url: "https://gitlab.acceleratxr.com/Core/purchasing_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   quest_services:
     url: "https://gitlab.acceleratxr.com/Core/quest_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   reporting_services:
     url: "https://gitlab.acceleratxr.com/Core/reporting_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   scripting_services:
     url: "https://gitlab.acceleratxr.com/Core/scripting_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   server_instance_services:
     url: "https://gitlab.acceleratxr.com/Core/server_instance_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   session_services:
     url: "https://gitlab.acceleratxr.com/Core/session_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   social_services:
     url: "https://gitlab.acceleratxr.com/Core/social_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   telemetry_services:
     url: "https://gitlab.acceleratxr.com/Core/telemetry_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   validation_services:
     url: "https://gitlab.acceleratxr.com/Core/validation_services"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   # Sdks >>
   sdk_cpp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   sdk_csharp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   sdk_nodejs:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   sdk_unity:
       url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
-      branch: "dylan/refactor/docs-revamp"
+      branch: "dev"
   sdk_unreal:
       url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
-      branch: "dylan/refactor/docs-revamp"
+      branch: "dev"
   # Composer >>
   service-core:
     url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   # Other Products/Apps >>
   service_monitor:
     url: "https://gitlab.acceleratxr.com/Core/service_monitor"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   launcher:
     url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   console:
     url: "https://gitlab.acceleratxr.com/Core/apps/console"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   xbeapp:
     url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
 #  # Libs/WebApps >>
 #  appconfig:
 #    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
-#    branch: "dylan/refactor/docs-revamp"
+#    branch: "dev"
 #  react-shared:
 #    url: "https://gitlab.acceleratxr.com/Core/tools/react-shared"
-#    branch: "dylan/refactor/docs-revamp"
+#    branch: "dev"
 #  electron-shared:
 #    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
-#    branch: "dylan/refactor/docs-revamp"
+#    branch: "dev"
   # Demos >>
   unitychessgame:
     url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dev"
   lyrastartergame:
     url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
-    branch: "dylan/refactor/docs-revamp"
+    branch: "dylan/refactor/docs-revamp"  # TODO: `dev` branch !exists; where to push?
