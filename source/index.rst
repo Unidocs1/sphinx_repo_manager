@@ -8,78 +8,78 @@ Xsolla Backend
    :caption: Welcome
    :hidden:
 
-   Introduction <source/content/xbe_static_docs/docs/source/content/getting_started/index>
-   Installation <source/content/xbe_static_docs/docs/source/content/install/index>
-   Features <source/content/xbe_static_docs/docs/source/content/features>
-   Changelog <source/content/xbe_static_docs/docs/source/content/changelogs/index>
+   Introduction <content/xbe_static_docs/docs/source/content/getting_started/index>
+   Installation <content/xbe_static_docs/docs/source/content/install/index>
+   Features <content/xbe_static_docs/docs/source/content/features>
+   Changelog <content/xbe_static_docs/docs/source/content/changelogs/index>
 
 .. toctree::
    :caption: About
    :hidden:
 
-.. Removed: Commerce <source/content/xbe_static_docs/docs/source/content/commerce>
-.. Removed: Content <source/content/xbe_static_docs/docs/source/content/content>
-.. Removed: Gameplay <source/content/xbe_static_docs/docs/source/content/gameplay>
-.. Removed: LiveOps <source/content/xbe_static_docs/docs/source/content/liveops>
-.. Removed: Multiplayer <source/content/xbe_static_docs/docs/source/content/multiplayer>
+.. Removed: Commerce <content/xbe_static_docs/docs/source/content/commerce>
+.. Removed: Content <content/xbe_static_docs/docs/source/content/content>
+.. Removed: Gameplay <content/xbe_static_docs/docs/source/content/gameplay>
+.. Removed: LiveOps <content/xbe_static_docs/docs/source/content/liveops>
+.. Removed: Multiplayer <content/xbe_static_docs/docs/source/content/multiplayer>
 
 .. toctree::
    :caption: Learn
    :hidden:
 
-   Concepts <source/content/xbe_static_docs/docs/source/content/concepts/index>
-   GitLab <source/content/gitlab/docs/source>
-   Platform Demos <source/content/xbe_static_docs/docs/source/content/demo>
-   Tools <source/content/xbe_static_docs/docs/source/content/tools>
-   Tutorials <source/content/xbe_static_docs/docs/source/content/samples_and_tutorials/index>
+   Concepts <content/xbe_static_docs/docs/source/content/concepts/index>
+   GitLab <content/gitlab/docs/source>
+   Platform Demos <content/xbe_static_docs/docs/source/content/demo>
+   Tools <content/xbe_static_docs/docs/source/content/tools>
+   Tutorials <content/xbe_static_docs/docs/source/content/samples_and_tutorials/index>
 
 .. toctree::
    :caption: API
    :hidden:
 
-   C++ SDK <source/content/cpp_sdk/docs/source/index>
-   C# SDK <source/content/csharp_sdk/docs/source/index>
+   C++ SDK <content/cpp_sdk/docs/source/index>
+   C# SDK <content/csharp_sdk/docs/source/index>
 
 .. toctree::
    :caption: Services
    :hidden:
 
-   Account <source/content/account_services/docs/source/index>
-   Achievements <source/content/achievements_services/docs/source/index>
-   Asset <source/content/asset_services/docs/source/index>
-   Backup <source/content/backup_services/docs/source/index>
-   Economy <source/content/economy_services/docs/source/index>
-   Leaderboard <source/content/leaderboard_services/docs/source/index>
-   Matchmaking <source/content/matchmaking_services/docs/source/index>
-   Notification <source/content/notification_services/docs/source/index>
-   Persona <source/content/persona_services/docs/source/index>
-   Progression <source/content/progression_services/docs/source/index>
-   Purchasing <source/content/purchasing_services/docs/source/index>
-   Quest <source/content/quest_services/docs/source/index>
-   Reporting <source/content/reporting_services/docs/source/index>
-   Scripting <source/content/scripting_services/docs/source/index>
-   Server Instance <source/content/server_instance_services/docs/source/index>
-   Session <source/content/session_services/docs/source/index>
-   Social <source/content/social_services/docs/source/index>
-   Telemetry <source/content/telemetry_services/docs/source/index>
-   Validation <source/content/validation_services/docs/source/index>
+   Account <content/account_services/docs/source/index>
+   Achievements <content/achievements_services/docs/source/index>
+   Asset <content/asset_services/docs/source/index>
+   Backup <content/backup_services/docs/source/index>
+   Economy <content/economy_services/docs/source/index>
+   Leaderboard <content/leaderboard_services/docs/source/index>
+   Matchmaking <content/matchmaking_services/docs/source/index>
+   Notification <content/notification_services/docs/source/index>
+   Persona <content/persona_services/docs/source/index>
+   Progression <content/progression_services/docs/source/index>
+   Purchasing <content/purchasing_services/docs/source/index>
+   Quest <content/quest_services/docs/source/index>
+   Reporting <content/reporting_services/docs/source/index>
+   Scripting <content/scripting_services/docs/source/index>
+   Server Instance <content/server_instance_services/docs/source/index>
+   Session <content/session_services/docs/source/index>
+   Social <content/social_services/docs/source/index>
+   Telemetry <content/telemetry_services/docs/source/index>
+   Validation <content/validation_services/docs/source/index>
 
 .. toctree::
    :caption: Support
    :hidden:
 
-   Discord <source/content/discord/docs/source>
-   Xsolla Partner Support <source/content/partner_support/docs/source>
+   Discord <content/discord/docs/source>
+   Xsolla Partner Support <content/partner_support/docs/source>
 
 .. toctree::
    :caption: Legal
    :hidden:
 
-   Company <source/content/company/docs/source>
-   Eula <source/content/xbe_static_docs/docs/source/content/eula/index>
+   Company <content/company/docs/source>
+   Eula <content/xbe_static_docs/docs/source/content/eula/index>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
-The platform offers a *huge* list of :doc:`features <source/content/xbe-static-docs/docs/source/content/features>` covering everything from account management, matchmaking to questing.
+The platform offers a *huge* list of :doc:`features <content/xbe-static-docs/docs/source/content/features>` covering everything from account management, matchmaking to questing.
 XBE enables teams of any size and experience level to build state-of-the-art online experiences at a fraction of the time and cost of other solutions.
 
 * Pay only 5% of gross sales

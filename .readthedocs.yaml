@@ -31,5 +31,5 @@ python:
 
 sphinx:
   builder: html
-  configuration: source/conf.py
+  configuration: conf.py
   fail_on_warning: false  # TODO: Set this to true after fixing all warnings

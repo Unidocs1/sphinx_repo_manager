@@ -28,7 +28,7 @@ import sys
 project = 'xbe'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = '2024.07.0-TEST'  # This should match your branch name (unless latest/master/main)
+release = '2024.07.0-TEST'  # Outside testing, this should match your branch name (unless latest/master/main)
 
 
 # -- Path setup --------------------------------------------------------------
