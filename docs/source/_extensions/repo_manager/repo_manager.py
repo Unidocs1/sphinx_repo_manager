@@ -265,8 +265,9 @@ class RepoManager:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
                 return
 
+            read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
             local_enable_repo_manager = manifest.get('local_enable_repo_manager', True)
-            if not local_enable_repo_manager:
+            if not read_the_docs_build and not local_enable_repo_manager:
                 logger.warning("[repo_manager] Disabled in manifest (local_enable_repo_manager) - skipping extension"
                                f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
                 return
