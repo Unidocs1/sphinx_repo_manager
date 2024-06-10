@@ -59,6 +59,9 @@ exclude_patterns = [
     '_build',
     'Thumbs.db',
     '.DS_Store',
+    'venv',
+    'requirements.txt',
+    'README.*',
 ]
 
 master_doc = 'index'

@@ -22,8 +22,8 @@ build:
     post_build:
       - |
         echo "[post_build] Running post_build logs for dir trees..."
-        - apt-get update && apt-get install -y tree
-        - tree . || ls -R .
+        - apt update && apt install -y tree
+        - tree ./docs || ls -R .
 
 python:
   install:
@@ -31,5 +31,5 @@ python:
 
 sphinx:
   builder: html
-  configuration: source/conf.py
+  configuration: docs/source/conf.py
   fail_on_warning: false  # TODO: Set this to true after fixing all warnings

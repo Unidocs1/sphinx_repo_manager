@@ -3,6 +3,10 @@ import sys
 import subprocess
 
 
+TARGET_PATH = "../docs/source/_extensions/repo_manager"
+LINK_NAME = "repo_manager"
+
+
 def create_symlink(target_path, link_name):
     """
     Create a symbolic link and verify it.
@@ -44,12 +48,8 @@ def create_symlink(target_path, link_name):
 
 
 if __name__ == "__main__":
-    # Define the relative target path
-    target_path = "../source/_extensions/repo_manager"
-    link_name = "repo_manager"
-
     # Create the symbolic link
-    create_symlink(target_path, link_name)
+    create_symlink(TARGET_PATH, LINK_NAME)
 
     # Prompt to press Enter to quit
     input("Done. Press Enter to quit")

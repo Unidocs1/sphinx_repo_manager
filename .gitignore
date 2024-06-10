@@ -63,10 +63,9 @@ venv
 # Local symbolic links
 tools/repo_manager
 
-# Ensure docs content
-!docs/source/content
-source/_repos-available
-source/content
+# Generated content
+docs/source/_repos-available
+docs/source/content
 
 # Env var handling for when RTD has no access to private repos
 .env

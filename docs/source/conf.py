@@ -99,6 +99,8 @@ exclude_patterns = [
     'Thumbs.db',
     '.DS_Store',
     'venv',
+    'requirements.txt',
+    'README.*',
 ]
 
 master_doc = 'index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
