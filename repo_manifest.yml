@@ -91,7 +91,7 @@ repositories:                               # Dictionary of <repo_name, repo_dat
   # Sdks >>
   sdk_cpp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
-    branch: "dylan/refactor/docs-revamp" # TODO: `dev` branch !exists
+    branch: "dev/vcpkg_update"  # TODO: Make new `dev` branch after this is merged
   sdk_csharp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
     branch: "dev"
