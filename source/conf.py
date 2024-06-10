@@ -38,9 +38,8 @@ release = '2024.07.0-TEST'  # Outside testing, this should match your branch nam
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'repo_manager')))
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.append(os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath(f'./multiplayer/account_services/docs/content'))
-# sys.path.insert(0, os.path.abspath('./multiplayer/quest_services/docs/content'))
 
 
 # -- Extension: repo_manager --------------------------------------------------------------
