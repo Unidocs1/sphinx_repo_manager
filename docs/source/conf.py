@@ -28,7 +28,19 @@ import sys
 project = 'xbe'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = '2024.07.0-TEST'  # Outside testing, this should match your branch name (unless latest/master/main)
+release = os.getenv('READTHEDOCS_VERSION', 'local_test')  # This will generally match your branch name if on RTD
+
+
+# -- ReadTheDocs (RTD) Config ------------------------------------------------
+
+# Check if we're running on Read the Docs' servers
+read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
+
+# Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
+if read_the_docs_build:
+    gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
+    if not gitlab_access_token:
+        print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
 
 
 # -- Path setup --------------------------------------------------------------
@@ -36,6 +48,9 @@ release = '2024.07.0-TEST'  # Outside testing, this should match your branch nam
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
+
+# The absolute path to the directory containing conf.py.
+documentation_root = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'repo_manager')))
 sys.path.append(os.path.abspath('.'))
@@ -61,17 +76,6 @@ print(f'[conf.py::repo_manager] Num repos found: {len(repos)}')
 # TODO: Use these below for dynamic info pulled from repo_manager.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
 repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
-
-# -- ReadTheDocs (RTD) Config ------------------------------------------------
-
-# Check if we're running on Read the Docs' servers
-read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
-
-# Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
-if read_the_docs_build:
-    gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
-    if not gitlab_access_token:
-        print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
 
 
 # -- General configuration ---------------------------------------------------

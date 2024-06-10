@@ -8,6 +8,7 @@ build:
     post_create_environment:
       - |
         echo "[post_create_environment] Running post_create_environment setup..."
+        pwd
         set -e
         # This is only useful for private repos on a free test account
         if [ -z "$GITLAB_ACCESS_TOKEN" ]; then

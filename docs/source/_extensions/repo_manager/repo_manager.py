@@ -33,6 +33,7 @@ which is triggered after Sphinx inits but before the build process begins.
 - Windows 11 via PowerShell7
 """
 import os  # file path ops
+from pathlib import Path  # Path ops
 import re  # regex ops
 import subprocess
 import sys  # Just for sys.exit, if !repositories
@@ -47,6 +48,7 @@ ABS_BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 MANIFEST_NAME = 'repo_manifest.yml'
 ABS_MANIFEST_PATH = os.path.normpath(os.path.join(
     ABS_BASE_PATH, '..', '..', '..', MANIFEST_NAME))
+ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
 
 STOP_BUILD_ON_ERROR = True  # Whether to stop build on error
 logger = logging.getLogger(__name__)  # Get logger instance
@@ -60,6 +62,7 @@ class RepositoryManagementError(Exception):
 # RepoManager class to handle repository operations
 class RepoManager:
     def __init__(self, abs_manifest_path):
+        self.read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
         self.manifest_path = abs_manifest_path
         self.manifest = None
 
@@ -74,8 +77,8 @@ class RepoManager:
         """
         # Logs
         logger.info(colorize_action(f'📜 | [repo_manager] Reading manifest...'))
-        logger.info(colorize_path(f"   - Base Path: '{brighten(ABS_BASE_PATH)}'"))
-        logger.info(colorize_path(f"   - Manifest Src: '{brighten(MANIFEST_NAME)}'"))
+        logger.info(colorize_path(f"   - Extension Src: '{brighten(ABS_BASE_PATH)}'"))
+        logger.info(colorize_path(f"   - Manifest Src: '{brighten(ABS_MANIFEST_PATH)}'"))
 
         # Read manifest file
         if not os.path.exists(self.manifest_path):
@@ -91,8 +94,8 @@ class RepoManager:
         self.manifest = manifest
 
         # Logs
-        repo_sparse_path = manifest['repo_sparse_path']
-        logger.info(colorize_path(f"   - repo_sparse_path: '{brighten(repo_sparse_path)}'"))
+        rel_repo_sparse_path = manifest['repo_sparse_path']
+        logger.info(colorize_path(f"   - repo_sparse_path: '{brighten(rel_repo_sparse_path)}'"))
 
         return manifest
 
@@ -242,7 +245,7 @@ class RepoManager:
         abs_init_clone_path = os.path.abspath(rel_init_clone_path)
         abs_base_symlink_path = os.path.abspath(rel_base_symlink_path)
 
-        logger.info(colorize_path(f"   - init_clone_path: '{brighten(rel_init_clone_path)}'"))
+        logger.info(colorize_path(f"   - init_clone_path: '{brighten(abs_init_clone_path)}'"))
         logger.info(colorize_path(f"   - base_symlink_path: '{brighten(abs_base_symlink_path)}'"))
 
         self.setup_directory_skeleton(abs_init_clone_path)  # eg: source/_repos-available
@@ -251,11 +254,17 @@ class RepoManager:
     def read_manifest_manage_repos(self, app):
         """
         Handle the repository cloning and updating process when Sphinx initializes.
-        - Read/noramlize/validate the manifest
+        - Read/normalize/validate the manifest
         - Initialize the directory tree skeleton
         - Manage the repositories (cloning, updating, and symlinking)
         """
         logger.info(colorize_success(f"\n══{brighten('BEGIN REPO_MANAGER')}══\n"))
+
+        # Ensure working dir is always from manifest working dir for consistency
+        # (!) This particularly fixes a RTD bug that adds an extra source/ dir, breaking paths
+        os.chdir(ABS_MANIFEST_PATH_DIR)
+        logger.info(f"working_dir (ABS_MANIFEST_PATH_DIR): {os.getcwd()}")
+
         try:
             manifest = self.read_normalize_manifest()
 
@@ -265,9 +274,8 @@ class RepoManager:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
                 return
 
-            read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
             local_enable_repo_manager = manifest.get('local_enable_repo_manager', True)
-            if not read_the_docs_build and not local_enable_repo_manager:
+            if not self.read_the_docs_build and not local_enable_repo_manager:
                 logger.warning("[repo_manager] Disabled in manifest (local_enable_repo_manager) - skipping extension"
                                f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
                 return
@@ -385,7 +393,7 @@ class RepoManager:
             self,
             repo_info,
             tag_versioned_clone_src_repo_name,
-            tag_versioned_clone_src_path,
+            rel_tag_versioned_clone_src_path,
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
             repo_sparse_path,
@@ -408,14 +416,14 @@ class RepoManager:
         try:
             # Clone the repo, if we haven't done so already
             cloned = False
-            if not os.path.exists(tag_versioned_clone_src_path):
+            if not os.path.exists(rel_tag_versioned_clone_src_path):
                 action_str = colorize_action(f"📦 | Sparse-cloning repo...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                logger.info(colorize_path(f"  - Src Repo URL: '{brighten(tag_versioned_clone_src_path)}'"))
+                logger.info(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
 
                 git_helper = GitHelper()  # TODO: Place this instance @ top?
                 git_helper.git_sparse_clone(
-                    tag_versioned_clone_src_path,
+                    rel_tag_versioned_clone_src_path,
                     repo_url_dotgit,
                     branch,
                     repo_sparse_path,
@@ -424,34 +432,38 @@ class RepoManager:
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                GitHelper.git_clean_sparse_docs_clone(tag_versioned_clone_src_path, repo_sparse_path)
+                GitHelper.git_clean_sparse_docs_clone(rel_tag_versioned_clone_src_path, repo_sparse_path)
 
                 cloned = True
             else:
                 action_str = colorize_action(f"🔃 | Fetching updates...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
-                GitHelper.git_fetch(tag_versioned_clone_src_path)
+                GitHelper.git_fetch(rel_tag_versioned_clone_src_path)
 
             # Checkout to the specific branch or tag
             has_branch = 'branch' in repo_info
             if not cloned and has_branch:
                 action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                GitHelper.git_checkout(tag_versioned_clone_src_path, branch, stash_and_continue_if_wip)
+                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, branch, stash_and_continue_if_wip)
 
             # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
             if has_tag:
                 action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                GitHelper.git_checkout(tag_versioned_clone_src_path, tag, stash_and_continue_if_wip)
+                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, stash_and_continue_if_wip)
 
             # Manage symlinks
+            # Convert string paths to Path objects and resolve to absolute paths
+            abs_tag_versioned_clone_src_path = Path(rel_tag_versioned_clone_src_path).resolve()
+            abs_symlinked_repo_path = Path(rel_symlinked_repo_path).resolve()
+
             action_str = colorize_action(f"🔗 | Symlinking...")
             logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            logger.info(colorize_path(f"  - From clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
-            logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_symlinked_repo_path)}'"))
-            self.create_symlink(rel_symlinked_repo_path, tag_versioned_clone_src_path)
+            logger.info(colorize_path(f"  - From clone src path: '{brighten(abs_tag_versioned_clone_src_path)}'"))
+            logger.info(colorize_path(f"  - To symlink path: '{brighten(abs_symlinked_repo_path)}'"))
+            self.create_symlink(rel_symlinked_repo_path, rel_tag_versioned_clone_src_path)
 
             # Done with this repo
             success_str = colorize_success("✅ | Done.")

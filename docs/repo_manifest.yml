@@ -13,11 +13,11 @@
 # - It *is safe* to wipe your source/_repos-available + source/content dirs.                   #
 ################################################################################################
 enable_repo_manager: true                   # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
-local_enable_repo_manager: false            # If enable_repo_manager && false, will skip this extension locally; defaults to true, if omitted
+local_enable_repo_manager: true            # If enable_repo_manager && false, will skip this extension locally; defaults to true, if omitted
 debug_mode: false                           # More-verbose logging or debugging; defaults to false, if omitted
 stash_and_continue_if_wip: true             # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
-init_clone_path: "source/_repos-available"  # Default base for cloning; normalizes "os/path/slashes"; defaults to source/_repos-available, if omitted
-base_symlink_path: "source/content"         # Default base path for cloning repos relative to this file; normalizes "os/path/slashes"; defaults to "source/content", if omitted
+init_clone_path: "source/_repos-available"  # Default base for cloning; normalizes "os/path/slashes"; (!) on RTD, "source/" prefix will be removed to resolve RTD bug; defaults to source/_repos-available, if omitted
+base_symlink_path: "source/content"         # Default base path for cloning repos relative to this file; (!) on RTD, "source/" prefix will be removed to resolve RTD bug; normalizes "os/path/slashes"; defaults to "source/content", if omitted
 default_branch: "master"                    # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
 repo_sparse_path: "docs"                    # Path to individual repo dirs we [mostly] want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; use `tools/repo_cleaner.py` for initial "deep" cleaning, if you've backed up; default to "docs", if omitted
 
