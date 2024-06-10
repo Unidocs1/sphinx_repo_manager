@@ -4,115 +4,6 @@ Xsolla Backend
 
 .. image:: /_static/images/features_banner.png
 
-.. toctree::
-   :caption: Welcome
-   :hidden:
-
-   Introduction <content/xbe_static_docs/docs/source/content/getting_started/index>
-
-.. Installation
-.. Backend Basics
-.. Service Framework
-.. Plug-ins and SDK
-.. Administration
-.. What is Xsolla Backend
-
-   Features <content/xbe_static_docs/docs/source/content/features>
-
-.. Essentials
-.. Engagement
-.. Gameplay
-.. Multiplayer
-.. Monetization
-.. Content Management
-.. DevOps & LiveOps
-.. Integrations
-
-   Changelog <content/xbe_static_docs/docs/source/content/changelogs/index>
-
-.. v2024.06.0-LTS (For example)
-.. Older archives will appear beneath
-
-.. toctree::
-   :caption: Learn
-   :hidden:
-
-   Platform Demos <content/xbe_static_docs/docs/source/content/demo>
-   Tools <content/xbe_static_docs/docs/source/content/tools>
-
-.. Xsolla Backend Admin Console
-.. Fiddler
-.. Postman
-.. Visual Studio Code
-
-   Tutorials <content/xbe_static_docs/docs/source/content/samples_and_tutorials/index>
-
-.. Accounts & Authentication
-.. Player Progression
-.. Live Scripting
-.. Social & Online Presence
-.. Unity Chess Sample
-.. Unreal ShooterGame
-.. Unity Example
-
-   GitLab <content/gitlab/docs/source>
-
-.. toctree::
-   :caption: Services
-   :hidden:
-
-   Account <content/account_services/docs/source/index>
-
-.. Concepts
-.. Standard Authentication
-.. SSO Providers
-
-   Achievements <content/achievements_services/docs/source/index>
-
-.. REST API
-.. README
-.. Globals
-
-   Asset <content/asset_services/docs/source/index>
-   Economy <content/economy_services/docs/source/index>
-   Leaderboard <content/leaderboard_services/docs/source/index>
-
-.. Concepts
-
-   Matchmaking <content/matchmaking_services/docs/source/index>
-   Notification <content/notification_services/docs/source/index>
-
-.. Concepts
-
-   Persona <content/persona_services/docs/source/index>
-   Progression <content/progression_services/docs/source/index>
-   Purchasing <content/purchasing_services/docs/source/index>
-
-.. Concepts
-
-   Quest <content/quest_services/docs/source/index>
-   Reporting <content/reporting_services/docs/source/index>
-   Scripting <content/scripting_services/docs/source/index>
-
-.. Concepts
-
-   Server Instance <content/server_instance_services/docs/source/index>
-   Session <content/session_services/docs/source/index>
-   Social <content/social_services/docs/source/index>
-   Telemetry <content/telemetry_services/docs/source/index>
-
-.. toctree::
-   :caption: Legal
-   :hidden:
-   
-   Eula <content/xbe_static_docs/docs/source/content/eula/index>
-
-.. Licensed Technology
-.. Xsolla Backend Free Hosting Services
-.. Our Relationship
-.. Other Rights & Obligations
-.. Royalty Addendum
-
 .. MEMOS START #############################################################################
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
 .. REMOVED(ABOUT): Commerce <content/xbe_static_docs/docs/source/content/commerce>
@@ -130,6 +21,50 @@ Xsolla Backend
 .. REMOVED(SUPPORT): Discord <content/discord/docs/source>
 .. REMOVED(SUPPORT): Xsolla Partner Support <content/partner_support/docs/source>
 .. MEMOS END ###############################################################################
+
+.. toctree::
+   :caption: Welcome
+   :hidden:
+
+   Introduction <content/xbe_static_docs/docs/source/content/getting_started/index>
+   Features <content/xbe_static_docs/docs/source/content/features>
+   Changelog <content/xbe_static_docs/docs/source/content/changelogs/index>
+
+.. toctree::
+   :caption: Learn
+   :hidden:
+
+   Platform Demos <content/xbe_static_docs/docs/source/content/demo>
+   Tools <content/xbe_static_docs/docs/source/content/tools>
+   Tutorials <content/xbe_static_docs/docs/source/content/samples_and_tutorials/index>
+
+.. toctree::
+   :caption: Services
+   :hidden:
+
+   Account <content/account_services/docs/source/index>
+   Achievements <content/achievements_services/docs/source/index>
+   Asset <content/asset_services/docs/source/index>
+   Economy <content/economy_services/docs/source/index>
+   Leaderboard <content/leaderboard_services/docs/source/index>
+   Matchmaking <content/matchmaking_services/docs/source/index>
+   Notification <content/notification_services/docs/source/index>
+   Persona <content/persona_services/docs/source/index>
+   Progression <content/progression_services/docs/source/index>
+   Purchasing <content/purchasing_services/docs/source/index>
+   Quest <content/quest_services/docs/source/index>
+   Reporting <content/reporting_services/docs/source/index>
+   Scripting <content/scripting_services/docs/source/index>
+   Server Instance <content/server_instance_services/docs/source/index>
+   Session <content/session_services/docs/source/index>
+   Social <content/social_services/docs/source/index>
+   Telemetry <content/telemetry_services/docs/source/index>
+
+.. toctree::
+   :caption: Legal
+   :hidden:
+   
+   Eula <content/xbe_static_docs/docs/source/content/eula/index>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
 The platform offers a *huge* list of :doc:`features <content/xbe-static-docs/docs/source/content/features>` covering everything from account management, matchmaking to questing.
