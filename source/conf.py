@@ -39,7 +39,7 @@ release = '2024.07.0-TEST'  # Outside testing, this should match your branch nam
 
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'repo_manager')))
 sys.path.append(os.path.abspath('.'))
-# sys.path.insert(0, os.path.abspath(f'./multiplayer/account_services/docs/content'))
+# sys.path.append(os.path.abspath(f'./multiplayer/account_services/docs/content'))
 
 
 # -- Extension: repo_manager --------------------------------------------------------------
