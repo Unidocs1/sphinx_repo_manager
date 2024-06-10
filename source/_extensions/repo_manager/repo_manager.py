@@ -265,6 +265,12 @@ class RepoManager:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
                 return
 
+            local_enable_repo_manager = manifest.get('local_enable_repo_manager', True)
+            if not local_enable_repo_manager:
+                logger.warning("[repo_manager] Disabled in manifest (local_enable_repo_manager) - skipping extension"
+                               f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
+                return
+
             self.init_dir_tree(manifest)
             self.manage_repositories(manifest)
         except Exception as e:
