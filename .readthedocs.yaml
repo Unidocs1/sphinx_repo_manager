@@ -7,6 +7,7 @@ build:
   jobs:
     post_create_environment:
       - |
+        echo "--------------"
         echo "[post_create_environment] Running post_create_environment setup..."
         pwd
         set -e
@@ -22,9 +23,9 @@ build:
         fi
     post_build:
       - |
-        echo "[post_build] Running post_build logs for dir trees..."
-        - apt update && apt install -y tree
-        - tree ./docs || ls -R .
+        echo "--------------"
+        echo "[post_build] Finding account_services (as example)..."
+        find . -type d -name "account_services" -print
 
 python:
   install:

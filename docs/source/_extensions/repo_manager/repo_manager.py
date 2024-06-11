@@ -171,8 +171,8 @@ class RepoManager:
                 'rel_symlinked_repo_path': '',            # "{base_symlink_path}{symlink_path}-{tag_or_branch}"; eg: "source/content/account_services" (no tag)
                 'tag_versioned_clone_src_repo_name': '',  # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
                 'tag_versioned_clone_src_path': '',       # "{init_clone_path}/{tag_versioned_clone_src_repo_name}";
-                                                          # - eg: "source/_repos-available/account_services-v2.1.0"
-                                                          # - eg: "source/_repos-available/account_services--master"
+                # - eg: "source/_repos-available/account_services-v2.1.0"
+                # - eg: "source/_repos-available/account_services--master"
             }
 
         # url: Req'd - Strip ".git" from suffix, if any (including SSH urls; we'll add it back via url_dotgit)
@@ -205,6 +205,9 @@ class RepoManager:
         # Set other defaults
         repo_info.setdefault('active', True)
 
+        init_clone_path_root_symlink_src = manifest['init_clone_path_root_symlink_src']
+        repo_info.setdefault('init_clone_path_root_symlink_src_override', init_clone_path_root_symlink_src)
+
         # Set dynamic meta
         _meta = repo_info['_meta']
         _meta['has_tag'] = has_tag
@@ -225,16 +228,16 @@ class RepoManager:
             normalized_repo_name_for_dir = re.sub(pattern, '_', normalized_repo_name_for_dir)
             _meta['tag_versioned_clone_src_repo_name'] = f"{repo_name}--{normalized_repo_name_for_dir}"
 
-        # "{init_clone_path}/{tag_versioned_clone_src_repo_name}"
-        tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']
-        _meta['tag_versioned_clone_src_path'] = os.path.normpath(os.path.join(
-            init_clone_path, tag_versioned_clone_src_repo_name))
-
         # {base_symlink_path}{symlink_path}-{tag_or_branch}
         # eg: "source/content/account_services" (no tag)
         symlink_path = repo_info['symlink_path']  # eg: "account_services" (or "-" for xbe_static_docs)
         _meta['rel_symlinked_repo_path'] = os.path.normpath(os.path.join(
             base_symlink_path, symlink_path))
+
+        # "{init_clone_path}/{tag_versioned_clone_src_repo_name}"
+        tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']
+        _meta['tag_versioned_clone_src_path'] = os.path.normpath(os.path.join(
+            init_clone_path, tag_versioned_clone_src_repo_name))
 
     def init_dir_tree(self, manifest):
         """
@@ -289,7 +292,6 @@ class RepoManager:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
                                f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
                 return
-
             self.init_dir_tree(manifest)
             self.manage_repositories(manifest)
         except Exception as e:
@@ -336,18 +338,20 @@ class RepoManager:
         symlink_target_dir = os.path.dirname(symlink_target_path)
 
         # Get the relative path from the symlink directory to the clone source path
-        rel_symlink_src_path = os.path.relpath(symlink_src_path, symlink_target_dir)
+        rel_from_src_to_target_path = os.path.relpath(symlink_src_path, symlink_target_dir)
 
         # Create the symlink
-        os.symlink(rel_symlink_src_path, symlink_target_path)
-        logger.info(colorize_success(f"  - New symlink created: {symlink_target_path} -> {rel_symlink_src_path}"))
+        os.symlink(rel_from_src_to_target_path, symlink_target_path)
+        logger.info(colorize_success(f"  - New symlink created: "
+                                     f"'{brighten(symlink_target_path)}' -> "
+                                     f"'{brighten(rel_from_src_to_target_path)}'"))
 
     @staticmethod
     def log_repo_paths(
-        debug_mode,
-        tag_versioned_clone_src_repo_name,
-        tag_versioned_clone_src_path,
-        rel_symlinked_repo_path,
+            debug_mode,
+            tag_versioned_clone_src_repo_name,
+            tag_versioned_clone_src_path,
+            rel_symlinked_repo_path,
     ):
         """ Log paths for production [and optionally debugging, if debug_mode]. """
 
@@ -373,7 +377,7 @@ class RepoManager:
         tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
         debug_mode = self.manifest['debug_mode']
         repo_sparse_path = self.manifest['repo_sparse_path']
-        init_clone_path_root_symlink_src = self.manifest['init_clone_path_root_symlink_src']
+        rel_init_clone_path_root_symlink_src = repo_info['init_clone_path_root_symlink_src_override']
 
         self.log_repo_paths(
             debug_mode,
@@ -388,7 +392,7 @@ class RepoManager:
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
             repo_sparse_path,
-            init_clone_path_root_symlink_src)
+            rel_init_clone_path_root_symlink_src)
 
     def manage_repositories(self, manifest):
         """ Manage the cloning and checking out of repositories as defined in the manifest. """
@@ -421,11 +425,11 @@ class RepoManager:
     ):
         """
         Clone the repository if it does not exist and create a symlink in the base symlink path.
-        - repo_name                       # eg: "account_services"
-        - tag_versioned_clone_src_repo_name         # eg: "account_services-v2.1.0"
-        - rel_init_clone_path             # eg: "source/_repos-available"
-        - tag_versioned_clone_src_path    # eg: "source/_repos-available/account_services-v2.1.0"
-        - rel_symlinked_repo_path  # eg: "source/content/account_services"
+        - repo_name                          # eg: "account_services"
+        - tag_versioned_clone_src_repo_name  # eg: "account_services-v2.1.0"
+        - rel_init_clone_path                # eg: "source/_repos-available"
+        - tag_versioned_clone_src_path       # eg: "source/_repos-available/account_services-v2.1.0"
+        - rel_symlinked_repo_path            # eg: "source/content/account_services/docs/source"
         """
         _meta = repo_info['_meta']
         repo_url_dotgit = _meta['url_dotgit']
@@ -476,15 +480,15 @@ class RepoManager:
                 GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, stash_and_continue_if_wip)
 
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
+            # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
+            #
             # Convert string paths to Path objects and use the dynamic path
             init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
             symlink_src_nested_path = init_symlink_src_path.joinpath(init_clone_path_root_symlink_src).resolve()
 
-            # abs_symlinked_repo_path = Path(rel_symlinked_repo_path).resolve()
-
             action_str = colorize_action("🔗 | Symlinking...")
             logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            logger.info(colorize_path(f"  - From clone src path (/docs/source): '{brighten(symlink_src_nested_path)}'"))
+            logger.info(colorize_path(f"  - From clone src path: '{brighten(symlink_src_nested_path)}'"))
             logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_symlinked_repo_path)}'"))
 
             self.create_symlink(symlink_src_nested_path, rel_symlinked_repo_path)

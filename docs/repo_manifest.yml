@@ -29,10 +29,11 @@ repositories:                         # Dictionary of <repo_name, repo_data>; de
   # Static >>
   xbe_static_docs:
     url: "https://gitlab.acceleratxr.com/Core/xbe_static_docs"  # .git suffix == optional; HTTPS only (until we add cert support in RTD); if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
-    #tag: "v1.0.0"                    # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
-    symlink_path: "xbe_static_docs"   # Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"; defaults to repo name, if omitted
-    branch: "main"                    # Normalizes os/path/slashes; Default {default_branch}, if omitted
-    active: true                      # Default true, if omitted
+    #tag: "v1.0.0"     # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+    symlink_path: "-"  # Normally named your_repo_name, but static docs is special. Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"; defaults to repo name, if omitted;
+    branch: "main"     # Normalizes os/path/slashes; Default {default_branch}, if omitted
+    init_clone_path_root_symlink_src_override: 'docs/source/content'  # If true, overrides init_clone_path_root_symlink_src; defaults to {init_clone_path_root_symlink_src}, if omitted
+    active: true       # Default true, if omitted
   # Services >>
   account_services:
     url: "https://gitlab.acceleratxr.com/Core/account_services"

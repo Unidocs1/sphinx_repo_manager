@@ -4,14 +4,13 @@ Xsolla Backend
 
 .. image:: /_static/images/features_banner.png
 
-.. MEMOS START #############################################################################
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
-.. REMOVED(ABOUT): Commerce <content/xbe_static_docs/content/commerce>
-.. REMOVED(ABOUT): Content <content/xbe_static_docs/content/content>
-.. REMOVED(ABOUT): Gameplay <content/xbe_static_docs/content/gameplay>
-.. REMOVED(ABOUT): LiveOps <content/xbe_static_docs/content/liveops>
-.. REMOVED(ABOUT): Multiplayer <content/xbe_static_docs/content/multiplayer>
-.. REMOVED(ABOUT): Concepts <content/xbe_static_docs/content/concepts/index>
+.. REMOVED(ABOUT): Commerce <content/-/commerce>
+.. REMOVED(ABOUT): Content <content/-/content>
+.. REMOVED(ABOUT): Gameplay <content/-/gameplay>
+.. REMOVED(ABOUT): LiveOps <content/-/liveops>
+.. REMOVED(ABOUT): Multiplayer <content/-/multiplayer>
+.. REMOVED(ABOUT): Concepts <content/-/concepts/index>
 .. REMOVED(ABOUT): GitLab <content/gitlab>
 .. REMOVED(API): c++ SDK <content/cpp_sdk/index>
 .. REMOVED(API): C# SDK <content/csharp_sdk/index>
@@ -20,23 +19,26 @@ Xsolla Backend
 .. REMOVED(SERVICES): Validation <content/validation_services/index>
 .. REMOVED(SUPPORT): Discord <content/discord>
 .. REMOVED(SUPPORT): Xsolla Partner Support <content/partner_support>
-.. MEMOS END ###############################################################################
+
+.. TIPS:
+.. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs
+.. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
 .. toctree::
    :caption: Welcome
    :hidden:
 
-   Introduction <content/xbe_static_docs/content/getting_started/index>
-   Features <content/xbe_static_docs/content/features>
-   Changelog <content/xbe_static_docs/content/changelogs/index>
+   Introduction <content/-/getting_started/index>
+   Features <content/-/features>
+   Changelog <content/-/changelogs/index>
 
 .. toctree::
    :caption: Learn
    :hidden:
 
-   Platform Demos <content/xbe_static_docs/content/demo>
-   Tools <content/xbe_static_docs/content/tools>
-   Tutorials <content/xbe_static_docs/content/samples_and_tutorials/index>
+   Platform Demos <content/-/demo>
+   Tools <content/-/tools>
+   Tutorials <content/-/samples_and_tutorials/index>
 
 .. toctree::
    :caption: Services
@@ -64,7 +66,7 @@ Xsolla Backend
    :caption: Legal
    :hidden:
    
-   Eula <content/xbe_static_docs/content/eula/index>
+   Eula <content/-/eula/index>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
 The platform offers a *huge* list of :doc:`features <content/xbe-static-docs/content/features>` covering everything from account management, matchmaking to questing.
