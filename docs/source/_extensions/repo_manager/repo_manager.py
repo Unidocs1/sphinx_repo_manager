@@ -31,6 +31,7 @@ which is triggered after Sphinx inits but before the build process begins.
 
 # Tested in:
 - Windows 11 via PowerShell7
+- Ubuntu 24.04 LTS via ReadTheDocs (RTD) deployment
 """
 import os  # file path ops
 from pathlib import Path  # Path ops
@@ -49,6 +50,7 @@ MANIFEST_NAME = 'repo_manifest.yml'
 ABS_MANIFEST_PATH = os.path.normpath(os.path.join(
     ABS_BASE_PATH, '..', '..', '..', MANIFEST_NAME))
 ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
+SYMLINK_SRC_NESTED_DIR = ['docs', 'source']
 
 STOP_BUILD_ON_ERROR = True  # Whether to stop build on error
 logger = logging.getLogger(__name__)  # Get logger instance
@@ -301,35 +303,43 @@ class RepoManager:
             raise RepositoryManagementError(f"Failed to create directory '{create_path_to}': {str(e)}")
 
     @staticmethod
-    def create_symlink(rel_symlinked_repo_path, tag_versioned_clone_src_path):
+    def create_symlink(symlink_src_path, symlink_target_path):
         """
         Create or update a symlink using relative paths.
         (!) overwrite only works if running in ADMIN
         (!) In Windows, symlinking is the *opposite* src and destination of Unix
-        - tag_versioned_clone_src_path   # eg: "source/_repos-available/account_services-v2.1.0"
-        - rel_symlinked_repo_path # eg: "source/content/account_services"
-        - ^ We need a lingering /slash on the end
+        - symlink_src_path       # eg: "source/_repos-available/account_services-v2.1.0/docs/source"
+        - symlink_target_path    # eg: "source/content/account_services"
         """
-        # Is it already symlinked?
-        if os.path.islink(rel_symlinked_repo_path):
-            logger.info(colorize_success(f"  - Already linked."))
-            return
-
-        # Get the directory of the symlink path
-        symlink_dir_name = os.path.dirname(rel_symlinked_repo_path)
-
+        # Check if the symlink already exists
+        if os.path.islink(symlink_target_path):
+            # Check if the existing symlink points to the correct source path
+            if os.readlink(symlink_target_path) == str(symlink_src_path):
+                logger.info(colorize_success(f"  - Symlink already exists and is correct."))
+                return
+            else:
+                logger.info(colorize_action(f"  - Removing desync'd symlink: {symlink_target_path}"))
+                os.unlink(symlink_target_path)
+        elif os.path.exists(symlink_target_path):
+            logger.error(f"  - Error: Target path exists and is not a symlink: {symlink_target_path}")
+            raise RepositoryManagementError(f"Cannot create symlink, target path exists and is not a symlink: {symlink_target_path}")
+    
+        # Get the directory of the symlink target path
+        symlink_target_dir = os.path.dirname(symlink_target_path)
+    
         # Get the relative path from the symlink directory to the clone source path
-        rel_tag_versioned_clone_src_path = os.path.relpath(tag_versioned_clone_src_path, symlink_dir_name)
-
-        # Path is clean: Symlink now, after we ensure a "/" on the end
-        os.symlink(rel_tag_versioned_clone_src_path, rel_symlinked_repo_path)
+        rel_symlink_src_path = os.path.relpath(symlink_src_path, symlink_target_dir)
+    
+        # Create the symlink
+        os.symlink(rel_symlink_src_path, symlink_target_path)
+        logger.info(colorize_success(f"  - Symlink created: {symlink_target_path} -> {rel_symlink_src_path}"))
 
     @staticmethod
     def log_repo_paths(
-            debug_mode,
-            tag_versioned_clone_src_repo_name,
-            tag_versioned_clone_src_path,
-            rel_symlinked_repo_path,
+        debug_mode,
+        tag_versioned_clone_src_repo_name,
+        tag_versioned_clone_src_path,
+        rel_symlinked_repo_path,
     ):
         """ Log paths for production [and optionally debugging, if debug_mode]. """
 
@@ -454,16 +464,19 @@ class RepoManager:
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
                 GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, stash_and_continue_if_wip)
 
-            # Manage symlinks
-            # Convert string paths to Path objects and resolve to absolute paths
-            abs_tag_versioned_clone_src_path = Path(rel_tag_versioned_clone_src_path).resolve()
-            abs_symlinked_repo_path = Path(rel_symlinked_repo_path).resolve()
+            # Manage symlinks -- we want src to be the nested <repo>/docs/source/
+            # Convert string paths to Path objects and append subdirs for the source path
+            init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
+            symlink_src_nested_path = init_symlink_src_path.joinpath(*SYMLINK_SRC_NESTED_DIR).resolve()
 
-            action_str = colorize_action(f"🔗 | Symlinking...")
+            # abs_symlinked_repo_path = Path(rel_symlinked_repo_path).resolve()
+
+            action_str = colorize_action("🔗 | Symlinking...")
             logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            logger.info(colorize_path(f"  - From clone src path: '{brighten(abs_tag_versioned_clone_src_path)}'"))
-            logger.info(colorize_path(f"  - To symlink path: '{brighten(abs_symlinked_repo_path)}'"))
-            self.create_symlink(rel_symlinked_repo_path, rel_tag_versioned_clone_src_path)
+            logger.info(colorize_path(f"  - From clone src path (/docs/source): '{brighten(symlink_src_nested_path)}'"))
+            logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_symlinked_repo_path)}'"))
+
+            self.create_symlink(symlink_src_nested_path, rel_symlinked_repo_path)
 
             # Done with this repo
             success_str = colorize_success("✅ | Done.")

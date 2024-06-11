@@ -122,6 +122,13 @@ repositories:                               # Dictionary of <repo_name, repo_dat
   xbeapp:
     url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
     branch: "dev"
+  # Demos >>
+  unitychessgame:
+    url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
+    branch: "dev"
+  lyrastartergame:
+    url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
+    branch: "dev"
 #  # Libs/WebApps >>
 #  appconfig:
 #    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"
@@ -132,10 +139,3 @@ repositories:                               # Dictionary of <repo_name, repo_dat
 #  electron-shared:
 #    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
 #    branch: "dev"
-  # Demos >>
-  unitychessgame:
-    url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
-    branch: "dev"
-  lyrastartergame:
-    url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
-    branch: "dev"
