@@ -230,8 +230,11 @@ class RepoManager:
         _meta['tag_versioned_clone_src_path'] = os.path.normpath(os.path.join(
             init_clone_path, tag_versioned_clone_src_repo_name))
 
+        # {base_symlink_path}{symlink_path}-{tag_or_branch}
+        # eg: "source/content/account_services" (no tag)
+        symlink_path = repo_info['symlink_path']  # eg: "account_services" (or "-" for xbe_static_docs)
         _meta['rel_symlinked_repo_path'] = os.path.normpath(os.path.join(
-            base_symlink_path, repo_name))
+            base_symlink_path, symlink_path))
 
     def init_dir_tree(self, manifest):
         """
