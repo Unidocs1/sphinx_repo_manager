@@ -50,7 +50,6 @@ MANIFEST_NAME = 'repo_manifest.yml'
 ABS_MANIFEST_PATH = os.path.normpath(os.path.join(
     ABS_BASE_PATH, '..', '..', '..', MANIFEST_NAME))
 ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
-SYMLINK_SRC_NESTED_DIR = ['docs', 'source']
 
 STOP_BUILD_ON_ERROR = True  # Whether to stop build on error
 logger = logging.getLogger(__name__)  # Get logger instance
@@ -121,10 +120,16 @@ class RepoManager:
         manifest.setdefault('debug_mode', False)
         manifest.setdefault('stash_and_continue_if_wip', True)
         manifest.setdefault('default_branch', 'master')
-        manifest.setdefault('init_clone_path', os.path.normpath('source/_repos-available'))
-        manifest.setdefault('base_symlink_path', os.path.normpath('source/content'))
+        manifest.setdefault('init_clone_path', 'source/_repos-available')
+        manifest.setdefault('init_clone_path_root_symlink_src', 'docs/source')
+        manifest.setdefault('base_symlink_path', 'source/content')
         manifest.setdefault('repo_sparse_path', 'docs')
         manifest.setdefault('repositories', {})
+
+        # Normalize path/to/slashes
+        manifest.setdefault(os.path.normpath(manifest['init_clone_path']))
+        manifest.setdefault(os.path.normpath(manifest['init_clone_path_root_symlink_src']))
+        manifest.setdefault(os.path.normpath(manifest['base_symlink_path']))
 
         # Validate repositories
         if not manifest['repositories']:
@@ -133,11 +138,11 @@ class RepoManager:
 
         repo_sparse_path = manifest['repo_sparse_path']
         manifest['repo_sparse_path'] = repo_sparse_path.replace('\\', '/')  # Normalize to forward/slashes
-        init_clone_path = manifest['init_clone_path']
-        base_symlink_path = manifest['base_symlink_path']
-        repo_i = 0
+        init_clone_path = os.path.normpath(manifest['init_clone_path'])
+        base_symlink_path = os.path.normpath(manifest['base_symlink_path'])
 
         # Handle repositories dictionary
+        repo_i = 0
         for repo_name, repo_info in manifest['repositories'].items():
             self.set_repo_meta(
                 repo_info,
@@ -276,9 +281,9 @@ class RepoManager:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
                 return
 
-            local_enable_repo_manager = manifest.get('local_enable_repo_manager', True)
-            if not self.read_the_docs_build and not local_enable_repo_manager:
-                logger.warning("[repo_manager] Disabled in manifest (local_enable_repo_manager) - skipping extension"
+            enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
+            if not self.read_the_docs_build and not enable_repo_manager_local:
+                logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
                                f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
                 return
 
@@ -318,21 +323,21 @@ class RepoManager:
                 logger.info(colorize_success(f"  - Symlink already exists and is correct."))
                 return
             else:
-                logger.info(colorize_action(f"  - Removing desync'd symlink: {symlink_target_path}"))
+                logger.info(colorize_action(f"  - Removing old symlink: {symlink_target_path}"))
                 os.unlink(symlink_target_path)
         elif os.path.exists(symlink_target_path):
             logger.error(f"  - Error: Target path exists and is not a symlink: {symlink_target_path}")
             raise RepositoryManagementError(f"Cannot create symlink, target path exists and is not a symlink: {symlink_target_path}")
-    
+
         # Get the directory of the symlink target path
         symlink_target_dir = os.path.dirname(symlink_target_path)
-    
+
         # Get the relative path from the symlink directory to the clone source path
         rel_symlink_src_path = os.path.relpath(symlink_src_path, symlink_target_dir)
-    
+
         # Create the symlink
         os.symlink(rel_symlink_src_path, symlink_target_path)
-        logger.info(colorize_success(f"  - Symlink created: {symlink_target_path} -> {rel_symlink_src_path}"))
+        logger.info(colorize_success(f"  - New symlink created: {symlink_target_path} -> {rel_symlink_src_path}"))
 
     @staticmethod
     def log_repo_paths(
@@ -365,6 +370,7 @@ class RepoManager:
         tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
         debug_mode = self.manifest['debug_mode']
         repo_sparse_path = self.manifest['repo_sparse_path']
+        init_clone_path_root_symlink_src = self.manifest['init_clone_path_root_symlink_src']
 
         self.log_repo_paths(
             debug_mode,
@@ -378,7 +384,8 @@ class RepoManager:
             tag_versioned_clone_src_path,
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
-            repo_sparse_path)
+            repo_sparse_path,
+            init_clone_path_root_symlink_src)
 
     def manage_repositories(self, manifest):
         """ Manage the cloning and checking out of repositories as defined in the manifest. """
@@ -407,6 +414,7 @@ class RepoManager:
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
             repo_sparse_path,
+            init_clone_path_root_symlink_src,
     ):
         """
         Clone the repository if it does not exist and create a symlink in the base symlink path.
@@ -465,9 +473,9 @@ class RepoManager:
                 GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, stash_and_continue_if_wip)
 
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
-            # Convert string paths to Path objects and append subdirs for the source path
+            # Convert string paths to Path objects and use the dynamic path
             init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
-            symlink_src_nested_path = init_symlink_src_path.joinpath(*SYMLINK_SRC_NESTED_DIR).resolve()
+            symlink_src_nested_path = init_symlink_src_path.joinpath(init_clone_path_root_symlink_src).resolve()
 
             # abs_symlinked_repo_path = Path(rel_symlinked_repo_path).resolve()
 
