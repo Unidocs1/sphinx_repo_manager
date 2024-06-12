@@ -66,6 +66,7 @@ class RepoManager:
         self.read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
         self.manifest_path = abs_manifest_path
         self.manifest = None
+        self.debug_mode = False;  # If True: +logs; stops build after ext is done
 
     def read_normalize_manifest(self):
         """
@@ -179,7 +180,7 @@ class RepoManager:
         url = repo_info.get('url', None)
         if not url:
             logger.error(f"Missing 'url' for repo '{repo_name}'")
-            raise RepositoryManagementError(f"Missing 'url' for repo '{repo_name}'")
+            raise RepositoryManagementError(f"\nMissing 'url' for repo '{repo_name}'")
 
         if url.endswith('.git'):
             url = url[:-4]
@@ -287,6 +288,8 @@ class RepoManager:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
                 return
 
+            self.debug_mode = manifest['debug_mode']
+
             enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
             if not self.read_the_docs_build and not enable_repo_manager_local:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
@@ -297,9 +300,11 @@ class RepoManager:
         except Exception as e:
             logger.error(f"Failed to manage_repositories {brighten('*See `Extension error` below*')}")
             if STOP_BUILD_ON_ERROR:
-                raise RepositoryManagementError(f"clone_update_repos failure:\n- {e}")
+                raise RepositoryManagementError(f"\nclone_update_repos failure:\n- {e}")
         finally:
             logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
+            if self.debug_mode and not self.read_the_docs_build:
+                raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
 
     @staticmethod
     def setup_directory_skeleton(create_path_to):
@@ -310,7 +315,7 @@ class RepoManager:
         try:
             os.makedirs(create_path_to, exist_ok=True)
         except OSError as e:
-            raise RepositoryManagementError(f"Failed to create directory '{create_path_to}': {str(e)}")
+            raise RepositoryManagementError(f"\nFailed to create directory '{create_path_to}': {str(e)}")
 
     @staticmethod
     def create_symlink(symlink_src_path, symlink_target_path):
@@ -320,6 +325,7 @@ class RepoManager:
         (!) In Windows, symlinking is the *opposite* src and destination of Unix
         - symlink_src_path       # eg: "source/_repos-available/account_services-v2.1.0/docs/source"
         - symlink_target_path    # eg: "source/content/account_services"
+                                 # eg: "source/content/account_services/RELEASE_NOTES.rst"
         """
         # Check if the symlink already exists
         if os.path.islink(symlink_target_path):
@@ -328,23 +334,17 @@ class RepoManager:
                 logger.info(colorize_success(f"  - Symlink already exists and is correct."))
                 return
             else:
-                logger.info(colorize_action(f"  - Removing old symlink: {symlink_target_path}"))
+                logger.info(colorize_action(f"  - Removing old symlink: '{brighten(symlink_target_path)}'"))
                 os.unlink(symlink_target_path)
         elif os.path.exists(symlink_target_path):
             logger.error(f"  - Error: Target path exists and is not a symlink: {symlink_target_path}")
-            raise RepositoryManagementError(f"Cannot create symlink, target path exists and is not a symlink: {symlink_target_path}")
-
-        # Get the directory of the symlink target path
-        symlink_target_dir = os.path.dirname(symlink_target_path)
-
-        # Get the relative path from the symlink directory to the clone source path
-        rel_from_src_to_target_path = os.path.relpath(symlink_src_path, symlink_target_dir)
+            raise RepositoryManagementError(f"\nCannot create symlink, target path exists and is not a symlink: {symlink_target_path}")
 
         # Create the symlink
-        os.symlink(rel_from_src_to_target_path, symlink_target_path)
+        os.symlink(symlink_src_path, symlink_target_path)
         logger.info(colorize_success(f"  - New symlink created: "
                                      f"'{brighten(symlink_target_path)}' -> "
-                                     f"'{brighten(rel_from_src_to_target_path)}'"))
+                                     f"'{brighten(symlink_src_path)}'"))
 
     @staticmethod
     def log_repo_paths(
@@ -421,15 +421,15 @@ class RepoManager:
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
             repo_sparse_path,
-            init_clone_path_root_symlink_src,
+            rel_init_clone_path_root_symlink_src,
     ):
         """
         Clone the repository if it does not exist and create a symlink in the base symlink path.
-        - repo_name                          # eg: "account_services"
-        - tag_versioned_clone_src_repo_name  # eg: "account_services-v2.1.0"
-        - rel_init_clone_path                # eg: "source/_repos-available"
-        - tag_versioned_clone_src_path       # eg: "source/_repos-available/account_services-v2.1.0"
-        - rel_symlinked_repo_path            # eg: "source/content/account_services/docs/source"
+        - repo_name                              # eg: "account_services"
+        - rel_tag_versioned_clone_src_repo_name  # eg: "account_services-v2.1.0"
+        - rel_init_clone_path                    # eg: "source/_repos-available"
+        - rel_tag_versioned_clone_src_path       # eg: "source/_repos-available/account_services-v2.1.0"
+        - rel_symlinked_repo_path                # eg: "source/content/account_services/docs/source"
         """
         _meta = repo_info['_meta']
         repo_url_dotgit = _meta['url_dotgit']
@@ -484,15 +484,49 @@ class RepoManager:
             #
             # Convert string paths to Path objects and use the dynamic path
             init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
-            symlink_src_nested_path = init_symlink_src_path.joinpath(init_clone_path_root_symlink_src).resolve()
+            abs_symlink_src_nested_path = init_symlink_src_path.joinpath(rel_init_clone_path_root_symlink_src).resolve()
 
             action_str = colorize_action("🔗 | Symlinking...")
             logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            logger.info(colorize_path(f"  - From clone src path: '{brighten(symlink_src_nested_path)}'"))
-            logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_symlinked_repo_path)}'"))
 
-            self.create_symlink(symlink_src_nested_path, rel_symlinked_repo_path)
+            # (1) Symlink content -> to nested repo
+            logger.info(colorize_path(f"  - From clone src path: '{brighten(abs_symlink_src_nested_path)}'"))
+            logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_init_clone_path_root_symlink_src)}'"))
 
+            try:
+                self.create_symlink(
+                    abs_symlink_src_nested_path,
+                    rel_symlinked_repo_path)
+
+                self.log_err_if_invalid_symlink(rel_symlinked_repo_path)  # Sanity check for successful link
+            except Exception as e:
+                logger.error(f"Error creating symlink: {str(e)}")
+
+            # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
+            abs_release_notes_symlink_src_repo_path = init_symlink_src_path.joinpath('RELEASE_NOTES.rst').absolute()
+
+            # For a file that doesn't yet exist, the src needs an absolute path without using .resolve() or .absolute()
+            release_notes_symlink_target_repo_path = Path(Path(ABS_MANIFEST_PATH_DIR) / Path(rel_symlinked_repo_path) / 'RELEASE_NOTES.rst')
+
+            if self.debug_mode:
+                print(f"*[debug_mode] Resolved source path for RELEASE_NOTES.rst: {abs_release_notes_symlink_src_repo_path}")
+                print(f"*[debug_mode] Resolved target path for RELEASE_NOTES.rst: {release_notes_symlink_target_repo_path}")
+
+            if not abs_release_notes_symlink_src_repo_path.exists():
+                logger.warning(f"No RELEASE_NOTES.rst found in '{abs_release_notes_symlink_src_repo_path}'")
+            else:
+                try:
+                    self.create_symlink(
+                        abs_release_notes_symlink_src_repo_path,
+                        release_notes_symlink_target_repo_path)
+
+                    # Sanity check for successful link
+                    self.log_err_if_invalid_symlink(release_notes_symlink_target_repo_path)
+                except Exception as e:
+                    normalized_e = str(e).replace('\\\\', '/')
+                    logger.error(f"Error creating symlink: {normalized_e}")
+
+            # -------------------
             # Done with this repo
             success_str = colorize_success("✅ | Done.")
             logger.info(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
@@ -505,12 +539,17 @@ class RepoManager:
                              f"Failed to checkout branch/tag '{rel_symlinked_repo_path}'\n"
                              f"- Does the '{tag}' tag exist? {error_url}\n"
                              f"- Check available tags: {tags_url}{Fore.RESET}\n\n")
-            raise RepositoryManagementError(error_message)
+            raise RepositoryManagementError(f'\n{error_message}')
         except Exception as e:
             error_message = (f"\n\n{Fore.RED}[repo_manager] "
                              f"Error during clone and checkout process for '{rel_symlinked_repo_path}'\n"
                              f"- Error: {str(e)}\n\n")
-            raise RepositoryManagementError(error_message)
+            raise RepositoryManagementError(f'\n{error_message}')
+
+    @staticmethod
+    def log_err_if_invalid_symlink(rel_symlinked_repo_path):
+        if not Path(rel_symlinked_repo_path).is_symlink():
+            logger.error(f"Failed to create symlink: '{rel_symlinked_repo_path}'")
 
 
 # [ENTRY POINT] Set up the Sphinx extension
