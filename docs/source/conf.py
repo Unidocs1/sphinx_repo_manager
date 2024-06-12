@@ -1,34 +1,36 @@
 ##############################################################################
 # Configuration file for the Sphinx documentation builder.
+# (!) THIS FILE IS IGNORED IF PULLED BY THE MAIN DOC - USED FOR LOCAL TESTING
 #
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 #
 ##############################################################################
-# XBE Custom Extension: repo_manager
-#
-# At build time, clones tagged versions from ../repo_manifest.yml into the
-# specified directories. This allows us to build documentation for multiple
-# versions of the same service.
-#
-# DEFAULTS:
-# - Src clone dir: `./repos_available`
-# - Target symlinked content: `./content/{macro_version}/{repo}-{tag}`
-#
-##############################################################################
-import json
 import os
-from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
+import subprocess  # for Doxyfile
 import sys
+# import yaml
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'xbe'
+project = '%REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = os.getenv('READTHEDOCS_VERSION', 'local_test')  # This will generally match your branch name if on RTD
+
+# This should likely match your branch name:
+# - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
+#   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
+# release = '%GIT_TAG%'
+
+# -- Path setup --------------------------------------------------------------
+
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+# documentation root, use os.path.abspath to make it absolute, like shown here.
+
+sys.path.insert(0, os.path.abspath(''))
 
 
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
@@ -36,58 +38,50 @@ release = os.getenv('READTHEDOCS_VERSION', 'local_test')  # This will generally 
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
 
-# Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
-if read_the_docs_build:
-    gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
-    if not gitlab_access_token:
-        print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
+# # Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
+# if read_the_docs_build:
+#     gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
+#     if not gitlab_access_token:
+#         print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
 
 
-# -- Path setup --------------------------------------------------------------
+# # TODO: Look into Doxygen / Breathe integration
+# def configure_doxyfile(input_dir, output_dir):
+#     with open("Doxyfile.in", "r") as file:
+#         filedata = file.read()
 #
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-
-# The absolute path to the directory containing conf.py.
-documentation_root = os.path.abspath(os.path.dirname(__file__))
-
-sys.path.append(os.path.abspath(os.path.join('_extensions', 'repo_manager')))
-sys.path.append(os.path.abspath('.'))
-
-# -- Extension: repo_manager --------------------------------------------------------------
-# This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
-# This allows us to build documentation for multiple versions of the same service.
-
-from _extensions.repo_manager import RepoManager
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'tools', 'repo_manager')))
-
-# Initialize the RepoManager instance with the manifest path
-manifest_path = Path('..', 'repo_manifest.yml').resolve()
-repo_manager = RepoManager(manifest_path)
-manifest = repo_manager.read_normalize_manifest()
-
-# Extract common props
-repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active }
-print(f'[conf.py::repo_manager] Num repos found: {len(repos)}')
-
-# TODO: Use these below for dynamic info pulled from repo_manager.yaml
-base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
-repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
+#     filedata = filedata.replace("@DOXYGEN_INPUT_DIRECTORY@", input_dir)
+#     filedata = filedata.replace("@DOXYGEN_OUTPUT_DIRECTORY@", output_dir)
+#
+#     with open("Doxyfile", "w") as file:
+#         file.write(filedata)
+#
+#
+# breathe_projects = {}
+#
+# if read_the_docs_build:
+#     input_dir = "../sdk"
+#     output_dir = "_doxygen"
+#     configure_doxyfile(input_dir, output_dir)
+#     subprocess.call("doxygen Doxyfile", shell=True)
+#     breathe_projects["AcceleratXR"] = output_dir + "/xml"
+#     subprocess.call(
+#         "python -m breathe.apidoc -p AcceleratXR -o api ./_doxygen/xml", shell=True
+#     )
+#     print("---- Doxygen / Breathe Done ----")
 
 
 # -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
-    'repo_manager',  # Our own custom extension
-    # 'sphinx_jinja',
+    # 'breathe',  # Doxygen API docs
+    # 'sphinx_csharp',  # CSharp markdown
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -105,18 +99,34 @@ exclude_patterns = [
     'README.*',
 ]
 
-master_doc = 'index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
+master_doc = 'index'
+
+# Tell sphinx what the primary language being documented is + code highlighting
+primary_domain = "cpp"
+highlight_language = "cpp"
+
+
+# -- Extension: Breathe --------------------------------------------------
+# Breathe allows you to embed Doxygen documentation into your docs.
+
+# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
+# breathe_default_project = "AcceleratXR"  # TODO: Name change
+
+
+# -- C# domain configuration ----------------------------------------------
+
+# sphinx_csharp_test_links = read_the_docs_build
+# sphinx_csharp_multi_language = True
 
 
 # -- Intersphinx Mapping -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 # Centralized link constants
 
-# Link constants shared across multiple docs
-intersphinx_mapping = {
-    'sdk-cpp': ('https://sdk-cpp.acceleratxr.io/en/latest/', None),
-    'sdk-csharp': ('https://sdk-csharp.acceleratxr.io/en/latest/', None)
-}
+# # Link constants shared across multiple docs
+# intersphinx_mapping = {
+#     'some-link-ref': ('https://some-link-ref.acceleratxr.io/en/latest/', None),
+# }
 
 # We recommend adding the following config value.
 # Sphinx defaults to automatically resolve *unresolved* labels using all your Intersphinx mappings.
@@ -124,7 +134,7 @@ intersphinx_mapping = {
 # suddenly resolve to an external location.
 # See also:
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
-intersphinx_disabled_reftypes = ['*']
+# intersphinx_disabled_reftypes = ['*']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -134,13 +144,17 @@ intersphinx_disabled_reftypes = ['*']
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 
+# The name of the Pygments (syntax highlighting) style to use.
+# `sphinx` works very well with the RTD theme, but you can always change it
+pygments_style = "sphinx"
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
-html_logo = '_static/images/logo.png'
-html_favicon = '_static/images/favicon.ico'
+html_logo = 'https://docs.xsolla.cloud/en/latest/_static/logo.png'
+html_favicon = 'https://docs.xsolla.cloud/en/latest/_static/favicon.ico'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -155,7 +169,6 @@ html_theme_options = {
     # Toc options >>
     'collapse_navigation': False,
     'sticky_navigation': True,
-    'show_nav_level': 1,
     'navigation_depth': 2,  # (!) max depth; NOT default
     'includehidden': True,
     'titles_only': False
@@ -164,23 +177,35 @@ html_theme_options = {
 # This swaps vals in the actual built HTML (NOT the rst files).
 # Eg: This is used with themes and third-party extensions;
 # (!) `{{templating}}` in rst files with these *won't* work here:
-#     If templating, see `jinja_contexts`
 html_context = {
     'conf_py_path': '/source/',  # Path in the checkout to the docs root
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
-    'gitlab_repo': 'acceleratxr.io',  # Repo name
+    'gitlab_repo': '%REPO_NAME%',  # Repo name
     'gitlab_version': 'master',  # Version
 }
 
+source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
+
+
+# -- MyST configuration ------------------------------------------------------
+# recommonmark successor to parse .md to .rst
+
+# Configuration for MyST-Parser
+myst_enable_extensions = [
+    "amsmath",          # Enable parsing and rendering of AMS math syntax
+    "dollarmath",       # Enable dollar math syntax
+    "html_admonition",  # Enable HTML admonitions
+    "html_image",       # Enable HTML image tags
+    "colon_fence",      # Enable colon fences for directives/roles
+    "smartquotes",      # Enable smart quotes
+    "replacements",     # Enable replacements syntax
+    "strikethrough",    # Enable strikethrough syntax
+    "tasklist",         # Enable task list syntax
+]
+
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
-# However, it's more-recommended to use the following at the top of your RST files (notice the `_` underscore prefix):
-# `.. _company: https://xsolla.com/backend`
-# Then to use it: `Company <company>`
-
-# rst_prolog = """
-# .. |company| replace:: https://xsolla.com/backend
-# """
+# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)

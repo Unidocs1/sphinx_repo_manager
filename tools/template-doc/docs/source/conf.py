@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import os
+import subprocess  # for Doxyfile
 import sys
 # import yaml
 
@@ -21,7 +22,7 @@ author = 'Xsolla'
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
-release = '%GIT_TAG%'
+# release = '%GIT_TAG%'
 
 # -- Path setup --------------------------------------------------------------
 
@@ -37,6 +38,38 @@ sys.path.insert(0, os.path.abspath(''))
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
 
+# # Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
+# if read_the_docs_build:
+#     gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
+#     if not gitlab_access_token:
+#         print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
+
+
+# # TODO: Look into Doxygen / Breathe integration
+# def configure_doxyfile(input_dir, output_dir):
+#     with open("Doxyfile.in", "r") as file:
+#         filedata = file.read()
+#
+#     filedata = filedata.replace("@DOXYGEN_INPUT_DIRECTORY@", input_dir)
+#     filedata = filedata.replace("@DOXYGEN_OUTPUT_DIRECTORY@", output_dir)
+#
+#     with open("Doxyfile", "w") as file:
+#         file.write(filedata)
+#
+#
+# breathe_projects = {}
+#
+# if read_the_docs_build:
+#     input_dir = "../sdk"
+#     output_dir = "_doxygen"
+#     configure_doxyfile(input_dir, output_dir)
+#     subprocess.call("doxygen Doxyfile", shell=True)
+#     breathe_projects["AcceleratXR"] = output_dir + "/xml"
+#     subprocess.call(
+#         "python -m breathe.apidoc -p AcceleratXR -o api ./_doxygen/xml", shell=True
+#     )
+#     print("---- Doxygen / Breathe Done ----")
+
 
 # -- General configuration ---------------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be
@@ -47,6 +80,9 @@ extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
+    # 'breathe',  # Doxygen API docs
+    # 'sphinx_csharp',  # CSharp markdown
+    # 'sphinx.ext.autodoc',  # More API docgen tools
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -65,6 +101,23 @@ exclude_patterns = [
 ]
 
 master_doc = 'index'
+
+# Tell sphinx what the primary language being documented is + code highlighting
+primary_domain = "cpp"
+highlight_language = "cpp"
+
+
+# -- Extension: Breathe --------------------------------------------------
+# Breathe allows you to embed Doxygen documentation into your docs.
+
+# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
+# breathe_default_project = "AcceleratXR"  # TODO: Name change
+
+
+# -- C# domain configuration ----------------------------------------------
+
+# sphinx_csharp_test_links = read_the_docs_build
+# sphinx_csharp_multi_language = True
 
 
 # -- Intersphinx Mapping -------------------------------------------------
@@ -92,6 +145,10 @@ master_doc = 'index'
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 
+# The name of the Pygments (syntax highlighting) style to use.
+# `sphinx` works very well with the RTD theme, but you can always change it
+pygments_style = "sphinx"
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
@@ -111,11 +168,11 @@ html_theme_options = {
     'style_external_links': True,
     'style_nav_header_background': '#2D2926',
     # Toc options >>
-    'collapse_navigation': True,
+    'collapse_navigation': False,
     'sticky_navigation': True,
-    'navigation_depth': 4,  # (!) max depth; NOT default
+    'navigation_depth': 2,  # (!) max depth; NOT default
     'includehidden': True,
-    'titles_only': False,
+    'titles_only': False
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
@@ -131,7 +188,7 @@ html_context = {
     'gitlab_version': 'master',  # Version
 }
 
-source_suffix = ['.rst', '.md']
+source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
 
 # -- MyST configuration ------------------------------------------------------

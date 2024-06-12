@@ -12,8 +12,11 @@ Xsolla Backend
 .. REMOVED(ABOUT): Multiplayer <content/-/multiplayer>
 .. REMOVED(ABOUT): Concepts <content/-/concepts/index>
 .. REMOVED(ABOUT): GitLab <content/gitlab>
-.. REMOVED(API): c++ SDK <content/cpp_sdk/index>
-.. REMOVED(API): C# SDK <content/csharp_sdk/index>
+.. REMOVED(API): C++ SDK <content/sdk_cpp/index>
+.. REMOVED(API): C# SDK <content/sdk_csharp/index>
+.. REMOVED(API): NodeJS (TypeScript) SDK <content/sdk_nodejs/index>
+.. REMOVED(API): Unity SDK <content/sdk_unity/index>
+.. REMOVED(API): Unreal SDK <content/sdk_unreal/index>
 .. REMOVED(LEGAL): Company <content/company>
 .. REMOVED(SERVICES): Backup <content/backup_services/index>
 .. REMOVED(SERVICES): Validation <content/validation_services/index>
