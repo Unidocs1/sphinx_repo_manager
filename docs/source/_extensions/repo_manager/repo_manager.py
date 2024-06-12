@@ -66,7 +66,7 @@ class RepoManager:
         self.read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
         self.manifest_path = abs_manifest_path
         self.manifest = None
-        self.debug_mode = False;  # If True: +logs; stops build after ext is done
+        self.debug_mode = False  # If True: +logs; stops build after ext is done
 
     def read_normalize_manifest(self):
         """
@@ -441,6 +441,8 @@ class RepoManager:
         try:
             # Clone the repo, if we haven't done so already
             cloned = False
+            already_stashed = False  # To prevent some redundancy
+
             if not os.path.exists(rel_tag_versioned_clone_src_path):
                 action_str = colorize_action(f"📦 | Sparse-cloning repo...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
@@ -460,6 +462,8 @@ class RepoManager:
                 GitHelper.git_clean_sparse_docs_clone(rel_tag_versioned_clone_src_path, repo_sparse_path)
 
                 cloned = True
+                if stash_and_continue_if_wip:
+                    already_stashed = True
             else:
                 action_str = colorize_action(f"🔃 | Fetching updates...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
@@ -471,13 +475,30 @@ class RepoManager:
             if not cloned and has_branch:
                 action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, branch, stash_and_continue_if_wip)
+
+                should_stash = stash_and_continue_if_wip and not already_stashed
+                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, branch, should_stash)
+
+                if stash_and_continue_if_wip:
+                    already_stashed = True
 
             # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
             if has_tag:
                 action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
                 logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, stash_and_continue_if_wip)
+
+                should_stash = stash_and_continue_if_wip and not already_stashed
+                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, should_stash)
+
+                if stash_and_continue_if_wip:
+                    already_stashed = True
+
+            if not cloned:
+                should_stash = stash_and_continue_if_wip and not already_stashed
+                GitHelper.git_pull(rel_tag_versioned_clone_src_path, should_stash)
+
+                if stash_and_continue_if_wip:
+                    already_stashed = True
 
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
             # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)

@@ -191,10 +191,24 @@ class GitHelper:
             raise Exception(f"Failed to check if the repository is dirty: {repo_path}\nError: {e}")
 
     @staticmethod
-    def git_stash(repo_path, stash_message='repo_mgr-autostash'):
-        """ Stash the working directory. """
+    def git_reset_hard(repo_path):
+        """
+        Reset the working directory to the last commit, removing all new/untracked files.
+        """
         GitHelper.throw_if_path_not_exists(repo_path)
-        cmd_arr = ['git', '-C', repo_path, 'stash', 'push', '-m', stash_message]
+        cmd_arr = ['git', '-C', repo_path, 'reset', '--hard']
+        run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
+
+    @staticmethod
+    def git_stash(repo_path, stash_message='repo_mgr-autostash'):
+        """
+        Stash the working directory. Includes new/untracked files.
+        -C == working git dir
+        -u == untracked
+        -m == message
+        """
+        GitHelper.throw_if_path_not_exists(repo_path)
+        cmd_arr = ['git', '-C', repo_path, 'stash', 'push', '-u', '-m', stash_message]
         run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
@@ -202,6 +216,20 @@ class GitHelper:
         """ Check if a .git directory exists within repo_path. """
         git_dir = os.path.join(repo_path, '.git')
         return os.path.exists(git_dir)
+
+    @staticmethod
+    def git_pull(repo_path, stash_and_continue_if_wip):
+        """ Pull the latest changes from the remote repository. """
+        GitHelper.throw_if_path_not_exists(repo_path)
+        if GitHelper.git_check_is_dirty(repo_path):
+            if stash_and_continue_if_wip:
+                logger.info(colorize_path(f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'"))
+                GitHelper.git_stash(repo_path)
+            else:
+                raise Exception(f"Working directory is dirty (!stash_and_continue_if_wip): '{brighten(repo_path)}'")
+
+        cmd_arr = ['git', '-C', repo_path, 'pull']
+        run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True)
 
     @staticmethod
     def git_checkout(
