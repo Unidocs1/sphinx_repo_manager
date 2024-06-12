@@ -99,26 +99,26 @@ repositories:                         # Dictionary of <repo_name, repo_data>; de
   sdk_csharp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
     branch: "dev"
-  sdk_nodejs:
-    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
-    branch: "dev"
-  sdk_unity:
-      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
-      branch: "dev"
-  sdk_unreal:
-      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
-      branch: "dev"
+#  sdk_nodejs:  # TODO: Normalize docs/
+#    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
+#    branch: "dev"
+#  sdk_unity:  # TODO: Normalize docs/
+#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
+#      branch: "dev"
+#  sdk_unreal:  # TODO: Normalize docs/
+#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
+#      branch: "dev"
   # Composer >>
   service-core:
     url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
     branch: "dev"
   # Other Products/Apps >>
-  service_monitor:
-    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
-    branch: "dev"
-  launcher:
-    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
-    branch: "dev"
+#  service_monitor:  # TODO: Normalize docs/
+#    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
+#    branch: "dev"
+#  launcher:  # TODO: Normalize docs/
+#    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
+#    branch: "dev"
   console:
     url: "https://gitlab.acceleratxr.com/Core/apps/console"
     branch: "dev"
