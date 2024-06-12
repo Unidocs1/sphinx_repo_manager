@@ -20,6 +20,7 @@
 import json
 import os
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
+import subprocess  # for Doxyfile
 import sys
 
 # -- Project information -----------------------------------------------------
@@ -60,7 +61,7 @@ sys.path.append(os.path.abspath('.'))
 # This allows us to build documentation for multiple versions of the same service.
 
 from _extensions.repo_manager import RepoManager
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'tools', 'repo_manager')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'tools', 'repo_manager')))
 
 # Initialize the RepoManager instance with the manifest path
 manifest_path = Path('..', 'repo_manifest.yml').resolve()
@@ -87,7 +88,9 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'repo_manager',  # Our own custom extension
-    # 'sphinx_jinja',
+    # 'breathe',  # Doxygen API docs
+    # 'sphinx_csharp',  # CSharp markdown
+    # 'sphinx.ext.autodoc',  # More API docgen tools
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -106,6 +109,23 @@ exclude_patterns = [
 ]
 
 master_doc = 'index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
+
+# # Tell sphinx what the primary language being documented is + code highlighting
+# primary_domain = "cpp"
+# highlight_language = "cpp"
+
+
+# -- Extension: Breathe --------------------------------------------------
+# Breathe allows you to embed Doxygen documentation into your docs.
+
+# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
+# breathe_default_project = "AcceleratXR"  # TODO: Name change
+
+
+# -- C# domain configuration ----------------------------------------------
+
+# sphinx_csharp_test_links = read_the_docs_build
+# sphinx_csharp_multi_language = True
 
 
 # -- Intersphinx Mapping -------------------------------------------------
@@ -134,6 +154,10 @@ intersphinx_disabled_reftypes = ['*']
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 
+# The name of the Pygments (syntax highlighting) style to use.
+# `sphinx` works very well with the RTD theme, but you can always change it
+pygments_style = "sphinx"
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
@@ -158,7 +182,7 @@ html_theme_options = {
     'show_nav_level': 1,
     'navigation_depth': 2,  # (!) max depth; NOT default
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
@@ -175,12 +199,24 @@ html_context = {
     'gitlab_version': 'master',  # Version
 }
 
+source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
+
+
+# -- MyST configuration ------------------------------------------------------
+# recommonmark successor to parse .md to .rst
+
+# Configuration for MyST-Parser
+myst_enable_extensions = [
+    "amsmath",          # Enable parsing and rendering of AMS math syntax
+    "dollarmath",       # Enable dollar math syntax
+    "html_admonition",  # Enable HTML admonitions
+    "html_image",       # Enable HTML image tags
+    "colon_fence",      # Enable colon fences for directives/roles
+    "smartquotes",      # Enable smart quotes
+    "replacements",     # Enable replacements syntax
+    "strikethrough",    # Enable strikethrough syntax
+    "tasklist",         # Enable task list syntax
+]
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
-# However, it's more-recommended to use the following at the top of your RST files (notice the `_` underscore prefix):
-# `.. _company: https://xsolla.com/backend`
-# Then to use it: `Company <company>`
-
-# rst_prolog = """
-# .. |company| replace:: https://xsolla.com/backend
-# """
+# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
