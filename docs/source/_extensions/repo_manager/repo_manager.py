@@ -44,6 +44,8 @@ import sys  # Just for sys.exit, if !repositories
 import concurrent.futures  # Async multitasking
 import threading  # Async multitasking
 import queue  # For managing log entries
+import signal  # For CTRL+C detection
+import time  # To periodically check for signals ^
 
 # Yaml and logging >>
 import yaml  # YAML file parsing
@@ -61,6 +63,9 @@ ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
 STOP_BUILD_ON_ERROR = True  # Whether to stop build on error
 logger = logging.getLogger(__name__)  # Get logger instance
 
+# Global flag to signal threads to shutdown
+shutdown_flag = False
+
 
 # Custom exception class for repository management errors
 class RepositoryManagementError(Exception):
@@ -74,7 +79,15 @@ class RepoManager:
         self.manifest_path = abs_manifest_path
         self.manifest = None
         self.debug_mode = False  # If True: +logs; stops build after ext is done
+
+        # Multi-threading >>
         self.lock = threading.Lock()  # Lock for thread-safe logging
+        self.shutdown_flag = False  # Flag to handle graceful shutdown
+        signal.signal(signal.SIGINT, self.signal_handler)
+
+    def signal_handler(self, signum, frame):
+        print("Signal received, initiating graceful shutdown...")
+        self.shutdown_flag = True
 
     def read_normalize_manifest(self):
         """
@@ -185,7 +198,7 @@ class RepoManager:
             }
 
         # Workers for multi-threading
-        manifest.setdefault('max_workers_local', 5)
+        manifest.setdefault('max_workers_local', 1)
         manifest.setdefault('max_workers_rtd', 2)
 
         # url: Req'd - Strip ".git" from suffix, if any (including SSH urls; we'll add it back via url_dotgit)
@@ -313,6 +326,7 @@ class RepoManager:
             # Decide number of workers to use, depending if local or RTD host
             max_workers = manifest['max_workers_local'] if not self.read_the_docs_build \
                 else manifest['max_workers_rtd']
+            logger.info(colorize_action(f"🤖 | Using {max_workers} worker(s) for multi-threading"))
 
             self.manage_repositories(manifest, max_workers)
         except Exception as e:
@@ -434,27 +448,27 @@ class RepoManager:
     #     _meta = repo_info['_meta']
     #     tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']  # eg: "account_services-v2.1.0"
     #     rel_symlinked_repo_path = _meta['rel_symlinked_repo_path']  # eg: "source/content/account_services"
-    # 
+    #
     #     # Ensure repo is active
     #     active = repo_info['active']
     #     if not active:
     #         with self.lock:
     #             logger.info(colorize_action(f"[{rel_symlinked_repo_path}] Repository !active; skipping..."))
     #         return
-    # 
+    #
     #     # eg: "source/_repos-available/account_services-v2.1.0"
     #     tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
     #     debug_mode = self.manifest['debug_mode']
     #     repo_sparse_path = self.manifest['repo_sparse_path']
     #     rel_init_clone_path_root_symlink_src = repo_info['init_clone_path_root_symlink_src_override']
-    # 
+    #
     #     with self.lock:
     #         self.log_repo_paths(
     #             debug_mode,
     #             tag_versioned_clone_src_repo_name,
     #             tag_versioned_clone_src_path,
     #             rel_symlinked_repo_path)
-    # 
+    #
     #     self.clone_and_symlink(
     #         repo_info,
     #         tag_versioned_clone_src_repo_name,
@@ -465,21 +479,20 @@ class RepoManager:
     #         rel_init_clone_path_root_symlink_src)
 
     def manage_repositories(self, manifest, max_workers=5):
-        """
-        Manage the cloning and checking out of repositories as defined
-        in the manifest.
-        """
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
         repositories = list(manifest['repositories'].items())
         log_queue = queue.Queue()  # Queue for handling log entries
-
-        # Track current/max repositories
+    
         total_repos_num = len(repositories)
         current_repo_num = 1
-
+    
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = []
             for repo_name, repo_info in repositories:
+                if self.shutdown_flag:
+                    logger.info("Shutdown initiated, stopping new repository processing.")
+                    raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+    
                 future = executor.submit(
                     self.process_repo_with_logging,
                     repo_info,
@@ -487,18 +500,25 @@ class RepoManager:
                     log_queue,
                     current_repo_num,
                     total_repos_num)
-
+    
                 futures.append(future)
                 current_repo_num += 1
-
+    
+            # Attempt to cancel all futures if a shutdown is detected
+            if self.shutdown_flag:
+                for future in futures:
+                    future.cancel()
+                    raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+    
+            # Handle the completion of tasks, ensuring we process results or catch exceptions
             for future in concurrent.futures.as_completed(futures):
                 try:
                     future.result()
                 except Exception as e:
                     with self.lock:
                         logger.error(f"Failed to manage repository: {e}")
-
-        # Print queued logs after all futures complete
+    
+        # Process all remaining logs
         while not log_queue.empty():
             log_entry = log_queue.get()
             logger.info(log_entry)
@@ -524,6 +544,10 @@ class RepoManager:
         - log_entries will be appended with the results of the operation, logging in chunks
           - This is to handle async logs so it's still chronological
         """
+        if self.shutdown_flag:
+            logger.info("Shutdown flagged: Exiting operation.")
+            raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+
         _meta = repo_info['_meta']
         repo_url_dotgit = _meta['url_dotgit']
         has_tag = _meta['has_tag']
@@ -549,6 +573,10 @@ class RepoManager:
                     repo_sparse_path,
                     stash_and_continue_if_wip)
 
+                if self.shutdown_flag:
+                    logger.info("Shutdown flagged: Exiting operation.")
+                    raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
@@ -562,6 +590,10 @@ class RepoManager:
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 GitHelper.git_fetch(rel_tag_versioned_clone_src_path)
+
+            if self.shutdown_flag:
+                logger.info("Shutdown flagged: Exiting operation.")
+                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
 
             # Checkout to the specific branch or tag
             has_branch = 'branch' in repo_info
@@ -586,6 +618,10 @@ class RepoManager:
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
+            if self.shutdown_flag:
+                logger.info("Shutdown flagged: Exiting operation.")
+                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+
             if not cloned:
                 should_stash = stash_and_continue_if_wip and not already_stashed
                 GitHelper.git_pull(rel_tag_versioned_clone_src_path, should_stash)
@@ -593,6 +629,10 @@ class RepoManager:
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
+            if self.shutdown_flag:
+                logger.info("Shutdown flagged: Exiting operation.")
+                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+           
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
             # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
             #
@@ -615,6 +655,10 @@ class RepoManager:
                 self.log_err_if_invalid_symlink(rel_symlinked_repo_path)  # Sanity check for successful link
             except Exception as e:
                 logger.error(f"Error creating symlink: {str(e)}")
+
+            if self.shutdown_flag:
+                logger.info("Shutdown flagged: Exiting operation.")
+                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
 
             # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
             abs_release_notes_symlink_src_repo_path = init_symlink_src_path.joinpath('RELEASE_NOTES.rst').absolute()
