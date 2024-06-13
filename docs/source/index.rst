@@ -35,33 +35,10 @@ Xsolla Backend
    :caption: Learn
    :hidden:
 
+   Services <content/-/services>
    Platform Demos <content/-/demo>
    Tools <content/-/tools>
    Tutorials <content/-/samples_and_tutorials/index>
-
-.. toctree::
-   :caption: Services
-   :hidden:
-
-   Account <content/account_services/index>
-   Achievements <content/achievements_services/index>
-   Asset <content/asset_services/index>
-   Backup <content/backup_services/index>
-   Economy <content/economy_services/index>
-   Leaderboard <content/leaderboard_services/index>
-   Matchmaking <content/matchmaking_services/index>
-   Notification <content/notification_services/index>
-   Persona <content/persona_services/index>
-   Progression <content/progression_services/index>
-   Purchasing <content/purchasing_services/index>
-   Quest <content/quest_services/index>
-   Reporting <content/reporting_services/index>
-   Scripting <content/scripting_services/index>
-   Server Instance <content/server_instance_services/index>
-   Session <content/session_services/index>
-   Social <content/social_services/index>
-   Telemetry <content/telemetry_services/index>
-   Validation <content/validation_services/index>
 
 .. toctree::
    :caption: API Reference
