@@ -14,7 +14,7 @@
 ################################################################################################
 enable_repo_manager: true                         # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
 enable_repo_manager_local: true                   # If enable_repo_manager && false, will skip this extension locally; defaults to true, if omitted
-max_workers_local: 1                              # [BETA] Max workers for local repo_manager for multi-threading; use just 1 for debugging; defaults to 1 (later 5, once git_helper logs handle async), if omitted
+max_workers_local: 5                              # [BETA] Max workers for local repo_manager for multi-threading; use just 1 for debugging; defaults to 1 (later 5, once git_helper logs handle async), if omitted
 max_workers_rtd: 1                                # [BETA] Max workers for ReadTheDocs deployment for multi-threading; RTD has max 1 for free accts; use just 1 for debugging or free accts; defaults to 2, if omitted
 debug_mode: false                                 # More-verbose logging or debugging; throws arbitrary err on done with repo_manager if local (prevents warning spam); defaults to false, if omitted
 stash_and_continue_if_wip: true                   # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
@@ -101,26 +101,26 @@ repositories:                         # Dictionary of <repo_name, repo_data>; de
   sdk_csharp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
     branch: "dev"
-#  sdk_nodejs:  # TODO: Normalize docs/
-#    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
-#    branch: "dev"
-#  sdk_unity:  # TODO: Normalize docs/
-#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
-#      branch: "dev"
-#  sdk_unreal:  # TODO: Normalize docs/
-#      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
-#      branch: "dev"
+  sdk_nodejs:
+    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
+    branch: "dev"
+  sdk_unity:
+      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
+      branch: "dev"
+  sdk_unreal:
+      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
+      branch: "dev"
   # Composer >>
   service-core:
     url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
     branch: "dev"
   # Other Products/Apps >>
-#  service_monitor:  # TODO: Normalize docs/
-#    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
-#    branch: "dev"
-#  launcher:  # TODO: Normalize docs/
-#    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
-#    branch: "dev"
+  service_monitor:
+    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
+    branch: "dev"
+  launcher:
+    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
+    branch: "dev"
   console:
     url: "https://gitlab.acceleratxr.com/Core/apps/console"
     branch: "dev"

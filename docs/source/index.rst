@@ -5,23 +5,8 @@ Xsolla Backend
 .. image:: /_static/images/features_banner.png
 
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
-.. REMOVED(ABOUT): Commerce <content/-/commerce>
-.. REMOVED(ABOUT): Content <content/-/content>
-.. REMOVED(ABOUT): Gameplay <content/-/gameplay>
-.. REMOVED(ABOUT): LiveOps <content/-/liveops>
-.. REMOVED(ABOUT): Multiplayer <content/-/multiplayer>
 .. REMOVED(ABOUT): Concepts <content/-/concepts/index>
 .. REMOVED(ABOUT): GitLab <content/gitlab>
-.. REMOVED(API): C++ SDK <content/sdk_cpp/index>
-.. REMOVED(API): C# SDK <content/sdk_csharp/index>
-.. REMOVED(API): NodeJS (TypeScript) SDK <content/sdk_nodejs/index>
-.. REMOVED(API): Unity SDK <content/sdk_unity/index>
-.. REMOVED(API): Unreal SDK <content/sdk_unreal/index>
-.. REMOVED(LEGAL): Company <content/company>
-.. REMOVED(SERVICES): Backup <content/backup_services/index>
-.. REMOVED(SERVICES): Validation <content/validation_services/index>
-.. REMOVED(SUPPORT): Discord <content/discord>
-.. REMOVED(SUPPORT): Xsolla Partner Support <content/partner_support>
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs
@@ -35,6 +20,16 @@ Xsolla Backend
    Install <content/-/install/index>
    Features <content/-/features>
    Changelog <content/-/changelogs/index>
+
+.. toctree::
+   :caption: About
+   :hidden:
+
+   Commerce <content/-/commerce>
+   Content <content/-/content>
+   Gameplay <content/-/gameplay>
+   LiveOps <content/-/liveops>
+   Multiplayer <content/-/multiplayer>
 
 .. toctree::
    :caption: Learn
@@ -51,6 +46,7 @@ Xsolla Backend
    Account <content/account_services/index>
    Achievements <content/achievements_services/index>
    Asset <content/asset_services/index>
+   Backup <content/backup_services/index>
    Economy <content/economy_services/index>
    Leaderboard <content/leaderboard_services/index>
    Matchmaking <content/matchmaking_services/index>
@@ -65,11 +61,25 @@ Xsolla Backend
    Session <content/session_services/index>
    Social <content/social_services/index>
    Telemetry <content/telemetry_services/index>
+   Validation <content/validation_services/index>
 
 .. toctree::
-   :caption: Legal
+   :caption: API Reference
+   :hidden:
+
+   C++ SDK <content/sdk_cpp/index>
+   C# SDK <content/sdk_csharp/index>
+   NodeJS (TypeScript) SDK <content/sdk_nodejs/index>
+   Unity SDK <content/sdk_unity/index>
+   Unreal SDK <content/sdk_unreal/index>
+
+.. toctree::
+   :caption: Company/Contact
    :hidden:
    
+   About Xsolla <content/company>
+   Discord <content/discord>
+   Xsolla Partner Support <content/partner_support>
    Eula <content/-/eula/index>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
