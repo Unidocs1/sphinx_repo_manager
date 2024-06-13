@@ -33,12 +33,19 @@ which is triggered after Sphinx inits but before the build process begins.
 - Windows 11 via PowerShell7
 - Ubuntu 24.04 LTS via ReadTheDocs (RTD) deployment
 """
+# Core, pathing, ops >>
 import os  # file path ops
 from pathlib import Path  # Path ops
 import re  # regex ops
 import subprocess
 import sys  # Just for sys.exit, if !repositories
 
+# Async >>
+import concurrent.futures  # Async multitasking
+import threading  # Async multitasking
+import queue  # For managing log entries
+
+# Yaml and logging >>
 import yaml  # YAML file parsing
 from log_styles import *  # Custom logging styles
 from git_helper import GitHelper  # Helper functions for git operations
@@ -67,6 +74,7 @@ class RepoManager:
         self.manifest_path = abs_manifest_path
         self.manifest = None
         self.debug_mode = False  # If True: +logs; stops build after ext is done
+        self.lock = threading.Lock()  # Lock for thread-safe logging
 
     def read_normalize_manifest(self):
         """
@@ -175,6 +183,10 @@ class RepoManager:
                 # - eg: "source/_repos-available/account_services-v2.1.0"
                 # - eg: "source/_repos-available/account_services--master"
             }
+
+        # Workers for multi-threading
+        manifest.setdefault('max_workers_local', 5)
+        manifest.setdefault('max_workers_rtd', 2)
 
         # url: Req'd - Strip ".git" from suffix, if any (including SSH urls; we'll add it back via url_dotgit)
         url = repo_info.get('url', None)
@@ -295,8 +307,14 @@ class RepoManager:
                 logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
                                f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
                 return
+
             self.init_dir_tree(manifest)
-            self.manage_repositories(manifest)
+
+            # Decide number of workers to use, depending if local or RTD host
+            max_workers = manifest['max_workers_local'] if not self.read_the_docs_build \
+                else manifest['max_workers_rtd']
+
+            self.manage_repositories(manifest, max_workers)
         except Exception as e:
             logger.error(f"Failed to manage_repositories {brighten('*See `Extension error` below*')}")
             if STOP_BUILD_ON_ERROR:
@@ -360,17 +378,29 @@ class RepoManager:
         logger.info(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
         logger.info(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
 
-    def process_repo(self, repo_info, stash_and_continue_if_wip):
-        """ Process a single repository from the manifest. """
-        # Get paths from _meta
+    def process_repo_with_logging(
+            self,
+            repo_info,
+            stash_and_continue_if_wip,
+            log_queue,
+            current_repo_num,
+            total_repos_num,
+    ):
+        """ Process a single repository and queue logs. """
+        log_entries = []
         _meta = repo_info['_meta']
         tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']  # eg: "account_services-v2.1.0"
         rel_symlinked_repo_path = _meta['rel_symlinked_repo_path']  # eg: "source/content/account_services"
 
+        log_entries.append(colorize_action("\n-----------------------\n"
+                                           f"[Repo {current_repo_num}/{total_repos_num}]"))
+
         # Ensure repo is active
         active = repo_info['active']
         if not active:
-            logger.info(colorize_action(f"[{rel_symlinked_repo_path}] Repository !active; skipping..."))
+            log_entries.append(colorize_action(f"[{rel_symlinked_repo_path}] Repository !active; skipping..."))
+            for entry in log_entries:
+                log_queue.put(entry)
             return
 
         # eg: "source/_repos-available/account_services-v2.1.0"
@@ -379,11 +409,9 @@ class RepoManager:
         repo_sparse_path = self.manifest['repo_sparse_path']
         rel_init_clone_path_root_symlink_src = repo_info['init_clone_path_root_symlink_src_override']
 
-        self.log_repo_paths(
-            debug_mode,
-            tag_versioned_clone_src_repo_name,
-            tag_versioned_clone_src_path,
-            rel_symlinked_repo_path)
+        log_entries.append(colorize_action(f"📁 | Working Dirs:"))
+        log_entries.append(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
+        log_entries.append(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
 
         self.clone_and_symlink(
             repo_info,
@@ -392,26 +420,88 @@ class RepoManager:
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
             repo_sparse_path,
-            rel_init_clone_path_root_symlink_src)
+            rel_init_clone_path_root_symlink_src,
+            log_entries,
+        )
 
-    def manage_repositories(self, manifest):
-        """ Manage the cloning and checking out of repositories as defined in the manifest. """
+        # Queue log entries
+        for entry in log_entries:
+            log_queue.put(entry)
+
+    # def process_repo(self, repo_info, stash_and_continue_if_wip):
+    #     """ Process a single repository from the manifest. """
+    #     # Get paths from _meta
+    #     _meta = repo_info['_meta']
+    #     tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']  # eg: "account_services-v2.1.0"
+    #     rel_symlinked_repo_path = _meta['rel_symlinked_repo_path']  # eg: "source/content/account_services"
+    # 
+    #     # Ensure repo is active
+    #     active = repo_info['active']
+    #     if not active:
+    #         with self.lock:
+    #             logger.info(colorize_action(f"[{rel_symlinked_repo_path}] Repository !active; skipping..."))
+    #         return
+    # 
+    #     # eg: "source/_repos-available/account_services-v2.1.0"
+    #     tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
+    #     debug_mode = self.manifest['debug_mode']
+    #     repo_sparse_path = self.manifest['repo_sparse_path']
+    #     rel_init_clone_path_root_symlink_src = repo_info['init_clone_path_root_symlink_src_override']
+    # 
+    #     with self.lock:
+    #         self.log_repo_paths(
+    #             debug_mode,
+    #             tag_versioned_clone_src_repo_name,
+    #             tag_versioned_clone_src_path,
+    #             rel_symlinked_repo_path)
+    # 
+    #     self.clone_and_symlink(
+    #         repo_info,
+    #         tag_versioned_clone_src_repo_name,
+    #         tag_versioned_clone_src_path,
+    #         rel_symlinked_repo_path,
+    #         stash_and_continue_if_wip,
+    #         repo_sparse_path,
+    #         rel_init_clone_path_root_symlink_src)
+
+    def manage_repositories(self, manifest, max_workers=5):
+        """
+        Manage the cloning and checking out of repositories as defined
+        in the manifest.
+        """
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
-        repositories = manifest['repositories'].items()
+        repositories = list(manifest['repositories'].items())
+        log_queue = queue.Queue()  # Queue for handling log entries
 
         # Track current/max repositories
         total_repos_num = len(repositories)
         current_repo_num = 1
 
-        # for each repo:
-        #     Prep paths, clone/fetch, checkout tagged version
-        for repo_name, repo_info in repositories:
-            logger.info(colorize_action(
-                "\n-----------------------\n"
-                f"[Repo {current_repo_num}/{total_repos_num}]"))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = []
+            for repo_name, repo_info in repositories:
+                future = executor.submit(
+                    self.process_repo_with_logging,
+                    repo_info,
+                    stash_and_continue_if_wip,
+                    log_queue,
+                    current_repo_num,
+                    total_repos_num)
 
-            self.process_repo(repo_info, stash_and_continue_if_wip)
-            current_repo_num += 1
+                futures.append(future)
+                current_repo_num += 1
+
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    with self.lock:
+                        logger.error(f"Failed to manage repository: {e}")
+
+        # Print queued logs after all futures complete
+        while not log_queue.empty():
+            log_entry = log_queue.get()
+            logger.info(log_entry)
 
     def clone_and_symlink(
             self,
@@ -422,6 +512,7 @@ class RepoManager:
             stash_and_continue_if_wip,
             repo_sparse_path,
             rel_init_clone_path_root_symlink_src,
+            log_entries,
     ):
         """
         Clone the repository if it does not exist and create a symlink in the base symlink path.
@@ -430,6 +521,8 @@ class RepoManager:
         - rel_init_clone_path                    # eg: "source/_repos-available"
         - rel_tag_versioned_clone_src_path       # eg: "source/_repos-available/account_services-v2.1.0"
         - rel_symlinked_repo_path                # eg: "source/content/account_services/docs/source"
+        - log_entries will be appended with the results of the operation, logging in chunks
+          - This is to handle async logs so it's still chronological
         """
         _meta = repo_info['_meta']
         repo_url_dotgit = _meta['url_dotgit']
@@ -445,8 +538,8 @@ class RepoManager:
 
             if not os.path.exists(rel_tag_versioned_clone_src_path):
                 action_str = colorize_action(f"📦 | Sparse-cloning repo...")
-                logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                logger.info(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                log_entries.append(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
 
                 git_helper = GitHelper()  # TODO: Place this instance @ top?
                 git_helper.git_sparse_clone(
@@ -458,7 +551,7 @@ class RepoManager:
 
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
-                logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
                 GitHelper.git_clean_sparse_docs_clone(rel_tag_versioned_clone_src_path, repo_sparse_path)
 
                 cloned = True
@@ -466,7 +559,7 @@ class RepoManager:
                     already_stashed = True
             else:
                 action_str = colorize_action(f"🔃 | Fetching updates...")
-                logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 GitHelper.git_fetch(rel_tag_versioned_clone_src_path)
 
@@ -474,7 +567,7 @@ class RepoManager:
             has_branch = 'branch' in repo_info
             if not cloned and has_branch:
                 action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
-                logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 should_stash = stash_and_continue_if_wip and not already_stashed
                 GitHelper.git_checkout(rel_tag_versioned_clone_src_path, branch, should_stash)
@@ -485,7 +578,7 @@ class RepoManager:
             # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
             if has_tag:
                 action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
-                logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 should_stash = stash_and_continue_if_wip and not already_stashed
                 GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, should_stash)
@@ -508,11 +601,11 @@ class RepoManager:
             abs_symlink_src_nested_path = init_symlink_src_path.joinpath(rel_init_clone_path_root_symlink_src).resolve()
 
             action_str = colorize_action("🔗 | Symlinking...")
-            logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
             # (1) Symlink content -> to nested repo
-            logger.info(colorize_path(f"  - From clone src path: '{brighten(abs_symlink_src_nested_path)}'"))
-            logger.info(colorize_path(f"  - To symlink path: '{brighten(rel_init_clone_path_root_symlink_src)}'"))
+            log_entries.append(colorize_path(f"  - From clone src path: '{brighten(abs_symlink_src_nested_path)}'"))
+            log_entries.append(colorize_path(f"  - To symlink path: '{brighten(rel_init_clone_path_root_symlink_src)}'"))
 
             try:
                 self.create_symlink(
@@ -550,7 +643,7 @@ class RepoManager:
             # -------------------
             # Done with this repo
             success_str = colorize_success("✅ | Done.")
-            logger.info(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
 
         except subprocess.CalledProcessError as e:
             error_url = f"{repo_url_dotgit}/tree/{tag}"
@@ -560,12 +653,18 @@ class RepoManager:
                              f"Failed to checkout branch/tag '{rel_symlinked_repo_path}'\n"
                              f"- Does the '{tag}' tag exist? {error_url}\n"
                              f"- Check available tags: {tags_url}{Fore.RESET}\n\n")
+            log_entries.append(error_message)
             raise RepositoryManagementError(f'\n{error_message}')
         except Exception as e:
             error_message = (f"\n\n{Fore.RED}[repo_manager] "
                              f"Error during clone and checkout process for '{rel_symlinked_repo_path}'\n"
                              f"- Error: {str(e)}\n\n")
+            log_entries.append(error_message)
             raise RepositoryManagementError(f'\n{error_message}')
+        finally:
+            # Log the queued entries at once
+            for entry in log_entries:
+                logger.info(entry)
 
     @staticmethod
     def log_err_if_invalid_symlink(rel_symlinked_repo_path):

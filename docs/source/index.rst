@@ -32,6 +32,7 @@ Xsolla Backend
    :hidden:
 
    Introduction <content/-/getting_started/index>
+   Install <content/-/install/index>
    Features <content/-/features>
    Changelog <content/-/changelogs/index>
 
