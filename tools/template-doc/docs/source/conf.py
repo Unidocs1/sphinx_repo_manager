@@ -104,6 +104,19 @@ exclude_patterns = [
     'README.*',
 ]
 
+
+# Tell sphinx what the primary language being documented is + code highlighting
+primary_domain = "cpp"
+highlight_language = "cpp"
+
+
+# -- Extension: Breathe --------------------------------------------------
+# Breathe allows you to embed Doxygen documentation into your docs.
+
+# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
+# breathe_default_project = "AcceleratXR"  # TODO: Name change
+
+
 master_doc = 'index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
 
 # # Tell sphinx what the primary language being documented is + code highlighting
@@ -118,6 +131,10 @@ master_doc = 'index'  # Allegedly renamed to root_doc long ago, but it doesn't a
 # breathe_default_project = "AcceleratXR"  # TODO: Name change
 
 
+# -- C# domain configuration ----------------------------------------------
+
+# sphinx_csharp_test_links = read_the_docs_build
+# sphinx_csharp_multi_language = True
 # -- C# domain configuration ----------------------------------------------
 
 # sphinx_csharp_test_links = read_the_docs_build
@@ -176,7 +193,7 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 2,  # (!) max depth; NOT default
     'includehidden': True,
-    'titles_only': False,
+    'titles_only': False
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
