@@ -9,7 +9,7 @@
 ##############################################################################
 import os
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
-import subprocess  # for Doxyfile
+# import subprocess  # for Doxyfile
 import sys
 # import yaml
 
@@ -59,26 +59,26 @@ read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
 # The absolute path to the directory containing conf.py.
 documentation_root = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.abspath(os.path.join('_extensions', 'repo_manager')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
 sys.path.append(os.path.abspath('.'))
 
-# -- Extension: repo_manager --------------------------------------------------------------
+# -- Extension: sphinx_repo_manager --------------------------------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
 
-from _extensions.repo_manager import RepoManager
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'tools', 'repo_manager')))
+from _extensions.sphinx_repo_manager import SphinxRepoManager
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'tools', 'sphinx_repo_manager')))
 
 # Initialize the RepoManager instance with the manifest path
 manifest_path = Path('..', 'repo_manifest.yml').resolve()
-repo_manager = RepoManager(manifest_path)
+repo_manager = SphinxRepoManager(manifest_path)
 manifest = repo_manager.read_normalize_manifest()
 
 # Extract common props
 repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active }
-print(f'[conf.py::repo_manager] Num repos found: {len(repos)}')
+print(f'[conf.py::sphinx_repo_manager] Num repos found: {len(repos)}')
 
-# TODO: Use these below for dynamic info pulled from repo_manager.yaml
+# TODO: Use these below for dynamic info pulled from repo_manifest.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
 repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
@@ -92,7 +92,7 @@ extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
-    'repo_manager',  # Our own custom extension
+    'sphinx_repo_manager',  # Our own custom extension
     # 'breathe',  # Doxygen API docs
     # 'sphinx_csharp',  # CSharp markdown
     # 'sphinx.ext.autodoc',  # More API docgen tools

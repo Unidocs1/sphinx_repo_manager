@@ -1,5 +1,5 @@
 """
-Script to hook into repo_manager and git_manager tooling,
+Script to hook into sphinx_repo_manager and git_manager tooling,
 and reading the ../repo_manifest.yml file
 """
 # INIT ###############################################################################
@@ -16,11 +16,11 @@ REL_PROJECT_ROOT_PATH = Path(__file__).parent  # .resolve() turns into abs path
 REL_MANIFEST_PATH = Path('../repo_manifest.yml')
 ABS_MANIFEST_PATH = REL_PROJECT_ROOT_PATH.parent / REL_MANIFEST_PATH
 
-# Add the path to the repo_manager extension
-repo_manager_path = REL_PROJECT_ROOT_PATH / 'repo_manager'
+# Add the path to the sphinx_repo_manager extension
+repo_manager_path = REL_PROJECT_ROOT_PATH / 'sphinx_repo_manager'
 sys.path.insert(0, str(repo_manager_path))
 
-# Import the RepoManager and GitHelper from the repo_manager package
+# Import the RepoManager and GitHelper from the sphinx_repo_manager package
 from repo_manager import RepoManager
 from repo_manager import GitHelper
 

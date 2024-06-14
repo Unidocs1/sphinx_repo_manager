@@ -17,10 +17,10 @@ try {
     $targetPath = "..\source\_extensions\repo_manager"
 
     # Create the symbolic link using relative paths
-    New-Item -ItemType SymbolicLink -Path "repo_manager" -Target $targetPath -Force
+    New-Item -ItemType SymbolicLink -Path "sphinx_repo_manager" -Target $targetPath -Force
 
     # Verify the symbolic link
-    Get-Item -Path "repo_manager"
+    Get-Item -Path "sphinx_repo_manager"
 
     # Success message
     Write-Host "Symbolic link created successfully."

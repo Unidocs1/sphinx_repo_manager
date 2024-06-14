@@ -1,6 +1,6 @@
 """
-Xsolla Sphinx Extension: repo_manager
-------------------------------------
+Xsolla Sphinx Extension: sphinx_repo_manager
+--------------------------------------------
 
 Description:
 This Sphinx extension is designed to automate the management of multiple documentation repositories as part
@@ -22,7 +22,7 @@ Usage:
 3. Optionally, specify `init_clone_path` and `base_symlink_path` in the manifest to manage where repositories
 are cloned and how they are accessed.
 4. Include this extension in your Sphinx `conf.py` file by adding the extension's path to `sys.path`
-(source/_extensions/repo_manager) and including in the `extensions` list.
+(source/_extensions/sphinx_repo_manager) and including in the `extensions` list.
 
 Requirements: See project root `requirements.txt` -> Install easily via project `root tools/requirements-install.ps1`
 
@@ -45,7 +45,6 @@ import concurrent.futures  # Async multitasking
 import threading  # Async multitasking
 import queue  # For managing log entries
 import signal  # For CTRL+C detection
-import time  # To periodically check for signals ^
 
 # Yaml and logging >>
 import yaml  # YAML file parsing
@@ -60,7 +59,6 @@ ABS_MANIFEST_PATH = os.path.normpath(os.path.join(
     ABS_BASE_PATH, '..', '..', '..', MANIFEST_NAME))
 ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
 
-STOP_BUILD_ON_ERROR = True  # Whether to stop build on error
 logger = logging.getLogger(__name__)  # Get logger instance
 
 # Global flag to signal threads to shutdown
@@ -73,7 +71,7 @@ class RepositoryManagementError(Exception):
 
 
 # RepoManager class to handle repository operations
-class RepoManager:
+class SphinxRepoManager:
     def __init__(self, abs_manifest_path):
         self.read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
         self.manifest_path = abs_manifest_path
@@ -292,53 +290,39 @@ class RepoManager:
         self.setup_directory_skeleton(abs_init_clone_path)  # eg: source/_repos-available
         self.setup_directory_skeleton(abs_base_symlink_path)  # eg: source/content
 
-    def read_manifest_manage_repos(self, app):
+    def get_normalized_manifest(self):
         """
         Handle the repository cloning and updating process when Sphinx initializes.
         - Read/normalize/validate the manifest
         - Initialize the directory tree skeleton
         - Manage the repositories (cloning, updating, and symlinking)
+        - returns: manifest
         """
         logger.info(colorize_success(f"\n══{brighten('BEGIN REPO_MANAGER')}══\n"))
 
         # Ensure working dir is always from manifest working dir for consistency
         # (!) This particularly fixes a RTD bug that adds an extra source/ dir, breaking paths
         os.chdir(ABS_MANIFEST_PATH_DIR)
-        logger.info(f"working_dir (ABS_MANIFEST_PATH_DIR): {os.getcwd()}")
+        logger.info(colorize_path(f"- working_dir (ABS_MANIFEST_PATH_DIR): '{brighten(os.getcwd())}'"))
 
-        try:
-            manifest = self.read_normalize_manifest()
+        manifest = self.read_normalize_manifest()
 
-            # Is this extension enabled (default true)?
-            enable_repo_manager = manifest.get('enable_repo_manager', True)
-            if not enable_repo_manager:
-                logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
-                return
+        # Is this extension enabled (default true)?
+        enable_repo_manager = manifest.get('enable_repo_manager', True)
+        if not enable_repo_manager:
+            logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
+            return manifest
 
-            self.debug_mode = manifest['debug_mode']
+        self.debug_mode = manifest['debug_mode']
 
-            enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
-            if not self.read_the_docs_build and not enable_repo_manager_local:
-                logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
-                               f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
-                return
+        enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
+        if not self.read_the_docs_build and not enable_repo_manager_local:
+            logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
+                           f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
+            return manifest
 
-            self.init_dir_tree(manifest)
-
-            # Decide number of workers to use, depending if local or RTD host
-            max_workers = manifest['max_workers_local'] if not self.read_the_docs_build \
-                else manifest['max_workers_rtd']
-            logger.info(colorize_action(f"🤖 | Using {max_workers} worker(s) for multi-threading"))
-
-            self.manage_repositories(manifest, max_workers)
-        except Exception as e:
-            logger.error(f"Failed to manage_repositories {brighten('*See `Extension error` below*')}")
-            if STOP_BUILD_ON_ERROR:
-                raise RepositoryManagementError(f"\nclone_update_repos failure:\n- {e}")
-        finally:
-            logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
-            if self.debug_mode and not self.read_the_docs_build:
-                raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
+        self.init_dir_tree(manifest)
+        return manifest
 
     @staticmethod
     def setup_directory_skeleton(create_path_to):
@@ -481,15 +465,23 @@ class RepoManager:
     #         repo_sparse_path,
     #         rel_init_clone_path_root_symlink_src)
 
-    def manage_repositories(self, manifest, max_workers=5):
+    def manage_repositories(self, manifest):
+        if not manifest:
+            raise RepositoryManagementError('No manifest found (or failed when normalizing)')
+
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
         repositories = list(manifest['repositories'].items())
         log_queue = queue.Queue()  # Queue for handling log entries
 
+        # Decide number of workers to use, depending if local or RTD host
+        max_workers = manifest['max_workers_local'] if not self.read_the_docs_build \
+            else manifest['max_workers_rtd']
+        logger.info(colorize_action(f"🤖 | Using {max_workers} worker(s) for multi-threading"))
+
         total_repos_num = len(repositories)
         current_repo_num = 1
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers) as executor:
             futures = []
             for repo_name, repo_info in repositories:
                 if self.shutdown_flag:
@@ -715,9 +707,26 @@ class RepoManager:
         if not Path(rel_symlinked_repo_path).is_symlink():
             logger.error(f"Failed to create symlink: '{rel_symlinked_repo_path}'")
 
+    def main(self, app):
+        """
+        Handle the repository cloning and updating process when Sphinx initializes.
+        - Read/normalize/validate the manifest
+        - Initialize the directory tree skeleton
+        - Manage the repositories (cloning, updating, and symlinking)
+        """
+        try:
+            manifest = self.get_normalized_manifest()
+            self.manage_repositories(manifest)
+        except Exception as e:
+            raise RepositoryManagementError(f"\nrepo_manager failure: {e}")
+        finally:
+            logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
+            if self.debug_mode and not self.read_the_docs_build:
+                raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
+
 
 # [ENTRY POINT] Set up the Sphinx extension
 def setup(app):
-    repo_manager = RepoManager(ABS_MANIFEST_PATH)
-    app.connect('builder-inited', repo_manager.read_manifest_manage_repos)
+    repo_manager = SphinxRepoManager(ABS_MANIFEST_PATH)
+    app.connect('builder-inited', repo_manager.main)
     # app.connect('source-read', replace_paths)  # (!) WIP

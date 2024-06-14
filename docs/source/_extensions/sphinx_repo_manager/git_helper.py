@@ -80,6 +80,9 @@ class GitHelper:
     @staticmethod
     def git_clone(clone_to_path, repo_url_dotgit, branch):
         """ Clone the repo+branch from the provided URL to the specified path. """
+        if os.path.exists(clone_to_path):
+            raise Exception(f"Tried to clone to path, but dir already exists: '{brighten(clone_to_path)}'")
+
         git_clone_cmd_arr = [
             'git', 'clone',
             '--branch', branch,

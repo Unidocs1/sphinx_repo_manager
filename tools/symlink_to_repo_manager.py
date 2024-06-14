@@ -3,8 +3,8 @@ import sys
 import subprocess
 
 
-TARGET_PATH = "../docs/source/_extensions/repo_manager"
-LINK_NAME = "repo_manager"
+TARGET_PATH = "../docs/source/_extensions/sphinx_repo_manager"
+LINK_NAME = "sphinx_repo_manager"
 
 
 def create_symlink(target_path, link_name):

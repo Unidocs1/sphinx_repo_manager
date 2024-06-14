@@ -4,7 +4,7 @@ repo_cleaner.py
 - This could theoretically be used for mass repo changes (beyond just migration).
 - Set constant prefs below (all True, by default).
 After cleaning, check git diff to ensure the correct architecture is in place.
-- Script to hook into repo_manager and git_manager tooling,
+- Script to hook into sphinx_repo_manager and git_manager tooling,
 and reading the ../repo_manifest.yml file
 - (!) Be sure you're using version control before running this script.
 - (!) There's a lot going on here: Absolutely check git diff post-run.
@@ -142,15 +142,15 @@ ABS_MANIFEST_PATH = ABS_PROJECT_ROOT_PATH / 'repo_manifest.yml'
 REL_TEMPLATE_REPO_PATH = Path('./template-doc')  # For logging only
 ABS_TEMPLATE_REPO_PATH = (ABS_PROJECT_ROOT_PATH / REL_TEMPLATE_REPO_PATH).resolve()
 
-# Add the path to the repo_manager extension
-repo_manager_path = ABS_PROJECT_ROOT_PATH / 'repo_manager'
+# Add the path to the sphinx_repo_manager extension
+repo_manager_path = ABS_PROJECT_ROOT_PATH / 'sphinx_repo_manager'
 sys.path.insert(0, str(repo_manager_path))
 
 # Add the path to the log_styles module
 log_styles_path = ABS_PROJECT_ROOT_PATH / 'log_styles'
 sys.path.insert(0, str(log_styles_path))
 
-from repo_manager import RepoManager
+from repo_manager import SphinxRepoManager
 from repo_manager import GitHelper
 
 

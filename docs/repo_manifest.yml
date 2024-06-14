@@ -14,9 +14,9 @@
 ################################################################################################
 enable_repo_manager: true                         # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
 enable_repo_manager_local: true                   # If enable_repo_manager && false, will skip this extension locally; defaults to true, if omitted
-max_workers_local: 5                              # [BETA] Max workers for local repo_manager for multi-threading; use just 1 for debugging; defaults to 1 (later 5, once git_helper logs handle async), if omitted
+max_workers_local: 5                              # [BETA] Max workers for local sphinx_repo_manager for multi-threading; use just 1 for debugging; defaults to 1 (later 5, once git_helper logs handle async), if omitted
 max_workers_rtd: 1                                # [BETA] Max workers for ReadTheDocs deployment for multi-threading; RTD has max 1 for free accts; use just 1 for debugging or free accts; defaults to 2, if omitted
-debug_mode: false                                 # More-verbose logging or debugging; throws arbitrary err on done with repo_manager if local (prevents warning spam); defaults to false, if omitted
+debug_mode: false                                 # More-verbose logging or debugging; throws arbitrary err on done with sphinx_repo_manager if local (prevents warning spam); defaults to false, if omitted
 stash_and_continue_if_wip: true                   # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
 init_clone_path: "source/_repos-available"        # Default base for cloning; normalizes "os/path/slashes"; (!) on RTD, "source/" prefix will be removed to resolve RTD bug; defaults to source/_repos-available, if omitted
 init_clone_path_root_symlink_src: 'docs/source'   # When we symlink from init_clone_path, we may want to set the src deeper nested than what we cloned; normalizes "os/path/slashes"; defaults to 'docs/source', if omitted 
