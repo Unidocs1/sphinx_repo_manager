@@ -187,12 +187,13 @@ class RepoManager:
     ):
         if '_meta' not in repo_info:
             repo_info['_meta'] = {
-                'url_dotgit': '',                         # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
-                'repo_name': '',                          # eg: "account_services"
-                'has_tag': False,                         # True if tag exists
-                'rel_symlinked_repo_path': '',            # "{base_symlink_path}{symlink_path}-{tag_or_branch}"; eg: "source/content/account_services" (no tag)
+                'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
+                'repo_name': '',  # eg: "account_services"
+                'has_tag': False,  # True if tag exists
+                'rel_symlinked_repo_path': '',
+                # "{base_symlink_path}{symlink_path}-{tag_or_branch}"; eg: "source/content/account_services" (no tag)
                 'tag_versioned_clone_src_repo_name': '',  # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
-                'tag_versioned_clone_src_path': '',       # "{init_clone_path}/{tag_versioned_clone_src_repo_name}";
+                'tag_versioned_clone_src_path': '',  # "{init_clone_path}/{tag_versioned_clone_src_repo_name}";
                 # - eg: "source/_repos-available/account_services-v2.1.0"
                 # - eg: "source/_repos-available/account_services--master"
             }
@@ -245,7 +246,8 @@ class RepoManager:
         # This helps us easily identify the clone src without even entering the dir
         # (!) All repos must have unique names for this to auto-symlink without repo names or tags
         if has_tag:
-            _meta['tag_versioned_clone_src_repo_name'] = f"{repo_name}-{tag}"  # "repo-{tag}"; eg: "account-services-v2.1.0"
+            _meta[
+                'tag_versioned_clone_src_repo_name'] = f"{repo_name}-{tag}"  # "repo-{tag}"; eg: "account-services-v2.1.0"
         else:
             # "repo-{"cleaned_branch"}"; eg: "account-services--master" or "account-services--some_nested_branch"
             # ^ Notice the "--" double slash separator. Only accept alphanumeric chars; replace all others with "_"
@@ -370,7 +372,8 @@ class RepoManager:
                 os.unlink(symlink_target_path)
         elif os.path.exists(symlink_target_path):
             logger.error(f"  - Error: Target path exists and is not a symlink: {symlink_target_path}")
-            raise RepositoryManagementError(f"\nCannot create symlink, target path exists and is not a symlink: {symlink_target_path}")
+            raise RepositoryManagementError(
+                f"\nCannot create symlink, target path exists and is not a symlink: {symlink_target_path}")
 
         # Create the symlink
         os.symlink(symlink_src_path, symlink_target_path)
@@ -482,17 +485,17 @@ class RepoManager:
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
         repositories = list(manifest['repositories'].items())
         log_queue = queue.Queue()  # Queue for handling log entries
-    
+
         total_repos_num = len(repositories)
         current_repo_num = 1
-    
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = []
             for repo_name, repo_info in repositories:
                 if self.shutdown_flag:
                     logger.info("Shutdown initiated, stopping new repository processing.")
                     raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
-    
+
                 future = executor.submit(
                     self.process_repo_with_logging,
                     repo_info,
@@ -500,16 +503,16 @@ class RepoManager:
                     log_queue,
                     current_repo_num,
                     total_repos_num)
-    
+
                 futures.append(future)
                 current_repo_num += 1
-    
+
             # Attempt to cancel all futures if a shutdown is detected
             if self.shutdown_flag:
                 for future in futures:
                     future.cancel()
                     raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
-    
+
             # Handle the completion of tasks, ensuring we process results or catch exceptions
             for future in concurrent.futures.as_completed(futures):
                 try:
@@ -517,11 +520,16 @@ class RepoManager:
                 except Exception as e:
                     with self.lock:
                         logger.error(f"Failed to manage repository: {e}")
-    
+
         # Process all remaining logs
         while not log_queue.empty():
             log_entry = log_queue.get()
             logger.info(log_entry)
+
+    def check_shutdown(self):
+        if self.shutdown_flag:
+            logger.info("Shutdown flagged: Exiting operation.")
+            raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
 
     def clone_and_symlink(
             self,
@@ -544,10 +552,6 @@ class RepoManager:
         - log_entries will be appended with the results of the operation, logging in chunks
           - This is to handle async logs so it's still chronological
         """
-        if self.shutdown_flag:
-            logger.info("Shutdown flagged: Exiting operation.")
-            raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
-
         _meta = repo_info['_meta']
         repo_url_dotgit = _meta['url_dotgit']
         has_tag = _meta['has_tag']
@@ -559,6 +563,8 @@ class RepoManager:
             # Clone the repo, if we haven't done so already
             cloned = False
             already_stashed = False  # To prevent some redundancy
+
+            self.check_shutdown()  # Multi-threading CTRL+C check
 
             if not os.path.exists(rel_tag_versioned_clone_src_path):
                 action_str = colorize_action(f"📦 | Sparse-cloning repo...")
@@ -573,9 +579,7 @@ class RepoManager:
                     repo_sparse_path,
                     stash_and_continue_if_wip)
 
-                if self.shutdown_flag:
-                    logger.info("Shutdown flagged: Exiting operation.")
-                    raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+                self.check_shutdown()  # Multi-threading CTRL+C check
 
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
@@ -591,9 +595,7 @@ class RepoManager:
 
                 GitHelper.git_fetch(rel_tag_versioned_clone_src_path)
 
-            if self.shutdown_flag:
-                logger.info("Shutdown flagged: Exiting operation.")
-                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+            self.check_shutdown()  # Multi-threading CTRL+C check
 
             # Checkout to the specific branch or tag
             has_branch = 'branch' in repo_info
@@ -618,9 +620,7 @@ class RepoManager:
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
-            if self.shutdown_flag:
-                logger.info("Shutdown flagged: Exiting operation.")
-                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+            self.check_shutdown()  # Multi-threading CTRL+C check
 
             if not cloned:
                 should_stash = stash_and_continue_if_wip and not already_stashed
@@ -629,10 +629,8 @@ class RepoManager:
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
-            if self.shutdown_flag:
-                logger.info("Shutdown flagged: Exiting operation.")
-                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
-           
+            self.check_shutdown()  # Check for shutdown after the operation
+
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
             # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
             #
@@ -645,7 +643,8 @@ class RepoManager:
 
             # (1) Symlink content -> to nested repo
             log_entries.append(colorize_path(f"  - From clone src path: '{brighten(abs_symlink_src_nested_path)}'"))
-            log_entries.append(colorize_path(f"  - To symlink path: '{brighten(rel_init_clone_path_root_symlink_src)}'"))
+            log_entries.append(
+                colorize_path(f"  - To symlink path: '{brighten(rel_init_clone_path_root_symlink_src)}'"))
 
             try:
                 self.create_symlink(
@@ -656,19 +655,20 @@ class RepoManager:
             except Exception as e:
                 logger.error(f"Error creating symlink: {str(e)}")
 
-            if self.shutdown_flag:
-                logger.info("Shutdown flagged: Exiting operation.")
-                raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+            self.check_shutdown()  # Check for shutdown after the operation
 
             # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
             abs_release_notes_symlink_src_repo_path = init_symlink_src_path.joinpath('RELEASE_NOTES.rst').absolute()
 
             # For a file that doesn't yet exist, the src needs an absolute path without using .resolve() or .absolute()
-            release_notes_symlink_target_repo_path = Path(Path(ABS_MANIFEST_PATH_DIR) / Path(rel_symlinked_repo_path) / 'RELEASE_NOTES.rst')
+            release_notes_symlink_target_repo_path = Path(
+                Path(ABS_MANIFEST_PATH_DIR) / Path(rel_symlinked_repo_path) / 'RELEASE_NOTES.rst')
 
             if self.debug_mode:
-                print(f"*[debug_mode] Resolved source path for RELEASE_NOTES.rst: {abs_release_notes_symlink_src_repo_path}")
-                print(f"*[debug_mode] Resolved target path for RELEASE_NOTES.rst: {release_notes_symlink_target_repo_path}")
+                print(
+                    f"*[debug_mode] Resolved source path for RELEASE_NOTES.rst: {abs_release_notes_symlink_src_repo_path}")
+                print(
+                    f"*[debug_mode] Resolved target path for RELEASE_NOTES.rst: {release_notes_symlink_target_repo_path}")
 
             if not abs_release_notes_symlink_src_repo_path.exists():
                 logger.warning(f"No RELEASE_NOTES.rst found in '{abs_release_notes_symlink_src_repo_path}'")

@@ -16,9 +16,10 @@ import sys
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = '%REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%'
+project = 'Xsolla XBE'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
+release = '2024.07.0-TEST'
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -213,7 +214,7 @@ html_context = {
     'display_gitlab': True,  # Integrate Gitlab
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
-    'gitlab_repo': '%REPO_NAME%',  # Repo name
+    'gitlab_repo': 'acceleratxr.io',  # Repo name
     'gitlab_version': 'master',  # Version
 }
 
