@@ -474,14 +474,14 @@ class SphinxRepoManager:
         log_queue = queue.Queue()  # Queue for handling log entries
 
         # Decide number of workers to use, depending if local or RTD host
-        max_workers = manifest['max_workers_local'] if not self.read_the_docs_build \
+        max_num_workers = manifest['max_workers_local'] if not self.read_the_docs_build \
             else manifest['max_workers_rtd']
-        logger.info(colorize_action(f"🤖 | Using {max_workers} worker(s) for multi-threading"))
+        logger.info(colorize_action(f"🤖 | Using {max_num_workers} worker(s) for multi-threading"))
 
         total_repos_num = len(repositories)
         current_repo_num = 1
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_num_workers) as executor:
             futures = []
             for repo_name, repo_info in repositories:
                 if self.shutdown_flag:
