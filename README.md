@@ -1,16 +1,22 @@
-# xbe-docs
+# acceleratxr.io (Master Doc)
 
-Create help docs with `sphinx-build`. This guide is specific to Windows OS.
+Master doc to create help docs from other repos with `make html` (`sphinx-build`). 
+
+This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubuntu, etc).
 
 ## Prerequisites
 
 ### Required
+
+#### Windows
 
 1. [Chocolatey](https://chocolatey.org/) CLI tool
 	- Once you have Choco, install `make` in an **ADMIN** terminal:
 		```powershell
 		choco install make --yes
 		```
+		
+#### Common
 
 2. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
 	- See a recommended path to installing Python [below](#python-install-path)
@@ -31,17 +37,24 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 ## Build
 
+
 1. To build from source, either run `make.bat` or run in PowerShell from `docs/`:
 
 ```powershell
 make html
 ```
 
-2. Open the built index via `build/html/index.html`
+2. Open the built index via `build/html/index.html` (`make.bat` will auto-launch this)
 
 ### Speedy Build
 
 If you _just_ updated and want to build without going through `repo_manager`, simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
+
+### Debugging a Build
+
+1. Slow down the logs and ensure chronological stability: Set the `max_workers_local` of `repo_manifest.yml` to `1` (default `5`).
+2. Set `debug_mode` of `repo_manifest` to `true` (default `false`).
+3. Comment out all repositories in your `repo_manifest` except 1 or 2.
 
 ## Typical Structure
 
@@ -60,17 +73,19 @@ Source repo docs/  layout tree should be structured as follows, with example con
 - RELEASE_NOTES.rst
 - <repo root>/docs/
    - source/
-      - conf.py
-      - index.rst
+      - _extensions/
+	    - sphinx_repo_manager/
       - _static/
          - images/
             - foo.png
          - css/
             - someStyle.css
-         
       - _templates/
       - content/
-         - foo.rst 
+         - foo.rst (pointed to from index.rst)
+      - RELEASE_NOTES.rst (symlink to root)
+      - conf.py (entry point setup)
+	  - index.rst (entry point)
 ```
 
 ## Apps & Extensions
@@ -105,7 +120,22 @@ The `requirements.txt` file includes dependencies necessary for building and man
 - **Purpose**: [`PyYAML`] YAML parser and emitter for Python. It is used to handle YAML-formatted files within your documentation project, which can be useful for configuration files or other data-driven content.
 - **Documentation**: [PyYAML on PyPI](https://pypi.org/project/PyYAML/)
 
-## Troubleshooting
+
+### DocGen Tools
+
+#### breathe
+
+TODO
+
+#### sphinx_csharp
+
+TODO
+
+#### sphinx.ext.autodoc
+
+TODO
+
+## Additional Troubleshooting
 
 ### Clearing Cache
 

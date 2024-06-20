@@ -3,33 +3,36 @@ Xsolla Sphinx Extension: sphinx_repo_manager
 --------------------------------------------
 
 Description:
-This Sphinx extension is designed to automate the management of multiple documentation repositories as part
-of building a larger, unified doc system. It facilitates the cloning and updating of external repositories
-specified in a YAML manifest file, ensuring that each repository is checked out to the specified
-tag before Sphinx documentation generation proceeds.
+Automates management of multiple documentation repositories by cloning and updating
+external repos specified in a YAML manifest file, ensuring each repo is checked out
+to the specified tag before Sphinx doc-gen (`make html`).
 
-How it Works:
-1. The extension reads a manifest file (`repo_manifest.yml`) that lists repositories with their respective
-clone URLs and tags.
-2. It checks if each repository is already cloned at the specified location.
-3. If a repository is not found, it clones the repository from the provided URL to an initial clone path.
-4. Git checkouts use sparse cloning in combination with git exclusions to only keep [ .git, docs ] dirs.
-5. Symlinks are created from the clone path to the base symlink path specified in the YAML.
+Quickstart:
+1. Edit `repo_manifest.yml` in the project root.
+2. Ensure each repo in the manifest includes at least a `url`.
+4. Include this extension in `conf.py` by adding the extension's path to `sys.path`
+   and adding it to the `extensions` list:
+   ```
+   sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
+   extensions = [sphinx_repo_manager]
+   ```
 
-Usage:
-1. Edit the `repo_manifest.yml` at your repo project root.
-2. Ensure each repository listed in the manifest includes at least a `url` and a `tag`.
-3. Optionally, specify `init_clone_path` and `base_symlink_path` in the manifest to manage where repositories
-are cloned and how they are accessed.
-4. Include this extension in your Sphinx `conf.py` file by adding the extension's path to `sys.path`
-(source/_extensions/sphinx_repo_manager) and including in the `extensions` list.
+Entry Point:
+- setup(app): Executes during Sphinx 'builder-inited' event.
 
-Requirements: See project root `requirements.txt` -> Install easily via project `root tools/requirements-install.ps1`
+Default Dir Tree:
+Inspired by nginx, repos are cloned to `_repos_available` -> then symlinked to `content/`:
+- docs/
+  - source/
+    - _extensions/
+    - _repos_available/
+      - (eg) account_services-v2.1.0/
+    - content/
+      - (eg) account_services/
+    - conf.py
+    - index.rst
 
-Entry point: setup(app) | This script is executed during the 'builder-inited' event of Sphinx,
-which is triggered after Sphinx inits but before the build process begins.
-
-# Tested in:
+Tested in:
 - Windows 11 via PowerShell7
 - Ubuntu 24.04 LTS via ReadTheDocs (RTD) deployment
 """
