@@ -186,6 +186,10 @@ As this can easily get error-prone, especially for new Python users, see below t
 	Write-Host "Scripts directory added to PATH."
 	```
 
+## Tools
+
+See tools/[README.md](tools/README.md)
+
 ## License
 
 TODO
