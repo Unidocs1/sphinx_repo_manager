@@ -88,6 +88,13 @@ Source repo docs/  layout tree should be structured as follows, with example con
 	  - index.rst (entry point)
 ```
 
+### Template Doc
+
+See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
+
+* docs/README.md
+* docs/source/conf.py
+
 ## Apps & Extensions
 
 To describe what is installed, including extensions:

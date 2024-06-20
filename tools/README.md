@@ -6,6 +6,13 @@ From "perfect doc" templates to scripts to get things done:
 
 The equivalent of installing ../requirements.txt yourself, but friendlier (and creates a symlink to repo_manager for tooling).
 
+## template-doc/ dir
+
+Paste this to new repos for a `docs/` template. Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
+
+* docs/README.md
+* docs/source/conf.py
+
 ## tool_template.py
 
 Start here for tooling -- a minimal template to read the manifest file, then leave you to it.
@@ -16,7 +23,7 @@ The successor of `repo_cleaner.py` for more-minimal actions for already-normaliz
 
 ## repo_cleaner.py
 
-Somewhat deprecated in favor of the more-minimal `mass-repo-cmds.ps1`, initially used to mass normalize every cloned repo, but can be repurposed to do similar things. Repurpose this script to do more-complex things, even if the files are not yet normalized.
+Somewhat deprecated in favor of the more-minimal `mass-repo-cmds.ps1`, initially used to mass normalize every cloned repo and replace %PLACEHOLDERS%, but can be repurposed to do similar things. Repurpose this script to do more-complex things, even if the files are not yet normalized.
 
 ## Deprecated/ dir
 
