@@ -41,7 +41,9 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
  
 2. Run: `pip install -r requirements-dev.txt`
 
-3. Run: `cd docker && docker-compose up`
+3. Copy `docker/.env.template` to `docker/.env` (or symlink it from `../.env`) -> fill `GITLAB_ACCESS_TOKEN` (⚠️TODO: I couldn't get `../.env` to work with Docker here)
+
+4. Run: `cd docker && docker-compose up` (⚠️TODO: )
 
 ## Build
 
