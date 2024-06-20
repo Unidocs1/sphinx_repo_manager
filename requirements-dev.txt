@@ -1,0 +1,8 @@
+# for testing the master branch
+# git+git://github.com/svenevs/exhale.git#egg=exhale
+# See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
+#
+# For esbonio preview server
+esbonio
+lsp_devtools
+rstcheck

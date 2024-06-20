@@ -9,131 +9,131 @@
 # - Most path/slashes/are/normalized for you; use whichever.                                   #
 # - [Versioned] Both src clone + symlinked dir names will look like "{repo_name}-{tag}"        #
 # - [Unversioned] Both src clone + symlinked dir names will look like "{repo_name}--{branch}"  #
-# - [Unversioned] Double dashes replace slashes. Eg: {repo_name}--foo--branch}}                # 
+# - [Unversioned] Double dashes replace slashes. Eg: {repo_name}--foo--branch}}                #
 # - It *is safe* to wipe your source/_repos-available + source/content dirs.                   #
 ################################################################################################
-enable_repo_manager: true                         # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
-enable_repo_manager_local: true                   # If enable_repo_manager && false, will skip this extension locally; defaults to true, if omitted
-max_workers_local: 5                              # [BETA] Max workers for local sphinx_repo_manager for multi-threading; use just 1 for debugging; defaults to 1 (later 5, once git_helper logs handle async), if omitted
-max_workers_rtd: 1                                # [BETA] Max workers for ReadTheDocs deployment for multi-threading; RTD has max 1 for free accts; use just 1 for debugging or free accts; defaults to 2, if omitted
-debug_mode: false                                 # More-verbose logging or debugging; throws arbitrary err on done with sphinx_repo_manager if local (prevents warning spam); defaults to false, if omitted
-stash_and_continue_if_wip: true                   # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
-init_clone_path: "source/_repos-available"        # Default base for cloning; normalizes "os/path/slashes"; (!) on RTD, "source/" prefix will be removed to resolve RTD bug; defaults to source/_repos-available, if omitted
-init_clone_path_root_symlink_src: 'docs/source'   # When we symlink from init_clone_path, we may want to set the src deeper nested than what we cloned; normalizes "os/path/slashes"; defaults to 'docs/source', if omitted 
-base_symlink_path: "source/content"               # Default base path for cloning repos relative to this file; (!) on RTD, "source/" prefix will be removed to resolve RTD bug; normalizes "os/path/slashes"; defaults to "source/content", if omitted
-default_branch: "master"                          # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
-repo_sparse_path: "docs"                          # Path to individual repo dirs we [mostly] want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; use `tools/repo_cleaner.py` for initial "deep" cleaning, if you've backed up; default to "docs", if omitted
+enable_repo_manager: true # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
+enable_repo_manager_local: true # If enable_repo_manager && false, will skip this extension locally; defaults to true, if omitted
+max_workers_local: 5 # [BETA] Max workers for local sphinx_repo_manager for multi-threading; use just 1 for debugging; defaults to 1 (later 5, once git_helper logs handle async), if omitted
+max_workers_rtd: 1 # [BETA] Max workers for ReadTheDocs deployment for multi-threading; RTD has max 1 for free accts; use just 1 for debugging or free accts; defaults to 2, if omitted
+debug_mode: false # More-verbose logging or debugging; throws arbitrary err on done with sphinx_repo_manager if local (prevents warning spam); defaults to false, if omitted
+stash_and_continue_if_wip: true # If true, will stash and continue if working directory is dirty; defaults to true, if omitted
+init_clone_path: "source/_repos-available" # Default base for cloning; normalizes "os/path/slashes"; (!) on RTD, "source/" prefix will be removed to resolve RTD bug; defaults to source/_repos-available, if omitted
+init_clone_path_root_symlink_src: "docs/source" # When we symlink from init_clone_path, we may want to set the src deeper nested than what we cloned; normalizes "os/path/slashes"; defaults to 'docs/source', if omitted
+base_symlink_path: "source/content" # Default base path for cloning repos relative to this file; (!) on RTD, "source/" prefix will be removed to resolve RTD bug; normalizes "os/path/slashes"; defaults to "source/content", if omitted
+default_branch: "master" # If repository omits 'branch', this will be the fallback; defaults to "master", if omitted
+repo_sparse_path: "docs" # Path to individual repo dirs we [mostly] want to clone - instead of the entire repo; this should be consistent between all repos; normalizes "explicit/forward/slashes"; use `tools/repo_cleaner.py` for initial "deep" cleaning, if you've backed up; default to "docs", if omitted
 # ----------------------------------------------------------------------
-# For private repo access when testing with a !premium RTD account, 
+# For private repo access when testing with a !premium RTD account,
 # set GITLAB_ACCESS_TOKEN in RTD's web dashboard (still use HTTPS urls);
 # creds will be swapped @ .readthedocs.yaml
-repositories:                         # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
-  # Static >>
-  xbe_static_docs:
-    url: "https://gitlab.acceleratxr.com/Core/xbe_static_docs"  # .git suffix == optional; HTTPS only (until we add cert support in RTD); if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
-    #tag: "v1.0.0"     # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
-    symlink_path: "-"  # Normally named your_repo_name, but static docs is special. Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"; defaults to repo name, if omitted;
-    branch: "main"     # Normalizes os/path/slashes; Default {default_branch}, if omitted
-    init_clone_path_root_symlink_src_override: 'docs/source/content'  # If true, overrides init_clone_path_root_symlink_src; defaults to {init_clone_path_root_symlink_src}, if omitted
-    active: true       # Default true, if omitted
-  # Services >>
-  account_services:
-    url: "https://gitlab.acceleratxr.com/Core/account_services"
-    branch: "dev"
-  achievements_services:
-    url: "https://gitlab.acceleratxr.com/Core/achievements_services"
-    branch: "dev"
-  asset_services:
-    url: "https://gitlab.acceleratxr.com/Core/asset_services"
-    branch: "dev"
-  backup_services:
-    url: "https://gitlab.acceleratxr.com/Core/backup_services"
-    branch: "dev"
-  economy_services:
-    url: "https://gitlab.acceleratxr.com/Core/economy_services"
-    branch: "dev"
-  leaderboard_services:
-    url: "https://gitlab.acceleratxr.com/Core/leaderboard_services"
-    branch: "dev"
-  matchmaking_services:
-    url: "https://gitlab.acceleratxr.com/Core/matchmaking_services"
-    branch: "dev"
-  notification_services:
-    url: "https://gitlab.acceleratxr.com/Core/notification_services"
-    branch: "dev"
-  persona_services:
-    url: "https://gitlab.acceleratxr.com/Core/persona_services"
-    branch: "dev"
-  progression_services:
-    url: "https://gitlab.acceleratxr.com/Core/progression_services"
-    branch: "dev"
-  purchasing_services:
-    url: "https://gitlab.acceleratxr.com/Core/purchasing_services"
-    branch: "dev"
-  quest_services:
-    url: "https://gitlab.acceleratxr.com/Core/quest_services"
-    branch: "dev"
-  reporting_services:
-    url: "https://gitlab.acceleratxr.com/Core/reporting_services"
-    branch: "dev"
-  scripting_services:
-    url: "https://gitlab.acceleratxr.com/Core/scripting_services"
-    branch: "dev"
-  server_instance_services:
-    url: "https://gitlab.acceleratxr.com/Core/server_instance_services"
-    branch: "dev"
-  session_services:
-    url: "https://gitlab.acceleratxr.com/Core/session_services"
-    branch: "dev"
-  social_services:
-    url: "https://gitlab.acceleratxr.com/Core/social_services"
-    branch: "dev"
-  telemetry_services:
-    url: "https://gitlab.acceleratxr.com/Core/telemetry_services"
-    branch: "dev"
-  validation_services:
-    url: "https://gitlab.acceleratxr.com/Core/validation_services"
-    branch: "dev"
-  # Sdks >>
-  sdk_cpp:
-    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
-    branch: "dev/vcpkg_update"  # TODO: Make new `dev` branch after this is merged
-  sdk_csharp:
-    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
-    branch: "dev"
-  sdk_nodejs:
-    url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
-    branch: "dev"
-  sdk_unity:
-      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
-      branch: "dev"
-  sdk_unreal:
-      url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
-      branch: "dev"
-  # Composer >>
-  service-core:
-    url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
-    branch: "dev"
-  # Other Products/Apps >>
-  service_monitor:
-    url: "https://gitlab.acceleratxr.com/Core/service_monitor"
-    branch: "dev"
-  launcher:
-    url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
-    branch: "dev"
-  console:
-    url: "https://gitlab.acceleratxr.com/Core/apps/console"
-    branch: "dev"
-  xbeapp:
-    url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
-    branch: "dev"
-  # Demos >>
-  unitychessgame:
-    url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
-    branch: "dev"
-  lyrastartergame:
-    url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
-    branch: "dev"
+repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which more or less skips this extension
+    # Static >>
+    xbe_static_docs:
+        url: "https://gitlab.acceleratxr.com/Core/xbe_static_docs" # .git suffix == optional; HTTPS only (until we add cert support in RTD); if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
+        #tag: "v1.0.0"     # You may not want a tag, if you just want the latest branch commit (!) Don't forget to prefix with "v", if target tags include this
+        symlink_path: "-" # Normally named your_repo_name, but static docs is special. Relative to baseClonePath; normalizes os/path/slashes; default "{repo_name}-{tag}"; defaults to repo name, if omitted;
+        branch: "main" # Normalizes os/path/slashes; Default {default_branch}, if omitted
+        init_clone_path_root_symlink_src_override: "docs/source/content" # If true, overrides init_clone_path_root_symlink_src; defaults to {init_clone_path_root_symlink_src}, if omitted
+        active: true # Default true, if omitted
+    # Services >>
+    account_services:
+        url: "https://gitlab.acceleratxr.com/Core/account_services"
+        branch: "dev"
+    achievements_services:
+        url: "https://gitlab.acceleratxr.com/Core/achievements_services"
+        branch: "dev"
+    asset_services:
+        url: "https://gitlab.acceleratxr.com/Core/asset_services"
+        branch: "dev"
+    backup_services:
+        url: "https://gitlab.acceleratxr.com/Core/backup_services"
+        branch: "dev"
+    economy_services:
+        url: "https://gitlab.acceleratxr.com/Core/economy_services"
+        branch: "dev"
+    leaderboard_services:
+        url: "https://gitlab.acceleratxr.com/Core/leaderboard_services"
+        branch: "dev"
+    matchmaking_services:
+        url: "https://gitlab.acceleratxr.com/Core/matchmaking_services"
+        branch: "dev"
+    notification_services:
+        url: "https://gitlab.acceleratxr.com/Core/notification_services"
+        branch: "dev"
+    persona_services:
+        url: "https://gitlab.acceleratxr.com/Core/persona_services"
+        branch: "dev"
+    progression_services:
+        url: "https://gitlab.acceleratxr.com/Core/progression_services"
+        branch: "dev"
+    purchasing_services:
+        url: "https://gitlab.acceleratxr.com/Core/purchasing_services"
+        branch: "dev"
+    quest_services:
+        url: "https://gitlab.acceleratxr.com/Core/quest_services"
+        branch: "dev"
+    reporting_services:
+        url: "https://gitlab.acceleratxr.com/Core/reporting_services"
+        branch: "dev"
+    scripting_services:
+        url: "https://gitlab.acceleratxr.com/Core/scripting_services"
+        branch: "dev"
+    server_instance_services:
+        url: "https://gitlab.acceleratxr.com/Core/server_instance_services"
+        branch: "dev"
+    session_services:
+        url: "https://gitlab.acceleratxr.com/Core/session_services"
+        branch: "dev"
+    social_services:
+        url: "https://gitlab.acceleratxr.com/Core/social_services"
+        branch: "dev"
+    telemetry_services:
+        url: "https://gitlab.acceleratxr.com/Core/telemetry_services"
+        branch: "dev"
+    validation_services:
+        url: "https://gitlab.acceleratxr.com/Core/validation_services"
+        branch: "dev"
+    # Sdks >>
+    sdk_cpp:
+        url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"
+        branch: "dev/vcpkg_update" # TODO: Make new `dev` branch after this is merged
+    sdk_csharp:
+        url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp"
+        branch: "dev"
+    sdk_nodejs:
+        url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs"
+        branch: "dev"
+    sdk_unity:
+        url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unity"
+        branch: "dev"
+    sdk_unreal:
+        url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
+        branch: "dev"
+    # Composer >>
+    service-core:
+        url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
+        branch: "dev"
+    # Other Products/Apps >>
+    service_monitor:
+        url: "https://gitlab.acceleratxr.com/Core/service_monitor"
+        branch: "dev"
+    launcher:
+        url: "https://gitlab.acceleratxr.com/Core/apps/launcher"
+        branch: "dev"
+    console:
+        url: "https://gitlab.acceleratxr.com/Core/apps/console"
+        branch: "dev"
+    xbeapp:
+        url: "https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp"
+        branch: "dev"
+    # Demos >>
+    unitychessgame:
+        url: "https://gitlab.acceleratxr.com/Core/samples/unitychessgame"
+        branch: "dev"
+    lyrastartergame:
+        url: "https://gitlab.acceleratxr.com/Core/samples/lyrastartergame"
+        branch: "dev"
 #  # Libs/WebApps >>
 #  appconfig:
 #    url: "https://gitlab.acceleratxr.com/Core/tools/appconfig"

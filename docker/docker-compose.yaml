@@ -1,0 +1,22 @@
+version: "3.5"
+
+name: xbe
+
+services:
+    docs-base:
+        image: docs-base
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile
+
+    docs-build:
+        image: docs-build
+        depends_on:
+            - docs-base
+        build:
+            dockerfile: docker/Dockerfile.build
+            context: ..
+        env_file:
+            - ../.env
+        volumes:
+            - ..:/app:cached

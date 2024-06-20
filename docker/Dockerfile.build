@@ -1,0 +1,5 @@
+FROM docs-base
+
+# NOTE: symlink_to_repo_manager.py appears to cause errors when building docs..
+# CMD cd tools && python ./symlink_to_repo_manager.py && cd ../docs && make html
+CMD cd docs && make html

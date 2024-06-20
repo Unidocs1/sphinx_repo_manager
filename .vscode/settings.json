@@ -1,0 +1,91 @@
+{
+  "breadcrumbs.enabled": false,
+  "explorer.decorations.badges": false,
+  "explorer.decorations.colors": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.fontLigatures": true,
+  "editor.glyphMargin": false,
+  "editor.inlineSuggest.enabled": true,
+  "editor.lineHeight": 17,
+  "editor.renderWhitespace": "none",
+  "notebook.output.scrolling": true,
+  "jupyter.themeMatplotlibPlots": true,
+  "jupyter.notebookFileRoot": ".",
+  "jupyter.widgetScriptSources": ["unpkg.com", "jsdelivr.com"],
+  "markdown.validate.enabled": true,
+  "markdown.updateLinksOnFileMove.enabled": "prompt",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.fixAll": ["source.unusedImports"],
+  "vs-code-prettier-eslint.prettierLast": false,
+  "window.commandCenter": true,
+  "workbench.startupEditor": "none",
+  "[markdown]": {
+    "editor.wordWrap": "on"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
+  "iis.configDir": "",
+  "notebook.formatOnSave.enabled": true,
+  "restructuredtext.linter.run": "onSave",
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "python.terminal.activateEnvironment": false,
+  "esbonio.server.enabled": true,
+  "esbonio.server.logLevel": "debug",
+  "esbonio.server.enableDevTools": true,
+  "esbonio.server.installBehavior": "automatic",
+  "esbonio.server.showDeprecationWarnings": true,
+  "esbonio.sphinx.keepGoing": true,
+  "esbonio.sphinx.makeMode": true,
+  "esbonio.sphinx.silent": false,
+  "esbonio.sphinx.buildDir": "${workspaceFolder}/docs/build/html/",
+  "esbonio.sphinx.confDir": "${workspaceFolder}/docs/source/",
+  "esbonio.sphinx.doctreeDir": "${workspaceFolder}/build/doctrees",
+  "esbonio.server.pythonPath": "python",
+  "python.defaultInterpreterPath": "python",
+  "esbonio.server.enabledInPyFiles": true,
+  "esbonio.sphinx.srcDir": "${workspaceFolder}/docs/build/html/"
+}
