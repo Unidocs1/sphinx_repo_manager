@@ -50,6 +50,3 @@ def create_symlink(target_path, link_name):
 if __name__ == "__main__":
     # Create the symbolic link
     create_symlink(TARGET_PATH, LINK_NAME)
-
-    # Prompt to press Enter to quit
-    input("Done. Press Enter to quit")
