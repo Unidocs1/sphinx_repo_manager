@@ -19,7 +19,7 @@ Xsolla Backend
    Introduction <content/-/getting_started/index>
    Install <content/-/install/index>
    Features <content/-/features>
-   Changelog <content/-/changelogs/index>
+   Changelogs <content/-/changelogs/index>
 
 .. toctree::
    :caption: About
