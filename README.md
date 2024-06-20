@@ -17,19 +17,35 @@ Create help docs with `sphinx-build`. This guide is specific to Windows OS.
 
 ### Optional
 	
-1. If you want macro versionining with ReadTheDocs (RTD), [create an account](https://about.readthedocs.com/?ref=readthedocs.org)
+* If you want macro versionining with ReadTheDocs (RTD), [create an account](https://about.readthedocs.com/?ref=readthedocs.org)
 
-2. RTD works best with public repos, but to use _private_ repos:
+* RTD works best with public repos, but to use _private_ repos:
 	1. Login to RTD dashboard and create a new env var named `GITLAB_ACCESS_TOKEN` (be aware this _may_ add plaintext server logs)
 	2. Update the .readthedocs.yaml `$READTHEDOCS_PROJECT` name
+	
+* If Docker tooling (or otherwise containerized tooling) with _private_ repos:
+	1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) -> Run
+	2. Copy `.env.template` to `.env`
+	3. Fill the `GITLAB_ACCESS_KEY` field
+	4. Use this `.env` file for git ops involving an access key.
 
 ## Setup
 
 1. Run `tools/requirements-install.ps1` as a normal user.
 
+### Local Setup
+
 2. Configure the `docs/repo_manifest.yml` (well-commented within) with your desired versioning/cloning.
 
+### Docker Setup
+ 
+2. Run: `pip install -r requirements-dev.txt`
+
+3. Run: `cd docker && docker-compose up`
+
 ## Build
+
+### Local Build
 
 1. To build from source, either run `make.bat` or run in PowerShell from `docs/`:
 
@@ -42,6 +58,10 @@ make html
 ### Speedy Build
 
 If you _just_ updated and want to build without going through `repo_manager`, simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
+
+### Docker Build
+
+1. 
 
 ## Typical Structure
 
