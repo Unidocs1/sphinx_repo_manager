@@ -110,10 +110,6 @@ repositories:                         # Dictionary of <repo_name, repo_data>; de
   sdk_unreal:
       url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal"
       branch: "dev"
-  # Composer >>
-  service-core:
-    url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
-    branch: "dev"
   # Other Products/Apps >>
   service_monitor:
     url: "https://gitlab.acceleratxr.com/Core/service_monitor"
@@ -143,4 +139,8 @@ repositories:                         # Dictionary of <repo_name, repo_data>; de
 #    branch: "dev"
 #  electron-shared:
 #    url: "https://gitlab.acceleratxr.com/Core/tools/electron-shared"
+#    branch: "dev"
+#  # Composer >>
+#  service-core:
+#    url: "https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core"
 #    branch: "dev"
