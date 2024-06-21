@@ -5,10 +5,10 @@ Xsolla Backend
 .. image:: /_static/images/features_banner.png
 
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
-.. REMOVED(ABOUT): Concepts <content/-/concepts/index>
+.. REMOVED(ABOUT): Concepts <content/-/concepts/>
 .. REMOVED(ABOUT): GitLab <content/gitlab>
-.. REMOVED(WELCOME): Introduction <content/-/getting_started/index>
-.. REMOVED(WELCOME): Installation <content/-/install/index>
+.. REMOVED(WELCOME): Introduction <content/-/getting_started/>
+.. REMOVED(WELCOME): Installation <content/-/install/>
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs
@@ -20,9 +20,9 @@ Xsolla Backend
 
    Features <content/-/features>
    Quickstart <content/-/quickstart>
-   Demo <content/-/demo>
+   Demo <content/-/demo_env>
    Create Your Account <https://publisher.xsolla.com/signup>
-   Release Notes <content/-/changelogs/index>
+   Release Notes <content/-/changelogs/>
 
 .. toctree::
    :caption: About
@@ -40,17 +40,17 @@ Xsolla Backend
 
    Services <content/-/services>
    Tools <content/-/tools>
-   Tutorials <content/-/samples_and_tutorials/index>
+   Tutorials <content/-/samples_and_tutorials/>
 
 .. toctree::
    :caption: API Reference
    :hidden:
 
-   C++ SDK <content/sdk_cpp/index>
-   C# SDK <content/sdk_csharp/index>
-   NodeJS (TypeScript) SDK <content/sdk_nodejs/index>
-   Unity SDK <content/sdk_unity/index>
-   Unreal SDK <content/sdk_unreal/index>
+   C++ SDK <content/sdk_cpp/>
+   C# SDK <content/sdk_csharp/>
+   NodeJS (TypeScript) SDK <content/sdk_nodejs/>
+   Unity SDK <content/sdk_unity/>
+   Unreal SDK <content/sdk_unreal/>
    Open API <https://api.dev.xbe.xsolla.cloud/v1/openapi.json>
 
 .. toctree::
@@ -60,7 +60,7 @@ Xsolla Backend
    About Xsolla <content/company>
    Discord <content/discord>
    Xsolla Partner Support <content/partner_support>
-   Eula <content/-/eula/index>
+   Eula <content/-/eula/>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building highly-scalable online games and entertainment products.
 The platform offers a *huge* list of :doc:`features <content/xbe-static-docs/content/features>` covering everything from account management, matchmaking to questing.
