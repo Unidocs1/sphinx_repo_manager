@@ -5,10 +5,15 @@ Xsolla Backend
 .. image:: /_static/images/features_banner.png
 
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
-.. REMOVED(ABOUT): Concepts <content/-/concepts/>
-.. REMOVED(ABOUT): GitLab <content/gitlab>
 .. REMOVED(WELCOME): Introduction <content/-/getting_started/>
 .. REMOVED(WELCOME): Installation <content/-/install/>
+.. REMOVED(ABOUT): Concepts <content/-/concepts/>
+.. REMOVED(ABOUT): GitLab <content/gitlab>
+.. REMOVED(ABOUT): Commerce <content/-/commerce>
+.. REMOVED(ABOUT): Content <content/-/content>
+.. REMOVED(ABOUT): Gameplay <content/-/gameplay>
+.. REMOVED(ABOUT): LiveOps <content/-/liveops>
+.. REMOVED(ABOUT): Multiplayer <content/-/multiplayer>
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs
@@ -25,14 +30,14 @@ Xsolla Backend
    Release Notes <content/-/changelogs/>
 
 .. toctree::
-   :caption: About
+   :caption: Concepts
    :hidden:
 
-   Commerce <content/-/commerce>
-   Content <content/-/content>
-   Gameplay <content/-/gameplay>
-   LiveOps <content/-/liveops>
-   Multiplayer <content/-/multiplayer>
+   Overview <content/-/getting_started/>
+   Service Framework <content/-/getting_started/framework/>
+   Administration <content/-/getting_started/admin/>
+   Plugins & SDK <content/-/getting_started/sdks/>
+   Feature Concepts <content/-/getting_started/systems/>
 
 .. toctree::
    :caption: Learn
