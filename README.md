@@ -4,68 +4,62 @@ Master doc to create help docs from other repos with `make html` (`sphinx-build`
 
 This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubuntu, etc).
 
+## Quickstart
+
+1. Configure `docs/repo_manifest.yaml` (or leave defaults)
+2. Run `start-docker.ps1`
+3. Upon success, your browser will launch with `index.html`
+
 ## Prerequisites
 
-### Required
+You may either run via Docker (recommended) or locally (legacy):
 
-#### Windows
+### Docker Prereqs (Recommended)
+
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+### Local Prereqs (Legacy)
 
 1. [Chocolatey](https://chocolatey.org/) CLI tool
 	- Once you have Choco, install `make` in an **ADMIN** terminal:
-		```powershell
-		choco install make --yes
-		```
-		
-#### Common
+	  ```powershell
+      choco install make --yes
+      ```
 
 2. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
 	- See a recommended path to installing Python [below](#python-install-path)
 
-### Optional
-	
-* If you want macro versionining with ReadTheDocs (RTD), [create an account](https://about.readthedocs.com/?ref=readthedocs.org)
+3. Run `tools/requirements-install.ps1`
+		
+## Setup
 
-* RTD works best with public repos, but to use _private_ repos:
-	1. Login to RTD dashboard and create a new env var named `GITLAB_ACCESS_TOKEN` (be aware this _may_ add plaintext server logs)
-	2. Update the .readthedocs.yaml `$READTHEDOCS_PROJECT` name
-	
-* If Docker tooling (or otherwise containerized tooling) with _private_ repos:
+* Configure `docs/repo_manifest.yml` to configure repos/prefs (defaults are recommended)
+
+* **[Required for Xsolla repos]** If Docker tooling with _private_ repos:
 	1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) -> Run
 	2. Copy `.env.template` to `.env`
 	3. Fill the `GITLAB_ACCESS_KEY` field
-	4. Use this `.env` file for git ops involving an access key.
 
-## Setup
-
-1. Run `tools/requirements-install.ps1` as a normal user.
-
-### Local Setup
-
-2. Configure the `docs/repo_manifest.yml` (well-commented within) with your desired versioning/cloning.
-
-### Docker Setup
- 
-2. Run: `pip install -r requirements-dev.txt`
-
-3. Copy `docker/.env.template` to `docker/.env` (or symlink it from `../.env`) -> fill `GITLAB_ACCESS_TOKEN` (⚠️TODO: I couldn't get `../.env` to work with Docker here)
-
-4. Run: `cd docker && docker-compose up` (⚠️TODO: )
+* **[Required for ReadTheDocs Private Repos]** For proper macro versioning:
+    1. [create an account](https://about.readthedocs.com/?ref=readthedocs.org)
+    2. At RTD web dashboard, create a new env var named `GITLAB_ACCESS_TOKEN` (⚠️ be aware this _may_ add plaintext server logs)
+	3. Update the `.readthedocs.yaml` -> `$READTHEDOCS_PROJECT` name
 
 ## Build
 
-### Local Build
+### Docker (Recommended)
 
-1. To build from source, either run `make.bat` or run in PowerShell from `docs/`:
+1. Run `start-docker.ps1`
 
-```powershell
-make html
-```
+### Local Build (Legacy)
 
-2. Open the built index via `build/html/index.html` (`make.bat` will auto-launch this)
+1. Run `start.ps1`
 
-### Speedy Build
+### Speedy Rebuild
 
-If you _just_ updated and want to build without going through `repo_manager`, simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
+If you _just_ updated and want to build without going through `repo_manager`: 
+
+Simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
 
 ### Debugging a Build
 

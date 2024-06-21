@@ -9,8 +9,6 @@ services:
 
     docs-build:
         image: docs-build
-        depends_on:
-            - docs-base
         build:
             dockerfile: docker/Dockerfile.build
             context: ..
