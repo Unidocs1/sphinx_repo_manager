@@ -6,7 +6,6 @@ Xsolla Backend
 
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
 .. REMOVED(WELCOME): Introduction <content/-/getting_started/>
-.. REMOVED(WELCOME): Installation <content/-/install/>
 .. REMOVED(ABOUT): Concepts <content/-/concepts/>
 .. REMOVED(ABOUT): GitLab <content/gitlab>
 .. REMOVED(ABOUT): Commerce <content/-/commerce>
@@ -14,6 +13,7 @@ Xsolla Backend
 .. REMOVED(ABOUT): Gameplay <content/-/gameplay>
 .. REMOVED(ABOUT): LiveOps <content/-/liveops>
 .. REMOVED(ABOUT): Multiplayer <content/-/multiplayer>
+.. REMOVED(HOWTO): Services <content/-/services>
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs
@@ -40,12 +40,13 @@ Xsolla Backend
    Feature Concepts <content/-/getting_started/systems/>
 
 .. toctree::
-   :caption: Learn
+   :caption: How To
    :hidden:
 
-   Services <content/-/services>
+   Install <content/-/install/>
    Tools <content/-/tools>
    Tutorials <content/-/samples_and_tutorials/>
+   Full Game Samples <content/-/samples_and_tutorials/full_game_samples>
 
 .. toctree::
    :caption: API Reference
