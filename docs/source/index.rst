@@ -7,6 +7,8 @@ Xsolla Backend
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
 .. REMOVED(ABOUT): Concepts <content/-/concepts/index>
 .. REMOVED(ABOUT): GitLab <content/gitlab>
+.. REMOVED(WELCOME): Introduction <content/-/getting_started/index>
+.. REMOVED(WELCOME): Installation <content/-/install/index>
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs
@@ -16,10 +18,11 @@ Xsolla Backend
    :caption: Welcome
    :hidden:
 
-   Introduction <content/-/getting_started/index>
-   Install <content/-/install/index>
    Features <content/-/features>
-   Changelogs <content/-/changelogs/index>
+   Quickstart <content/-/quickstart>
+   Demo <content/-/demo>
+   Create Your Account <https://publisher.xsolla.com/signup>
+   Release Notes <content/-/changelogs/index>
 
 .. toctree::
    :caption: About
@@ -36,7 +39,6 @@ Xsolla Backend
    :hidden:
 
    Services <content/-/services>
-   Platform Demos <content/-/demo>
    Tools <content/-/tools>
    Tutorials <content/-/samples_and_tutorials/index>
 
@@ -49,6 +51,7 @@ Xsolla Backend
    NodeJS (TypeScript) SDK <content/sdk_nodejs/index>
    Unity SDK <content/sdk_unity/index>
    Unreal SDK <content/sdk_unreal/index>
+   Open API <https://api.dev.xbe.xsolla.cloud/v1/openapi.json>
 
 .. toctree::
    :caption: Company/Contact
