@@ -3,33 +3,36 @@ Xsolla Sphinx Extension: sphinx_repo_manager
 --------------------------------------------
 
 Description:
-This Sphinx extension is designed to automate the management of multiple documentation repositories as part
-of building a larger, unified doc system. It facilitates the cloning and updating of external repositories
-specified in a YAML manifest file, ensuring that each repository is checked out to the specified
-tag before Sphinx documentation generation proceeds.
+Automates management of multiple documentation repositories by cloning and updating
+external repos specified in a YAML manifest file, ensuring each repo is checked out
+to the specified tag before Sphinx doc-gen (`make html`).
 
-How it Works:
-1. The extension reads a manifest file (`repo_manifest.yml`) that lists repositories with their respective
-clone URLs and tags.
-2. It checks if each repository is already cloned at the specified location.
-3. If a repository is not found, it clones the repository from the provided URL to an initial clone path.
-4. Git checkouts use sparse cloning in combination with git exclusions to only keep [ .git, docs ] dirs.
-5. Symlinks are created from the clone path to the base symlink path specified in the YAML.
+Quickstart:
+1. Edit `repo_manifest.yml` in the project root.
+2. Ensure each repo in the manifest includes at least a `url`.
+4. Include this extension in `conf.py` by adding the extension's path to `sys.path`
+   and adding it to the `extensions` list:
+   ```
+   sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
+   extensions = [sphinx_repo_manager]
+   ```
 
-Usage:
-1. Edit the `repo_manifest.yml` at your repo project root.
-2. Ensure each repository listed in the manifest includes at least a `url` and a `tag`.
-3. Optionally, specify `init_clone_path` and `base_symlink_path` in the manifest to manage where repositories
-are cloned and how they are accessed.
-4. Include this extension in your Sphinx `conf.py` file by adding the extension's path to `sys.path`
-(source/_extensions/sphinx_repo_manager) and including in the `extensions` list.
+Entry Point:
+- setup(app): Executes during Sphinx 'builder-inited' event.
 
-Requirements: See project root `requirements.txt` -> Install easily via project `root tools/requirements-install.ps1`
+Default Dir Tree:
+Inspired by nginx, repos are cloned to `_repos_available` -> then symlinked to `content/`:
+- docs/
+  - source/
+    - _extensions/
+    - _repos_available/
+      - (eg) account_services-v2.1.0/
+    - content/
+      - (eg) account_services/
+    - conf.py
+    - index.rst
 
-Entry point: setup(app) | This script is executed during the 'builder-inited' event of Sphinx,
-which is triggered after Sphinx inits but before the build process begins.
-
-# Tested in:
+Tested in:
 - Windows 11 via PowerShell7
 - Ubuntu 24.04 LTS via ReadTheDocs (RTD) deployment
 """
@@ -59,6 +62,16 @@ ABS_MANIFEST_PATH = os.path.normpath(os.path.join(
     ABS_BASE_PATH, '..', '..', '..', MANIFEST_NAME))
 ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
 
+# Constants for default settings
+DEFAULT_MAX_WORKERS_LOCAL = 5
+DEFAULT_DEBUG_MODE = False
+DEFAULT_STASH_AND_CONTINUE_IF_WIP = True
+DEFAULT_INIT_CLONE_PATH = 'repos'
+DEFAULT_DEFAULT_BRANCH = 'master'
+DEFAULT_PRESERVE_GITLAB_GROUP = True
+DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
+DEFAULT_REPOSITORIES = {}
+
 logger = logging.getLogger(__name__)  # Get logger instance
 
 # Global flag to signal threads to shutdown
@@ -81,9 +94,19 @@ class SphinxRepoManager:
         # Multi-threading >>
         self.lock = threading.Lock()  # Lock for thread-safe logging
         self.shutdown_flag = False  # Flag to handle graceful shutdown
-        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGINT, self._signal_handler)
 
-    def signal_handler(self, signum, frame):
+    @staticmethod
+    def _log_err_if_invalid_symlink(rel_symlinked_repo_path):
+        if not Path(rel_symlinked_repo_path).is_symlink():
+            logger.error(f"Failed to create symlink: '{rel_symlinked_repo_path}'")
+
+    def _check_shutdown(self):
+        if self.shutdown_flag:
+            logger.info("Shutdown flagged: Exiting operation.")
+            raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+
+    def _signal_handler(self, signum, frame):
         print("Signal received, initiating graceful shutdown...")
         self.shutdown_flag = True
 
@@ -137,19 +160,20 @@ class SphinxRepoManager:
         logger.info(colorize_action("🧹 | Validating & normalizing manifest..."))
 
         # Set root defaults
-        manifest.setdefault('debug_mode', False)
-        manifest.setdefault('stash_and_continue_if_wip', True)
-        manifest.setdefault('default_branch', 'master')
-        manifest.setdefault('init_clone_path', 'source/_repos-available')
-        manifest.setdefault('init_clone_path_root_symlink_src', 'docs/source')
-        manifest.setdefault('base_symlink_path', 'source/content')
-        manifest.setdefault('repo_sparse_path', 'docs')
-        manifest.setdefault('repositories', {})
+        manifest.setdefault('max_workers_local', DEFAULT_MAX_WORKERS_LOCAL)
+        manifest.setdefault('debug_mode', DEFAULT_DEBUG_MODE)
+        manifest.setdefault('stash_and_continue_if_wip', DEFAULT_STASH_AND_CONTINUE_IF_WIP)
+        manifest.setdefault('default_branch', DEFAULT_DEFAULT_BRANCH)
+        manifest.setdefault('init_clone_path', DEFAULT_INIT_CLONE_PATH)
+        manifest.setdefault('init_clone_path_root_symlink_src', DEFAULT_INIT_CLONE_PATH)
+        manifest.setdefault('base_symlink_path', DEFAULT_INIT_CLONE_PATH)
+        manifest.setdefault('repo_sparse_path', DEFAULT_INIT_CLONE_PATH)
+        manifest.setdefault('repositories', DEFAULT_REPOSITORIES)
 
         # Normalize path/to/slashes
-        manifest.setdefault(os.path.normpath(manifest['init_clone_path']))
-        manifest.setdefault(os.path.normpath(manifest['init_clone_path_root_symlink_src']))
-        manifest.setdefault(os.path.normpath(manifest['base_symlink_path']))
+        manifest['init_clone_path'] = os.path.normpath(manifest['init_clone_path'])
+        manifest['init_clone_path_root_symlink_src'] = os.path.normpath(manifest['init_clone_path_root_symlink_src'])
+        manifest['base_symlink_path'] = os.path.normpath(manifest['base_symlink_path'])
 
         # Validate repositories
         if not manifest['repositories']:
@@ -244,8 +268,8 @@ class SphinxRepoManager:
         # This helps us easily identify the clone src without even entering the dir
         # (!) All repos must have unique names for this to auto-symlink without repo names or tags
         if has_tag:
-            _meta[
-                'tag_versioned_clone_src_repo_name'] = f"{repo_name}-{tag}"  # "repo-{tag}"; eg: "account-services-v2.1.0"
+            # "repo-{tag}"; eg: "account-services-v2.1.0"
+            _meta['tag_versioned_clone_src_repo_name'] = f"{repo_name}-{tag}"
         else:
             # "repo-{"cleaned_branch"}"; eg: "account-services--master" or "account-services--some_nested_branch"
             # ^ Notice the "--" double slash separator. Only accept alphanumeric chars; replace all others with "_"
@@ -379,7 +403,7 @@ class SphinxRepoManager:
         logger.info(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
         logger.info(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
 
-    def process_repo_with_logging(
+    def process_repo(
             self,
             repo_info,
             stash_and_continue_if_wip,
@@ -429,42 +453,6 @@ class SphinxRepoManager:
         for entry in log_entries:
             log_queue.put(entry)
 
-    # def process_repo(self, repo_info, stash_and_continue_if_wip):
-    #     """ Process a single repository from the manifest. """
-    #     # Get paths from _meta
-    #     _meta = repo_info['_meta']
-    #     tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']  # eg: "account_services-v2.1.0"
-    #     rel_symlinked_repo_path = _meta['rel_symlinked_repo_path']  # eg: "source/content/account_services"
-    #
-    #     # Ensure repo is active
-    #     active = repo_info['active']
-    #     if not active:
-    #         with self.lock:
-    #             logger.info(colorize_action(f"[{rel_symlinked_repo_path}] Repository !active; skipping..."))
-    #         return
-    #
-    #     # eg: "source/_repos-available/account_services-v2.1.0"
-    #     tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
-    #     debug_mode = self.manifest['debug_mode']
-    #     repo_sparse_path = self.manifest['repo_sparse_path']
-    #     rel_init_clone_path_root_symlink_src = repo_info['init_clone_path_root_symlink_src_override']
-    #
-    #     with self.lock:
-    #         self.log_repo_paths(
-    #             debug_mode,
-    #             tag_versioned_clone_src_repo_name,
-    #             tag_versioned_clone_src_path,
-    #             rel_symlinked_repo_path)
-    #
-    #     self.clone_and_symlink(
-    #         repo_info,
-    #         tag_versioned_clone_src_repo_name,
-    #         tag_versioned_clone_src_path,
-    #         rel_symlinked_repo_path,
-    #         stash_and_continue_if_wip,
-    #         repo_sparse_path,
-    #         rel_init_clone_path_root_symlink_src)
-
     def manage_repositories(self, manifest):
         if not manifest:
             raise RepositoryManagementError('No manifest found (or failed when normalizing)')
@@ -480,6 +468,7 @@ class SphinxRepoManager:
 
         total_repos_num = len(repositories)
         current_repo_num = 1
+        num_done = 0
 
         with concurrent.futures.ThreadPoolExecutor(max_num_workers) as executor:
             futures = []
@@ -489,7 +478,7 @@ class SphinxRepoManager:
                     raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
 
                 future = executor.submit(
-                    self.process_repo_with_logging,
+                    self.process_repo,
                     repo_info,
                     stash_and_continue_if_wip,
                     log_queue,
@@ -509,6 +498,10 @@ class SphinxRepoManager:
             for future in concurrent.futures.as_completed(futures):
                 try:
                     future.result()
+
+                    num_done += 1
+                    completed_msg = f"✅ Completed {brighten(f'{num_done}/{total_repos_num}')} repositories."
+                    logger.info(colorize_success(completed_msg))
                 except Exception as e:
                     with self.lock:
                         logger.error(f"Failed to manage repository: {e}")
@@ -518,10 +511,8 @@ class SphinxRepoManager:
             log_entry = log_queue.get()
             logger.info(log_entry)
 
-    def check_shutdown(self):
-        if self.shutdown_flag:
-            logger.info("Shutdown flagged: Exiting operation.")
-            raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+        completed_msg = f"\n☑️️ | Job's done ({brighten(total_repos_num)} repositories)."
+        logger.info(f'\n{colorize_success(completed_msg)}')
 
     def clone_and_symlink(
             self,
@@ -556,7 +547,7 @@ class SphinxRepoManager:
             cloned = False
             already_stashed = False  # To prevent some redundancy
 
-            self.check_shutdown()  # Multi-threading CTRL+C check
+            self._check_shutdown()  # Multi-threading CTRL+C check
 
             if not os.path.exists(rel_tag_versioned_clone_src_path):
                 action_str = colorize_action(f"📦 | Sparse-cloning repo...")
@@ -569,14 +560,20 @@ class SphinxRepoManager:
                     repo_url_dotgit,
                     branch,
                     repo_sparse_path,
-                    stash_and_continue_if_wip)
+                    stash_and_continue_if_wip,
+                    log_entries=log_entries
+                )
 
-                self.check_shutdown()  # Multi-threading CTRL+C check
+                self._check_shutdown()  # Multi-threading CTRL+C check
 
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                GitHelper.git_clean_sparse_docs_clone(rel_tag_versioned_clone_src_path, repo_sparse_path)
+                GitHelper.git_clean_sparse_docs_clone(
+                    rel_tag_versioned_clone_src_path,
+                    repo_sparse_path,
+                    log_entries=log_entries
+                )
 
                 cloned = True
                 if stash_and_continue_if_wip:
@@ -585,9 +582,12 @@ class SphinxRepoManager:
                 action_str = colorize_action(f"🔃 | Fetching updates...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
-                GitHelper.git_fetch(rel_tag_versioned_clone_src_path)
+                GitHelper.git_fetch(
+                    rel_tag_versioned_clone_src_path,
+                    log_entries=log_entries
+                )
 
-            self.check_shutdown()  # Multi-threading CTRL+C check
+            self._check_shutdown()  # Multi-threading CTRL+C check
 
             # Checkout to the specific branch or tag
             has_branch = 'branch' in repo_info
@@ -596,7 +596,12 @@ class SphinxRepoManager:
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 should_stash = stash_and_continue_if_wip and not already_stashed
-                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, branch, should_stash)
+                GitHelper.git_checkout(
+                    rel_tag_versioned_clone_src_path,
+                    branch,
+                    should_stash,
+                    log_entries=log_entries
+                )
 
                 if stash_and_continue_if_wip:
                     already_stashed = True
@@ -607,21 +612,30 @@ class SphinxRepoManager:
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 should_stash = stash_and_continue_if_wip and not already_stashed
-                GitHelper.git_checkout(rel_tag_versioned_clone_src_path, tag, should_stash)
+                GitHelper.git_checkout(
+                    rel_tag_versioned_clone_src_path,
+                    tag,
+                    should_stash,
+                    log_entries=log_entries
+                )
 
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
-            self.check_shutdown()  # Multi-threading CTRL+C check
+            self._check_shutdown()  # Multi-threading CTRL+C check
 
             if not cloned:
                 should_stash = stash_and_continue_if_wip and not already_stashed
-                GitHelper.git_pull(rel_tag_versioned_clone_src_path, should_stash)
+                GitHelper.git_pull(
+                    rel_tag_versioned_clone_src_path,
+                    should_stash,
+                    log_entries=log_entries
+                )
 
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
-            self.check_shutdown()  # Check for shutdown after the operation
+            self._check_shutdown()  # Check for shutdown after the operation
 
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
             # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
@@ -641,13 +655,14 @@ class SphinxRepoManager:
             try:
                 self.create_symlink(
                     abs_symlink_src_nested_path,
-                    rel_symlinked_repo_path)
+                    rel_symlinked_repo_path
+                )
 
-                self.log_err_if_invalid_symlink(rel_symlinked_repo_path)  # Sanity check for successful link
+                self._log_err_if_invalid_symlink(rel_symlinked_repo_path)  # Sanity check for successful link
             except Exception as e:
                 logger.error(f"Error creating symlink: {str(e)}")
 
-            self.check_shutdown()  # Check for shutdown after the operation
+            self._check_shutdown()  # Check for shutdown after the operation
 
             # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
             abs_release_notes_symlink_src_repo_path = init_symlink_src_path.joinpath('RELEASE_NOTES.rst').absolute()
@@ -668,10 +683,11 @@ class SphinxRepoManager:
                 try:
                     self.create_symlink(
                         abs_release_notes_symlink_src_repo_path,
-                        release_notes_symlink_target_repo_path)
+                        release_notes_symlink_target_repo_path
+                    )
 
                     # Sanity check for successful link
-                    self.log_err_if_invalid_symlink(release_notes_symlink_target_repo_path)
+                    self._log_err_if_invalid_symlink(release_notes_symlink_target_repo_path)
                 except Exception as e:
                     normalized_e = str(e).replace('\\\\', '/')
                     logger.error(f"Error creating symlink: {normalized_e}")
@@ -702,11 +718,6 @@ class SphinxRepoManager:
             for entry in log_entries:
                 logger.info(entry)
 
-    @staticmethod
-    def log_err_if_invalid_symlink(rel_symlinked_repo_path):
-        if not Path(rel_symlinked_repo_path).is_symlink():
-            logger.error(f"Failed to create symlink: '{rel_symlinked_repo_path}'")
-
     def main(self, app):
         """
         Handle the repository cloning and updating process when Sphinx initializes.
@@ -729,4 +740,3 @@ class SphinxRepoManager:
 def setup(app):
     repo_manager = SphinxRepoManager(ABS_MANIFEST_PATH)
     app.connect('builder-inited', repo_manager.main)
-    # app.connect('source-read', replace_paths)  # (!) WIP

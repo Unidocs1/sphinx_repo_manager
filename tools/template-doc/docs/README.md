@@ -1,61 +1,85 @@
-# %REPO_NAME%/docs
+# %REPO_NAME%/docs (Single Doc)
 
-Create help docs with `sphinx-build`. This guide is specific to Windows OS.
+Single doc - a content fragment of [the master doc](https://gitlab.acceleratxr.com/Core/acceleratxr.io) - is used to create help docs with `make html` (`sphinx-build`). 
+
+The master doc will pull this repo's root `docs/` dir and use this as part of the content into a single doc.
+
+This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubuntu, etc).
 
 ## Prerequisites
+
+### Required
+
+#### Windows
 
 1. [Chocolatey](https://chocolatey.org/) CLI tool
 	- Once you have Choco, install `make` in an **ADMIN** terminal:
 		```powershell
 		choco install make --yes
 		```
+		
+#### Common
 
 2. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
 	- See a recommended path to installing Python [below](#python-install-path)
 
 ## Setup
 
-Run `tools/requirements-install.ps1` as a normal user
+1. Run `tools/requirements-install.ps1` as a normal user.
+
+2. Configure the `docs/repo_manifest.yml` (well-commented within) with your desired versioning/cloning.
 
 ## Build
 
-1. To build from source, either run `make.bat` or run in PowerShell:
+
+1. To build from source, either run `make.bat` or run in PowerShell from `docs/`:
 
 ```powershell
 make html
 ```
 
-2. Open the built index via `build/html/index.html`
+2. Open the built index via `build/html/index.html` (`make.bat` will auto-launch this)
+
+### Speedy Build
+
+If you _just_ updated and want to build without going through `repo_manager`, simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
+
+### Debugging a Build
+
+1. Slow down the logs and ensure chronological stability: Set the `max_workers_local` of `repo_manifest.yml` to `1` (default `5`).
+2. Set `debug_mode` of `repo_manifest` to `true` (default `false`).
+3. Comment out all repositories in your `repo_manifest` except 1 or 2.
 
 ## Typical Structure
 
 ### Main Doc
 
-This repo's docs/source/content/ will be of many collectively combined into [a "main" doc](https://gitlab.acceleratxr.com/Core/acceleratxr.io).
+In this repo, we want to merge multiple docs into a single doc:
+
+Open the built index via `build/html/index.html`
 
 ### Single Doc
 
-The source layout tree should be structured as follows, with example content:
+Source repo docs/  layout tree should be structured as follows, with example content:
 
 ```
-<repo root>/docs
-└─docs/source
-    │   conf.py
-    │   index.rst
-    │
-    ├───content
-    │   ├───foo
-    │   │       index.rst
-    │   │       arbitrary.rst
-    │   │
-    │   └───bar.rst
-    │
-    ├───_static
-	│		images/foo.png
-	│		css/someStyle.css
-    │
-    └───_templates
-            _templates go here
+- .git
+- RELEASE_NOTES.rst
+- <repo root>/docs/
+   - source/
+      - _extensions/
+	    - sphinx_repo_manager/
+      - _static/
+         - images/
+            - foo.png
+         - css/
+            - someStyle.css
+      - _templates/
+      - content/
+         - foo.rst (pointed to from index.rst)
+      - RELEASE_NOTES.rst (symlink to root)
+      - conf.py (entry point setup)
+	  - index.rst (entry point)
 ```
 
 ## Apps & Extensions
@@ -90,7 +114,22 @@ The `requirements.txt` file includes dependencies necessary for building and man
 - **Purpose**: [`PyYAML`] YAML parser and emitter for Python. It is used to handle YAML-formatted files within your documentation project, which can be useful for configuration files or other data-driven content.
 - **Documentation**: [PyYAML on PyPI](https://pypi.org/project/PyYAML/)
 
-## Troubleshooting
+
+### DocGen Tools
+
+#### breathe
+
+TODO
+
+#### sphinx_csharp
+
+TODO
+
+#### sphinx.ext.autodoc
+
+TODO
+
+## Additional Troubleshooting
 
 ### Clearing Cache
 
@@ -98,6 +137,9 @@ Delete these to regenerate them when you build again:
 
 1. Delete `build` (or `make clean` via CLI)
 2. Delete `source/content`
+3. Delete `source/_repos-available` (for use with `repo_manager`)
+
+### Python Install Path
 
 As this can easily get error-prone, especially for new Python users, see below to install Python 3.10 from scratch:
 
