@@ -429,6 +429,7 @@ class SphinxRepoManager:
         debug_mode = self.manifest['debug_mode']
         repo_sparse_path = self.manifest['repo_sparse_path']
         rel_init_clone_path_root_symlink_src = repo_info['init_clone_path_root_symlink_src_override']
+        repo_name = _meta['repo_name']
 
         log_entries.append(colorize_action(f"📁 | Working Dirs:"))
         log_entries.append(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
@@ -436,6 +437,7 @@ class SphinxRepoManager:
 
         self.clone_and_symlink(
             repo_info,
+            repo_name,
             tag_versioned_clone_src_repo_name,
             tag_versioned_clone_src_path,
             rel_symlinked_repo_path,
@@ -494,7 +496,7 @@ class SphinxRepoManager:
                     logger.info(colorize_success(completed_msg))
                 except Exception as e:
                     with self.lock:
-                        logger.error(f"Failed to manage repository: {e}")
+                        logger.error(f"Failed to manage repository: {str(e)}")
                     for future in futures:
                         future.cancel()
                     raise SystemExit
@@ -510,6 +512,7 @@ class SphinxRepoManager:
     def clone_and_symlink(
             self,
             repo_info,
+            repo_name,
             tag_versioned_clone_src_repo_name,
             rel_tag_versioned_clone_src_path,
             rel_symlinked_repo_path,
@@ -549,14 +552,18 @@ class SphinxRepoManager:
                 log_entries.append(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
 
                 git_helper = GitHelper()  # TODO: Place this instance @ top?
-                git_helper.git_sparse_clone(
-                    rel_tag_versioned_clone_src_path,
-                    repo_url_dotgit,
-                    branch,
-                    repo_sparse_path,
-                    stash_and_continue_if_wip,
-                    log_entries=log_entries
-                )
+
+                try:
+                    git_helper.git_sparse_clone(
+                        rel_tag_versioned_clone_src_path,
+                        repo_url_dotgit,
+                        branch,
+                        repo_sparse_path,
+                        stash_and_continue_if_wip,
+                        log_entries=log_entries)
+                except Exception as e:
+                    additional_info = f"Error sparse-cloning repo '{brighten(repo_name)}':\n- {str(e)}"
+                    raise Exception(f"{additional_info}") from e
 
                 if self.shutdown_flag:  # Multi-threaded CTRL+C check
                     raise SystemExit
@@ -564,11 +571,15 @@ class SphinxRepoManager:
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                GitHelper.git_clean_sparse_docs_clone(
-                    rel_tag_versioned_clone_src_path,
-                    repo_sparse_path,
-                    log_entries=log_entries
-                )
+
+                try:
+                    GitHelper.git_clean_sparse_docs_clone(
+                        rel_tag_versioned_clone_src_path,
+                        repo_sparse_path,
+                        log_entries=log_entries)
+                except Exception as e:
+                    additional_info = f"Error cleaning up sparse clone '{brighten(repo_name)}':\n- {str(e)}"
+                    raise Exception(f"{additional_info}") from e
 
                 cloned = True
                 if stash_and_continue_if_wip:
@@ -577,10 +588,13 @@ class SphinxRepoManager:
                 action_str = colorize_action(f"🔃 | Fetching updates...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
-                GitHelper.git_fetch(
-                    rel_tag_versioned_clone_src_path,
-                    log_entries=log_entries
-                )
+                try:
+                    GitHelper.git_fetch(
+                        rel_tag_versioned_clone_src_path,
+                        log_entries=log_entries)
+                except Exception as e:
+                    additional_info = f"Error fetching updates for '{brighten(repo_name)}':\n- {str(e)}"
+                    raise Exception(f"{additional_info}") from e
 
             if self.shutdown_flag:  # Multi-threaded CTRL+C check
                 raise SystemExit
@@ -592,12 +606,16 @@ class SphinxRepoManager:
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 should_stash = stash_and_continue_if_wip and not already_stashed
-                GitHelper.git_checkout(
-                    rel_tag_versioned_clone_src_path,
-                    branch,
-                    should_stash,
-                    log_entries=log_entries
-                )
+
+                try:
+                    GitHelper.git_checkout(
+                        rel_tag_versioned_clone_src_path,
+                        branch,
+                        should_stash,
+                        log_entries=log_entries)
+                except Exception as e:
+                    additional_info = f"Error checking out branch '{brighten(branch)}' for '{brighten(repo_name)}':\n- {str(e)}"
+                    raise Exception(f"{additional_info}") from e
 
                 if stash_and_continue_if_wip:
                     already_stashed = True
@@ -608,12 +626,16 @@ class SphinxRepoManager:
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
                 should_stash = stash_and_continue_if_wip and not already_stashed
-                GitHelper.git_checkout(
-                    rel_tag_versioned_clone_src_path,
-                    tag,
-                    should_stash,
-                    log_entries=log_entries
-                )
+
+                try:
+                    GitHelper.git_checkout(
+                        rel_tag_versioned_clone_src_path,
+                        tag,
+                        should_stash,
+                        log_entries=log_entries)
+                except Exception as e:
+                    additional_info = f"Error checking out tag '{brighten(tag)}' for '{brighten(repo_name)}':\n- {str(e)}"
+                    raise Exception(f"{additional_info}") from e
 
                 if stash_and_continue_if_wip:
                     already_stashed = True
@@ -623,11 +645,15 @@ class SphinxRepoManager:
 
             if not cloned:
                 should_stash = stash_and_continue_if_wip and not already_stashed
-                GitHelper.git_pull(
-                    rel_tag_versioned_clone_src_path,
-                    should_stash,
-                    log_entries=log_entries
-                )
+
+                try:
+                    GitHelper.git_pull(
+                        rel_tag_versioned_clone_src_path,
+                        should_stash,
+                        log_entries=log_entries)
+                except Exception as e:
+                    additional_info = f"Error pulling updates for '{brighten(repo_name)}':\n- {str(e)}"
+                    raise Exception(f"{additional_info}") from e
 
                 if stash_and_continue_if_wip:
                     already_stashed = True
@@ -653,12 +679,11 @@ class SphinxRepoManager:
             try:
                 self.create_symlink(
                     abs_symlink_src_nested_path,
-                    rel_symlinked_repo_path
-                )
+                    rel_symlinked_repo_path)
 
                 self._log_err_if_invalid_symlink(rel_symlinked_repo_path)  # Sanity check for successful link
             except Exception as e:
-                logger.error(f"Error creating symlink: {str(e)}")
+                logger.error(f"Error creating symlink:\n- {str(e)}")
 
             if self.shutdown_flag:  # Multi-threaded CTRL+C check
                 raise SystemExit
@@ -696,23 +721,9 @@ class SphinxRepoManager:
             success_str = colorize_success("✔️| Done.")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
 
-        except subprocess.CalledProcessError as e:
-            self.shutdown_flag = True  # Signal shutdown to other threads
-            error_url = f"{repo_url_dotgit}/tree/{tag}"
-            tags_url = f"{repo_url_dotgit}/-/tags"
-
-            error_message = (f"\n\n{Fore.RED}[repo_manager] "
-                             f"Failed to checkout branch/tag '{rel_symlinked_repo_path}'\n"
-                             f"- Does the '{tag}' tag exist? {error_url}\n"
-                             f"- Check available tags: {tags_url}{Fore.RESET}\n\n")
-            log_entries.append(error_message)
-            raise RepositoryManagementError(f'\n{error_message}')
         except Exception as e:
             self.shutdown_flag = True  # Signal shutdown to other threads
-            error_message = (f"\n\n{Fore.RED}[repo_manager] "
-                             f"Error during clone and checkout process for '{rel_symlinked_repo_path}'\n"
-                             f"- Error: {str(e)}\n\n")
-            log_entries.append(error_message)
+            error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}\n"
             raise RepositoryManagementError(f'\n{error_message}')
         finally:
             # Log the queued entries at once
