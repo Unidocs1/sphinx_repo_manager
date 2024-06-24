@@ -101,13 +101,9 @@ class SphinxRepoManager:
         if not Path(rel_symlinked_repo_path).is_symlink():
             logger.error(f"Failed to create symlink: '{rel_symlinked_repo_path}'")
 
-    def _check_shutdown(self):
-        if self.shutdown_flag:
-            logger.info("Shutdown flagged: Exiting operation.")
-            raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
-
     def _signal_handler(self, signum, frame):
-        print("Signal received, initiating graceful shutdown...")
+        if not self.shutdown_flag:
+            print("Signal received (CTRL+C), initiating graceful shutdown...")
         self.shutdown_flag = True
 
     def read_normalize_manifest(self):
@@ -473,9 +469,9 @@ class SphinxRepoManager:
         with concurrent.futures.ThreadPoolExecutor(max_num_workers) as executor:
             futures = []
             for repo_name, repo_info in repositories:
+                # Attempt to cancel all futures if a shutdown (CTRL+C) is detected
                 if self.shutdown_flag:
-                    logger.info("Shutdown initiated, stopping new repository processing.")
-                    raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
+                    raise SystemExit
 
                 future = executor.submit(
                     self.process_repo,
@@ -488,30 +484,27 @@ class SphinxRepoManager:
                 futures.append(future)
                 current_repo_num += 1
 
-            # Attempt to cancel all futures if a shutdown is detected
-            if self.shutdown_flag:
-                for future in futures:
-                    future.cancel()
-                    raise RepositoryManagementError(f'\nShutdown async thread (CTRL+C?)')
-
             # Handle the completion of tasks, ensuring we process results or catch exceptions
             for future in concurrent.futures.as_completed(futures):
                 try:
                     future.result()
 
                     num_done += 1
-                    completed_msg = f"✅ Completed {brighten(f'{num_done}/{total_repos_num}')} repositories."
+                    completed_msg = f"✅ | Completed {brighten(f'{num_done}/{total_repos_num}')} repositories."
                     logger.info(colorize_success(completed_msg))
                 except Exception as e:
                     with self.lock:
                         logger.error(f"Failed to manage repository: {e}")
+                    for future in futures:
+                        future.cancel()
+                    raise SystemExit
 
         # Process all remaining logs
         while not log_queue.empty():
             log_entry = log_queue.get()
             logger.info(log_entry)
 
-        completed_msg = f"\n☑️️ | Job's done ({brighten(total_repos_num)} repositories)."
+        completed_msg = f"✅ | Job's done ({brighten(total_repos_num)} repos)."
         logger.info(f'\n{colorize_success(completed_msg)}')
 
     def clone_and_symlink(
@@ -547,7 +540,8 @@ class SphinxRepoManager:
             cloned = False
             already_stashed = False  # To prevent some redundancy
 
-            self._check_shutdown()  # Multi-threading CTRL+C check
+            if self.shutdown_flag:  # Multi-threaded CTRL+C check
+                raise SystemExit
 
             if not os.path.exists(rel_tag_versioned_clone_src_path):
                 action_str = colorize_action(f"📦 | Sparse-cloning repo...")
@@ -564,7 +558,8 @@ class SphinxRepoManager:
                     log_entries=log_entries
                 )
 
-                self._check_shutdown()  # Multi-threading CTRL+C check
+                if self.shutdown_flag:  # Multi-threaded CTRL+C check
+                    raise SystemExit
 
                 # Clean the repo to only use the specified sparse paths
                 action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
@@ -587,7 +582,8 @@ class SphinxRepoManager:
                     log_entries=log_entries
                 )
 
-            self._check_shutdown()  # Multi-threading CTRL+C check
+            if self.shutdown_flag:  # Multi-threaded CTRL+C check
+                raise SystemExit
 
             # Checkout to the specific branch or tag
             has_branch = 'branch' in repo_info
@@ -622,7 +618,8 @@ class SphinxRepoManager:
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
-            self._check_shutdown()  # Multi-threading CTRL+C check
+            if self.shutdown_flag:  # Multi-threaded CTRL+C check
+                raise SystemExit
 
             if not cloned:
                 should_stash = stash_and_continue_if_wip and not already_stashed
@@ -635,7 +632,8 @@ class SphinxRepoManager:
                 if stash_and_continue_if_wip:
                     already_stashed = True
 
-            self._check_shutdown()  # Check for shutdown after the operation
+            if self.shutdown_flag:  # Multi-threaded CTRL+C check
+                raise SystemExit
 
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
             # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
@@ -662,14 +660,16 @@ class SphinxRepoManager:
             except Exception as e:
                 logger.error(f"Error creating symlink: {str(e)}")
 
-            self._check_shutdown()  # Check for shutdown after the operation
+            if self.shutdown_flag:  # Multi-threaded CTRL+C check
+                raise SystemExit
 
             # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
-            abs_release_notes_symlink_src_repo_path = init_symlink_src_path.joinpath('RELEASE_NOTES.rst').absolute()
+            abs_release_notes_symlink_src_repo_path = Path(os.path.normpath(
+                str(init_symlink_src_path.joinpath('docs/source/RELEASE_NOTES.rst')))).resolve()
 
-            # For a file that doesn't yet exist, the src needs an absolute path without using .resolve() or .absolute()
-            release_notes_symlink_target_repo_path = Path(
-                Path(ABS_MANIFEST_PATH_DIR) / Path(rel_symlinked_repo_path) / 'RELEASE_NOTES.rst')
+            # Target path
+            release_notes_symlink_target_repo_path = Path(os.path.normpath(
+                str(Path(ABS_MANIFEST_PATH_DIR) / Path(rel_symlinked_repo_path) / 'RELEASE_NOTES.rst'))).resolve()
 
             if self.debug_mode:
                 print(
@@ -683,8 +683,7 @@ class SphinxRepoManager:
                 try:
                     self.create_symlink(
                         abs_release_notes_symlink_src_repo_path,
-                        release_notes_symlink_target_repo_path
-                    )
+                        release_notes_symlink_target_repo_path)
 
                     # Sanity check for successful link
                     self._log_err_if_invalid_symlink(release_notes_symlink_target_repo_path)
@@ -694,7 +693,7 @@ class SphinxRepoManager:
 
             # -------------------
             # Done with this repo
-            success_str = colorize_success("✅ | Done.")
+            success_str = colorize_success("✔️| Done.")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
 
         except subprocess.CalledProcessError as e:
