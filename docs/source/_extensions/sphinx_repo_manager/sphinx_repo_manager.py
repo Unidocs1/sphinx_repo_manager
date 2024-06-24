@@ -41,6 +41,7 @@ import os  # file path ops
 from pathlib import Path  # Path ops
 import re  # regex ops
 import sys  # Just for sys.exit, if !repositories
+import time  # How long did it take to build?
 
 # Async >>
 import concurrent.futures  # Async multitasking
@@ -756,6 +757,7 @@ class SphinxRepoManager:
         - Initialize the directory tree skeleton
         - Manage the repositories (cloning, updating, and symlinking)
         """
+        start_time = time.time()  # Track how long it takes to build all repos
         try:
             manifest = self.get_normalized_manifest()
             self.manage_repositories(manifest)
@@ -766,6 +768,11 @@ class SphinxRepoManager:
             self.shutdown_flag = True  # Signal shutdown to other threads
             raise RepositoryManagementError(f"\nsphinx_repo_manager failure: {e}")
         finally:
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            minutes, seconds = divmod(elapsed_time, 60)
+            time_str = f"{int(minutes)}m{int(seconds)}s"
+            logger.info(colorize_success(f'Build time: {brighten(time_str)}'))
             logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
 
 
