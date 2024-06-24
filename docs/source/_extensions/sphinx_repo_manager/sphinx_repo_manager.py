@@ -40,7 +40,6 @@ Tested in:
 import os  # file path ops
 from pathlib import Path  # Path ops
 import re  # regex ops
-import subprocess
 import sys  # Just for sys.exit, if !repositories
 
 # Async >>
@@ -97,9 +96,9 @@ class SphinxRepoManager:
         signal.signal(signal.SIGINT, self._signal_handler)
 
     @staticmethod
-    def _log_err_if_invalid_symlink(rel_symlinked_repo_path):
+    def _log_err_if_invalid_symlink(rel_symlinked_repo_path, log_entries):
         if not Path(rel_symlinked_repo_path).is_symlink():
-            logger.error(f"Failed to create symlink: '{rel_symlinked_repo_path}'")
+            log_entries.append(colorize_error(f"Error creating symlink: '{rel_symlinked_repo_path}'"))
 
     def _signal_handler(self, signum, frame):
         if not self.shutdown_flag:
@@ -116,7 +115,7 @@ class SphinxRepoManager:
             - Validates required fields
         """
         # Logs
-        logger.info(colorize_action(f'📜 | [repo_manager] Reading manifest...'))
+        logger.info(colorize_action(f'📜 | [sphinx_repo_manager] Reading manifest...'))
         logger.info(colorize_path(f"   - Extension Src: '{brighten(ABS_BASE_PATH)}'"))
         logger.info(colorize_path(f"   - Manifest Src: '{brighten(ABS_MANIFEST_PATH)}'"))
 
@@ -173,7 +172,7 @@ class SphinxRepoManager:
 
         # Validate repositories
         if not manifest['repositories']:
-            logger.warning("[repo_manager] No repositories found in manifest - skipping extension!")
+            logger.warning("[sphinx_repo_manager] No repositories found in manifest - skipping extension!")
             sys.exit(0)
 
         repo_sparse_path = manifest['repo_sparse_path']
@@ -208,12 +207,19 @@ class SphinxRepoManager:
                 'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
                 'repo_name': '',  # eg: "account_services"
                 'has_tag': False,  # True if tag exists
+
+                # "repo-{repo_tag}"
+                # - eg: "account-services-v2.1.0"
+                'tag_versioned_clone_src_repo_name': '',
+
+                # "{base_symlink_path}{symlink_path}-{tag_or_branch}"
+                # - eg: "source/content/account_services" (no tag)
                 'rel_symlinked_repo_path': '',
-                # "{base_symlink_path}{symlink_path}-{tag_or_branch}"; eg: "source/content/account_services" (no tag)
-                'tag_versioned_clone_src_repo_name': '',  # "repo-{repo_tag}"; eg: "account-services-v2.1.0"
-                'tag_versioned_clone_src_path': '',  # "{init_clone_path}/{tag_versioned_clone_src_repo_name}";
+
+                # "{init_clone_path}/{tag_versioned_clone_src_repo_name}";
                 # - eg: "source/_repos-available/account_services-v2.1.0"
                 # - eg: "source/_repos-available/account_services--master"
+                'tag_versioned_clone_src_path': '',
             }
 
         # Workers for multi-threading
@@ -330,14 +336,14 @@ class SphinxRepoManager:
         # Is this extension enabled (default true)?
         enable_repo_manager = manifest.get('enable_repo_manager', True)
         if not enable_repo_manager:
-            logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
+            logger.warning("[sphinx_repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
             return manifest
 
         self.debug_mode = manifest['debug_mode']
 
         enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
         if not self.read_the_docs_build and not enable_repo_manager_local:
-            logger.warning("[repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
+            logger.warning("[sphinx_repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
                            f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
             return manifest
 
@@ -356,7 +362,7 @@ class SphinxRepoManager:
             raise RepositoryManagementError(f"\nFailed to create directory '{create_path_to}': {str(e)}")
 
     @staticmethod
-    def create_symlink(symlink_src_path, symlink_target_path):
+    def create_symlink(symlink_src_existing_real_path, symlink_target_new_sym_path, log_entries):
         """
         Create or update a symlink using relative paths.
         (!) overwrite only works if running in ADMIN
@@ -366,24 +372,26 @@ class SphinxRepoManager:
                                  # eg: "source/content/account_services/RELEASE_NOTES.rst"
         """
         # Check if the symlink already exists
-        if os.path.islink(symlink_target_path):
+        if os.path.islink(symlink_target_new_sym_path):
             # Check if the existing symlink points to the correct source path
-            if os.readlink(symlink_target_path) == str(symlink_src_path):
-                logger.info(colorize_success(f"  - Symlink already exists and is correct."))
+            if os.readlink(symlink_target_new_sym_path) == str(symlink_src_existing_real_path):
+                log_entries.append(colorize_success(f"  - Symlink already exists and is correct."))
                 return
             else:
-                logger.info(colorize_action(f"  - Removing old symlink: '{brighten(symlink_target_path)}'"))
-                os.unlink(symlink_target_path)
-        elif os.path.exists(symlink_target_path):
-            logger.error(f"  - Error: Target path exists and is not a symlink: {symlink_target_path}")
+                log_entries.append(
+                    colorize_action(f"  - Removing old symlink: '{brighten(symlink_target_new_sym_path)}'..."))
+                os.unlink(symlink_target_new_sym_path)
+        elif os.path.exists(symlink_target_new_sym_path):
+            log_entries.append(
+                colorize_error(f"Error: Target path exists and is not a symlink: {symlink_target_new_sym_path}"))
             raise RepositoryManagementError(
-                f"\nCannot create symlink, target path exists and is not a symlink: {symlink_target_path}")
+                f"\nCannot create symlink, target path exists and is not a symlink: {symlink_target_new_sym_path}")
 
         # Create the symlink
-        os.symlink(symlink_src_path, symlink_target_path)
+        os.symlink(symlink_src_existing_real_path, symlink_target_new_sym_path)
         logger.info(colorize_success(f"  - New symlink created: "
-                                     f"'{brighten(symlink_target_path)}' -> "
-                                     f"'{brighten(symlink_src_path)}'"))
+                                     f"'{brighten(symlink_target_new_sym_path)}' -> "
+                                     f"'{brighten(symlink_src_existing_real_path)}'"))
 
     @staticmethod
     def log_repo_paths(
@@ -412,7 +420,6 @@ class SphinxRepoManager:
         _meta = repo_info['_meta']
         tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']  # eg: "account_services-v2.1.0"
         rel_symlinked_repo_path = _meta['rel_symlinked_repo_path']  # eg: "source/content/account_services"
-
         log_entries.append(colorize_action("\n-----------------------\n"
                                            f"[Repo {current_repo_num}/{total_repos_num}]"))
 
@@ -528,6 +535,7 @@ class SphinxRepoManager:
         - rel_init_clone_path                    # eg: "source/_repos-available"
         - rel_tag_versioned_clone_src_path       # eg: "source/_repos-available/account_services-v2.1.0"
         - rel_symlinked_repo_path                # eg: "source/content/account_services/docs/source"
+        - rel_init_clone_path_root_symlink_src   # eg: "source/content/account_services"
         - log_entries will be appended with the results of the operation, logging in chunks
           - This is to handle async logs so it's still chronological
         """
@@ -661,27 +669,30 @@ class SphinxRepoManager:
             if self.shutdown_flag:  # Multi-threaded CTRL+C check
                 raise SystemExit
 
+            # TODO: Mv most of below to a new def `symlink_repo()`
             # Manage symlinks -- we want src to be the nested <repo>/docs/source/
             # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
             #
             # Convert string paths to Path objects and use the dynamic path
             init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
-            abs_symlink_src_nested_path = init_symlink_src_path.joinpath(rel_init_clone_path_root_symlink_src).resolve()
-
-            action_str = colorize_action("🔗 | Symlinking...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            abs_clone_src_nested_path = init_symlink_src_path.joinpath(rel_init_clone_path_root_symlink_src).resolve()
 
             # (1) Symlink content -> to nested repo
-            log_entries.append(colorize_path(f"  - From clone src path: '{brighten(abs_symlink_src_nested_path)}'"))
+            action_str = colorize_action("🔗 | Symlinking repo nested sparse content...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            log_entries.append(colorize_path(f"  - From clone src path: '{brighten(abs_clone_src_nested_path)}'"))
             log_entries.append(
                 colorize_path(f"  - To symlink path: '{brighten(rel_init_clone_path_root_symlink_src)}'"))
 
             try:
                 self.create_symlink(
-                    abs_symlink_src_nested_path,
-                    rel_symlinked_repo_path)
+                    abs_clone_src_nested_path,
+                    rel_symlinked_repo_path,
+                    log_entries,
+                )
 
-                self._log_err_if_invalid_symlink(rel_symlinked_repo_path)  # Sanity check for successful link
+                self._log_err_if_invalid_symlink(rel_symlinked_repo_path,
+                                                 log_entries)  # Sanity check for successful link
             except Exception as e:
                 logger.error(f"Error creating symlink:\n- {str(e)}")
 
@@ -689,32 +700,36 @@ class SphinxRepoManager:
                 raise SystemExit
 
             # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
-            abs_release_notes_symlink_src_repo_path = Path(os.path.normpath(
-                str(init_symlink_src_path.joinpath('docs/source/RELEASE_NOTES.rst')))).resolve()
+            # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst'
+            abs_existing_real_release_notes_path = Path(init_symlink_src_path).joinpath(
+                'RELEASE_NOTES.rst').resolve()
 
-            # Target path
-            release_notes_symlink_target_repo_path = Path(os.path.normpath(
-                str(Path(ABS_MANIFEST_PATH_DIR) / Path(rel_symlinked_repo_path) / 'RELEASE_NOTES.rst'))).resolve()
-
-            if self.debug_mode:
-                print(
-                    f"*[debug_mode] Resolved source path for RELEASE_NOTES.rst: {abs_release_notes_symlink_src_repo_path}")
-                print(
-                    f"*[debug_mode] Resolved target path for RELEASE_NOTES.rst: {release_notes_symlink_target_repo_path}")
-
-            if not abs_release_notes_symlink_src_repo_path.exists():
-                logger.warning(f"No RELEASE_NOTES.rst found in '{abs_release_notes_symlink_src_repo_path}'")
-            else:
+            # Check if the source existing "real" file exists before attempting to create a symlink
+            if abs_existing_real_release_notes_path.exists():
                 try:
+                    # New symlink path; eg: 'source/content/account_services/RELEASE_NOTES.rst'
+                    abs_path_to_manifest = Path(ABS_MANIFEST_PATH_DIR).resolve()
+                    abs_symlinked_repo_path = abs_path_to_manifest.joinpath(rel_symlinked_repo_path)
+                    abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath('RELEASE_NOTES.rst')
+
+                    action_str = colorize_action(f"🔗 | Symlinking '{brighten('RELEASE_NOTES.rst')}' content (from clone src root)...")
+                    log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                    log_entries.append(colorize_path(f"  - From clone src path: '{brighten(abs_existing_real_release_notes_path)}'"))
+                    log_entries.append(
+                        colorize_path(f"  - To symlink path: '{brighten(abs_new_symlink_release_notes_path)}'"))
+
                     self.create_symlink(
-                        abs_release_notes_symlink_src_repo_path,
-                        release_notes_symlink_target_repo_path)
+                        abs_existing_real_release_notes_path,
+                        abs_new_symlink_release_notes_path,
+                        log_entries)
 
                     # Sanity check for successful link
-                    self._log_err_if_invalid_symlink(release_notes_symlink_target_repo_path)
-                except Exception as e:
-                    normalized_e = str(e).replace('\\\\', '/')
-                    logger.error(f"Error creating symlink: {normalized_e}")
+                    self._log_err_if_invalid_symlink(abs_new_symlink_release_notes_path, log_entries)
+                except Exception as inner_e:
+                    normalized_e = str(inner_e).replace('\\\\', '/')
+                    log_entries.append(colorize_error(f"Error creating symlink: {normalized_e}"))
+            else:
+                log_entries.append(colorize_warning(f"  - No RELEASE_NOTES.rst found in source repo."))
 
             # -------------------
             # Done with this repo
@@ -723,7 +738,11 @@ class SphinxRepoManager:
 
         except Exception as e:
             self.shutdown_flag = True  # Signal shutdown to other threads
-            error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}\n"
+            info1 = f"- HINT: For continued issues, try deleting your source/ `_repos-available/` and/or `content/`"
+            f"dirs to regenerate."
+            info2 = f"- HINT: You may see more logs below due to already-queued async-threaded logs"
+            bright_info = brighten(f'{info1}\n{info2}\n')
+            error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}.\n{bright_info}"
             raise RepositoryManagementError(f'\n{error_message}')
         finally:
             # Log the queued entries at once
@@ -740,13 +759,14 @@ class SphinxRepoManager:
         try:
             manifest = self.get_normalized_manifest()
             self.manage_repositories(manifest)
-        except Exception as e:
-            self.shutdown_flag = True  # Signal shutdown to other threads
-            raise RepositoryManagementError(f"\nrepo_manager failure: {e}")
-        finally:
-            logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
+
             if self.debug_mode and not self.read_the_docs_build:
                 raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
+        except Exception as e:
+            self.shutdown_flag = True  # Signal shutdown to other threads
+            raise RepositoryManagementError(f"\nsphinx_repo_manager failure: {e}")
+        finally:
+            logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
 
 
 # [ENTRY POINT] Set up the Sphinx extension

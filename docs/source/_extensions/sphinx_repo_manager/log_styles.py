@@ -30,6 +30,13 @@ def colorize_success(log_str):
     """ Apply a success-related color (GREEN) to a string. """
     return f"{Fore.GREEN}{log_str}{Fore.RESET}"
 
+def colorize_warning(log_str):
+    """ Apply a success-related color (MAGENTA) to a string. """
+    return f"{Fore.MAGENTA}{log_str}{Fore.RESET}"
+
+def colorize_error(log_str):
+    """ Apply a success-related color (RED) to a string. """
+    return f"{Fore.RED}{log_str}{Fore.RESET}"
 
 def colorize_cli_cmd(log_str):
     """ Apply a CLI command-related color (MAGENTA) to a string. """

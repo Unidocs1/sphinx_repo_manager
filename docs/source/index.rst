@@ -5,8 +5,8 @@ Xsolla Backend
 .. image:: /_static/images/features_banner.png
 
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
-.. REMOVED(WELCOME): Introduction <content/-/getting_started/>
-.. REMOVED(ABOUT): Concepts <content/-/concepts/>
+.. REMOVED(WELCOME): Introduction <content/-/getting_started/index>
+.. REMOVED(ABOUT): Concepts <content/-/concepts/index>
 .. REMOVED(ABOUT): GitLab <https://gitlab.acceleratxr.com>
 .. REMOVED(ABOUT): Commerce <content/-/commerce>
 .. REMOVED(ABOUT): Content <content/-/content>
@@ -29,43 +29,43 @@ Xsolla Backend
    Quickstart <content/-/quickstart>
    Demo <content/-/demo_env>
    Create Your Account <https://publisher.xsolla.com/signup>
-   Release Notes <content/-/changelogs/>
+   Release Notes <content/-/changelogs/index>
 
 .. toctree::
    :caption: Concepts
    :hidden:
 
-   Overview <content/-/getting_started/>
-   Service Framework <content/-/getting_started/framework/>
-   Administration <content/-/getting_started/admin/>
-   Plugins & SDK <content/-/getting_started/sdks/>
-   Feature Concepts <content/-/getting_started/systems/>
+   Overview <content/-/getting_started/index>
+   Service Framework <content/-/getting_started/framework/index>
+   Administration <content/-/getting_started/admin/index>
+   Plugins & SDK <content/-/getting_started/sdks/index>
+   Feature Concepts <content/-/getting_started/systems/index>
 
 .. toctree::
    :caption: How To
    :hidden:
 
-   Install <content/-/install/>
+   Install <content/-/install/index>
    Tools <content/-/tools>
-   Tutorials <content/-/samples_and_tutorials/>
+   Tutorials <content/-/samples_and_tutorials/index>
    Full Game Samples <content/-/samples_and_tutorials/full_game_samples>
 
 .. toctree::
    :caption: API Reference
    :hidden:
 
-   C++ SDK <content/sdk_cpp/>
-   C# SDK <content/sdk_csharp/>
-   NodeJS (TypeScript) SDK <content/sdk_nodejs/>
-   Unity SDK <content/sdk_unity/>
-   Unreal SDK <content/sdk_unreal/>
+   C++ SDK <content/sdk_cpp/index>
+   C# SDK <content/sdk_csharp/index>
+   NodeJS (TypeScript) SDK <content/sdk_nodejs/index>
+   Unity SDK <content/sdk_unity/index>
+   Unreal SDK <content/sdk_unreal/index>
    Open API <https://api.dev.xbe.xsolla.cloud/v1/openapi.json>
 
 .. toctree::
    :caption: Legal
    :hidden:
    
-   Eula <content/-/eula/>
+   Eula <content/-/eula/index>
 
 .. toctree::
    :caption: Need Help?

@@ -317,7 +317,7 @@ class GitHelper:
         GitHelper._throw_if_path_not_exists(repo_path)
         if GitHelper.git_check_is_dirty(repo_path, log_entries=log_entries):
             if stash_and_continue_if_wip:
-                msg = colorize_path(f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'")
+                msg = colorize_action(f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'...")
                 if log_entries is not None:
                     log_entries.append(msg)
                 else:
@@ -340,7 +340,7 @@ class GitHelper:
         if GitHelper.git_dir_exists(repo_path):
             if GitHelper.git_check_is_dirty(repo_path, log_entries=log_entries):
                 if stash_and_continue_if_wip:
-                    msg = colorize_path(f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'")
+                    msg = colorize_action(f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'...")
                     if log_entries is not None:
                         log_entries.append(msg)
                     else:
