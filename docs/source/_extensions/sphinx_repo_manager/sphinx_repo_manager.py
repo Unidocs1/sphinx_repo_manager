@@ -698,6 +698,7 @@ class SphinxRepoManager:
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
 
         except subprocess.CalledProcessError as e:
+            self.shutdown_flag = True  # Signal shutdown to other threads
             error_url = f"{repo_url_dotgit}/tree/{tag}"
             tags_url = f"{repo_url_dotgit}/-/tags"
 
@@ -708,6 +709,7 @@ class SphinxRepoManager:
             log_entries.append(error_message)
             raise RepositoryManagementError(f'\n{error_message}')
         except Exception as e:
+            self.shutdown_flag = True  # Signal shutdown to other threads
             error_message = (f"\n\n{Fore.RED}[repo_manager] "
                              f"Error during clone and checkout process for '{rel_symlinked_repo_path}'\n"
                              f"- Error: {str(e)}\n\n")
@@ -729,6 +731,7 @@ class SphinxRepoManager:
             manifest = self.get_normalized_manifest()
             self.manage_repositories(manifest)
         except Exception as e:
+            self.shutdown_flag = True  # Signal shutdown to other threads
             raise RepositoryManagementError(f"\nrepo_manager failure: {e}")
         finally:
             logger.info(colorize_success(f"\n══{brighten('END REPO_MANAGER')}══\n"))
