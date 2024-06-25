@@ -333,22 +333,8 @@ class SphinxRepoManager:
         logger.info(colorize_path(f"- working_dir (ABS_MANIFEST_PATH_DIR): '{brighten(os.getcwd())}'"))
 
         manifest = self.read_normalize_manifest()
-
-        # Is this extension enabled (default true)?
-        enable_repo_manager = manifest.get('enable_repo_manager', True)
-        if not enable_repo_manager:
-            logger.warning("[sphinx_repo_manager] Disabled in manifest (enable_repo_manager) - skipping extension!")
-            return manifest
-
-        self.debug_mode = manifest['debug_mode']
-
-        enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
-        if not self.read_the_docs_build and not enable_repo_manager_local:
-            logger.warning("[sphinx_repo_manager] Disabled in manifest (enable_repo_manager_local) - skipping extension"
-                           f" (but only skipping {brighten('locally')}; will resume in RTD deployments)!")
-            return manifest
-
-        self.init_dir_tree(manifest)
+        self.debug_mode = manifest['debug_mode']        
+        
         return manifest
 
     @staticmethod
@@ -463,6 +449,8 @@ class SphinxRepoManager:
         if not manifest:
             raise RepositoryManagementError('No manifest found (or failed when normalizing)')
 
+        self.init_dir_tree(manifest)
+        
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
         repositories = list(manifest['repositories'].items())
         log_queue = queue.Queue()  # Queue for handling log entries
@@ -750,6 +738,24 @@ class SphinxRepoManager:
             for entry in log_entries:
                 logger.info(entry)
 
+    def check_is_enabled_ext(self, manifest):
+        """ 
+        Reads against manifest `enable_repo_manager` `enable_repo_manager_local`:
+        If !enabled, logs intention to skip the extension.
+        - Returns: enabled (bool)
+        """
+        enable_repo_manager = manifest.get('enable_repo_manager', True)
+        if not enable_repo_manager:
+            logger.warning(f"\nDisabled in manifest ({brighten('enable_repo_manager')}) - skipping extension!")
+            return False  # not enabled
+        
+        enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
+        if not self.read_the_docs_build and not enable_repo_manager_local:
+            logger.warning(f"\nDisabled in manifest ({brighten('enable_repo_manager_local')}) - skipping extension!")
+            return False  # not enabled
+        
+        return True  # enabled
+
     def main(self, app):
         """
         Handle the repository cloning and updating process when Sphinx initializes.
@@ -760,8 +766,11 @@ class SphinxRepoManager:
         start_time = time.time()  # Track how long it takes to build all repos
         try:
             manifest = self.get_normalized_manifest()
-            self.manage_repositories(manifest)
+            enabled = self.check_is_enabled_ext(manifest)
+            if not enabled:
+                return  # Skip this extension
 
+            self.manage_repositories(manifest)
             if self.debug_mode and not self.read_the_docs_build:
                 raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
         except Exception as e:
