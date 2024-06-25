@@ -41,7 +41,7 @@ Xsolla Backend
    Service Framework <content/-/getting_started/framework/index>
    Administration <content/-/getting_started/admin/index>
    Plugins & SDK <content/-/getting_started/sdks/index>
-   Feature Concepts <content/-/getting_started/systems/index>
+   Feature Concepts <content/-/concepts/feature_concepts>
 
 .. toctree::
    :caption: How To
