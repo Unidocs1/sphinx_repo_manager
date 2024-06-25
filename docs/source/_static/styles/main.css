@@ -1,0 +1,8 @@
+/* 
+Merges separate toctrees into 1, useful for having
+different :maxdepth: sizes
+https://stackoverflow.com/a/64368882/6541639 
+*/ 
+.rst-content .toctree-wrapper:not(:last-child) ul {
+   margin-bottom: 0;
+}
