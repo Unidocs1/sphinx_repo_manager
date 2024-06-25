@@ -5,7 +5,6 @@ Xsolla Backend
 .. image:: /_static/images/features_banner.png
 
 .. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
-.. REMOVED(WELCOME): Introduction <content/-/getting_started/index>
 .. REMOVED(ABOUT): Concepts <content/-/concepts/index>
 .. REMOVED(ABOUT): GitLab <https://gitlab.acceleratxr.com>
 .. REMOVED(ABOUT): Commerce <content/-/commerce>
@@ -22,20 +21,23 @@ Xsolla Backend
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
 .. toctree::
+   :maxdepth: 1
    :caption: Welcome
    :hidden:
-
+   
+   What Is Xsolla Backend? <content/-/introduction/what_is_xbe>
    Features <content/-/features>
    Quickstart <content/-/quickstart>
    Demo <content/-/demo_env>
-   Create Your Account <https://publisher.xsolla.com/signup>
+   Create Your Account <https://xbeapp.xbe.xsolla.cloud>
    Release Notes <content/-/changelogs/index>
 
 .. toctree::
    :caption: Concepts
+   :maxdepth: 1
    :hidden:
 
-   Overview <content/-/getting_started/index>
+   Overview <content/-/concepts/overview>
    Service Framework <content/-/getting_started/framework/index>
    Administration <content/-/getting_started/admin/index>
    Plugins & SDK <content/-/getting_started/sdks/index>
@@ -43,15 +45,17 @@ Xsolla Backend
 
 .. toctree::
    :caption: How To
+   :maxdepth: 1
    :hidden:
 
    Install <content/-/install/index>
    Tools <content/-/tools>
-   Tutorials <content/-/samples_and_tutorials/index>
+   Tutorials <content/-/tutorials/index>
    Full Game Samples <content/-/samples_and_tutorials/full_game_samples>
 
 .. toctree::
    :caption: API Reference
+   :maxdepth: 1
    :hidden:
 
    C++ SDK <content/sdk_cpp/index>
@@ -63,15 +67,17 @@ Xsolla Backend
 
 .. toctree::
    :caption: Legal
+   :maxdepth: 1
    :hidden:
    
    Eula <content/-/eula/index>
 
 .. toctree::
    :caption: Need Help?
+   :maxdepth: 1
    :hidden:
    
-   Chat With Us! <https://discord.com/invite/wrfBR2Q>
+   Chat With Us! <https://discord.gg/XsollaBackend>
 
 **Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building
 highly-scalable online games and entertainment products. The platform offers a *huge* list of
