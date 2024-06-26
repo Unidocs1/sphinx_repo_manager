@@ -94,6 +94,9 @@ repositories:                         # Dictionary of <repo_name, repo_data>; de
   validation_services:
     url: "https://gitlab.acceleratxr.com/Core/validation_services"
     branch: "dev"
+  world_services:
+      url: "https://gitlab.acceleratxr.com/Core/world_services"
+      branch: "dev"
   # Sdks >>
   sdk_cpp:
     url: "https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp"

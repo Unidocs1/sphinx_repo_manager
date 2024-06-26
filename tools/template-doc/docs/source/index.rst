@@ -7,4 +7,4 @@ Foo Services
 
     Concepts <content/concepts/index>
 
-Hello World!
+Coming Soon

@@ -65,3 +65,5 @@ tools/repo_manager
 
 # Ensure docs content
 !docs/source/content
+
+/**/RELEASE_NOTES.rst  # Ignore symlinked docs/ release notes
