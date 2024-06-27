@@ -29,7 +29,7 @@ Xsolla Backend
    Features <content/-/features>
    Quickstart <content/-/quickstart>
    Demo <content/-/demo_env>
-   Create Your Account <https://xbeapp.xbe.xsolla.cloud>
+   Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
    Release Notes <content/-/changelogs/index>
 
 .. toctree::
@@ -39,7 +39,6 @@ Xsolla Backend
 
    Overview <content/-/concepts/overview>
    Service Framework <content/-/getting_started/framework/index>
-   Administration <content/-/getting_started/admin/index>
    Plugins & SDK <content/-/getting_started/sdks/index>
    Feature Concepts <content/-/feature_concepts/index>
 
@@ -49,6 +48,7 @@ Xsolla Backend
    :hidden:
 
    Install <content/-/install/index>
+   Administration <content/-/getting_started/admin/index>
    Tools <content/-/tools>
    Tutorials <content/-/tutorials/index>
    Full Game Samples <content/-/samples_and_tutorials/full_game_samples>
@@ -60,7 +60,7 @@ Xsolla Backend
 
    C++ SDK <content/sdk_cpp/index>
    C# SDK <content/sdk_csharp/index>
-   NodeJS (TypeScript) SDK <content/sdk_nodejs/index>
+   NodeJS SDK <content/sdk_nodejs/index>
    Unity SDK <content/sdk_unity/index>
    Unreal SDK <content/sdk_unreal/index>
    Open API <https://api.dev.xbe.xsolla.cloud/v1/openapi.json>
