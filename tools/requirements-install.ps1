@@ -1,3 +1,12 @@
+##########################################################################
+# This script installs the root requirements.txt with a clean venv:
+# (1) [Re]Creates a local venv -> activates it
+# (2) Installs requirements.txt
+# (3) Installs requirements-dev.txt
+# You can optionally just `python3 -m pip install requirements.txt` @ root
+# If you want Docker support, also install `requirements-dev.txt`
+##########################################################################
+
 try {
     # Save the project root path
     $projRoot = (Get-Location).Path + "\.."
@@ -27,10 +36,17 @@ try {
 
     # Install requirements
     Write-Host ""
-    Write-Host "Installing requirements from '$projRoot/requirements.txt' ..."
+    Write-Host "Installing core requirements from '$projRoot/requirements.txt' ..."
     Write-Host ""
     Write-Host "-----------------------------------"
     python3 -m pip install -r "$projRoot/requirements.txt"
+	
+	# Install requirements-dev
+    Write-Host ""
+    Write-Host "Installing dev requirements from '$projRoot/requirements-dev.txt' ..."
+    Write-Host ""
+    Write-Host "-----------------------------------"
+    python3 -m pip install -r "$projRoot/requirements-dev.txt"
 	
     ## Create a symbolic link to sphinx_repo_manager for tooling
     #Write-Host

@@ -93,6 +93,8 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'sphinx_repo_manager',  # Our own custom extension
+    'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link/
+    'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     # 'breathe',  # Doxygen API docs
     # 'sphinx_csharp',  # CSharp markdown
     # 'sphinx.ext.autodoc',  # More API docgen tools
