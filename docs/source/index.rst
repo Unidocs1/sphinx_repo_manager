@@ -1,23 +1,11 @@
-==============
-Xsolla Backend
-==============
+=========================
+Welcome to Xsolla Backend
+=========================
 
 .. image:: /_static/images/features_banner.png
 
-.. TODO: These sections are in the recycling bin, pending either removal or reintegration >>
-.. REMOVED(ABOUT): Concepts <content/-/concepts/index>
-.. REMOVED(ABOUT): GitLab <https://gitlab.acceleratxr.com>
-.. REMOVED(ABOUT): Commerce <content/-/commerce>
-.. REMOVED(ABOUT): Content <content/-/content>
-.. REMOVED(ABOUT): Gameplay <content/-/gameplay>
-.. REMOVED(ABOUT): LiveOps <content/-/liveops>
-.. REMOVED(ABOUT): Multiplayer <content/-/multiplayer>
-.. REMOVED(HOWTO): Services <content/-/services>
-.. REMOVED(COMPANY/CONTACT): About Xsolla <content/company>
-.. REMOVED(COMPANY/CONTACT): Xsolla Partner Support <https://xsolla.com/partner-support>
-
 .. TIPS:
-.. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs
+.. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
 .. toctree::
@@ -25,9 +13,9 @@ Xsolla Backend
    :caption: Welcome
    :hidden:
    
-   What Is Xsolla Backend? <content/-/introduction/what_is_xbe>
-   Features <content/-/features>
-   Quickstart <content/-/quickstart>
+   What Is Xsolla Backend? <content/-/welcome/what_is_xbe>
+   Features <content/-/welcome/features>
+   Quickstart <content/-/welcome/quickstart>
    Demo <content/-/demo_env>
    Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
    Release Notes <content/-/changelogs/index>
@@ -58,12 +46,12 @@ Xsolla Backend
    :maxdepth: 1
    :hidden:
 
-   C++ SDK <content/sdk_cpp/index>
-   C# SDK <content/sdk_csharp/index>
-   NodeJS SDK <content/sdk_nodejs/index>
-   Unity SDK <content/sdk_unity/index>
-   Unreal SDK <content/sdk_unreal/index>
-   Open API <https://api.dev.xbe.xsolla.cloud/v1/openapi.json>
+   C++ SDK <content/-/api_ref/sdk_cpp_ref>
+   C# SDK <content/-/api_ref/sdk_csharp_ref>
+   NodeJS SDK <content/-/api_ref/sdk_nodejs_ref>
+   Unity SDK <content/-/api_ref/sdk_unity_ref>
+   Unreal SDK <content/-/api_ref/sdk_unreal_ref>
+   OpenAPI <https://api.dev.xbe.xsolla.cloud/v1/openapi.json>
 
 .. toctree::
    :caption: Legal
@@ -79,68 +67,62 @@ Xsolla Backend
    
    Chat With Us! <https://discord.gg/XsollaBackend>
 
-**Xsolla Backend** \[XBE\], powered by AcceleratXR technology, is a powerful backend engine for building
-highly-scalable online games and entertainment products. The platform offers a *huge* list of
-:doc:`features <content/xbe-static-docs/content/features>` covering everything from account management, matchmaking
-to questing. XBE enables teams of any size and experience level to build state-of-the-art online experiences at a
-fraction of the time and cost of other solutions.
+**Xsolla Backend** \[XBE\] is a powerful backend engine for building highly-scalable online games and entertainment
+products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
+matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
 
-* Pay only 5% of gross sales
-* Free Hosting
-* Source Available
-* Unlimited Support
-* Business Benchmarking
+* **Pay only 5%** of gross sales paid
+* **Free** Hosting
+* **Source** Available
+* **Unlimited** Support
+* **Enterprise** Features
 
-History
--------
+Why Choose Xsolla Backend?
+--------------------------
 
-AcceleratXR started in 2018 by veteran developers of the gaming industry with over fifty years combined experience
-who previously shipped successful franchises such as XCOM, Hawken, Lost Planet and League of Legends.
-The Xsolla Backend team have pooled together all their knowledge and experience to build the most customizable and
-feature rich online gaming platform leveraging proven open source technology.
+1. **Trusted Technology:** Powered by :doc:`AcceleratXR <content/-/welcome/history>` with source-available tech backed by experienced Xsolla veterans.
+2. **Rapid Development:** Streamlined developer process to build cross-play, multiplayer games.
+3. **Cost-Effective:** Only 5% of gross sales, free hosting and unlimited support.
 
-**Xsolla Backend**, formerly AcceleratXR (pronounced *accelerator* ``/əkˈseləˌrādər/``), was built with the ambitious
-goal to dramatically accelerate extended reality games and application development. With this goal in mind the team
-has defined three dimensions of success:
+:doc:`Get started now <content/-/welcome/quickstart>` for free!
 
-* Faster Time to Market
-* Reduced Development Cost
-* Lower Cost of Ownership
+Our Philosophy
+~~~~~~~~~~~~~~
+
+* Faster time to market
+* Reduced development cost
+* Lower cost of ownership
 
 Time to Market
---------------
+^^^^^^^^^^^^^^
 
-Most other solutions in the industry tend to offer only a handful of capabilities with a limited focus on simple
-mobile games. As fellow game developers we know how much work is required to handle the sheer difficulty of shipping
-a product on time.
+Unlike other platforms that offer limited features focused on simple mobile games, Xsolla Backend is built by
+fellow game developer veterans who understand the challenges of timely product delivery.
 
-Having experienced every kind of development problem first-hand the Xsolla Backend team made it priority number one to
-provide a robust collection of systems and features native to the platform itself. This focus on features first
-empowers teams to spend more of their time building a better product instead of worrying about basic backend
-infrastructure and online systems development.
+Our priority is to equip you with a **complete** suite of built-in systems and features, allowing your team to
+concentrate on creating games without the worries of backend infrastructure.
 
 Development Cost
-----------------
+^^^^^^^^^^^^^^^^
 
-What is often more difficult to achieve as a developer is fitting within your given budget. Too many other platforms
-make big promises about capabilities that they simply can't deliver. Sometimes this is a matter of poor quality with
-the development of their product. Other times its the result of limitations from an overly generic architecture or
-implementation. The net result means having to roll your own more often than not.
+Budget constraints are a major challenge. Many platforms overpromise but underdeliver, leading to hidden costs and
+additional development work. With Xsolla Backend, you get a platform engineered to meet the highest AAA standards.
+Our source-available approach ensures you have full control and flexibility to customize as needed.
 
-Our team has carefully engineered every system and feature within the platform to meet and exceed the quality level of
-the most demanding AAA titles. Further, our source available approach ensures that you have complete and total control
-to make it your own in case any part of the platform fails to meet needs and expectations.
+Save time, reduce costs and eliminate surprises with Xsolla Backend — the reliable, high-quality, and cost-effective
+solution for your game development needs.
 
 Total Cost of Ownership
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
-Often times the operating costs of maintaining a product after it launches is the thing that determines the long term
-success. Many games over the last few decades have failed due to sky high hosting and operations costs that far exceeds
-revenue. The Xsolla Backend team have experienced these failures first hand and understand the deep complexity of not
-just operating a game that is successful but also profitable. As a result, every bit of the platform has been carefully
-architected to be as cost effective as possible.
+The true measure of a game's success lies in its ability to remain profitable long after launch. Many games have failed
+due to exorbitant hosting and operational costs that outpace revenue. At Xsolla Backend, we understand this challenge
+intimately. Our platform is meticulously designed to be cost-effective, ensuring your game remains profitable.
 
-This focus on cost sensitivity in combination with our flexible licensing, unparalleled feature set, and our uniquely
-open philosophy to game development, means that Xsolla Backend offers the lowest total cost of ownership compared to
-any other solution available. No other technology platform gives you more tools, more features and more flexibility to
-create and dream big.
+By focusing on cost-efficiency, flexible licensing, and a robust feature set, Xsolla Backend offers the lowest total
+cost of ownership in the market. Our unique, open philosophy gives you unparalleled tools, features, and flexibility,
+empowering you to innovate and achieve your biggest ambitions.
+
+`Chat with us`_ live in Discord now and we'll help you :doc:`get started <content/-/welcome/quickstart>`!
+
+.. _Chat with us: https://discord.gg/XsollaBackend
