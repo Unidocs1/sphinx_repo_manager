@@ -8,7 +8,7 @@ Welcome to Xsolla Backend
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
-.. toctree::
+.. toctree:: 
    :maxdepth: 1
    :caption: Welcome
    :hidden:
@@ -16,9 +16,9 @@ Welcome to Xsolla Backend
    What Is Xsolla Backend? <content/-/welcome/what_is_xbe>
    Features <content/-/welcome/features>
    Quickstart <content/-/welcome/quickstart>
-   Demo <content/-/demo_env>
+   Demo <content/-/welcome/demo_env>
    Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
-   Release Notes <content/-/changelogs/index>
+   Release Notes <content/-/welcome/release_notes/index>
 
 .. toctree::
    :caption: Concepts
@@ -26,20 +26,20 @@ Welcome to Xsolla Backend
    :hidden:
 
    Overview <content/-/concepts/overview>
-   Service Framework <content/-/getting_started/framework/index>
-   Plugins & SDK <content/-/getting_started/sdks/index>
-   Feature Concepts <content/-/feature_concepts/index>
+   Service Framework <content/-/concepts/service_framework/index>
+   Plugins & SDK <content/-/concepts/sdks/index>
+   Feature Concepts <content/-/concepts/feature_concepts/index>
 
 .. toctree::
    :caption: How To
    :maxdepth: 1
    :hidden:
 
-   Install <content/-/install/index>
-   Administration <content/-/getting_started/admin/index>
-   Tools <content/-/tools>
-   Tutorials <content/-/tutorials/index>
-   Full Game Samples <content/-/samples_and_tutorials/full_game_samples>
+   Install <content/-/how_to/install/index>
+   Administration <content/-/how_to/admin/index>
+   Tools <content/-/how_to/tools>
+   Tutorials <content/-/how_to/tutorials/index>
+   Full Game Samples <content/-/how_to/full_game_samples>
 
 .. toctree::
    :caption: API Reference
@@ -58,7 +58,7 @@ Welcome to Xsolla Backend
    :maxdepth: 1
    :hidden:
    
-   Eula <content/-/eula/index>
+   Eula <content/-/legal/eula/index>
 
 .. toctree::
    :caption: Need Help?
