@@ -22,7 +22,7 @@ Entry Point:
 
 Default Dir Tree:
 Inspired by nginx, repos are cloned to `_repos_available` -> then symlinked to `content/`:
-- docs/
+- docs/                                   # {repo_sparse_path} or {repo_sparse_path_override}
   - source/
     - _extensions/
     - _repos_available/
@@ -66,7 +66,9 @@ ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
 DEFAULT_MAX_WORKERS_LOCAL = 5
 DEFAULT_DEBUG_MODE = False
 DEFAULT_STASH_AND_CONTINUE_IF_WIP = True
-DEFAULT_INIT_CLONE_PATH = 'repos'
+DEFAULT_INIT_CLONE_PATH = 'source/_repos-available'
+DEFAULT_BASE_SYMLINK_PATH = 'source/content'
+DEFAULT_REPO_SPARSE_PATH = 'docs'
 DEFAULT_DEFAULT_BRANCH = 'master'
 DEFAULT_PRESERVE_GITLAB_GROUP = True
 DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
@@ -155,16 +157,19 @@ class SphinxRepoManager:
         """
         logger.info(colorize_action("🧹 | Validating & normalizing manifest..."))
 
-        # Set root defaults
+        # Set constant root defaults
         manifest.setdefault('max_workers_local', DEFAULT_MAX_WORKERS_LOCAL)
         manifest.setdefault('debug_mode', DEFAULT_DEBUG_MODE)
         manifest.setdefault('stash_and_continue_if_wip', DEFAULT_STASH_AND_CONTINUE_IF_WIP)
         manifest.setdefault('default_branch', DEFAULT_DEFAULT_BRANCH)
         manifest.setdefault('init_clone_path', DEFAULT_INIT_CLONE_PATH)
-        manifest.setdefault('init_clone_path_root_symlink_src', DEFAULT_INIT_CLONE_PATH)
-        manifest.setdefault('base_symlink_path', DEFAULT_INIT_CLONE_PATH)
-        manifest.setdefault('repo_sparse_path', DEFAULT_INIT_CLONE_PATH)
+        manifest.setdefault('base_symlink_path', DEFAULT_BASE_SYMLINK_PATH)
+        manifest.setdefault('repo_sparse_path', DEFAULT_REPO_SPARSE_PATH)
         manifest.setdefault('repositories', DEFAULT_REPOSITORIES)
+
+        # Set dynamic root defaults
+        repo_sparse_path = manifest['repo_sparse_path']
+        manifest.setdefault('init_clone_path_root_symlink_src', f'{repo_sparse_path}/source')
 
         # Normalize path/to/slashes
         manifest['init_clone_path'] = os.path.normpath(manifest['init_clone_path'])
@@ -176,7 +181,6 @@ class SphinxRepoManager:
             logger.warning("[sphinx_repo_manager] No repositories found in manifest - skipping extension!")
             sys.exit(0)
 
-        repo_sparse_path = manifest['repo_sparse_path']
         manifest['repo_sparse_path'] = repo_sparse_path.replace('\\', '/')  # Normalize to forward/slashes
         init_clone_path = os.path.normpath(manifest['init_clone_path'])
         base_symlink_path = os.path.normpath(manifest['base_symlink_path'])
@@ -256,6 +260,7 @@ class SphinxRepoManager:
 
         # Set other defaults
         repo_info.setdefault('active', True)
+        repo_info.setdefault('repo_sparse_path_override', None)
 
         init_clone_path_root_symlink_src = manifest['init_clone_path_root_symlink_src']
         repo_info.setdefault('init_clone_path_root_symlink_src_override', init_clone_path_root_symlink_src)
@@ -333,8 +338,8 @@ class SphinxRepoManager:
         logger.info(colorize_path(f"- working_dir (ABS_MANIFEST_PATH_DIR): '{brighten(os.getcwd())}'"))
 
         manifest = self.read_normalize_manifest()
-        self.debug_mode = manifest['debug_mode']        
-        
+        self.debug_mode = manifest['debug_mode']
+
         return manifest
 
     @staticmethod
@@ -422,13 +427,45 @@ class SphinxRepoManager:
         tag_versioned_clone_src_path = _meta['tag_versioned_clone_src_path']
         debug_mode = self.manifest['debug_mode']
         repo_sparse_path = self.manifest['repo_sparse_path']
-        rel_init_clone_path_root_symlink_src = repo_info['init_clone_path_root_symlink_src_override']
+
+        # eg: "{repo_sparse_path}/source/content"
+        repo_sparse_path_override = repo_info['repo_sparse_path_override']
+        has_repo_sparse_path_override = bool(repo_sparse_path_override)
+        rel_selected_repo_sparse_path = repo_sparse_path_override \
+            if has_repo_sparse_path_override else repo_sparse_path
+
+        # Get rel_selected_clone_path_root_symlink_src
+        # eg: 'docs' - overridable with optional {repo_sparse_path} replacements
+        init_clone_path_root_symlink_src_override = repo_info['init_clone_path_root_symlink_src_override']
+        has_init_clone_path_root_symlink_src_override = bool(init_clone_path_root_symlink_src_override)
+        if has_init_clone_path_root_symlink_src_override:
+            # Supports {repo_sparse_path} template to replace -- use the selected path (already considered overrides)
+            repo_info['init_clone_path_root_symlink_src_override'] = repo_info[
+                'init_clone_path_root_symlink_src_override'] \
+                .replace("{repo_sparse_path}", rel_selected_repo_sparse_path)
+            # Update the local var
+            init_clone_path_root_symlink_src_override = repo_info['init_clone_path_root_symlink_src_override']
+            has_init_clone_path_root_symlink_src_override = True
+        rel_selected_clone_path_root_symlink_src = init_clone_path_root_symlink_src_override \
+            if has_init_clone_path_root_symlink_src_override else repo_sparse_path
+
+        # Misc
         repo_name = _meta['repo_name']
 
+        # Logs + Override checks
         log_entries.append(colorize_action(f"📁 | Working Dirs:"))
         log_entries.append(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
         log_entries.append(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
 
+        if has_repo_sparse_path_override:
+            log_entries.append(
+                colorize_path(f"  - (!) Overriding repo_sparse_path: '{brighten(repo_sparse_path_override)}'"))
+
+        if has_init_clone_path_root_symlink_src_override:
+            log_entries.append(colorize_path(
+                f"  - (!) Overriding init_clone_path_root_symlink_src: '{brighten(init_clone_path_root_symlink_src_override)}'"))
+
+        # Pass the info (mostly paths) to an individual repo handler
         self.clone_and_symlink(
             repo_info,
             repo_name,
@@ -436,8 +473,8 @@ class SphinxRepoManager:
             tag_versioned_clone_src_path,
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
-            repo_sparse_path,
-            rel_init_clone_path_root_symlink_src,
+            rel_selected_repo_sparse_path,
+            rel_selected_clone_path_root_symlink_src,
             log_entries,
         )
 
@@ -450,7 +487,7 @@ class SphinxRepoManager:
             raise RepositoryManagementError('No manifest found (or failed when normalizing)')
 
         self.init_dir_tree(manifest)
-        
+
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
         repositories = list(manifest['repositories'].items())
         log_queue = queue.Queue()  # Queue for handling log entries
@@ -513,18 +550,19 @@ class SphinxRepoManager:
             rel_tag_versioned_clone_src_path,
             rel_symlinked_repo_path,
             stash_and_continue_if_wip,
-            repo_sparse_path,
-            rel_init_clone_path_root_symlink_src,
+            rel_selected_repo_sparse_path,
+            rel_selected_clone_path_root_symlink_src,
             log_entries,
     ):
         """
         Clone the repository if it does not exist and create a symlink in the base symlink path.
-        - repo_name                              # eg: "account_services"
-        - rel_tag_versioned_clone_src_repo_name  # eg: "account_services-v2.1.0"
-        - rel_init_clone_path                    # eg: "source/_repos-available"
-        - rel_tag_versioned_clone_src_path       # eg: "source/_repos-available/account_services-v2.1.0"
-        - rel_symlinked_repo_path                # eg: "source/content/account_services/docs/source"
-        - rel_init_clone_path_root_symlink_src   # eg: "source/content/account_services"
+        - repo_name                                  # eg: "account_services"
+        - rel_tag_versioned_clone_src_repo_name      # eg: "account_services-v2.1.0"
+        - rel_init_clone_path                        # eg: "source/_repos-available"
+        - rel_tag_versioned_clone_src_path           # eg: "source/_repos-available/account_services-v2.1.0"
+        - rel_symlinked_repo_path                    # eg: "source/content/account_services/docs/source"
+        - rel_selected_repo_sparse_path              # eg: "docs"
+        - rel_selected_clone_path_root_symlink_src   # eg: "docs/source"
         - log_entries will be appended with the results of the operation, logging in chunks
           - This is to handle async logs so it's still chronological
         """
@@ -551,11 +589,12 @@ class SphinxRepoManager:
                 git_helper = GitHelper()  # TODO: Place this instance @ top?
 
                 try:
+
                     git_helper.git_sparse_clone(
                         rel_tag_versioned_clone_src_path,
                         repo_url_dotgit,
                         branch,
-                        repo_sparse_path,
+                        rel_selected_repo_sparse_path,
                         stash_and_continue_if_wip,
                         log_entries=log_entries)
                 except Exception as e:
@@ -572,7 +611,7 @@ class SphinxRepoManager:
                 try:
                     GitHelper.git_clean_sparse_docs_clone(
                         rel_tag_versioned_clone_src_path,
-                        repo_sparse_path,
+                        rel_selected_repo_sparse_path,
                         log_entries=log_entries)
                 except Exception as e:
                     additional_info = f"Error cleaning up sparse clone '{brighten(repo_name)}':\n- {str(e)}"
@@ -659,19 +698,26 @@ class SphinxRepoManager:
                 raise SystemExit
 
             # TODO: Mv most of below to a new def `symlink_repo()`
-            # Manage symlinks -- we want src to be the nested <repo>/docs/source/
+            # Manage symlinks -- we want src to be the nested: <repo>/docs/source/
+            # (!) `docs` may have an override (repo_sparse_path_override)
             # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
             #
             # Convert string paths to Path objects and use the dynamic path
             init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
-            abs_clone_src_nested_path = init_symlink_src_path.joinpath(rel_init_clone_path_root_symlink_src).resolve()
+            abs_clone_src_nested_path = init_symlink_src_path.joinpath(
+                rel_selected_clone_path_root_symlink_src).resolve()
 
             # (1) Symlink content -> to nested repo
             action_str = colorize_action("🔗 | Symlinking repo nested sparse content...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            log_entries.append(colorize_path(f"  - From clone src path: '{brighten(abs_clone_src_nested_path)}'"))
+
+            # Log + Validate clone src path
+            log_entries.append(colorize_path(f"  - (1) From clone src path: '{brighten(abs_clone_src_nested_path)}'"))
+            if not abs_clone_src_nested_path.exists():
+                raise Exception(f"Error creating symlink:\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found")
+
             log_entries.append(
-                colorize_path(f"  - To symlink path: '{brighten(rel_init_clone_path_root_symlink_src)}'"))
+                colorize_path(f"  - To symlink path: '{brighten(rel_selected_clone_path_root_symlink_src)}'"))
 
             try:
                 self.create_symlink(
@@ -701,9 +747,12 @@ class SphinxRepoManager:
                     abs_symlinked_repo_path = abs_path_to_manifest.joinpath(rel_symlinked_repo_path)
                     abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath('RELEASE_NOTES.rst')
 
-                    action_str = colorize_action(f"🔗 | Symlinking '{brighten('RELEASE_NOTES.rst')}' content (from clone src root)...")
+                    action_str = colorize_action(
+                        f"🔗 | Symlinking '{brighten('RELEASE_NOTES.rst')}' content (from clone src root)...")
                     log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                    log_entries.append(colorize_path(f"  - From clone src path: '{brighten(abs_existing_real_release_notes_path)}'"))
+                    log_entries.append(
+                        colorize_path(
+                            f"  - (2) From clone src path: '{brighten(abs_existing_real_release_notes_path)}'"))
                     log_entries.append(
                         colorize_path(f"  - To symlink path: '{brighten(abs_new_symlink_release_notes_path)}'"))
 
@@ -748,12 +797,12 @@ class SphinxRepoManager:
         if not enable_repo_manager:
             logger.warning(f"\nDisabled in manifest ({brighten('enable_repo_manager')}) - skipping extension!")
             return False  # not enabled
-        
+
         enable_repo_manager_local = manifest.get('enable_repo_manager_local', True)
         if not self.read_the_docs_build and not enable_repo_manager_local:
             logger.warning(f"\nDisabled in manifest ({brighten('enable_repo_manager_local')}) - skipping extension!")
             return False  # not enabled
-        
+
         return True  # enabled
 
     def main(self, app):

@@ -8,6 +8,10 @@ from pathlib import Path
 import logging
 from log_styles import *
 
+GIT_SPARSE_PRESERVED_DIRS_FILES = [
+    '.git',
+    'RELEASE_NOTES.rst', 
+]
 
 # Configure the logger
 class CustomFormatter(logging.Formatter):
@@ -198,7 +202,8 @@ class GitHelper:
         Clean the root level of the repo_path, leaving only [.git, docs] at root level and sparse_first_level directories.
         """
         # These dirs/files won't be touched
-        preserved_dirs_files = ['.git', 'RELEASE_NOTES.rst', sparse_first_level]
+        preserved_dirs_files = GIT_SPARSE_PRESERVED_DIRS_FILES  + [ sparse_first_level ]
+        log_entries.append(colorize_action(f"  - Whitelisted sparse files: {preserved_dirs_files}"))
 
         # Add non-preserved dirs to .git/info/exclude before wiping
         # We don't want it to show on git diff -- this is *just* local to us
