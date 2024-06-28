@@ -175,7 +175,7 @@ class GitHelper:
             'git', 'clone',
             '--branch', branch,
             '-q',
-            repo_url_dotgit, rel_init_clone_path
+            repo_url_dotgit, rel_init_clone_path,
         ]
 
         run_subprocess_cmd(

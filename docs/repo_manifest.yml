@@ -25,7 +25,7 @@ init_clone_path_root_symlink_src: '{repo_sparse_path}/source'  # Supports {repo_
 # For private repo access when testing with a !premium RTD account,
 # set GITLAB_ACCESS_TOKEN in RTD's web dashboard (still use HTTPS urls);
 # creds will be swapped @ .readthedocs.yaml
-repositories:   # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted - essentially the same as !enable_repo_manager[_local]
+repositories:  # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted - essentially the same as !enable_repo_manager[_local]
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #mock_repo_example:  # With all opts/overrides (pointing to default fallbacks)
   #  url: 'https://gitlab.acceleratxr.com/Core/foo_services'  # .git suffix == optional; HTTPS only (until we add cert support in RTD); if .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
@@ -107,7 +107,7 @@ repositories:   # Dictionary of <repo_name, repo_data>; defaults to {}, if omitt
   # Sdks >>
   sdk_cpp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
-    branch: 'dev/vcpkg_update'  # TODO: Make new `dev` branch after this is merged
+    branch: 'feature/vcpkg_update'  # TODO: When this branch merges to dev, switch this to `dev`
   sdk_csharp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
     branch: 'dev'
