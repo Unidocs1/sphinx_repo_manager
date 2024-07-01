@@ -205,8 +205,8 @@ html_theme_options = {
     'collapse_navigation': False,
     'sticky_navigation': True,
     'navigation_depth': 2, # (!) Important
-    'includehidden': True,
-    'titles_only': False,
+    # 'includehidden': True,
+    # 'titles_only': False,
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
