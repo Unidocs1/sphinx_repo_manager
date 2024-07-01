@@ -18,7 +18,7 @@ Welcome to Xsolla Backend
    Quickstart <content/-/welcome/quickstart>
    Demo <content/-/welcome/demo_env>
    Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
-   Release Notes <content/-/welcome/release_notes/index>
+   Release Notes <content/-/welcome/release_notes/current/index>
 
 .. toctree::
    :caption: Concepts
@@ -39,7 +39,7 @@ Welcome to Xsolla Backend
    Administration <content/-/how_to/admin/index>
    Tools <content/-/how_to/tools>
    Tutorials <content/-/how_to/tutorials/index>
-   Full Game Samples <content/-/how_to/full_game_samples>
+   Full Game Samples <content/-/how_to/full_game_samples/index>
 
 .. toctree::
    :caption: API Reference
