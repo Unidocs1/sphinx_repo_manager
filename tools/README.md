@@ -19,19 +19,10 @@ Start here for tooling -- a minimal template to read the manifest file, then lea
 
 ## mass-repo-cmds.ps1
 
-The successor of `repo_cleaner.py` for more-minimal actions for already-normalized doc repos. Eg: Mass add an entry to `.gitignore` -> commit the change.
+The successor of `repo_cleaner.py` for more-minimal actions for already-normalized doc repos. Eg: Mass add an entry to `.gitignore` -> commit the change:
 
-## repo_cleaner.py
-
-Somewhat deprecated in favor of the more-minimal `mass-repo-cmds.ps1`, initially used to mass normalize every cloned repo and replace %PLACEHOLDERS%, but can be repurposed to do similar things. Repurpose this script to do more-complex things, even if the files are not yet normalized.
-
-## Deprecated/ dir
-
-Contains CI/CD for gitlab and related test runners. In the end, we did not need this, but could be a useful template for the future.
-
-## symlink_to_repo_manager.py
-
-Called from `requirements-install.ps1`, this creates a 
+1. Copy the script where you your repos are -> set the `$REPOS_AVAIL_DIR` path.
+2. Edit between `>> Custom Cmds >>` section at `Start-RepoCmds` func.
 
 ## License
 

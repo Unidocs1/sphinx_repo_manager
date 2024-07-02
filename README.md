@@ -8,7 +8,7 @@ This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubun
 
 1. Configure `docs/repo_manifest.yaml` (or leave defaults)
 2. Run `start-docker.ps1`
-3. Upon success, your browser will launch with `index.html`
+3. Upon success, your browser will launch with `index.html` and stop the Docker instance.
 
 ## Prerequisites
 
@@ -53,13 +53,16 @@ You may either run via Docker (recommended) or locally (legacy):
 
 ### Local Build (Legacy)
 
-1. Run `start.ps1`
+1. Run `tools/requirements-install.ps1`
+2. Run `docs/start.ps1`
 
 ### Speedy Rebuild
 
-If you _just_ updated and want to build without going through `repo_manager`: 
+If you _just_ updated and want to build without going through `sphinx_repo_manager`, set either
+`repo_manifest.yml` field: 
 
-Simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
+1. `enable_repo_manager` to `false` to disable for all repos
+2. OR set individual repo `active` to false (notably useful for actively updating the `xbe_static_docs` repo).
 
 ### Debugging a Build
 
@@ -110,7 +113,8 @@ See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLD
 
 To describe what is installed, including extensions:
 
-The `requirements.txt` file includes dependencies necessary for building and managing the documentation of our project using Sphinx. **Overview:**
+The `requirements.txt` file includes dependencies necessary for building and managing the documentation of our project
+using Sphinx. **Overview:**
 
 ### Sphinx
 
@@ -138,6 +142,15 @@ The `requirements.txt` file includes dependencies necessary for building and man
 - **Purpose**: [`PyYAML`] YAML parser and emitter for Python. It is used to handle YAML-formatted files within your documentation project, which can be useful for configuration files or other data-driven content.
 - **Documentation**: [PyYAML on PyPI](https://pypi.org/project/PyYAML/)
 
+### sphinx-copybutton
+
+- **Purpose**: [`sphinx-copybutton`] Sphinx extension that adds a copy button to code blocks in your documentation. This allows users to easily copy code snippets to their clipboard with a single click.
+- **Documentation**: [sphinx-copybutton on PyPI](https://pypi.org/project/sphinx-copybutton)
+
+### sphinx-new-tab-lnk
+
+- **Purpose**: [`sphinx-new-tab-lnk`] Sphinx extension that adds a target="_blank" attribute to external links in your documentation. This ensures that external links open in a new tab by default, preventing users from navigating away from your site.
+- **Documentation**: [sphinx-new-tab-lnk on PyPI](https://pypi.org/project/sphinx-new-tab-lnk)
 
 ### DocGen Tools
 
@@ -153,17 +166,17 @@ TODO
 
 TODO
 
-## Additional Troubleshooting
+## Legacy Additional Troubleshooting
 
 ### Clearing Cache
 
 Delete these to regenerate them when you build again:
 
 1. Delete `build` (or `make clean` via CLI)
-2. Delete `source/content`
+2. Delete `source/content` (symlinks from `source/_repos-available`
 3. Delete `source/_repos-available` (for use with `repo_manager`)
 
-### Python Install Path
+### Python Install Path (Legacy - Without Docker)
 
 As this can easily get error-prone, especially for new Python users, see below to install Python 3.10 from scratch:
 

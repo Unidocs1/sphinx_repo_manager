@@ -1,1 +1,0 @@
-./docs/make.bat
