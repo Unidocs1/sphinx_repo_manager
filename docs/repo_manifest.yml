@@ -107,7 +107,7 @@ repositories:  # Dictionary of <repo_name, repo_data>; defaults to {}, if omitte
   # Sdks >>
   sdk_cpp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
-    branch: 'feature/dev'
+    branch: 'dev'
   sdk_csharp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
     branch: 'dev'

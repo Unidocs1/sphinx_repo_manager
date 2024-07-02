@@ -1,6 +1,6 @@
-===========================
+====================================
 Sphinx Extension: Repository Manager
-===========================
+====================================
 
 Description
 -----------
@@ -37,6 +37,7 @@ The `setup(app)` function is executed during the 'builder-inited' event of Sphin
 Tested in
 ---------
 - Windows 11 via PowerShell 7
+- Ubuntu 22.04 via ReadTheDocs (RTD) CI
 
 Notes
 -----

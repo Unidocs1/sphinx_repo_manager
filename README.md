@@ -47,6 +47,12 @@ You may either run via Docker (recommended) or locally (legacy):
 
 ## Build
 
+❗If you recently updated your `repo_manifest.yml` file, you may want to 1st wipe these `source/` dirs
+to ensure a clean build:
+
+1. `_repos-available`
+2. `content`
+
 ### Docker (Recommended)
 
 1. Run `start-docker.ps1`
