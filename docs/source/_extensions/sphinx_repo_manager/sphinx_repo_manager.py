@@ -841,7 +841,8 @@ class SphinxRepoManager:
                 repo_name_hint = f" Find '{brighten(self.errored_repo_name)}' error logs above ^" \
                     if self.errored_repo_name else ""
                 logger.error(f"ERROR: Ended early!{repo_name_hint}")
-                logger.info(colorize_success(f"\n══{brighten('END SPHINX_REPO_MANAGER')}══\n"))
+
+            logger.info(colorize_success(f"\n══{brighten('END SPHINX_REPO_MANAGER')}══\n"))
 
 
 # [ENTRY POINT] Set up the Sphinx extension to trigger on a sphinx-build init phase (before building)
