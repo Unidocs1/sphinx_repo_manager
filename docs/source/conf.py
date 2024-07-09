@@ -115,6 +115,7 @@ exclude_patterns = [
     'venv',
     'requirements.txt',
     'README.*',
+    '_repos-available',  # We'll be using the symlinked `content` dir, instead; TODO: Test this; should dramatically impr build speed
 ]
 
 master_doc = 'index'
