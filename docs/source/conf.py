@@ -9,6 +9,7 @@
 ##############################################################################
 import os
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
+import requests  # To download OpenAPI spec
 # import subprocess  # for Doxyfile
 import sys
 # import yaml
@@ -93,8 +94,9 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'sphinx_repo_manager',  # Our own custom extension
-    'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link/
+    'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
+    'sphinxcontrib.redoc',  # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses; https://sphinxcontrib-redoc.readthedocs.io/en/stable 
     # 'breathe',  # Doxygen API docs
     # 'sphinx_csharp',  # CSharp markdown
     # 'sphinx.ext.autodoc',  # More API docgen tools
@@ -120,6 +122,50 @@ master_doc = 'index'
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"
 highlight_language = "cpp"
+
+
+# -- OpenAPI Local Download ----------------------------------------------
+# The target server host is blocking CORS, so we grab it locally
+# Used for the sphinxcontrib.redoc extension
+
+# Define the target yaml + path to save the downloaded OpenAPI spec
+openapi_spec_url = 'https://api.dev.xbe.xsolla.cloud/v1/openapi.yaml'
+openapi_spec_path = os.path.join('_static', 'openapi.yaml')
+
+
+# Download the spec to source/_static/openapi.yaml
+def download_openapi_spec(url, path):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(path, 'wb') as f:
+            f.write(response.content)
+        print(f'Successfully downloaded {url}')
+    else:
+        print(f'Failed to download {url}: {response.status_code}')
+
+
+download_openapi_spec(openapi_spec_url, openapi_spec_path)
+
+
+# # -- Extension: sphinxcontrib.redoc --------------------------------------
+# # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses
+# # Doc | https://sphinxcontrib-redoc.readthedocs.io/en/stable
+# # Demo | https://sphinxcontrib-redoc.readthedocs.io/en/stable/api/github/
+# 
+# redoc = [
+#     {
+#         'name': 'Xsolla Backend API',
+#         'page': 'openapi/index',  # (!) index.rst refs this
+#         'spec': openapi_spec_path,
+#         'embed': True,  # Local file only
+#         'opts': {
+#             'lazy-rendering': True,  # Formerly called `lazy`
+#             'required-props-first': True,  # Useful, (!) but slow
+#             'expand-responses': ["200", "201"],
+#             'native-scrollbars': True,  # Improves perf on big specs
+#         }
+#     },
+# ]
 
 
 # -- Extension: Breathe --------------------------------------------------

@@ -13,6 +13,7 @@ sphinx_jinja2==0.0.1  # Allows for {{ templating }}, using vars from conf.py # h
 PyYAML==6.0.1         # Req'd for sphinx_repo_manager ext
 colorama==0.4.6       # Req'd for sphinx_repo_manager ext
 sphinx-copybutton     # https://pypi.org/project/sphinx-copybutton
-sphinx-new-tab-link   # 
+sphinx-new-tab-link   # Opens all external links in new tab
+sphinxcontrib-redoc   # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses; https://sphinxcontrib-redoc.readthedocs.io/en/stable
 #sphinx-jinja==2.0.2  # (!) Doesn't work in RTD; allows for {{templating}} and for loops in .rst files via declared conf.py `jinja_contexts` var 
  

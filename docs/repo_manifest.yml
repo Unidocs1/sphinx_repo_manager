@@ -11,7 +11,7 @@
 # - It *is safe* (and encouraged) to periodically wipe your source/ _repos-available + content dirs
 ###################################################################################################
 enable_repo_manager: true  # If false, will skip this extension (for faster main doc iteration testing); defaults to true, if omitted
-enable_repo_manager_local: true  # If enable_repo_manager && false, will skip this extension locally (useful if you 100% know all repos are up-to-date); defaults to true, if omitted
+enable_repo_manager_local: false  # If enable_repo_manager && false, will skip this extension locally (useful if you 100% know all repos are up-to-date); defaults to true, if omitted
 max_workers_local: 5  # [BETA] Max workers for local sphinx_repo_manager for multi-threading; use just 1 for debugging; defaults to 1 (later 5, once git_helper logs handle async), if omitted
 max_workers_rtd: 1  # [BETA] Max workers for ReadTheDocs deployment for multi-threading; RTD has max 1 for free accts; use just 1 for debugging or free accts; defaults to 2, if omitted
 debug_mode: false  # More-verbose logging or debugging; throws arbitrary err on done with sphinx_repo_manager if local (prevents warning spam); defaults to false, if omitted

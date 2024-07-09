@@ -1,6 +1,6 @@
-=========================
-Welcome to Xsolla Backend
-=========================
+==============================
+Xsolla Backend [XBE] - Welcome
+==============================
 
 .. image:: /_static/images/features_banner.png
 
@@ -46,12 +46,13 @@ Welcome to Xsolla Backend
    :maxdepth: 1
    :hidden:
 
+   OpenAPI Gen Test <openapi/index>
    C++ SDK <content/-/api_ref/sdk_cpp_ref>
    C# SDK <content/-/api_ref/sdk_csharp_ref>
    NodeJS SDK <content/-/api_ref/sdk_nodejs_ref>
    Unity SDK <content/-/api_ref/sdk_unity_ref>
    Unreal SDK <content/-/api_ref/sdk_unreal_ref>
-   OpenAPI <https://api.dev.xbe.xsolla.cloud/v1/openapi.json>
+   OpenAPI <content/-/api_ref/openapi>
 
 .. toctree::
    :caption: Legal
