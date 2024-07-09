@@ -9,10 +9,11 @@
 ##############################################################################
 import os
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
-import requests  # To download OpenAPI spec
-# import subprocess  # for Doxyfile
+import requests  # To download openapi.yaml
 import sys
-# import yaml
+import yaml  # To process openapi.yaml
+# import subprocess  # for Doxyfile
+
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -115,7 +116,7 @@ exclude_patterns = [
     'venv',
     'requirements.txt',
     'README.*',
-    '_repos-available',  # We'll be using the symlinked `content` dir, instead; TODO: Test this; should dramatically impr build speed
+    '_repos-available',  # We'll be using the symlinked `content` dir, instead
 ]
 
 master_doc = 'index'
@@ -130,43 +131,64 @@ highlight_language = "cpp"
 # Used for the sphinxcontrib.redoc extension
 
 # Define the target yaml + path to save the downloaded OpenAPI spec
-openapi_spec_url = 'https://api.dev.xbe.xsolla.cloud/v1/openapi.yaml'
-openapi_spec_path = os.path.join('_static', 'openapi.yaml')
+openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'
+openapi_spec_path_noext = os.path.join('_static', 'openapi')
+openapi_rst_path_noext = os.path.join('content', '-', 'api_ref', 'openapi')
 
 
 # Download the spec to source/_static/openapi.yaml
-def download_openapi_spec(url, path):
+def download_file(url, save_to_path):
     response = requests.get(url)
     if response.status_code == 200:
-        with open(path, 'wb') as f:
+        with open(save_to_path, 'wb') as f:
             f.write(response.content)
-        print(f'Successfully downloaded {url}')
+        print(f'[conf.py] Successfully downloaded {url}')
     else:
-        print(f'Failed to download {url}: {response.status_code}')
+        print(f'[conf.py] Failed to download {url}: {response.status_code}')
+    print('')
 
 
-download_openapi_spec(openapi_spec_url, openapi_spec_path)
+def verify_openapi_files_exist():
+    files = {
+        'openapi.yaml': openapi_spec_path_noext + '.yaml',
+        'openapi.json': openapi_spec_path_noext + '.json',
+        'openapi.rst': openapi_rst_path_noext + '.rst',
+    }
+
+    for name, path in files.items():
+        print(f'[conf.py] Validating {name} ...')
+        if os.path.exists(path):
+            print(f'- {name} found at {path}')
+        else:
+            print(f'- {name} NOT found at {path}')
+    print('')
 
 
-# # -- Extension: sphinxcontrib.redoc --------------------------------------
-# # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses
-# # Doc | https://sphinxcontrib-redoc.readthedocs.io/en/stable
-# # Demo | https://sphinxcontrib-redoc.readthedocs.io/en/stable/api/github/
-# 
-# redoc = [
-#     {
-#         'name': 'Xsolla Backend API',
-#         'page': 'openapi/index',  # (!) index.rst refs this
-#         'spec': openapi_spec_path,
-#         'embed': True,  # Local file only
-#         'opts': {
-#             'lazy-rendering': True,  # Formerly called `lazy`
-#             'required-props-first': True,  # Useful, (!) but slow
-#             'expand-responses': ["200", "201"],
-#             'native-scrollbars': True,  # Improves perf on big specs
-#         }
-#     },
-# ]
+print('')
+download_file(openapi_spec_url_noext + '.yaml', openapi_spec_path_noext + '.yaml')
+download_file(openapi_spec_url_noext + '.json', openapi_spec_path_noext + '.json')
+verify_openapi_files_exist()
+
+
+# -- Extension: sphinxcontrib.redoc --------------------------------------
+# OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses
+# Doc | https://sphinxcontrib-redoc.readthedocs.io/en/stable
+# Demo | https://sphinxcontrib-redoc.readthedocs.io/en/stable/api/github/
+
+redoc = [
+    {
+        'name': 'Xsolla Backend API',
+        'page': openapi_rst_path_noext,  # 'content/-/api_ref/openapi'; (!) .rst containing `.. redoc::`
+        'spec': openapi_spec_path_noext,
+        'embed': True,  # Local file only
+        'opts': {
+            'lazy-rendering': True,  # Formerly called `lazy`
+            'required-props-first': True,  # Useful, (!) but slow
+            'expand-responses': ["200", "201"],
+            'native-scrollbars': True,  # Improves perf on big specs
+        }
+    },
+]
 
 
 # -- Extension: Breathe --------------------------------------------------
