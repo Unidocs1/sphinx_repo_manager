@@ -47,12 +47,12 @@ Xsolla Backend [XBE] - Welcome
    :hidden:
 
    OpenAPI Gen Test <openapi/index>
-   C++ SDK <content/-/api_ref/sdk_cpp_ref>
-   C# SDK <content/-/api_ref/sdk_csharp_ref>
-   NodeJS SDK <content/-/api_ref/sdk_nodejs_ref>
-   Unity SDK <content/-/api_ref/sdk_unity_ref>
-   Unreal SDK <content/-/api_ref/sdk_unreal_ref>
-   OpenAPI <content/-/api_ref/openapi>
+   C++ SDK <content/-/api/sdk_cpp_ref>
+   C# SDK <content/-/api/sdk_csharp_ref>
+   NodeJS SDK <content/-/api/sdk_nodejs_ref>
+   Unity SDK <content/-/api/sdk_unity_ref>
+   Unreal SDK <content/-/api/sdk_unreal_ref>
+   OpenAPI <content/-/api/openapi>
 
 .. toctree::
    :caption: Legal
@@ -127,3 +127,5 @@ empowering you to innovate and achieve your biggest ambitions.
 `Chat with us`_ live in Discord now and we'll help you :doc:`get started <content/-/welcome/quickstart>`!
 
 .. _Chat with us: https://discord.gg/XsollaBackend
+
+.. redoc::

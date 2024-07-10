@@ -8,12 +8,11 @@
 #
 ##############################################################################
 import os
-from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 import requests  # To download openapi.yaml
 import sys
-import yaml  # To process openapi.yaml
+# import yaml  # To process openapi.yaml
 # import subprocess  # for Doxyfile
-
+from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -69,7 +68,8 @@ sys.path.append(os.path.abspath('.'))
 # This allows us to build documentation for multiple versions of the same service.
 
 from _extensions.sphinx_repo_manager import SphinxRepoManager
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'tools', 'sphinx_repo_manager')))
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), 'tools', 'sphinx_repo_manager')))
 
 # Initialize the RepoManager instance with the manifest path
 manifest_path = Path('..', 'repo_manifest.yml').resolve()
@@ -117,6 +117,7 @@ exclude_patterns = [
     'requirements.txt',
     'README.*',
     '_repos-available',  # We'll be using the symlinked `content` dir, instead
+    '_recycling_bin',  # Deprecated files organized together
 ]
 
 master_doc = 'index'
@@ -130,10 +131,20 @@ highlight_language = "cpp"
 # The target server host is blocking CORS, so we grab it locally
 # Used for the sphinxcontrib.redoc extension
 
-# Define the target yaml + path to save the downloaded OpenAPI spec
-openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'
-openapi_spec_path_noext = os.path.join('_static', 'openapi')
-openapi_rst_path_noext = os.path.join('content', '-', 'api_ref', 'openapi')
+# Define the target json|yaml + path to save the downloaded OpenAPI spec
+# These vals will be shared later with the sphinxcontrib.redoc extension
+openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'  # We'll download this to _static/
+openapi_dir_path = '_specs'
+openapi_json_path = os.path.normpath(os.path.join(openapi_dir_path, 'openapi.json'))  # Main (7/10/2024)
+openapi_yaml_path = os.path.normpath(os.path.join(openapi_dir_path, 'openapi.yaml'))
+
+# Link here from rst with explicit ".html" ext (!) but NOT from a doctree
+openapi_generated_file_posix_path = Path(os.path.join(
+    'content', '-', 'api', 'index')).as_posix()  # Parse to forward/slashes/
+
+# If _specs dir !exists, create it
+if not os.path.exists(openapi_dir_path):
+    os.makedirs(openapi_dir_path)
 
 
 # Download the spec to source/_static/openapi.yaml
@@ -147,48 +158,47 @@ def download_file(url, save_to_path):
         print(f'[conf.py] Failed to download {url}: {response.status_code}')
 
 
-def verify_openapi_files_exist():
-    files = {
-        'openapi.yaml': openapi_spec_path_noext + '.yaml',
-        'openapi.json': openapi_spec_path_noext + '.json',
-        'openapi.rst': openapi_rst_path_noext + '.rst',
-    }
-
-    for name, path in files.items():
-        print(f'[conf.py] Validating {name} ...')
-        if os.path.exists(path):
-            print(f'- {name} found at {path}')
-        else:
-            print(f'- {name} NOT found at {path}')
+def setup_openapi():
+    print('')
+    download_file(openapi_spec_url_noext + '.json', openapi_json_path)  # Main (7/10/2024)
+    download_file(openapi_spec_url_noext + '.yaml', openapi_yaml_path)
     print('')
 
 
-print('')
-download_file(openapi_spec_url_noext + '.yaml', openapi_spec_path_noext + '.yaml')
-download_file(openapi_spec_url_noext + '.json', openapi_spec_path_noext + '.json')
-print('')
-verify_openapi_files_exist()
-
+setup_openapi()
 
 # -- Extension: sphinxcontrib.redoc --------------------------------------
 # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses
+# (!) Prereq: OpenAPI Local Download (above)
 # Doc | https://sphinxcontrib-redoc.readthedocs.io/en/stable
 # Demo | https://sphinxcontrib-redoc.readthedocs.io/en/stable/api/github/
+
+# Intentional forward/slashes/ for html; eg: "_specs/openapi.json"
+xbe_spec = openapi_dir_path + '/openapi.json'
+github_demo_spec = openapi_dir_path + '/github-demo.yml'
 
 redoc = [
     {
         'name': 'Xsolla Backend API',
-        'page': openapi_rst_path_noext,  # 'content/-/api_ref/openapi'; (!) .rst containing `.. redoc::`
-        'spec': openapi_spec_path_noext + '.json',  # .yaml causes errs on our side; linting also fails (7/10/2024)
-        'embed': True,  # Local file only
+        'page': openapi_generated_file_posix_path,  # content/-/api/index
+        #'spec': '_specs/openapi.json',  # (!) Ours Currently won't build due to errs: `/components/schemas/ACLRecordMongo". Token "ACLRecordMongo" does not exist`
+        'spec': github_demo_spec,  # DELETE ME AFTER DONE WITH TESTS!
+        'embed': True,  # Local file only (!) but embed is less powerful
         'opts': {
-            'lazy-rendering': True,  # Formerly called `lazy`
-            'required-props-first': True,  # Useful, (!) but slow
+            'lazy-rendering': True,  # Formerly called `lazy`; almost required for giant docs
+            'required-props-first': True,  # Useful, (!) but slower
+            'native-scrollbars': False,  # Improves perf on big specs when False
             'expand-responses': ["200", "201"],
-            'native-scrollbars': True,  # Improves perf on big specs
+            'suppress-warnings': False,
+            'hide-hostname': False,
+            'untrusted-spec': False,
         }
     },
 ]
+
+print(f'[conf.py::sphinxcontrib.redoc] redoc[0].page: {redoc[0]["page"]}')
+print(f'[conf.py::sphinxcontrib.redoc] redoc[0].spec: {redoc[0]["spec"]}')
+print('')
 
 
 # -- Extension: Breathe --------------------------------------------------
