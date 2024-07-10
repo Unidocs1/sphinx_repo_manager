@@ -535,6 +535,12 @@ class SphinxRepoManager:
                     for future in futures:
                         future.cancel()
                     raise SystemExit
+        # Join all futures to ensure all threads have completed
+        for future in futures:
+            try:
+                future.result()
+            except concurrent.futures.CancelledError:
+                pass
 
         # Process all remaining logs
         while not log_queue.empty():
@@ -840,7 +846,7 @@ class SphinxRepoManager:
             if self.shutdown_flag:
                 repo_name_hint = f" Find '{brighten(self.errored_repo_name)}' error logs above ^" \
                     if self.errored_repo_name else ""
-                logger.error(f"ERROR: Ended early!{repo_name_hint}")
+                logger.error(f"ERROR: Ended early (CTRL+C?){repo_name_hint}")
 
             logger.info(colorize_success(f"\n══{brighten('END SPHINX_REPO_MANAGER')}══\n"))
 
