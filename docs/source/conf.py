@@ -145,7 +145,6 @@ def download_file(url, save_to_path):
         print(f'[conf.py] Successfully downloaded {url}')
     else:
         print(f'[conf.py] Failed to download {url}: {response.status_code}')
-    print('')
 
 
 def verify_openapi_files_exist():
@@ -167,6 +166,7 @@ def verify_openapi_files_exist():
 print('')
 download_file(openapi_spec_url_noext + '.yaml', openapi_spec_path_noext + '.yaml')
 download_file(openapi_spec_url_noext + '.json', openapi_spec_path_noext + '.json')
+print('')
 verify_openapi_files_exist()
 
 
@@ -179,7 +179,7 @@ redoc = [
     {
         'name': 'Xsolla Backend API',
         'page': openapi_rst_path_noext,  # 'content/-/api_ref/openapi'; (!) .rst containing `.. redoc::`
-        'spec': openapi_spec_path_noext,
+        'spec': openapi_spec_path_noext + '.json',  # .yaml causes errs on our side; linting also fails (7/10/2024)
         'embed': True,  # Local file only
         'opts': {
             'lazy-rendering': True,  # Formerly called `lazy`
