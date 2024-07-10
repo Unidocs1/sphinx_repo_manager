@@ -77,7 +77,7 @@ DEFAULT_REPOSITORIES = {}
 logger = logging.getLogger(__name__)  # Get logger instance
 
 # Global flag to signal threads to shutdown
-shutdown_flag = threading.Event()
+shutdown_flag = False
 
 
 # Custom exception class for repository management errors
@@ -96,7 +96,7 @@ class SphinxRepoManager:
 
         # Multi-threading >>
         self.lock = threading.Lock()  # Lock for thread-safe logging
-        self.shutdown_flag = threading.Event()  # Use Event for better control
+        self.shutdown_flag = False  # Flag to handle graceful shutdown
         self.errored_repo_name = None
         signal.signal(signal.SIGINT, self._signal_handler)
 
@@ -106,9 +106,9 @@ class SphinxRepoManager:
             log_entries.append(colorize_error(f"Error creating symlink: '{rel_symlinked_repo_path}'"))
 
     def _signal_handler(self, signum, frame):
-        if not self.shutdown_flag.is_set():
+        if not self.shutdown_flag:
             print("Signal received (CTRL+C), initiating graceful shutdown...")
-        self.shutdown_flag.set()
+        self.shutdown_flag = True
 
     def read_normalize_manifest(self):
         """
@@ -506,8 +506,9 @@ class SphinxRepoManager:
         with concurrent.futures.ThreadPoolExecutor(max_num_workers) as executor:
             futures = []
             for repo_name, repo_info in repositories:
-                if self.shutdown_flag.is_set():
-                    break
+                # Attempt to cancel all futures if a shutdown (CTRL+C) is detected
+                if self.shutdown_flag:
+                    raise SystemExit
 
                 future = executor.submit(
                     self.process_repo,
@@ -522,10 +523,9 @@ class SphinxRepoManager:
 
             # Handle the completion of tasks, ensuring we process results or catch exceptions
             for future in concurrent.futures.as_completed(futures):
-                if self.shutdown_flag.is_set():
-                    break
                 try:
                     future.result()
+
                     num_done += 1
                     completed_msg = f"✅ | Completed {brighten(f'{num_done}/{total_repos_num}')} repositories."
                     logger.info(colorize_success(completed_msg))
@@ -534,15 +534,7 @@ class SphinxRepoManager:
                         logger.error(f"Failed to manage repository: {str(e)}")
                     for future in futures:
                         future.cancel()
-                    self.shutdown_flag.set()
-                    break
-
-        # Join all futures to ensure all threads have completed
-        for future in futures:
-            try:
-                future.result()
-            except concurrent.futures.CancelledError:
-                pass
+                    raise SystemExit
 
         # Process all remaining logs
         while not log_queue.empty():
@@ -848,7 +840,7 @@ class SphinxRepoManager:
             if self.shutdown_flag:
                 repo_name_hint = f" Find '{brighten(self.errored_repo_name)}' error logs above ^" \
                     if self.errored_repo_name else ""
-                logger.error(f"ERROR: Ended early (CTRL+C?){repo_name_hint}")
+                logger.error(f"ERROR: Ended early!{repo_name_hint}")
 
             logger.info(colorize_success(f"\n══{brighten('END SPHINX_REPO_MANAGER')}══\n"))
 
