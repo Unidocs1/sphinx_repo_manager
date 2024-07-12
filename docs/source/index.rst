@@ -10,6 +10,13 @@ Xsolla Backend [XBE] - Welcome
 
 .. toctree:: 
    :maxdepth: 1
+   :caption: (!) Dev
+   :hidden:
+
+   (!) ALL REPO DOCS <content/-/_dev/all_repo_docs>
+   
+.. toctree:: 
+   :maxdepth: 1
    :caption: Welcome
    :hidden:
    
@@ -29,6 +36,7 @@ Xsolla Backend [XBE] - Welcome
    Service Framework <content/-/concepts/service_framework/index>
    Plugins & SDK <content/-/concepts/sdks/index>
    Feature Concepts <content/-/concepts/feature_concepts/index>
+   (?) Service Architecture <content/-/concepts/architecture>
 
 .. toctree::
    :caption: How To

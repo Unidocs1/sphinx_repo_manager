@@ -1,13 +1,5 @@
 openapi: 3.1.0
 info:
-  title: Matchmaking Services
-  description: Provides matchmaking services.
-  termsOfService: http://acceleratxr.com/eula/
-  contact:
-    email: info@acceleratxr.com
-  license:
-    name: AcceleratXR License
-    url: https://www.acceleratxr.com/eula
   version: 2.0.0-beta.1
 paths:
   /status:
@@ -880,6 +872,17 @@ paths:
               schema:
                 type: object
       x-name: authenticatePassword
+  /config/users:
+    x-name: routes.ConfigUsersRoute
+    get:
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: object
+      x-name: getUsersConfig
   /logout:
     x-name: routes.LogoutRoute
     get:
@@ -5207,109 +5210,6 @@ paths:
       x-name: delete
   /tickets:
     x-schema: models.Ticket
-    get:
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/skip"
-        - $ref: "#/components/parameters/sort"
-        - $ref: "#/components/parameters/page"
-      description: Returns all tickets from the system that the user has access to.
-      x-name: findAll
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: promise
-                items:
-                  $ref: "#/components/schemas/Ticket"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-    post:
-      description: Create a new ticket.
-      x-name: create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/models.Ticket"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: promise
-        "201":
-          description: The newly created ticket.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Ticket"
-        "400":
-          description: Returned when the request content is invalid.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-    delete:
-      description: Removes all tickets from the datastore.
-      x-name: truncate
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: promise
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
     x-name: routes.TicketRoute
     head:
       description: Returns the count of tickets
@@ -5340,60 +5240,191 @@ paths:
       security:
         - jwt: []
       x-name: count
-  /tickets/count:
-    x-schema: Ticket
     get:
-      description: Returns the count of tickets
-      parameters: null
-      x-name: count
+      description: Returns all tickets from the system that the user has access to.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
       responses:
         "200":
-          description: The number of found tickets matching the search criteria.
+          description: Returned when the operation is successful.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/count"
-      security:
-        - jwt: []
-  /tickets/{id}:
-    x-schema: Ticket
-    get:
-      description: Returns a single ticket from the system that the user has access to
-      x-name: findById
-      responses:
-        "200":
-          description: A ticket object.
+                type: promise
+        "401":
+          description: Returned when a valid authentication token is not provided.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Ticket"
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
         - jwt: []
-    put:
-      description: Updates a single ticket
-      x-name: update
+      x-name: findAll
+    post:
+      description: Create a new ticket.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Ticket"
+              $ref: "#/components/schemas/models.Ticket"
       responses:
         "200":
-          description: The updated ticket object
+          description: Returned when the operation is successful.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Ticket"
+                type: promise
+        "400":
+          description: Returned when the request content is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
         - jwt: []
+      x-name: create
     delete:
-      description: Deletes the ticket
-      x-name: delete
+      description: Removes all tickets from the datastore.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
       responses:
         "200":
-          description: No content
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: promise
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       security:
         - jwt: []
+      x-name: truncate
+  /tickets/:id:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    x-schema: models.Ticket
+    x-name: routes.TicketRoute
+    get:
+      description: Returns a single ticket from the system that the user has access to
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: promise
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: findById
+    put:
+      description: Updates a single ticket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/models.Ticket"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: promise
+        "400":
+          description: Returned when the request content is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: update
+    delete:
+      description: Deletes the ticket
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: promise
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: delete
   /notifications.websocket:
     x-name: routes.NotificationRoute
     x-upgrade: true
@@ -9452,6 +9483,559 @@ paths:
               schema:
                 type: object
       x-name: handleWebhook
+  /quests:
+    x-schema: models.QuestDefinition
+    x-name: routes.QuestDefinitionRoute
+    head:
+      description: Returns the count of quest definitions based on the given criteria.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-name: count
+    get:
+      description: Returns all quest definitions from the system that the persona has
+        access to based upon the given criteria.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                  - $ref: "#/components/schemas/models.QuestDefinition"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-name: findAll
+    post:
+      description: Creates a new quest definition.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/models.QuestDefinition"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/models.QuestDefinition"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/models.QuestDefinition"
+        "400":
+          description: Returned when the request content is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: create
+    delete:
+      description: Deletes all quest definitions from the service.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: truncate
+  /quests/:id:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    x-schema: models.QuestDefinition
+    x-name: routes.QuestDefinitionRoute
+    get:
+      description: Returns a single quest definition from the system that the persona
+        has access to.
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/models.QuestDefinition"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-name: findById
+    put:
+      description: Updates a single quest definition.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/models.QuestDefinition"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/models.QuestDefinition"
+        "400":
+          description: Returned when the request content is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: update
+    delete:
+      description: Deletes the quest from the service.
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: delete
+  /personas/:personaUid/quests:
+    parameters:
+      - name: personaUid
+        in: path
+        required: true
+        schema:
+          type: string
+    x-schema: models.Quest
+    x-name: routes.QuestRoute
+    head:
+      description: Returns the count of quests that a persona has in progress or has
+        completed.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: count
+    get:
+      description: Returns progress data for all quests that the given persona has
+        started or completed.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/models.Quest"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: findAllForPersona
+    post:
+      description: Starts progress of the given quest for the specified persona.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/models.Quest"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/models.Quest"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/models.Quest"
+        "400":
+          description: Returned when the request content is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: create
+    delete:
+      description: Deletes all the persona's quest progress.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: truncate
+  /personas/quests:
+    x-schema: models.Quest
+    x-name: routes.QuestRoute
+    head:
+      description: Returns the count of quests that a persona has in progress or has
+        completed.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: countAll
+    get:
+      description: Returns progress data for all quests that the given persona has
+        started or completed.
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/models.Quest"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: findAll
+  /personas/:personaUid/quests/:questUid:
+    parameters:
+      - name: personaUid
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: questUid
+        in: path
+        required: true
+        schema:
+          type: string
+    x-schema: models.Quest
+    x-name: routes.QuestRoute
+    get:
+      description: Returns the progress for a given quest and persona.
+      parameters:
+        - name: findById
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/models.Quest"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: findById
+    delete:
+      description: Deletes the persona's progress for a given quest.
+      parameters:
+        - name: delete
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: delete
+  /personas/:personaUid/quests/:questUid/start:
+    parameters:
+      - name: personaUid
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: questUid
+        in: path
+        required: true
+        schema:
+          type: string
+    x-schema: models.Quest
+    x-name: routes.QuestRoute
+    get:
+      description: Starts tracking the persona's progress for a given quest.
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/models.Quest"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: start
+  /personas/:personaUid/quests/:questUid/unlock:
+    parameters:
+      - name: personaUid
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: questUid
+        in: path
+        required: true
+        schema:
+          type: string
+    x-schema: models.Quest
+    x-name: routes.QuestRoute
+    get:
+      description: Marks the quest has unlocked and able to be started by the
+        specified persona.
+      parameters:
+        - name: unlock
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/models.Quest"
+        "401":
+          description: Returned when a valid authentication token is not provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Returned when the user does not have permission to perform this
+            action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - jwt: []
+      x-name: unlock
   /reports:
     x-schema: models.Report
     x-name: routes.ReportRoute
@@ -12313,56 +12897,6 @@ paths:
       security:
         - jwt: []
       x-name: get
-  /allstatus:
-    x-name: routes.StatusRoute
-    head:
-      description: Returns the count of healthy XBE services running in the cluster.
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: object
-      x-name: countAllStatus
-    get:
-      description: Returns the health status of all XBE services running in the cluster.
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: object
-      x-name: getAllStatus
-  /allstatus/:name:
-    parameters:
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-    x-name: routes.StatusRoute
-    head:
-      description: Returns the health status of one XBE services running in the cluster.
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: object
-      x-name: countServiceStatus
-    get:
-      description: Returns the health status of all XBE services running in the cluster.
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: object
-      x-name: getServiceStatus
   /scalingpolicies:
     x-schema: models.ScalingPolicy
     x-name: routes.ScalingPolicyRoute
@@ -13220,592 +13754,10 @@ paths:
       security:
         - jwt: []
       x-name: getUsers
-  /quests:
-    x-schema: models.QuestDefinition
-    x-name: routes.QuestDefinitionRoute
+  /allstatus:
+    x-name: routes.StatusRoute
     head:
-      description: Returns the count of quest definitions based on the given criteria.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "204":
-          description: No Content
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      x-name: count
-    get:
-      description: Returns all quest definitions from the system that the persona has
-        access to based upon the given criteria.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - type: array
-                  - $ref: "#/components/schemas/models.QuestDefinition"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      x-name: findAll
-    post:
-      description: Creates a new quest definition.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/models.QuestDefinition"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/models.QuestDefinition"
-                  - type: array
-                    items:
-                      $ref: "#/components/schemas/models.QuestDefinition"
-        "400":
-          description: Returned when the request content is invalid.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: create
-    delete:
-      description: Deletes all quest definitions from the service.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: truncate
-  /quests/:id:
-    parameters:
-      - $ref: "#/components/parameters/id"
-    x-schema: models.QuestDefinition
-    x-name: routes.QuestDefinitionRoute
-    get:
-      description: Returns a single quest definition from the system that the persona
-        has access to.
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/models.QuestDefinition"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      x-name: findById
-    put:
-      description: Updates a single quest definition.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/models.QuestDefinition"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/models.QuestDefinition"
-        "400":
-          description: Returned when the request content is invalid.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: update
-    delete:
-      description: Deletes the quest from the service.
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: delete
-  /personas/:personaUid/quests:
-    parameters:
-      - name: personaUid
-        in: path
-        required: true
-        schema:
-          type: string
-    x-schema: models.Quest
-    x-name: routes.QuestRoute
-    head:
-      description: Returns the count of quests that a persona has in progress or has
-        completed.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: count
-    get:
-      description: Returns progress data for all quests that the given persona has
-        started or completed.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/models.Quest"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: findAllForPersona
-    post:
-      description: Starts progress of the given quest for the specified persona.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/models.Quest"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/models.Quest"
-                  - type: array
-                    items:
-                      $ref: "#/components/schemas/models.Quest"
-        "400":
-          description: Returned when the request content is invalid.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: create
-    delete:
-      description: Deletes all the persona's quest progress.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: truncate
-  /personas/:personaUid/quests/:questUid:
-    parameters:
-      - name: personaUid
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: questUid
-        in: path
-        required: true
-        schema:
-          type: string
-    x-schema: models.Quest
-    x-name: routes.QuestRoute
-    get:
-      description: Returns the progress for a given quest and persona.
-      parameters:
-        - name: findById
-          in: query
-          schema:
-            type: string
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/models.Quest"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: findById
-    delete:
-      description: Deletes the persona's progress for a given quest.
-      parameters:
-        - name: delete
-          in: query
-          schema:
-            type: string
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: delete
-  /personas/:personaUid/quests/:questUid/start:
-    parameters:
-      - name: personaUid
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: questUid
-        in: path
-        required: true
-        schema:
-          type: string
-    x-schema: models.Quest
-    x-name: routes.QuestRoute
-    get:
-      description: Starts tracking the persona's progress for a given quest.
-      parameters:
-        - name: start
-          in: query
-          schema:
-            type: string
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/models.Quest"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: start
-  /personas/:personaUid/quests/:questUid/unlock:
-    parameters:
-      - name: personaUid
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: questUid
-        in: path
-        required: true
-        schema:
-          type: string
-    x-schema: models.Quest
-    x-name: routes.QuestRoute
-    get:
-      description: Marks the quest has unlocked and able to be started by the
-        specified persona.
-      parameters:
-        - name: unlock
-          in: query
-          schema:
-            type: string
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/models.Quest"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: unlock
-  /tickets/:id:
-    parameters:
-      - $ref: "#/components/parameters/id"
-    x-schema: models.Ticket
-    x-name: routes.TicketRoute
-    get:
-      description: Returns a single ticket from the system that the user has access to
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: promise
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: findById
-    put:
-      description: Updates a single ticket
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/models.Ticket"
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: promise
-        "400":
-          description: Returned when the request content is invalid.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: update
-    delete:
-      description: Deletes the ticket
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: promise
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: delete
-  /config/users:
-    x-name: routes.ConfigUsersRoute
-    get:
+      description: Returns the count of healthy XBE services running in the cluster.
       responses:
         "200":
           description: Returned when the operation is successful.
@@ -13813,68 +13765,45 @@ paths:
             application/json:
               schema:
                 type: object
-      x-name: getUsersConfig
-  /personas/quests:
-    x-schema: models.Quest
-    x-name: routes.QuestRoute
-    head:
-      description: Returns the count of quests that a persona has in progress or has
-        completed.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: Returned when a valid authentication token is not provided.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: countAll
+      x-name: countAllStatus
     get:
-      description: Returns progress data for all quests that the given persona has
-        started or completed.
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/sort"
+      description: Returns the health status of all XBE services running in the cluster.
       responses:
         "200":
           description: Returned when the operation is successful.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/models.Quest"
-        "401":
-          description: Returned when a valid authentication token is not provided.
+                type: object
+      x-name: getAllStatus
+  /allstatus/:name:
+    parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+    x-name: routes.StatusRoute
+    head:
+      description: Returns the health status of one XBE services running in the cluster.
+      responses:
+        "200":
+          description: Returned when the operation is successful.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Returned when the user does not have permission to perform this
-            action.
+                type: object
+      x-name: countServiceStatus
+    get:
+      description: Returns the health status of all XBE services running in the cluster.
+      responses:
+        "200":
+          description: Returned when the operation is successful.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - jwt: []
-      x-name: findAll
+                type: object
+      x-name: getServiceStatus
 components:
   schemas:
     Error:
@@ -13977,9 +13906,6 @@ components:
         authClass:
           default: oauth.DefaultOAuth2Handler
           type: string
-        authorizationURL:
-          default: ""
-          type: string
         clientID:
           default: ""
           type: string
@@ -13994,9 +13920,6 @@ components:
           type: object
         profileMap:
           type: object
-        profileURL:
-          default: ""
-          type: string
         protocol:
           default: oauth2
           type: string
@@ -14006,9 +13929,6 @@ components:
         scope:
           default: []
           type: array
-        tokenURL:
-          default: ""
-          type: string
       required:
         - uid
         - dateCreated
@@ -14016,16 +13936,13 @@ components:
         - version
         - name
         - authClass
-        - authorizationURL
         - clientID
         - clientSecret
         - otherConfig
         - pkce
-        - profileURL
         - protocol
         - redirectURIs
         - scope
-        - tokenURL
       x-baseClass: BaseMongoEntity
       x-cache: 30
       x-datastore: static
@@ -14067,8 +13984,8 @@ components:
           default: []
           type: array
         parentUid:
-          type: string
           default: null
+          type: string
       required:
         - uid
         - dateCreated
@@ -14172,11 +14089,11 @@ components:
           default: null
           type: string
           x-identifier: true
-        firstName:
-          default: ""
+        givenName:
+          default: null
           type: string
-        lastName:
-          default: ""
+        familyName:
+          default: null
           type: string
         birthdate:
           default: null
@@ -14203,14 +14120,8 @@ components:
             phone: false
           type: object
         lastLogin:
+          default: null
           format: date
-          type: string
-          default: null
-        givenName:
-          default: null
-          type: string
-        familyName:
-          default: null
           type: string
       required:
         - uid
@@ -14219,8 +14130,8 @@ components:
         - version
         - name
         - email
-        - firstName
-        - lastName
+        - givenName
+        - familyName
         - birthdate
         - locale
         - orgs
@@ -14999,121 +14910,74 @@ components:
       x-baseClass: BaseMongoEntity
       x-cache: 30
       x-datastore: user
-    authToken:
-      type: object
-      properties:
-        token:
-          type: string
-          format: JWT
-    count:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int
-    Criteria:
-      type: object
-      description: Describes a single statistic by which to filter all matchmaking
-        search results. Each criteria must have a corresponding `Statistic`
-        object with the same `name`.
-      properties:
-        name:
-          type: string
-          description: The unique name of the criteria to consider.
-          nullable: false
-        value:
-          type: object
-          description: The comparison value that the criteria will consider.
-          nullable: false
-    Statistic:
-      type: object
-      description: Describes a single metric by which users will be compared and filtered.
-      properties:
-        name:
-          type: string
-          description: The unique name of the statistic.
-          nullable: false
-        value:
-          type: object
-          description: The value of the statistic representing the combined average of all
-            users on a ticket or match.
-          nullable: false
-    Ticket:
-      type: object
-      description: Describes one or more users wishing to find another group of users
-        to match against.
-      x-baseClass: BaseMongoEntity
+    models.Ticket:
       properties:
         uid:
+          default: randomUUID()
+          description: The universally unique identifier of the entity.
           type: string
-          description: The universally unique identifier of the ticket.
-          format: uuid
-          nullable: false
           x-identifier: true
-          x-index: true
-          x-unique: true
         dateCreated:
+          default: new Date()
+          description: The date and time that the entity was created.
+          format: date
           type: string
-          description: The date and time that the ticket was created.
-          format: date-time
-          nullable: false
         dateModified:
+          default: new Date()
+          description: The date and time that the entity was last modified.
+          format: date
           type: string
-          description: The date and time that the ticket was last modified.
-          format: date-time
-          nullable: false
         version:
-          type: integer
-          description: The optimistic lock version.
-          nullable: false
           default: 0
+          description: The optimistic lock version.
+          type: number
         criteria:
+          default: []
           type: array
-          description: The list of criteria to use when filtering other tickets while
-            looking for a match.
-          items:
-            $ref: "#/components/schemas/Criteria"
+        dedicatedServer:
+          default: true
+          type: boolean
         hostUid:
+          default: ""
           type: string
-          description: The UUID of the user that is responsible for maintaining this ticket.
-          format: uuid
         teamSize:
           type: object
-          description: The number of users desired for any given team. Can be represented
-            as a number or a range using an object.
-          nullable: false
         numTeams:
+          default: 0
           type: number
-          description: The number of teams desired to be found.
-          nullable: false
         numUsers:
+          default: 0
           type: number
-          description: The number of users represented on the ticket.
-          nullable: false
         sessionUid:
           type: string
-          description: The UUID of the session once matchmaking has completed successfully.
-          format: uuid
         statistics:
+          default:
+            - name: skillrating
+              value: null
+            - name: ip
+              value: null
           type: array
-          description: The list of statistics for all users represented on the ticket.
-          items:
-            $ref: "#/components/schemas/Statistic"
         status:
-          type: string
-          description: The current state of the ticket's processing.
-          enum:
-            - INITIALIZING
-            - SEARCHING
-            - MATCH_FOUND
-            - INVALID
           default: INITIALIZING
+          type: string
         users:
+          default: []
           type: array
-          description: The list of UUIDs for each user represented on the ticket.
-          items:
-            type: string
-            format: uuid
+      required:
+        - uid
+        - dateCreated
+        - dateModified
+        - version
+        - criteria
+        - dedicatedServer
+        - hostUid
+        - numTeams
+        - numUsers
+        - statistics
+        - status
+        - users
+      x-baseClass: BaseMongoEntity
+      x-datastore: user
     models.Persona:
       properties:
         uid:
@@ -16018,7 +15882,7 @@ components:
           format: date
           type: string
         starts:
-          default: 2024-06-05T22:23:18.344Z
+          default: 2024-07-10T16:36:47.790Z
           format: date
           type: string
         redeemed:
@@ -16090,7 +15954,7 @@ components:
           format: date
           type: string
         startDate:
-          default: 2024-06-05T22:23:18.345Z
+          default: 2024-07-10T16:36:47.791Z
           format: date
           type: string
         data:
@@ -16173,6 +16037,199 @@ components:
           uid: 1
         unique: false
         options: {}
+    models.Quest:
+      properties:
+        uid:
+          default: randomUUID()
+          description: The universally unique identifier of the entity.
+          type: string
+          x-identifier: true
+        dateCreated:
+          default: new Date()
+          description: The date and time that the entity was created.
+          format: date
+          type: string
+        dateModified:
+          default: new Date()
+          description: The date and time that the entity was last modified.
+          format: date
+          type: string
+        version:
+          default: 0
+          description: The optimistic lock version.
+          type: number
+        questUid:
+          default: ""
+          description: The unique identifier of the quest being tracked.
+          type: string
+        personaUid:
+          default: ""
+          description: The unique identifier of the persona or user whose quest progress
+            is being tracked.
+          type: string
+        productUid:
+          description: The uid of the product that this quest progress is associated with.
+          type: string
+        progress:
+          default: []
+          description: The persona's current progress for each of the quest requirements.
+          oneOf:
+            - default: []
+              description: The persona's current progress for each of the quest requirements.
+              type: array
+            - $ref: "#/components/schemas/models.QuestProgress"
+        completions:
+          default: 0
+          description: The number of times that the quest has been completed by the persona.
+          type: number
+        dateLastCompleted:
+          description: The date and time that the persona last completed the quest.
+          format: date
+          type: string
+        dateLastStarted:
+          description: The date and time that the persona last started the quest.
+          format: date
+          type: string
+        unlocked:
+          default: false
+          description: Indicates if the persona has unlocked and can begin the quest.
+          type: boolean
+        unlockProgress:
+          default: []
+          description: The persona's curent progress towards unlocking the quest.
+          oneOf:
+            - default: []
+              description: The persona's curent progress towards unlocking the quest.
+              type: array
+            - $ref: "#/components/schemas/models.QuestProgress"
+      required:
+        - uid
+        - dateCreated
+        - dateModified
+        - version
+        - questUid
+        - personaUid
+        - progress
+        - completions
+        - unlocked
+        - unlockProgress
+      x-baseClass: BaseMongoEntity
+      x-cache: 30
+      x-datastore: user
+    models.QuestDefinition:
+      properties:
+        uid:
+          default: randomUUID()
+          description: The universally unique identifier of the entity.
+          type: string
+          x-identifier: true
+        dateCreated:
+          default: new Date()
+          description: The date and time that the entity was created.
+          format: date
+          type: string
+        dateModified:
+          default: new Date()
+          description: The date and time that the entity was last modified.
+          format: date
+          type: string
+        version:
+          default: 0
+          description: The optimistic lock version.
+          type: number
+        name:
+          default: ""
+          description: The unique name of the quest.
+          type: string
+          x-identifier: true
+        title:
+          default: ""
+          description: A textual title or name of the quest.
+          type: string
+        description:
+          default: ""
+          description: A textual description of the quest.
+          type: string
+        icon:
+          default: ""
+          description: The icon to display when representing the quest.
+          type: string
+        entityUid:
+          description: The universally unique identifier of the entity that gives out the
+            quest.
+          type: string
+        productUid:
+          description: The uid of the product that this definition is associated with.
+          type: string
+          x-identifier: true
+        requirements:
+          default: []
+          description: The list of requirements that the persona must fulfill to complete
+            the quest.
+          oneOf:
+            - default: []
+              description: The list of requirements that the persona must fulfill to complete
+                the quest.
+              type: array
+            - $ref: "#/components/schemas/models.QuestRequirement"
+        rewards:
+          default: []
+          description: The list of rewards that will be given once the quest has been
+            completed.
+          oneOf:
+            - default: []
+              description: The list of rewards that will be given once the quest has been
+                completed.
+              type: array
+            - $ref: "#/components/schemas/models.QuestReward"
+        dateAvailable:
+          description: The date and time that the quest will be first made available. A
+            `null` value indicates immediately available.
+          format: date
+          type: string
+        dateFinished:
+          description: The date and time that the quest will no longer be available. A
+            `null` value indicates no end date.
+          format: date
+          type: string
+        frequency:
+          description: The frequency that the quest can be repeated (e.g. 5m, 1h, 1w). A
+            `null` value indicates that the quest cannot be repeated.
+          type: string
+        unlockRequirements:
+          default: []
+          description: The list of requirements that the persona must meet to unlock the
+            quest.
+          oneOf:
+            - default: []
+              description: The list of requirements that the persona must meet to unlock the
+                quest.
+              type: array
+            - $ref: "#/components/schemas/models.QuestRequirement"
+        autostart:
+          default: false
+          description: Set to `true` to have quests automatically start tracking progress
+            once unlocked, otherwise set to `false`. Default value is `false`.
+          type: boolean
+        data:
+          description: Stores any custom data to be used by the product.
+          type: object
+      required:
+        - uid
+        - dateCreated
+        - dateModified
+        - version
+        - name
+        - title
+        - description
+        - icon
+        - requirements
+        - rewards
+        - unlockRequirements
+        - autostart
+      x-baseClass: BaseMongoEntity
+      x-cache: 30
+      x-datastore: static
     models.Report:
       properties:
         uid:
@@ -16419,7 +16476,7 @@ components:
           default: []
           type: array
         lastHeartbeat:
-          default: 2024-06-04T15:52:46.866Z
+          default: 2024-07-10T16:21:25.984Z
           format: date
           type: string
         ownerUid:
@@ -16714,7 +16771,7 @@ components:
           default: ""
           type: string
         timestamp:
-          default: 2024-06-05T12:12:17.920Z
+          default: 2024-07-10T16:25:25.702Z
           format: date
           type: string
         type:
@@ -16837,7 +16894,7 @@ components:
           default: null
           type: object
         lastHeartbeat:
-          default: 2024-06-11T04:09:53.527Z
+          default: 2024-07-10T16:24:30.205Z
           format: date
           type: string
         maxUsers:
@@ -16975,267 +17032,6 @@ components:
       x-baseClass: BaseMongoEntity
       x-cache: 30
       x-datastore: static
-    models.Quest:
-      properties:
-        uid:
-          default: randomUUID()
-          description: The universally unique identifier of the entity.
-          type: string
-          x-identifier: true
-        dateCreated:
-          default: new Date()
-          description: The date and time that the entity was created.
-          format: date
-          type: string
-        dateModified:
-          default: new Date()
-          description: The date and time that the entity was last modified.
-          format: date
-          type: string
-        version:
-          default: 0
-          description: The optimistic lock version.
-          type: number
-        questUid:
-          default: ""
-          description: The unique identifier of the quest being tracked.
-          type: string
-        personaUid:
-          default: ""
-          description: The unique identifier of the persona or user whose quest progress
-            is being tracked.
-          type: string
-        productUid:
-          description: The uid of the product that this quest progress is associated with.
-          type: string
-        progress:
-          default: []
-          description: The persona's current progress for each of the quest requirements.
-          oneOf:
-            - default: []
-              description: The persona's current progress for each of the quest requirements.
-              type: array
-            - $ref: "#/components/schemas/models.QuestProgress"
-        completions:
-          default: 0
-          description: The number of times that the quest has been completed by the persona.
-          type: number
-        dateLastCompleted:
-          description: The date and time that the persona last completed the quest.
-          format: date
-          type: string
-        dateLastStarted:
-          description: The date and time that the persona last started the quest.
-          format: date
-          type: string
-        unlocked:
-          default: false
-          description: Indicates if the persona has unlocked and can begin the quest.
-          type: boolean
-        unlockProgress:
-          default: []
-          description: The persona's curent progress towards unlocking the quest.
-          oneOf:
-            - default: []
-              description: The persona's curent progress towards unlocking the quest.
-              type: array
-            - $ref: "#/components/schemas/models.QuestProgress"
-      required:
-        - uid
-        - dateCreated
-        - dateModified
-        - version
-        - questUid
-        - personaUid
-        - progress
-        - completions
-        - unlocked
-        - unlockProgress
-      x-baseClass: BaseMongoEntity
-      x-cache: 30
-      x-datastore: user
-    models.QuestDefinition:
-      properties:
-        uid:
-          default: randomUUID()
-          description: The universally unique identifier of the entity.
-          type: string
-          x-identifier: true
-        dateCreated:
-          default: new Date()
-          description: The date and time that the entity was created.
-          format: date
-          type: string
-        dateModified:
-          default: new Date()
-          description: The date and time that the entity was last modified.
-          format: date
-          type: string
-        version:
-          default: 0
-          description: The optimistic lock version.
-          type: number
-        name:
-          default: ""
-          description: The unique name of the quest.
-          type: string
-          x-identifier: true
-        title:
-          default: ""
-          description: A textual title or name of the quest.
-          type: string
-        description:
-          default: ""
-          description: A textual description of the quest.
-          type: string
-        icon:
-          default: ""
-          description: The icon to display when representing the quest.
-          type: string
-        entityUid:
-          description: The universally unique identifier of the entity that gives out the
-            quest.
-          type: string
-        productUid:
-          description: The uid of the product that this definition is associated with.
-          type: string
-          x-identifier: true
-        requirements:
-          default: []
-          description: The list of requirements that the persona must fulfill to complete
-            the quest.
-          oneOf:
-            - default: []
-              description: The list of requirements that the persona must fulfill to complete
-                the quest.
-              type: array
-            - $ref: "#/components/schemas/models.QuestRequirement"
-        rewards:
-          default: []
-          description: The list of rewards that will be given once the quest has been
-            completed.
-          oneOf:
-            - default: []
-              description: The list of rewards that will be given once the quest has been
-                completed.
-              type: array
-            - $ref: "#/components/schemas/models.QuestReward"
-        dateAvailable:
-          description: The date and time that the quest will be first made available. A
-            `null` value indicates immediately available.
-          format: date
-          type: string
-        dateFinished:
-          description: The date and time that the quest will no longer be available. A
-            `null` value indicates no end date.
-          format: date
-          type: string
-        frequency:
-          description: The frequency that the quest can be repeated (e.g. 5m, 1h, 1w). A
-            `null` value indicates that the quest cannot be repeated.
-          type: string
-        unlockRequirements:
-          default: []
-          description: The list of requirements that the persona must meet to unlock the
-            quest.
-          oneOf:
-            - default: []
-              description: The list of requirements that the persona must meet to unlock the
-                quest.
-              type: array
-            - $ref: "#/components/schemas/models.QuestRequirement"
-        autostart:
-          default: false
-          description: Set to `true` to have quests automatically start tracking progress
-            once unlocked, otherwise set to `false`. Default value is `false`.
-          type: boolean
-        data:
-          description: Stores any custom data to be used by the product.
-          type: object
-      required:
-        - uid
-        - dateCreated
-        - dateModified
-        - version
-        - name
-        - title
-        - description
-        - icon
-        - requirements
-        - rewards
-        - unlockRequirements
-        - autostart
-      x-baseClass: BaseMongoEntity
-      x-cache: 30
-      x-datastore: static
-    models.Ticket:
-      properties:
-        uid:
-          default: randomUUID()
-          description: The universally unique identifier of the entity.
-          type: string
-          x-identifier: true
-        dateCreated:
-          default: new Date()
-          description: The date and time that the entity was created.
-          format: date
-          type: string
-        dateModified:
-          default: new Date()
-          description: The date and time that the entity was last modified.
-          format: date
-          type: string
-        version:
-          default: 0
-          description: The optimistic lock version.
-          type: number
-        criteria:
-          default: []
-          type: array
-        dedicatedServer:
-          default: true
-          type: boolean
-        hostUid:
-          default: ""
-          type: string
-        teamSize:
-          type: object
-        numTeams:
-          default: 0
-          type: number
-        numUsers:
-          default: 0
-          type: number
-        sessionUid:
-          type: string
-        statistics:
-          default:
-            - name: skillrating
-              value: null
-            - name: ip
-              value: null
-          type: array
-        status:
-          default: INITIALIZING
-          type: string
-        users:
-          default: []
-          type: array
-      required:
-        - uid
-        - dateCreated
-        - dateModified
-        - version
-        - criteria
-        - dedicatedServer
-        - hostUid
-        - numTeams
-        - numUsers
-        - statistics
-        - status
-        - users
-      x-baseClass: BaseMongoEntity
-      x-datastore: user
   responses: {}
   parameters:
     id:
@@ -17252,7 +17048,6 @@ components:
       required: false
       schema:
         type: number
-        format: int32
     limit:
       description: The maximum number of records to retrieve.
       name: limit
@@ -17274,7 +17069,6 @@ components:
             type: object
             example:
               <propertyName>: <direction>
-        type: string
     version:
       description: The unique version of the resource.
       name: version
@@ -17282,38 +17076,12 @@ components:
       required: false
       schema:
         type: number
-    jwt_token:
-      name: jwt_token
-      in: query
-      description: The JWT access token to use for user authentication.
-      required: false
-      schema:
-        type: string
-    maxResults:
-      name: maxResults
-      in: query
-      description: The maximum number of results to return. Cannot exceed 1000.
-      required: false
-      schema:
-        type: integer
-        format: int32
   examples: {}
   requestBodies: {}
   headers: {}
-  securitySchemes:
-    jwt:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+  securitySchemes: {}
   links: {}
   callbacks: {}
-  x-datastores:
-    mongodb:
-      type: mongodb
-      url: mongodb://localhost
 tags: []
 servers:
   - url: https://api.dev.xbe.xsolla.cloud/v1
-externalDocs:
-  description: Powered by AcceleratXR Core technology.
-  url: https://acceleratxr.com
