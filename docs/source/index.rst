@@ -13,7 +13,11 @@ Xsolla Backend [XBE] - Welcome
    :caption: (!) Dev
    :hidden:
 
-   (!) ALL REPO DOCS <content/-/_dev/all_repo_docs>
+   (!) All Repo Docs <content/-/_dev/all_repo_docs>
+   (!) All Architecture Docs <content/-/_dev/all_architecture_docs>
+   (!) All Performance Docs <content/-/_dev/all_performance_docs>
+   (!) All Tutorial Docs <content/-/_dev/all_tutorial_docs>
+   (!) All Static Docs <content/-/index>
    
 .. toctree:: 
    :maxdepth: 1
