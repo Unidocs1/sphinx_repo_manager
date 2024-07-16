@@ -153,6 +153,6 @@ repositories:  # Dictionary of <repo_name, repo_data>; defaults to {}, if omitte
 #    url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
 #    branch: 'dev'
 #  # Composer >>
-#  service-core:
-#    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
-#    branch: 'dev'
+  service-core:
+    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
+    branch: 'dev'
