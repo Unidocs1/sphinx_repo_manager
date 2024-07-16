@@ -117,7 +117,7 @@ highlight_language = "cpp"
 # breathe_default_project = "AcceleratXR"  # TODO: Name change
 
 
-master_doc = 'index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
+master_doc = 'content/index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
 
 # # Tell sphinx what the primary language being documented is + code highlighting
 # primary_domain = "cpp"
