@@ -1,8 +1,22 @@
+# ---------------------------------------------------------------------
 # mass-repo-cmds.ps1
-$REPOS_AVAIL_DIR = "../source/_repos-available/"
-$startingDir = Get-Location
-pwd
-$FAIL_ON_ITERATION = $true
+#
+# 1. Ensure the $REPOS_AVAIL_DIR matches your root repos dir
+# 2. Write your custom per-repo cmds at the `Run-CustomCmds` function
+#
+# 💡It's ok if your repos are nested (!flat); we'll look for .git dirs
+# ---------------------------------------------------------------------
+$REPOS_AVAIL_DIR = "../docs/source/_repos-available"
+$STARTING_DIR = Get-Location
+$FAIL_ON_1ST_ERR = $true
+
+# RUN YOUR CUSTOM COMMANDS HERE (or leave empty for dry run) >>
+function Run-CustomCmds {
+    #git add .
+    #git commit -m "feat: Foo" -m "[XBND-123]"
+    #git pull
+    #git push
+}
 
 function Start-RepoCmds {
     param (
@@ -13,55 +27,48 @@ function Start-RepoCmds {
 	
     Write-Output ""
     Write-Output "-------------------------------"
-	Write-Output "@ Repo: '${dirPath}'"
+    Write-Output "@ Repo: '${dirPath}'"
     
-	# >> Custom Cmds >>
-    Write-Output "*TEST CMD"
-	# << Custom Cmds <<
+    Run-CustomCmds
 	
     Write-Output ""
 }
 
-function Iterate-Dirs {
-    $directories = Get-ChildItem -Directory
-    pwd
+function Find-GitRepos {
+    param (
+        [string]$rootDir
+    )
 
-    foreach ($dir in $directories) {
-        try {
-            # Navigate to the directory
-            Set-Location $dir.FullName
-
-            # Check if the directory is a Git repository
-            if (Test-Path ".git") {
-                # Execute commands for the Git repository
-                Start-RepoCmds -dirPath $dir.FullName
-            }
-        }
-        catch {
-            Write-Error "Error processing directory '$($dir.FullName)': $_"
-            if ($FAIL_ON_ITERATION) {
-                throw
-            }
-        }
-        finally {
-            # Return to the previous directory
-            Set-Location ..
-        }
-    }
+    $gitDirs = Get-ChildItem -Path $rootDir -Recurse -Directory -Force | Where-Object { Test-Path "$($_.FullName)\.git" }
+    return $gitDirs
 }
 
 function Main {
     try {
-        # Change to the target directory
-        Set-Location $REPOS_AVAIL_DIR
+        # Resolve the full path of the repos directory
+        $resolvedReposDir = Resolve-Path $REPOS_AVAIL_DIR
+        Set-Location $resolvedReposDir
+        Write-Output "BASE DIR:"
         pwd
 
-        # Iterate over directories and execute commands
-        Iterate-Dirs
+        # Find all git repositories recursively
+        $gitRepositories = Find-GitRepos -rootDir $resolvedReposDir
+
+        foreach ($repo in $gitRepositories) {
+            try {
+                Start-RepoCmds -dirPath $repo.FullName
+            }
+            catch {
+                Write-Error "Error processing repository '$($repo.FullName)': $_"
+                if ($FAIL_ON_1ST_ERR) {
+                    throw
+                }
+            }
+        }
     }
     catch {
         Write-Error "An error occurred in the Main function: $_"
-        if ($FAIL_ON_ITERATION) {
+        if ($FAIL_ON_1ST_ERR) {
             throw
         }
     }
@@ -76,8 +83,8 @@ catch {
 }
 finally {
     # Return to the original working directory
-    Set-Location $startingDir
+    Set-Location $STARTING_DIR
 	
-	Write-Output ""
-	Write-Output "Done."
+    Write-Output ""
+    Write-Output "Done."
 }
