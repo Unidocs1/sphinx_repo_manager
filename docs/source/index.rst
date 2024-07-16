@@ -40,7 +40,6 @@ Xsolla Backend [XBE] - Welcome
    Service Framework <content/-/concepts/service_framework/index>
    Plugins & SDK <content/-/concepts/sdks/index>
    Feature Concepts <content/-/concepts/feature_concepts/index>
-   (?) Service Architecture <content/-/concepts/architecture>
 
 .. toctree::
    :caption: How To
@@ -58,7 +57,6 @@ Xsolla Backend [XBE] - Welcome
    :maxdepth: 1
    :hidden:
 
-   OpenAPI Gen Test <openapi/index>
    C++ SDK <content/-/api/sdk_cpp_ref>
    C# SDK <content/-/api/sdk_csharp_ref>
    NodeJS SDK <content/-/api/sdk_nodejs_ref>
@@ -139,5 +137,3 @@ empowering you to innovate and achieve your biggest ambitions.
 `Chat with us`_ live in Discord now and we'll help you :doc:`get started <content/-/welcome/quickstart>`!
 
 .. _Chat with us: https://discord.gg/XsollaBackend
-
-.. redoc::
