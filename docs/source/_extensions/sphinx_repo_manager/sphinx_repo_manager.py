@@ -215,6 +215,9 @@ class SphinxRepoManager:
                 'repo_name': '',  # eg: "account_services"
                 'has_tag': False,  # True if tag exists
 
+                'rel_selected_repo_sparse_path': '',
+
+                # "account-services-v2.1.0"
                 # "repo-{repo_tag}"
                 # - eg: "account-services-v2.1.0"
                 'tag_versioned_clone_src_repo_name': '',
@@ -227,6 +230,10 @@ class SphinxRepoManager:
                 # - eg: "source/_repos-available/account_services-v2.1.0"
                 # - eg: "source/_repos-available/account_services--master"
                 'tag_versioned_clone_src_path': '',
+
+                # "{tag_versioned_clone_src_path}/docs/source/_static/{repo_name}"
+                # eg: "source/_repos-available/account_services--master/docs/source/_static/{repo_name}"
+                'tag_versioned_clone_path_to_inner_static': '',
             }
 
         # Workers for multi-threading
@@ -435,6 +442,7 @@ class SphinxRepoManager:
         has_repo_sparse_path_override = bool(repo_sparse_path_override)
         rel_selected_repo_sparse_path = repo_sparse_path_override \
             if has_repo_sparse_path_override else repo_sparse_path
+        _meta['rel_selected_repo_sparse_path'] = rel_selected_repo_sparse_path
 
         # Get rel_selected_clone_path_root_symlink_src
         # eg: 'docs' - overridable with optional {repo_sparse_path} replacements
@@ -467,6 +475,9 @@ class SphinxRepoManager:
             log_entries.append(colorize_path(
                 f"  - (!) Overriding init_clone_path_root_symlink_src: '{brighten(init_clone_path_root_symlink_src_override)}'"))
 
+        abs_static_dir_path = os.path.normpath(os.path.join(
+            ABS_MANIFEST_PATH_DIR, 'source', '_static'))
+
         # Pass the info (mostly paths) to an individual repo handler
         self.clone_and_symlink(
             repo_info,
@@ -477,6 +488,7 @@ class SphinxRepoManager:
             stash_and_continue_if_wip,
             rel_selected_repo_sparse_path,
             rel_selected_clone_path_root_symlink_src,
+            abs_static_dir_path,
             log_entries,
         )
 
@@ -560,10 +572,15 @@ class SphinxRepoManager:
             stash_and_continue_if_wip,
             rel_selected_repo_sparse_path,
             rel_selected_clone_path_root_symlink_src,
+            abs_static_dir_path,
             log_entries,
     ):
         """
-        Clone the repository if it does not exist and create a symlink in the base symlink path.
+        1. Clone the repository if it does not exist
+        2. Create a filtered repo symlink
+        3. Create a RELEASE_NOTES symlink
+        4. Create a _static/{repo_name} symlink
+        ----------------------------------------------
         - repo_name                                  # eg: "account_services"
         - rel_tag_versioned_clone_src_repo_name      # eg: "account_services-v2.1.0"
         - rel_init_clone_path                        # eg: "source/_repos-available"
@@ -571,6 +588,7 @@ class SphinxRepoManager:
         - rel_symlinked_repo_path                    # eg: "source/content/account_services/docs/source"
         - rel_selected_repo_sparse_path              # eg: "docs"
         - rel_selected_clone_path_root_symlink_src   # eg: "docs/source"
+        - abs_static_dir_path                        # eg: main repo "docs/source/_static"
         - log_entries will be appended with the results of the operation, logging in chunks
           - This is to handle async logs so it's still chronological
         """
@@ -738,7 +756,7 @@ class SphinxRepoManager:
                 self._log_err_if_invalid_symlink(rel_symlinked_repo_path,
                                                  log_entries)  # Sanity check for successful link
             except Exception as e:
-                logger.error(f"Error creating symlink:\n- {str(e)}")
+                logger.error(f"Error creating symlink (1):\n- {str(e)}")
 
             if self.shutdown_flag:  # Multi-threaded CTRL+C check
                 raise SystemExit
@@ -774,9 +792,46 @@ class SphinxRepoManager:
                     self._log_err_if_invalid_symlink(abs_new_symlink_release_notes_path, log_entries)
                 except Exception as inner_e:
                     normalized_e = str(inner_e).replace('\\\\', '/')
-                    log_entries.append(colorize_error(f"Error creating symlink: {normalized_e}"))
+                    log_entries.append(colorize_error(f"Error creating symlink (2): {normalized_e}"))
             else:
-                log_entries.append(colorize_warning(f"  - No RELEASE_NOTES.rst found in source repo."))
+                log_entries.append(colorize_warning(f"  - (2) No RELEASE_NOTES.rst found in source repo."))
+
+            # (3) Symlink _static/{repo_name} -> to main doc _static/
+            action_str = colorize_action(f"🔗 | Symlinking '_static/{repo_name}'...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+
+            # Log + Validate clone src path to _static/{repo_name}
+            abs_repo_static_dir_path = Path(
+                rel_tag_versioned_clone_src_path,
+                rel_selected_repo_sparse_path,
+                'source',
+                '_static',
+                repo_name).resolve()
+
+            log_entries.append(colorize_path(f"  - (3) From from {repo_name} src path: "
+                                             f"'{brighten(abs_repo_static_dir_path)}'"))
+
+            if not abs_repo_static_dir_path.exists():
+                raise Exception(
+                    f"Error creating symlink:\n- {abs_repo_static_dir_path}\n- abs_repo_static_dir_path !found")
+
+            # source/_static/{repo_name}; eg: "source/_static/account_services"
+            target_symlinked_static_dir_path = os.path.join(abs_static_dir_path, repo_name)
+
+            log_entries.append(
+                colorize_path(f"  - To symlink path: '{brighten(target_symlinked_static_dir_path)}'"))
+
+            try:
+                self.create_symlink(
+                    abs_repo_static_dir_path,
+                    target_symlinked_static_dir_path,
+                    log_entries,
+                )
+
+                self._log_err_if_invalid_symlink(target_symlinked_static_dir_path,
+                                                 log_entries)  # Sanity check for successful link
+            except Exception as e:
+                logger.error(f"Error creating symlink (3):\n- {str(e)}")
 
             # -------------------
             # Done with this repo
