@@ -77,6 +77,8 @@ sys.path.append(os.path.abspath('.'))
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+master_doc = 'content/index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
+
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -115,9 +117,6 @@ highlight_language = "cpp"
 
 # breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
 # breathe_default_project = "AcceleratXR"  # TODO: Name change
-
-
-master_doc = 'content/index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
 
 # # Tell sphinx what the primary language being documented is + code highlighting
 # primary_domain = "cpp"

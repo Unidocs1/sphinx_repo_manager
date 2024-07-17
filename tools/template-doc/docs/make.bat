@@ -18,7 +18,7 @@ if "%SPHINXBUILD%" == "" (
 
 set SOURCEDIR=source
 set BUILDDIR=build
-set BUILDPATH=%~dp0%BUILDDIR%\html\index.html
+set BUILD_MASTER_INDEX=%~dp0%BUILDDIR%\html\content\index.html
 
 REM If no argument is provided, default to 'html'
 if "%1" == "" (
@@ -70,7 +70,7 @@ if errorlevel 1 (
 ) else (
     echo.
     echo Build succeeded. The docs have been generated at:
-    echo %BUILDPATH%
+    echo %BUILD_MASTER_INDEX%
     echo.
     set "userInput="
     set /p "userInput=Launch index.html? (Y/n) "
@@ -78,7 +78,7 @@ if errorlevel 1 (
         echo Not launching browser.
     ) else (
         echo Launching browser tab to index.html ...
-        start "" "%BUILDPATH%"
+        start "" "%BUILD_MASTER_INDEX%"
     )
 )
 

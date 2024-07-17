@@ -38,7 +38,7 @@ This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubun
 make html
 ```
 
-2. Open the built index via `build/html/index.html` (`make.bat` will auto-launch this)
+2. Open the built index via `build/html/content/index.html` (`make.bat` will auto-launch this)
 
 ### Speedy Build
 
