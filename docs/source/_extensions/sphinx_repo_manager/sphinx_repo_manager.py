@@ -64,6 +64,7 @@ ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
 
 # Constants for default settings
 DEFAULT_MAX_WORKERS_LOCAL = 5
+DEFAULT_MAX_WORKERS_RTD = 1  # Max 1 for free tiers; 2 for premium
 DEFAULT_DEBUG_MODE = False
 DEFAULT_STASH_AND_CONTINUE_IF_WIP = True
 DEFAULT_INIT_CLONE_PATH = 'source/_repos-available'
@@ -161,6 +162,7 @@ class SphinxRepoManager:
 
         # Set constant root defaults
         manifest.setdefault('max_workers_local', DEFAULT_MAX_WORKERS_LOCAL)
+        manifest.setdefault('max_workers_rtd', DEFAULT_MAX_WORKERS_RTD)
         manifest.setdefault('debug_mode', DEFAULT_DEBUG_MODE)
         manifest.setdefault('stash_and_continue_if_wip', DEFAULT_STASH_AND_CONTINUE_IF_WIP)
         manifest.setdefault('default_branch', DEFAULT_DEFAULT_BRANCH)
@@ -235,10 +237,6 @@ class SphinxRepoManager:
                 # eg: "source/_repos-available/account_services--master/docs/source/_static/{repo_name}"
                 'tag_versioned_clone_path_to_inner_static': '',
             }
-
-        # Workers for multi-threading
-        manifest.setdefault('max_workers_local', 1)
-        manifest.setdefault('max_workers_rtd', 2)
 
         # url: Req'd - Strip ".git" from suffix, if any (including SSH urls; we'll add it back via url_dotgit)
         url = repo_info.get('url', None)
