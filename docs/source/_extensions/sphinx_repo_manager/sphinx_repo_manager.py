@@ -61,6 +61,7 @@ MANIFEST_NAME = 'repo_manifest.yml'
 ABS_MANIFEST_PATH = os.path.normpath(os.path.join(
     ABS_BASE_PATH, '..', '..', '..', MANIFEST_NAME))
 ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
+ABS_SOURCE_STATIC_DIR = os.path.join(ABS_MANIFEST_PATH_DIR, 'source', '_static')
 
 # Constants for default settings
 DEFAULT_MAX_WORKERS_LOCAL = 5
@@ -95,6 +96,7 @@ class SphinxRepoManager:
         self.manifest_path = abs_manifest_path
         self.manifest = None
         self.debug_mode = False  # If True: +logs; stops build after ext is done
+        
 
         # Multi-threading >>
         self.lock = threading.Lock()  # Lock for thread-safe logging
@@ -327,15 +329,13 @@ class SphinxRepoManager:
         # Normalize paths -> log -> create dir skeleton
         abs_init_clone_path = os.path.abspath(rel_init_clone_path)
         abs_base_symlink_path = os.path.abspath(rel_base_symlink_path)
-        abs_static_shared_path = os.path.join(ABS_MANIFEST_PATH_DIR, 'source', '_static', '_shared')
 
         logger.info(colorize_path(f"   - init_clone_path: '{brighten(abs_init_clone_path)}'"))
         logger.info(colorize_path(f"   - base_symlink_path: '{brighten(abs_base_symlink_path)}'"))
-        logger.info(colorize_path(f"   - abs_static_shared_path: '{brighten(abs_static_shared_path)}'"))
+        logger.info(colorize_path(f"   - abs_source_static_dir: '{brighten(ABS_SOURCE_STATIC_DIR)}'"))
 
         self.setup_directory_skeleton(abs_init_clone_path)  # eg: source/_repos-available
         self.setup_directory_skeleton(abs_base_symlink_path)  # eg: source/content
-        self.setup_directory_skeleton(abs_static_shared_path)  # eg: source/_static/shared
 
     def get_normalized_manifest(self):
         """
@@ -815,8 +815,8 @@ class SphinxRepoManager:
             else:
                 log_entries.append(colorize_warning(f"  - (2) No RELEASE_NOTES.rst found in source repo."))
 
-            # (3) Symlink _static/{repo_name} -> to main doc _static/_shared/
-            action_str = colorize_action(f"🔗 | Symlinking '_static/_shared/{repo_name}'...")
+            # (3) Symlink _static/{repo_name} -> to main doc _static/
+            action_str = colorize_action(f"🔗 | Symlinking '_static/{repo_name}'...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
             # Log + Validate clone src path to _static/{repo_name}
@@ -835,15 +835,13 @@ class SphinxRepoManager:
                 raise Exception(
                     f"Error creating symlink:\n- {abs_repo_static_dir_path}\n- abs_repo_static_dir_path !found")
 
-            # source/_static/_shared/{repo_name}; eg: "source/_static/_shared/account_services"
+            # source/_static/{repo_name}; eg: "source/_static/account_services"
             target_symlinked_static_dir_path = os.path.join(
                 abs_static_dir_path,
-                '_shared',
-                repo_name,
-            )
+                repo_name)
 
-            log_entries.append(
-                colorize_path(f"  - To symlink path: '{brighten(target_symlinked_static_dir_path)}'"))
+            log_entries.append(colorize_path(f"  - To symlink path: "
+                                             f"'{brighten(target_symlinked_static_dir_path)}'"))
 
             try:
                 self.create_symlink(

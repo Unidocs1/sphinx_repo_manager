@@ -184,7 +184,7 @@ Delete these to regenerate them when you build again:
 1. Delete `build` (or `make clean` via CLI)
 2. Delete `source/content` (symlinks from `source/_repos-available`)
 3. Delete `source/_repos-available` (for use with `repo_manager`)
-4. Delete `source/_static/_shared` (for use with `repo_manager`)
+4. Delete `source/_static/<any repo symlinks>` (for use with `repo_manager`)
 
 ### Python Install Path (Legacy - Without Docker)
 
