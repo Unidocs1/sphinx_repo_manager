@@ -85,8 +85,7 @@ repositories:  # Dictionary of <repo_name, repo_data>; defaults to {}, if omitte
     ## - Normally named your_repo_name, but static docs is special
     ## - Relative to baseClonePath
     ## - Normalizes os/path/slashes
-    ## - Default '{repo_name}-{tag}'
-    ## - Defaults to repo name, if omitted
+    ## - Defaults to '{repo_name}-{tag}', if omitted
     #symlink_path: 'foo_services'
     #
     ## - Normalizes os/path/slashes
@@ -101,7 +100,7 @@ repositories:  # Dictionary of <repo_name, repo_data>; defaults to {}, if omitte
     ## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
     ## - Normalizes 'explicit/forward/slashes'
     ## - The parent dirs outside this will be 99% empty
-    ## - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
+    ## - Defaults to {repo_sparse_path}, if omitted; see sdk_unity for use-example
     #repo_sparse_path_override: 'docs'
     #
     ## - Supports {repo_sparse_path} template - will take override ver if present
