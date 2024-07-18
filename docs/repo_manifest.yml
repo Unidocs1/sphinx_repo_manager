@@ -66,9 +66,9 @@ init_clone_path: 'source/_repos-available'
 # - Supports {repo_sparse_path} template 
 # - When we symlink from init_clone_path, we may want to set the src deeper
 # - Nested than what we cloned; normalizes 'os/path/slashes'
-# - If kept default, you can access static content via `../_static/`
-# - Defaults to '{repo_sparse_path}/source/content', if omitted
-init_clone_path_root_symlink_src: '{repo_sparse_path}/source/content'
+# - If kept default, you can access static content, like images, via `../_static/{repo_name}/images/`
+# - Defaults to '{repo_sparse_path}/source', if omitted
+init_clone_path_root_symlink_src: '{repo_sparse_path}/source'
 
 ## - Allows for `../_static` path to parity local repo _static path to keep image
 ##   path parity - which only works if `init_clone_path_root_symlink_src` is default
@@ -93,7 +93,6 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   ## - Relative to baseClonePath
   ## - Normalizes os/path/slashes
   ## - Default '{repo_name}-{tag}'
-  ## - Defaults to repo name, if omitted
   #symlink_path: 'foo_services'
   #
   ## - Normalizes os/path/slashes
@@ -119,126 +118,126 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   ## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
   #active: true  
   #
-  # Useful for testing WIP without having it be stashed away or require a commit; default false, if omitted
+  # Useful for testing WIP without having it be stashed away or require a commit (still pulls _static images)
+  # Default false, if omitted
   #skip_stash_pull: true
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Static >>
   xbe_static_docs:
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
-    branch: 'dylan/feat/master-static-images'
-    skip_stash_pull: true
-    active: true
-#  # Services >>
-#  account_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/account_services'
+    branch: 'main'
+    #skip_stash_pull: false
+  # Services >>
+  account_services:
+    url: 'https://gitlab.acceleratxr.com/Core/account_services'
+    branch: 'dev'
+  achievements_services:
+    url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
+    branch: 'dev'
+  asset_services:
+    url: 'https://gitlab.acceleratxr.com/Core/asset_services'
+    branch: 'dev'
+  backup_services:
+    url: 'https://gitlab.acceleratxr.com/Core/backup_services'
+    branch: 'dev'
+  economy_services:
+    url: 'https://gitlab.acceleratxr.com/Core/economy_services'
+    branch: 'dev'
+  leaderboard_services:
+    url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
+    branch: 'dev'
+  matchmaking_services:
+    url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
+    branch: 'dev'
+  notification_services:
+    url: 'https://gitlab.acceleratxr.com/Core/notification_services'
+    branch: 'dev'
+  persona_services:
+    url: 'https://gitlab.acceleratxr.com/Core/persona_services'
+    branch: 'dev'
+  progression_services:
+    url: 'https://gitlab.acceleratxr.com/Core/progression_services'
+    branch: 'dev'
+  purchasing_services:
+    url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
+    branch: 'dev'
+  quest_services:
+    url: 'https://gitlab.acceleratxr.com/Core/quest_services'
+    branch: 'dev'
+  reporting_services:
+    url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
+    branch: 'dev'
+  scripting_services:
+    url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
+    branch: 'dev'
+  server_instance_services:
+    url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
+    branch: 'dev'
+  session_services:
+    url: 'https://gitlab.acceleratxr.com/Core/session_services'
+    branch: 'dev'
+  social_services:
+    url: 'https://gitlab.acceleratxr.com/Core/social_services'
+    branch: 'dev'
+  telemetry_services:
+    url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
+    branch: 'dev'
+  validation_services:
+    url: 'https://gitlab.acceleratxr.com/Core/validation_services'
+    branch: 'dev'
+  world_services:
+      url: 'https://gitlab.acceleratxr.com/Core/world_services'
+      branch: 'dev'
+  # Sdks >>
+  sdk_cpp:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
+    branch: 'dev'
+  sdk_csharp:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
+    branch: 'dev'
+  sdk_nodejs:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
+    branch: 'dev'
+  sdk_unity:
+      url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
+      branch: 'dev'
+      repo_sparse_path_override: 'Documentation~'
+      init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source'
+  sdk_unreal:
+      url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
+      branch: 'dev'
+  # Other Products/Apps >>
+  service_monitor:
+    url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
+    branch: 'dev'
+  launcher:
+    url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
+    branch: 'dev'
+  console:
+    url: 'https://gitlab.acceleratxr.com/Core/apps/console'
+    branch: 'dev'
+  xbeapp:
+    url: 'https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp'
+    branch: 'dev'
+  # Demos >>
+  unitychessgame:
+    url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
+    branch: 'dev'
+  lyrastartergame:
+    url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
+    branch: 'dev'
+#  # Libs/WebApps >>
+#  appconfig:
+#    url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
 #    branch: 'dev'
-#  achievements_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
+#  react-shared:
+#    url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
 #    branch: 'dev'
-#  asset_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/asset_services'
+#  electron-shared:
+#    url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
 #    branch: 'dev'
-#  backup_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/backup_services'
-#    branch: 'dev'
-#  economy_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/economy_services'
-#    branch: 'dev'
-#  leaderboard_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
-#    branch: 'dev'
-#  matchmaking_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
-#    branch: 'dev'
-#  notification_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/notification_services'
-#    branch: 'dev'
-#  persona_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/persona_services'
-#    branch: 'dev'
-#  progression_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/progression_services'
-#    branch: 'dev'
-#  purchasing_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
-#    branch: 'dev'
-#  quest_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/quest_services'
-#    branch: 'dev'
-#  reporting_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
-#    branch: 'dev'
-#  scripting_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
-#    branch: 'dev'
-#  server_instance_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
-#    branch: 'dev'
-#  session_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/session_services'
-#    branch: 'dev'
-#  social_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/social_services'
-#    branch: 'dev'
-#  telemetry_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
-#    branch: 'dev'
-#  validation_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/validation_services'
-#    branch: 'dev'
-#  world_services:
-#      url: 'https://gitlab.acceleratxr.com/Core/world_services'
-#      branch: 'dev'
-#  # Sdks >>
-#  sdk_cpp:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
-#    branch: 'dev'
-#  sdk_csharp:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
-#    branch: 'dev'
-#  sdk_nodejs:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
-#    branch: 'dev'
-#  sdk_unity:
-#      url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
-#      branch: 'dev'
-#      repo_sparse_path_override: 'Documentation~'
-#      init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source'
-#  sdk_unreal:
-#      url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
-#      branch: 'dev'
-#  # Other Products/Apps >>
-#  service_monitor:
-#    url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
-#    branch: 'dev'
-#  launcher:
-#    url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
-#    branch: 'dev'
-#  console:
-#    url: 'https://gitlab.acceleratxr.com/Core/apps/console'
-#    branch: 'dev'
-#  xbeapp:
-#    url: 'https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp'
-#    branch: 'dev'
-#  # Demos >>
-#  unitychessgame:
-#    url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
-#    branch: 'dev'
-#  lyrastartergame:
-#    url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
-#    branch: 'dev'
-##  # Libs/WebApps >>
-##  appconfig:
-##    url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
-##    branch: 'dev'
-##  react-shared:
-##    url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
-##    branch: 'dev'
-##  electron-shared:
-##    url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
-##    branch: 'dev'
-##  # Composer >>
-#  service-core:
-#    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
-#    branch: 'dev'
+#  # Composer >>
+  service-core:
+    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
+    branch: 'dev'
