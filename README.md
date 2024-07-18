@@ -12,27 +12,27 @@ This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubun
 
 ## Prerequisites
 
+1. Copy `.env.template` -> to `.env` and fill your GitLab access token.
+	* 💡 Only needed for local testing; ReadTheDocs deployment uses its own cloud env vars.
+
 You may either run via Docker (recommended) or locally (legacy):
 
 ### Docker Prereqs (Recommended)
 
-1. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-
-2. Copy `.env.template` -> to `.env` and fill your GitLab access token.
-   * 💡 Only needed for local testing; ReadTheDocs deployment uses its own cloud env vars.
+2. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ### Local Prereqs (Legacy)
 
-1. [Chocolatey](https://chocolatey.org/) CLI tool
+2. [Chocolatey](https://chocolatey.org/) CLI tool
 	- Once you have Choco, install `make` in an **ADMIN** terminal:
 	  ```powershell
       choco install make --yes
       ```
 
-2. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
+3. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
 	- See a recommended path to installing Python [below](#python-install-path)
 
-3. Run `tools/requirements-install.ps1`
+4. Run `tools/requirements-install.ps1`
 		
 ## Setup
 
