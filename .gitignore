@@ -69,4 +69,41 @@ docs/source/content
 
 # Env var handling for when RTD has no access to private repos
 .env
-docs/source/_static/_shared
+
+# Ignore all expected _static symlinks at docs/source/_static/
+docs/source/_static/xbe_static_docs
+docs/source/_static/account_services
+docs/source/_static/achievements_services
+docs/source/_static/asset_services
+docs/source/_static/backup_services
+docs/source/_static/economy_services
+docs/source/_static/leaderboard_services
+docs/source/_static/matchmaking_services
+docs/source/_static/notification_services
+docs/source/_static/persona_services
+docs/source/_static/progression_services
+docs/source/_static/purchasing_services
+docs/source/_static/quest_services
+docs/source/_static/reporting_services
+docs/source/_static/scripting_services
+docs/source/_static/server_instance_services
+docs/source/_static/session_services
+docs/source/_static/social_services
+docs/source/_static/telemetry_services
+docs/source/_static/validation_services
+docs/source/_static/world_services
+docs/source/_static/sdk_cpp
+docs/source/_static/sdk_csharp
+docs/source/_static/sdk_nodejs
+docs/source/_static/sdk_unity
+docs/source/_static/sdk_unreal
+docs/source/_static/service_monitor
+docs/source/_static/launcher
+docs/source/_static/console
+docs/source/_static/xbeapp
+docs/source/_static/unitychessgame
+docs/source/_static/lyrastartergame
+docs/source/_static/service-core
+docs/source/_static/appconfig
+docs/source/_static/react-shared
+docs/source/_static/electron-shared
