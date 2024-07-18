@@ -74,6 +74,7 @@ DEFAULT_DEFAULT_BRANCH = 'master'
 DEFAULT_PRESERVE_GITLAB_GROUP = True
 DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
 DEFAULT_REPOSITORIES = {}
+DEFAULT_REPO_SKIP_STASH_PULL_DEFAULT = False
 
 logger = logging.getLogger(__name__)  # Get logger instance
 
@@ -211,6 +212,7 @@ class SphinxRepoManager:
             base_symlink_path,
             manifest,
     ):
+        """ (!) Global manifest changes should be +1 up; not here (where it's an individual repo). """
         if '_meta' not in repo_info:
             repo_info['_meta'] = {
                 'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
@@ -251,6 +253,9 @@ class SphinxRepoManager:
         # Default branch == parent {default_branch}
         if 'default_branch' not in repo_info:
             repo_info.setdefault('branch', manifest['default_branch'])
+
+        # Useful if we want to build with WIP changes (without stashing or committing)
+        repo_info.setdefault('skip_stash_pull', DEFAULT_REPO_SKIP_STASH_PULL_DEFAULT)
 
         # Explicitly normalize branch slashes/to/forward
         branch = repo_info['branch']
@@ -322,12 +327,15 @@ class SphinxRepoManager:
         # Normalize paths -> log -> create dir skeleton
         abs_init_clone_path = os.path.abspath(rel_init_clone_path)
         abs_base_symlink_path = os.path.abspath(rel_base_symlink_path)
+        abs_static_shared_path = os.path.join(ABS_MANIFEST_PATH_DIR, 'source', '_static', '_shared')
 
         logger.info(colorize_path(f"   - init_clone_path: '{brighten(abs_init_clone_path)}'"))
         logger.info(colorize_path(f"   - base_symlink_path: '{brighten(abs_base_symlink_path)}'"))
+        logger.info(colorize_path(f"   - abs_static_shared_path: '{brighten(abs_static_shared_path)}'"))
 
         self.setup_directory_skeleton(abs_init_clone_path)  # eg: source/_repos-available
         self.setup_directory_skeleton(abs_base_symlink_path)  # eg: source/content
+        self.setup_directory_skeleton(abs_static_shared_path)  # eg: source/_static/shared
 
     def get_normalized_manifest(self):
         """
@@ -596,6 +604,7 @@ class SphinxRepoManager:
 
         tag = repo_info['tag'] if has_tag else None
         branch = repo_info['branch']
+        skip_stash_pull = repo_info['skip_stash_pull']
 
         try:
             # Clone the repo, if we haven't done so already
@@ -644,6 +653,9 @@ class SphinxRepoManager:
                 cloned = True
                 if stash_and_continue_if_wip:
                     already_stashed = True
+            elif skip_stash_pull:
+                action_str = colorize_action(f"🔃 | Skipping updates ({brighten('skip_stash_pull')})...")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
             else:
                 action_str = colorize_action(f"🔃 | Fetching updates...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
@@ -661,7 +673,10 @@ class SphinxRepoManager:
 
             # Checkout to the specific branch or tag
             has_branch = 'branch' in repo_info
-            if not cloned and has_branch:
+            if not cloned and has_branch and skip_stash_pull:
+                action_str = colorize_action(f"🔃 | Skipping branch checkout ({brighten('skip_stash_pull')})...")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            elif not cloned and has_branch:
                 action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
@@ -681,6 +696,9 @@ class SphinxRepoManager:
                     already_stashed = True
 
             # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
+            if has_tag and skip_stash_pull:
+                action_str = colorize_action(f"🔃 | Skipping tag checkout ({brighten('skip_stash_pull')})...")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
             if has_tag:
                 action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
                 log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
@@ -703,7 +721,10 @@ class SphinxRepoManager:
             if self.shutdown_flag:  # Multi-threaded CTRL+C check
                 raise SystemExit
 
-            if not cloned:
+            if not cloned and skip_stash_pull:
+                action_str = colorize_action(f"🔃 | Skipping git pull ({brighten('skip_stash_pull')})...")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            elif not cloned:
                 should_stash = stash_and_continue_if_wip and not already_stashed
 
                 try:
@@ -794,8 +815,8 @@ class SphinxRepoManager:
             else:
                 log_entries.append(colorize_warning(f"  - (2) No RELEASE_NOTES.rst found in source repo."))
 
-            # (3) Symlink _static/{repo_name} -> to main doc _static/
-            action_str = colorize_action(f"🔗 | Symlinking '_static/{repo_name}'...")
+            # (3) Symlink _static/{repo_name} -> to main doc _static/_shared/
+            action_str = colorize_action(f"🔗 | Symlinking '_static/_shared/{repo_name}'...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
             # Log + Validate clone src path to _static/{repo_name}
@@ -804,7 +825,8 @@ class SphinxRepoManager:
                 rel_selected_repo_sparse_path,
                 'source',
                 '_static',
-                repo_name).resolve()
+                repo_name,
+            ).resolve()
 
             log_entries.append(colorize_path(f"  - (3) From from {repo_name} src path: "
                                              f"'{brighten(abs_repo_static_dir_path)}'"))
@@ -813,8 +835,12 @@ class SphinxRepoManager:
                 raise Exception(
                     f"Error creating symlink:\n- {abs_repo_static_dir_path}\n- abs_repo_static_dir_path !found")
 
-            # source/_static/{repo_name}; eg: "source/_static/account_services"
-            target_symlinked_static_dir_path = os.path.join(abs_static_dir_path, repo_name)
+            # source/_static/_shared/{repo_name}; eg: "source/_static/_shared/account_services"
+            target_symlinked_static_dir_path = os.path.join(
+                abs_static_dir_path,
+                '_shared',
+                repo_name,
+            )
 
             log_entries.append(
                 colorize_path(f"  - To symlink path: '{brighten(target_symlinked_static_dir_path)}'"))

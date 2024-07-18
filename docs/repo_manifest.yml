@@ -70,11 +70,11 @@ init_clone_path: 'source/_repos-available'
 # - Defaults to '{repo_sparse_path}/source/content', if omitted
 init_clone_path_root_symlink_src: '{repo_sparse_path}/source/content'
 
-# - Allows for `../_static` path to parity local repo _static path to keep image
-#   path parity - which only works if `init_clone_path_root_symlink_src` is default
-# - Leave null/empty to skip _static symlink
-# - Defaults to '_static/content', if omitted
-symlinked_static_docs_path: 'source/content/_static'
+## - Allows for `../_static` path to parity local repo _static path to keep image
+##   path parity - which only works if `init_clone_path_root_symlink_src` is default
+## - Leave null/empty to skip _static symlink
+## - Defaults to '_static/content', if omitted
+#symlinked_static_docs_path: 'source/content/_static'
 
 # ----------------------------------------------------------------------
 # For private repo access when testing with a !premium RTD account,
@@ -116,14 +116,18 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   ## - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
   #init_clone_path_root_symlink_src_override: 'docs'
   #
-  ## Default true, if omitted
-  #active: true
+  ## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+  #active: true  
+  #
+  # Useful for testing WIP without having it be stashed away or require a commit; default false, if omitted
+  #skip_stash_pull: true
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Static >>
   xbe_static_docs:
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
-    branch: 'main'
+    branch: 'dylan/feat/master-static-images'
+    skip_stash_pull: true
     active: true
 #  # Services >>
 #  account_services:

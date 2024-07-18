@@ -35,7 +35,6 @@ release = '2024.07.0-TEST'
 
 sys.path.insert(0, os.path.abspath(''))
 
-
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
@@ -68,6 +67,7 @@ sys.path.append(os.path.abspath('.'))
 # This allows us to build documentation for multiple versions of the same service.
 
 from _extensions.sphinx_repo_manager import SphinxRepoManager
+
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), 'tools', 'sphinx_repo_manager')))
 
@@ -84,7 +84,6 @@ print(f'[conf.py::sphinx_repo_manager] Num repos found: {len(repos)}')
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
 repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
-
 # -- General configuration ---------------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -97,7 +96,8 @@ extensions = [
     'sphinx_repo_manager',  # Our own custom extension
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
-    'sphinxcontrib.redoc',  # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses; https://sphinxcontrib-redoc.readthedocs.io/en/stable 
+    'sphinxcontrib.redoc',
+    # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses; https://sphinxcontrib-redoc.readthedocs.io/en/stable 
     # 'breathe',  # Doxygen API docs
     # 'sphinx_csharp',  # CSharp markdown
     # 'sphinx.ext.autodoc',  # More API docgen tools
@@ -125,7 +125,6 @@ master_doc = 'index'
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"
 highlight_language = "cpp"
-
 
 # -- OpenAPI Local Download ----------------------------------------------
 # The target server host is blocking CORS, so we grab it locally
@@ -181,7 +180,7 @@ redoc = [
     {
         'name': 'Xsolla Backend API',
         'page': openapi_generated_file_posix_path,  # content/-/api/index
-        #'spec': '_specs/openapi.json',  # (!) Ours Currently won't build due to errs: `/components/schemas/ACLRecordMongo". Token "ACLRecordMongo" does not exist`
+        # 'spec': '_specs/openapi.json',  # (!) Ours Currently won't build due to errs: `/components/schemas/ACLRecordMongo". Token "ACLRecordMongo" does not exist`
         'spec': github_demo_spec,  # DELETE ME AFTER DONE WITH TESTS!
         'embed': True,  # Local file only (!) but embed is less powerful
         'opts': {
@@ -199,7 +198,6 @@ redoc = [
 print(f'[conf.py::sphinxcontrib.redoc] redoc[0].page: {redoc[0]["page"]}')
 print(f'[conf.py::sphinxcontrib.redoc] redoc[0].spec: {redoc[0]["spec"]}')
 print('')
-
 
 # -- Extension: Breathe --------------------------------------------------
 # Breathe allows you to embed Doxygen documentation into your docs.
@@ -264,8 +262,11 @@ pygments_style = "sphinx"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
+
+
 def setup(app):
     app.add_css_file(os.path.normpath('styles/main.css'))
+
 
 html_logo = 'https://docs.xsolla.cloud/en/latest/_static/logo.png'
 html_favicon = 'https://docs.xsolla.cloud/en/latest/_static/favicon.ico'
@@ -283,7 +284,7 @@ html_theme_options = {
     # Toc options >>
     'collapse_navigation': False,
     'sticky_navigation': True,
-    'navigation_depth': 2, # (!) Important
+    'navigation_depth': 2,  # (!) Important
     # 'includehidden': True,
     # 'titles_only': False,
 }
@@ -303,21 +304,20 @@ html_context = {
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
-
 # -- MyST configuration ------------------------------------------------------
 # recommonmark successor to parse .md to .rst
 
 # Configuration for MyST-Parser
 myst_enable_extensions = [
-    "amsmath",          # Enable parsing and rendering of AMS math syntax
-    "dollarmath",       # Enable dollar math syntax
+    "amsmath",  # Enable parsing and rendering of AMS math syntax
+    "dollarmath",  # Enable dollar math syntax
     "html_admonition",  # Enable HTML admonitions
-    "html_image",       # Enable HTML image tags
-    "colon_fence",      # Enable colon fences for directives/roles
-    "smartquotes",      # Enable smart quotes
-    "replacements",     # Enable replacements syntax
-    "strikethrough",    # Enable strikethrough syntax
-    "tasklist",         # Enable task list syntax
+    "html_image",  # Enable HTML image tags
+    "colon_fence",  # Enable colon fences for directives/roles
+    "smartquotes",  # Enable smart quotes
+    "replacements",  # Enable replacements syntax
+    "strikethrough",  # Enable strikethrough syntax
+    "tasklist",  # Enable task list syntax
 ]
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------

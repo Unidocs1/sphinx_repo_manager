@@ -69,3 +69,4 @@ docs/source/content
 
 # Env var handling for when RTD has no access to private repos
 .env
+docs/source/_static/_shared
