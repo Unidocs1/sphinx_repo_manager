@@ -18,6 +18,9 @@ You may either run via Docker (recommended) or locally (legacy):
 
 1. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
+2. Copy `.env.template` -> to `.env` and fill your GitLab access token.
+   * 💡 Only needed for local testing; ReadTheDocs deployment uses its own cloud env vars.
+
 ### Local Prereqs (Legacy)
 
 1. [Chocolatey](https://chocolatey.org/) CLI tool
