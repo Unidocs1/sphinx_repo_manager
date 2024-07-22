@@ -78,7 +78,7 @@ DEFAULT_REPOSITORIES = {}
 DEFAULT_REPO_SKIP_STASH_PULL_DEFAULT = False
 
 # Options
-THROW_ON_MISSING_STATIC_REPO_NAME_DIR = True
+THROW_ON_MISSING_STATIC_REPO_NAME_DIR = False  # Recommended True
 
 logger = logging.getLogger(__name__)  # Get logger instance
 
