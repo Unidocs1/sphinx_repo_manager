@@ -68,13 +68,7 @@ init_clone_path: 'source/_repos-available'
 # - Nested than what we cloned; normalizes 'os/path/slashes'
 # - If kept default, you can access static content, like images, via `../_static/{repo_name}/images/`
 # - Defaults to '{repo_sparse_path}/source', if omitted
-init_clone_path_root_symlink_src: '{repo_sparse_path}/source'
-
-## - Allows for `../_static` path to parity local repo _static path to keep image
-##   path parity - which only works if `init_clone_path_root_symlink_src` is default
-## - Leave null/empty to skip _static symlink
-## - Defaults to '_static/content', if omitted
-#symlinked_static_docs_path: 'source/content/_static'
+init_clone_path_root_symlink_src: '{repo_sparse_path}/source/content'
 
 # ----------------------------------------------------------------------
 # For private repo access when testing with a !premium RTD account,

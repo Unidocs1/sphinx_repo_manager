@@ -77,6 +77,9 @@ DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
 DEFAULT_REPOSITORIES = {}
 DEFAULT_REPO_SKIP_STASH_PULL_DEFAULT = False
 
+# Options
+THROW_ON_MISSING_STATIC_REPO_NAME_DIR = True
+
 logger = logging.getLogger(__name__)  # Get logger instance
 
 # Global flag to signal threads to shutdown
@@ -96,18 +99,12 @@ class SphinxRepoManager:
         self.manifest_path = abs_manifest_path
         self.manifest = None
         self.debug_mode = False  # If True: +logs; stops build after ext is done
-        
 
         # Multi-threading >>
         self.lock = threading.Lock()  # Lock for thread-safe logging
         self.shutdown_flag = False  # Flag to handle graceful shutdown
         self.errored_repo_name = None
         signal.signal(signal.SIGINT, self._signal_handler)
-
-    @staticmethod
-    def _log_err_if_invalid_symlink(rel_symlinked_repo_path, log_entries):
-        if not Path(rel_symlinked_repo_path).is_symlink():
-            log_entries.append(colorize_error(f"Error creating symlink: '{rel_symlinked_repo_path}'"))
 
     def _signal_handler(self, signum, frame):
         if not self.shutdown_flag:
@@ -481,26 +478,33 @@ class SphinxRepoManager:
             log_entries.append(colorize_path(
                 f"  - (!) Overriding init_clone_path_root_symlink_src: '{brighten(init_clone_path_root_symlink_src_override)}'"))
 
-        abs_static_dir_path = os.path.normpath(os.path.join(
-            ABS_MANIFEST_PATH_DIR, 'source', '_static'))
-
         # Pass the info (mostly paths) to an individual repo handler
-        self.clone_and_symlink(
-            repo_info,
-            repo_name,
-            tag_versioned_clone_src_repo_name,
-            tag_versioned_clone_src_path,
-            rel_symlinked_repo_path,
-            stash_and_continue_if_wip,
-            rel_selected_repo_sparse_path,
-            rel_selected_clone_path_root_symlink_src,
-            abs_static_dir_path,
-            log_entries,
-        )
+        try:
+            self.clone_and_symlink(
+                repo_info,
+                repo_name,
+                tag_versioned_clone_src_repo_name,
+                tag_versioned_clone_src_path,
+                rel_symlinked_repo_path,
+                stash_and_continue_if_wip,
+                rel_selected_repo_sparse_path,
+                rel_selected_clone_path_root_symlink_src,
+                log_entries,
+            )
+        except Exception as e:
+            self.shutdown_flag = True  # Signal shutdown to other threads
+            self.errored_repo_name = repo_name
+            info1 = (f"- HINT: For continued issues, try deleting your source/ "
+                     f"`_repos-available/` and/or `content/` dirs to regenerate.")
+            info2 = f"- HINT: You may see more logs below due to already-queued async-threaded logs"
+            bright_info = colorize_error(brighten(f'{info1}\n{info2}\n'))
 
-        # Queue log entries
-        for entry in log_entries:
-            log_queue.put(entry)
+            error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}.\n{bright_info}"
+            raise RepositoryManagementError(f'\n{error_message}')
+        finally:
+            # Log the queued entries at once
+            for entry in log_entries:
+                logger.info(entry)
 
     def manage_repositories(self, manifest):
         if not manifest:
@@ -578,7 +582,6 @@ class SphinxRepoManager:
             stash_and_continue_if_wip,
             rel_selected_repo_sparse_path,
             rel_selected_clone_path_root_symlink_src,
-            abs_static_dir_path,
             log_entries,
     ):
         """
@@ -606,274 +609,150 @@ class SphinxRepoManager:
         branch = repo_info['branch']
         skip_stash_pull = repo_info['skip_stash_pull']
 
-        try:
-            # Clone the repo, if we haven't done so already
-            cloned = False
-            already_stashed = False  # To prevent some redundancy
+        # Clone the repo, if we haven't done so already
+        cloned = False
+        already_stashed = False  # To prevent some redundancy
 
-            if self.shutdown_flag:  # Multi-threaded CTRL+C check
-                raise SystemExit
+        if self.shutdown_flag:  # Multi-threaded CTRL+C check
+            raise SystemExit
 
-            if not os.path.exists(rel_tag_versioned_clone_src_path):
-                action_str = colorize_action(f"📦 | Sparse-cloning repo...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                log_entries.append(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
-
-                git_helper = GitHelper()  # TODO: Place this instance @ top?
-
-                try:
-
-                    git_helper.git_sparse_clone(
-                        rel_tag_versioned_clone_src_path,
-                        repo_url_dotgit,
-                        branch,
-                        rel_selected_repo_sparse_path,
-                        stash_and_continue_if_wip,
-                        log_entries=log_entries)
-                except Exception as e:
-                    additional_info = f"Error sparse-cloning repo '{brighten(repo_name)}':\n- {str(e)}"
-                    raise Exception(f"{additional_info}") from e
-
-                if self.shutdown_flag:  # Multi-threaded CTRL+C check
-                    raise SystemExit
-
-                # Clean the repo to only use the specified sparse paths
-                action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-
-                try:
-                    GitHelper.git_clean_sparse_docs_clone(
-                        rel_tag_versioned_clone_src_path,
-                        rel_selected_repo_sparse_path,
-                        log_entries=log_entries)
-                except Exception as e:
-                    additional_info = f"Error cleaning up sparse clone '{brighten(repo_name)}':\n- {str(e)}"
-                    raise Exception(f"{additional_info}") from e
-
-                cloned = True
-                if stash_and_continue_if_wip:
-                    already_stashed = True
-            elif skip_stash_pull:
-                action_str = colorize_action(f"🔃 | Skipping updates ({brighten('skip_stash_pull')})...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            else:
-                action_str = colorize_action(f"🔃 | Fetching updates...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-
-                try:
-                    GitHelper.git_fetch(
-                        rel_tag_versioned_clone_src_path,
-                        log_entries=log_entries)
-                except Exception as e:
-                    additional_info = f"Error fetching updates for '{brighten(repo_name)}':\n- {str(e)}"
-                    raise Exception(f"{additional_info}") from e
-
-            if self.shutdown_flag:  # Multi-threaded CTRL+C check
-                raise SystemExit
-
-            # Checkout to the specific branch or tag
-            has_branch = 'branch' in repo_info
-            if not cloned and has_branch and skip_stash_pull:
-                action_str = colorize_action(f"🔃 | Skipping branch checkout ({brighten('skip_stash_pull')})...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            elif not cloned and has_branch:
-                action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-
-                should_stash = stash_and_continue_if_wip and not already_stashed
-
-                try:
-                    GitHelper.git_checkout(
-                        rel_tag_versioned_clone_src_path,
-                        branch,
-                        should_stash,
-                        log_entries=log_entries)
-                except Exception as e:
-                    additional_info = f"Error checking out branch '{brighten(branch)}' for '{brighten(repo_name)}':\n- {str(e)}"
-                    raise Exception(f"{additional_info}") from e
-
-                if stash_and_continue_if_wip:
-                    already_stashed = True
-
-            # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
-            if has_tag and skip_stash_pull:
-                action_str = colorize_action(f"🔃 | Skipping tag checkout ({brighten('skip_stash_pull')})...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            if has_tag:
-                action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-
-                should_stash = stash_and_continue_if_wip and not already_stashed
-
-                try:
-                    GitHelper.git_checkout(
-                        rel_tag_versioned_clone_src_path,
-                        tag,
-                        should_stash,
-                        log_entries=log_entries)
-                except Exception as e:
-                    additional_info = f"Error checking out tag '{brighten(tag)}' for '{brighten(repo_name)}':\n- {str(e)}"
-                    raise Exception(f"{additional_info}") from e
-
-                if stash_and_continue_if_wip:
-                    already_stashed = True
-
-            if self.shutdown_flag:  # Multi-threaded CTRL+C check
-                raise SystemExit
-
-            if not cloned and skip_stash_pull:
-                action_str = colorize_action(f"🔃 | Skipping git pull ({brighten('skip_stash_pull')})...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-            elif not cloned:
-                should_stash = stash_and_continue_if_wip and not already_stashed
-
-                try:
-                    GitHelper.git_pull(
-                        rel_tag_versioned_clone_src_path,
-                        should_stash,
-                        log_entries=log_entries)
-                except Exception as e:
-                    additional_info = f"Error pulling updates for '{brighten(repo_name)}':\n- {str(e)}"
-                    raise Exception(f"{additional_info}") from e
-
-                if stash_and_continue_if_wip:
-                    already_stashed = True
-
-            if self.shutdown_flag:  # Multi-threaded CTRL+C check
-                raise SystemExit
-
-            # TODO: Mv most of below to a new def `symlink_repo()`
-            # Manage symlinks -- we want src to be the nested: <repo>/docs/source/
-            # (!) `docs` may have an override (repo_sparse_path_override)
-            # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
-            #
-            # Convert string paths to Path objects and use the dynamic path
-            init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
-            abs_clone_src_nested_path = init_symlink_src_path.joinpath(
-                rel_selected_clone_path_root_symlink_src).resolve()
-
-            # (1) Symlink content -> to nested repo
-            action_str = colorize_action("🔗 | Symlinking repo nested sparse content...")
+        if not os.path.exists(rel_tag_versioned_clone_src_path):
+            action_str = colorize_action(f"📦 | Sparse-cloning repo...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            log_entries.append(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
 
-            # Log + Validate clone src path
-            log_entries.append(colorize_path(f"  - (1) From clone src path: '{brighten(abs_clone_src_nested_path)}'"))
-            if not abs_clone_src_nested_path.exists():
-                raise Exception(
-                    f"Error creating symlink:\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found")
-
-            log_entries.append(
-                colorize_path(f"  - To symlink path: '{brighten(rel_selected_clone_path_root_symlink_src)}'"))
+            git_helper = GitHelper()  # TODO: Place this instance @ top?
 
             try:
-                self.create_symlink(
-                    abs_clone_src_nested_path,
-                    rel_symlinked_repo_path,
-                    log_entries,
-                )
 
-                self._log_err_if_invalid_symlink(rel_symlinked_repo_path,
-                                                 log_entries)  # Sanity check for successful link
+                git_helper.git_sparse_clone(
+                    rel_tag_versioned_clone_src_path,
+                    repo_url_dotgit,
+                    branch,
+                    rel_selected_repo_sparse_path,
+                    stash_and_continue_if_wip,
+                    log_entries=log_entries)
             except Exception as e:
-                logger.error(f"Error creating symlink (1):\n- {str(e)}")
+                additional_info = f"Error sparse-cloning repo '{brighten(repo_name)}':\n- {str(e)}"
+                raise Exception(f"{additional_info}") from e
 
             if self.shutdown_flag:  # Multi-threaded CTRL+C check
                 raise SystemExit
 
-            # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
-            # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst'
-            abs_existing_real_release_notes_path = Path(init_symlink_src_path).joinpath(
-                'RELEASE_NOTES.rst').resolve()
-
-            # Check if the source existing "real" file exists before attempting to create a symlink
-            if abs_existing_real_release_notes_path.exists():
-                try:
-                    # New symlink path; eg: 'source/content/account_services/RELEASE_NOTES.rst'
-                    abs_path_to_manifest = Path(ABS_MANIFEST_PATH_DIR).resolve()
-                    abs_symlinked_repo_path = abs_path_to_manifest.joinpath(rel_symlinked_repo_path)
-                    abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath('RELEASE_NOTES.rst')
-
-                    action_str = colorize_action(
-                        f"🔗 | Symlinking '{brighten('RELEASE_NOTES.rst')}' content (from clone src root)...")
-                    log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
-                    log_entries.append(
-                        colorize_path(
-                            f"  - (2) From clone src path: '{brighten(abs_existing_real_release_notes_path)}'"))
-                    log_entries.append(
-                        colorize_path(f"  - To symlink path: '{brighten(abs_new_symlink_release_notes_path)}'"))
-
-                    self.create_symlink(
-                        abs_existing_real_release_notes_path,
-                        abs_new_symlink_release_notes_path,
-                        log_entries)
-
-                    # Sanity check for successful link
-                    self._log_err_if_invalid_symlink(abs_new_symlink_release_notes_path, log_entries)
-                except Exception as inner_e:
-                    normalized_e = str(inner_e).replace('\\\\', '/')
-                    log_entries.append(colorize_error(f"Error creating symlink (2): {normalized_e}"))
-            else:
-                log_entries.append(colorize_warning(f"  - (2) No RELEASE_NOTES.rst found in source repo."))
-
-            # (3) Symlink _static/{repo_name} -> to main doc _static/
-            action_str = colorize_action(f"🔗 | Symlinking '_static/{repo_name}'...")
+            # Clean the repo to only use the specified sparse paths
+            action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
-            # Log + Validate clone src path to _static/{repo_name}
-            abs_repo_static_dir_path = Path(
-                rel_tag_versioned_clone_src_path,
-                rel_selected_repo_sparse_path,
-                'source',
-                '_static',
-                repo_name,
-            ).resolve()
+            try:
+                GitHelper.git_clean_sparse_docs_clone(
+                    rel_tag_versioned_clone_src_path,
+                    rel_selected_repo_sparse_path,
+                    log_entries=log_entries)
+            except Exception as e:
+                additional_info = f"Error cleaning up sparse clone '{brighten(repo_name)}':\n- {str(e)}"
+                raise Exception(f"{additional_info}") from e
 
-            log_entries.append(colorize_path(f"  - (3) From from {repo_name} src path: "
-                                             f"'{brighten(abs_repo_static_dir_path)}'"))
-
-            if not abs_repo_static_dir_path.exists():
-                raise Exception(
-                    f"Error creating symlink:\n- {abs_repo_static_dir_path}\n- abs_repo_static_dir_path !found")
-
-            # source/_static/{repo_name}; eg: "source/_static/account_services"
-            target_symlinked_static_dir_path = os.path.join(
-                abs_static_dir_path,
-                repo_name)
-
-            log_entries.append(colorize_path(f"  - To symlink path: "
-                                             f"'{brighten(target_symlinked_static_dir_path)}'"))
+            cloned = True
+            if stash_and_continue_if_wip:
+                already_stashed = True
+        elif skip_stash_pull:
+            action_str = colorize_action(f"🔃 | Skipping updates ({brighten('skip_stash_pull')})...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+        else:
+            action_str = colorize_action(f"🔃 | Fetching updates...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
             try:
-                self.create_symlink(
-                    abs_repo_static_dir_path,
-                    target_symlinked_static_dir_path,
-                    log_entries,
-                )
-
-                self._log_err_if_invalid_symlink(target_symlinked_static_dir_path,
-                                                 log_entries)  # Sanity check for successful link
+                GitHelper.git_fetch(
+                    rel_tag_versioned_clone_src_path,
+                    log_entries=log_entries)
             except Exception as e:
-                logger.error(f"Error creating symlink (3):\n- {str(e)}")
+                additional_info = f"Error fetching updates for '{brighten(repo_name)}':\n- {str(e)}"
+                raise Exception(f"{additional_info}") from e
 
-            # -------------------
-            # Done with this repo
-            success_str = colorize_success("✔️| Done.")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
+        if self.shutdown_flag:  # Multi-threaded CTRL+C check
+            raise SystemExit
 
-        except Exception as e:
-            self.shutdown_flag = True  # Signal shutdown to other threads
-            self.errored_repo_name = repo_name
-            info1 = (f"- HINT: For continued issues, try deleting your source/ "
-                     f"`_repos-available/` and/or `content/` dirs to regenerate.")
-            info2 = f"- HINT: You may see more logs below due to already-queued async-threaded logs"
-            bright_info = colorize_error(brighten(f'{info1}\n{info2}\n'))
+        # Checkout to the specific branch or tag
+        has_branch = 'branch' in repo_info
+        if not cloned and has_branch and skip_stash_pull:
+            action_str = colorize_action(f"🔃 | Skipping branch checkout ({brighten('skip_stash_pull')})...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+        elif not cloned and has_branch:
+            action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
 
-            error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}.\n{bright_info}"
-            raise RepositoryManagementError(f'\n{error_message}')
-        finally:
-            # Log the queued entries at once
-            for entry in log_entries:
-                logger.info(entry)
+            should_stash = stash_and_continue_if_wip and not already_stashed
+
+            try:
+                GitHelper.git_checkout(
+                    rel_tag_versioned_clone_src_path,
+                    branch,
+                    should_stash,
+                    log_entries=log_entries)
+            except Exception as e:
+                additional_info = f"Error checking out branch '{brighten(branch)}' for '{brighten(repo_name)}':\n- {str(e)}"
+                raise Exception(f"{additional_info}") from e
+
+            if stash_and_continue_if_wip:
+                already_stashed = True
+
+        # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
+        if has_tag and skip_stash_pull:
+            action_str = colorize_action(f"🔃 | Skipping tag checkout ({brighten('skip_stash_pull')})...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+        if has_tag:
+            action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+
+            should_stash = stash_and_continue_if_wip and not already_stashed
+
+            try:
+                GitHelper.git_checkout(
+                    rel_tag_versioned_clone_src_path,
+                    tag,
+                    should_stash,
+                    log_entries=log_entries)
+            except Exception as e:
+                additional_info = f"Error checking out tag '{brighten(tag)}' for '{brighten(repo_name)}':\n- {str(e)}"
+                raise Exception(f"{additional_info}") from e
+
+            if stash_and_continue_if_wip:
+                already_stashed = True
+
+        if self.shutdown_flag:  # Multi-threaded CTRL+C check
+            raise SystemExit
+
+        if not cloned and skip_stash_pull:
+            action_str = colorize_action(f"🔃 | Skipping git pull ({brighten('skip_stash_pull')})...")
+            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+        elif not cloned:
+            should_stash = stash_and_continue_if_wip and not already_stashed
+
+            try:
+                GitHelper.git_pull(
+                    rel_tag_versioned_clone_src_path,
+                    should_stash,
+                    log_entries=log_entries)
+            except Exception as e:
+                additional_info = f"Error pulling updates for '{brighten(repo_name)}':\n- {str(e)}"
+                raise Exception(f"{additional_info}") from e
+
+            if stash_and_continue_if_wip:
+                already_stashed = True
+
+        if self.shutdown_flag:  # Multi-threaded CTRL+C check
+            raise SystemExit
+
+        self.repo_add_symlinks(
+            repo_name,
+            tag_versioned_clone_src_repo_name,
+            rel_tag_versioned_clone_src_path,
+            rel_symlinked_repo_path,
+            rel_selected_clone_path_root_symlink_src,
+            rel_selected_repo_sparse_path,
+            log_entries,
+        )
 
     def check_is_enabled_ext(self, manifest):
         """ 
@@ -923,9 +802,191 @@ class SphinxRepoManager:
             if self.shutdown_flag:
                 repo_name_hint = f" Find '{brighten(self.errored_repo_name)}' error logs above ^" \
                     if self.errored_repo_name else ""
-                logger.error(f"ERROR: Ended early (CTRL+C?){repo_name_hint}")
+                logger.error(f"ERROR: Ended early (likely CTRL+C || error){repo_name_hint}")
 
             logger.info(colorize_success(f"\n══{brighten('END SPHINX_REPO_MANAGER')}══\n"))
+
+    def repo_add_symlink1_content_dir(
+            self,
+            tag_versioned_clone_src_repo_name,
+            abs_clone_src_nested_path,
+            rel_selected_clone_path_root_symlink_src,
+            rel_symlinked_repo_path,
+            log_entries,
+    ):
+        # (1) Symlink content -> to nested repo
+        action_str = colorize_action("🔗 | Symlinking repo nested sparse content...")
+        log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+
+        # Log + Validate clone src path
+        log_entries.append(colorize_path(f"  - (1) From clone src path: '{brighten(abs_clone_src_nested_path)}'"))
+        if not abs_clone_src_nested_path.exists():
+            raise Exception(
+                f"Error creating symlink (1):\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found")
+
+        log_entries.append(
+            colorize_path(f"  - To symlink path: '{brighten(rel_selected_clone_path_root_symlink_src)}'"))
+
+        try:
+            self.create_symlink(
+                abs_clone_src_nested_path,
+                rel_symlinked_repo_path,
+                log_entries,
+            )
+
+            if not Path(rel_symlinked_repo_path).is_symlink():
+                log_entries.append(colorize_error(f"Error creating symlink (1): '{rel_symlinked_repo_path}'"))
+
+        except Exception as e:
+            logger.error(f"Error creating symlink (1):\n- {str(e)}")
+
+        if self.shutdown_flag:  # Multi-threaded CTRL+C check
+            raise SystemExit
+
+    def repo_add_symlink2_release_notes(
+            self,
+            tag_versioned_clone_src_repo_name,
+            rel_symlinked_repo_path,
+            init_symlink_src_path,
+            log_entries,
+    ):
+        # (2) Symlink content/RELEASE_NOTES.rst -> to nested repo/RELEASE_NOTES.rst (if src file exists)
+        # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst'
+        abs_existing_real_release_notes_path = Path(init_symlink_src_path).joinpath(
+            'RELEASE_NOTES.rst').resolve()
+
+        # Check if the source existing "real" file exists before attempting to create a symlink
+        if abs_existing_real_release_notes_path.exists():
+            try:
+                # New symlink path; eg: 'source/content/account_services/RELEASE_NOTES.rst'
+                abs_path_to_manifest = Path(ABS_MANIFEST_PATH_DIR).resolve()
+                abs_symlinked_repo_path = abs_path_to_manifest.joinpath(rel_symlinked_repo_path)
+                abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath('RELEASE_NOTES.rst')
+
+                action_str = colorize_action(
+                    f"🔗 | Symlinking '{brighten('RELEASE_NOTES.rst')}' content (from clone src root)...")
+                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                log_entries.append(
+                    colorize_path(
+                        f"  - (2) From clone src path: '{brighten(abs_existing_real_release_notes_path)}'"))
+                log_entries.append(
+                    colorize_path(f"  - To symlink path: '{brighten(abs_new_symlink_release_notes_path)}'"))
+
+                self.create_symlink(
+                    abs_existing_real_release_notes_path,
+                    abs_new_symlink_release_notes_path,
+                    log_entries)
+
+                # Sanity check for successful link
+                if not Path(rel_symlinked_repo_path).is_symlink():
+                    raise Exception("File is not detected as a symlink")
+            except Exception as inner_e:
+                normalized_e = str(inner_e).replace('\\\\', '/')
+                log_entries.append(colorize_error(f"Error creating symlink (2): {normalized_e}"))
+        else:
+            log_entries.append(colorize_warning(f"  - (2) No RELEASE_NOTES.rst found in source repo."))
+
+    def repo_add_symlink3_static_dir(
+            self,
+            tag_versioned_clone_src_repo_name,
+            abs_clone_src_nested_path,
+            rel_symlinked_repo_path,
+            repo_name,
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            log_entries,
+    ):
+        # (3) Symlink _static/{repo_name} -> to main doc _static/
+        action_str = colorize_action(f"🔗 | Symlinking '_static/{repo_name}'...")
+        log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+
+        # Log + Validate clone src path to _static/{repo_name}
+        abs_repo_static_dir_path = Path(
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            'source',
+            '_static',
+            repo_name,
+        ).resolve()
+
+        log_entries.append(colorize_path(f"  - (3) From from {repo_name} src path: "
+                                         f"'{brighten(abs_repo_static_dir_path)}'"))
+
+        if not abs_repo_static_dir_path.exists():
+            err_msg = f"Error creating symlink (3):\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found"
+            if THROW_ON_MISSING_STATIC_REPO_NAME_DIR:
+                raise Exception(err_msg)  # TODO: Use this instead, once the architecture is setup
+            else:
+                log_entries.append(colorize_warning(err_msg))
+
+        # source/_static/{repo_name}; eg: "source/_static/account_services"
+        target_symlinked_static_dir_path = os.path.join(ABS_SOURCE_STATIC_DIR, repo_name)
+
+        log_entries.append(colorize_path(f"  - To symlink path: "
+                                         f"'{brighten(target_symlinked_static_dir_path)}'"))
+
+        try:
+            self.create_symlink(
+                abs_repo_static_dir_path,
+                target_symlinked_static_dir_path,
+                log_entries,
+            )
+
+            if not Path(rel_symlinked_repo_path).is_symlink():
+                raise Exception("File is not detected as a symlink")
+        except Exception as e:
+            logger.error(f"Error creating symlink:\n- {str(e)}")
+
+    def repo_add_symlinks(
+            self,
+            repo_name,
+            tag_versioned_clone_src_repo_name,
+            rel_tag_versioned_clone_src_path,
+            rel_symlinked_repo_path,
+            rel_selected_clone_path_root_symlink_src,
+            rel_selected_repo_sparse_path,
+            log_entries,
+    ):
+        # Manage symlinks -- we want src to be the nested: <repo>/docs/source/
+        # (!) `docs` may have an override (repo_sparse_path_override)
+        # (Optionally overridden via manifest `init_clone_path_root_symlink_src_override`)
+        #
+        # Convert string paths to Path objects and use the dynamic path
+        init_symlink_src_path = Path(rel_tag_versioned_clone_src_path)
+        abs_clone_src_nested_path = init_symlink_src_path.joinpath(
+            rel_selected_clone_path_root_symlink_src).resolve()
+
+        self.repo_add_symlink1_content_dir(
+            tag_versioned_clone_src_repo_name,
+            abs_clone_src_nested_path,
+            rel_selected_clone_path_root_symlink_src,
+            rel_symlinked_repo_path,
+            log_entries)
+
+        self.repo_add_symlink2_release_notes(
+            tag_versioned_clone_src_repo_name,
+            rel_symlinked_repo_path,
+            init_symlink_src_path,
+            log_entries,
+        )
+
+        self.repo_add_symlink3_static_dir(
+            tag_versioned_clone_src_repo_name,
+            abs_clone_src_nested_path,
+            rel_symlinked_repo_path,
+            repo_name,
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            log_entries,
+        )
+
+        # -------------------
+        # Done with this repo
+        success_str = colorize_success("✔️| Done.")
+        log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
+
+        if self.shutdown_flag:  # Multi-threaded CTRL+C check
+            raise SystemExit
 
 
 # [ENTRY POINT] Set up the Sphinx extension to trigger on a sphinx-build init phase (before building)
