@@ -13804,6 +13804,41 @@ paths:
               schema:
                 type: object
       x-name: getServiceStatus
+  /helloworld:
+    x-name: routes.HelloWorldRoute
+    get:
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: object
+      x-name: getHelloWorld
+  /hello:
+    x-name: jobs.newscript
+    get:
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: object
+      x-name: get
+  /hello/:id:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    x-name: jobs.newscript
+    get:
+      responses:
+        "200":
+          description: Returned when the operation is successful.
+          content:
+            application/json:
+              schema:
+                type: object
+      x-name: getById
 components:
   schemas:
     Error:
