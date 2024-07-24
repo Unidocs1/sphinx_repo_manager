@@ -77,8 +77,6 @@ sys.path.append(os.path.abspath('.'))
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-master_doc = 'content/index'  # Allegedly renamed to root_doc long ago, but it doesn't appear so
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -106,6 +104,8 @@ exclude_patterns = [
     'README.*',
 ]
 
+master_doc = 'index'  # Build entry point: The "home page"
+tocdepth = 1  # Default :maxdepth:
 
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"

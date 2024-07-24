@@ -8,32 +8,48 @@ Xsolla Backend [XBE] - Welcome
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
-.. toctree:: 
-   :maxdepth: 1
-   :caption: (!) Dev
-   :hidden:
+.. feature-flag:: production_stage
+   :fallback:
 
-   (!) All Repo Docs <content/-/_dev/all_repo_docs>
-   (!) All Architecture Docs <content/-/_dev/all_architecture_docs>
-   (!) All Performance Docs <content/-/_dev/all_performance_docs>
-   (!) All Tutorial Docs <content/-/_dev/all_tutorial_docs>
-   (!) All Static Docs <content/-/index>
+   .. toctree:: 
+      :caption: (!) Dev
+      :hidden:
    
-.. toctree:: 
-   :maxdepth: 1
-   :caption: Welcome
-   :hidden:
-   
-   What Is Xsolla Backend? <content/-/welcome/what_is_xbe>
-   Features <content/-/welcome/features>
-   Quickstart <content/-/welcome/quickstart>
-   Demo <content/-/welcome/demo_env>
-   Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
-   Release Notes <content/-/welcome/release_notes/current/index>
+      (!) All Repo Docs <content/-/_dev/all_repo_docs>
+      (!) All Architecture Docs <content/-/_dev/all_architecture_docs>
+      (!) All Performance Docs <content/-/_dev/all_performance_docs>
+      (!) All Tutorial Docs <content/-/_dev/all_tutorial_docs>
+      (!) All Static Docs <content/-/index>
+
+.. feature-flag:: create_your_acct_link_to_new_xbe
+
+   .. toctree:: 
+      :caption: Welcome
+      :hidden:
+      
+      What Is Xsolla Backend? <content/-/welcome/what_is_xbe>
+      Features <content/-/welcome/features>
+      Quickstart <content/-/welcome/quickstart>
+      Demo <content/-/welcome/demo_env>
+      Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
+      Release Notes <content/-/welcome/release_notes/current/index>
+
+.. feature-flag:: create_your_acct_link_to_new_xbe
+   :fallback:
+
+   .. toctree:: 
+      :caption: Welcome
+      :hidden:
+      
+      What Is Xsolla Backend? <content/-/welcome/what_is_xbe>
+      Features <content/-/welcome/features>
+      Quickstart <content/-/welcome/quickstart>
+      Demo <content/-/welcome/demo_env>
+      Create Your Account <https://www.acceleratxr.com/pricing>
+      Release Notes <content/-/welcome/release_notes/current/index>
 
 .. toctree::
    :caption: Concepts
-   :maxdepth: 1
    :hidden:
 
    Overview <content/-/concepts/overview>
@@ -43,7 +59,6 @@ Xsolla Backend [XBE] - Welcome
 
 .. toctree::
    :caption: How To
-   :maxdepth: 1
    :hidden:
 
    Install <content/-/how_to/install/index>
@@ -54,7 +69,6 @@ Xsolla Backend [XBE] - Welcome
 
 .. toctree::
    :caption: API Reference
-   :maxdepth: 1
    :hidden:
 
    C++ SDK <content/-/api/sdk_cpp_ref>
@@ -66,14 +80,12 @@ Xsolla Backend [XBE] - Welcome
 
 .. toctree::
    :caption: Legal
-   :maxdepth: 1
    :hidden:
    
    Eula <content/-/legal/eula/index>
 
 .. toctree::
    :caption: Need Help?
-   :maxdepth: 1
    :hidden:
    
    Chat With Us! <https://discord.gg/XsollaBackend>

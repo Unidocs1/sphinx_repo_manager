@@ -1,40 +1,6 @@
 """
 Xsolla Sphinx Extension: sphinx_repo_manager
---------------------------------------------
-
-Description:
-Automates management of multiple documentation repositories by cloning and updating
-external repos specified in a YAML manifest file, ensuring each repo is checked out
-to the specified tag before Sphinx doc-gen (`make html`).
-
-Quickstart:
-1. Edit `repo_manifest.yml` in the project root.
-2. Ensure each repo in the manifest includes at least a `url`.
-4. Include this extension in `conf.py` by adding the extension's path to `sys.path`
-   and adding it to the `extensions` list:
-   ```
-   sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
-   extensions = [sphinx_repo_manager]
-   ```
-
-Entry Point:
-- setup(app): Executes during Sphinx 'builder-inited' event.
-
-Default Dir Tree:
-Inspired by nginx, repos are cloned to `_repos_available` -> then symlinked to `content/`:
-- docs/                                   # {repo_sparse_path} or {repo_sparse_path_override}
-  - source/
-    - _extensions/
-    - _repos_available/
-      - (eg) account_services-v2.1.0/
-    - content/
-      - (eg) account_services/
-    - conf.py
-    - index.rst
-
-Tested in:
-- Windows 11 via PowerShell7
-- Ubuntu 24.04 LTS via ReadTheDocs (RTD) deployment
+- See README for more info
 """
 # Core, pathing, ops >>
 import os  # file path ops

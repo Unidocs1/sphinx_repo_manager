@@ -27,6 +27,13 @@ release = '2024.07.0-TEST'
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
 # release = '%GIT_TAG%'
 
+
+# -- Inline extensions -------------------------------------------------------
+# Instead of making an extension, for small things, we can just embed inline
+def setup(app):
+    app.add_css_file(os.path.normpath('styles/main.css'))
+
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -60,16 +67,14 @@ read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
 documentation_root = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
 sys.path.append(os.path.abspath('.'))
 
-# -- Extension: sphinx_repo_manager --------------------------------------------------------------
+# -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
 
 from _extensions.sphinx_repo_manager import SphinxRepoManager
-
-sys.path.insert(0, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), 'tools', 'sphinx_repo_manager')))
 
 # Initialize the RepoManager instance with the manifest path
 manifest_path = Path('..', 'repo_manifest.yml').resolve()
@@ -77,8 +82,8 @@ repo_manager = SphinxRepoManager(manifest_path)
 manifest = repo_manager.read_normalize_manifest()
 
 # Extract common props
-repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active }
-print(f'[conf.py::sphinx_repo_manager] Num repos found: {len(repos)}')
+repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
+print(f'[conf.py::repo_manifest.yml] Num repos found: {len(repos)}')
 
 # TODO: Use these below for dynamic info pulled from repo_manifest.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
@@ -94,6 +99,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'sphinx_repo_manager',  # Our own custom extension
+    'sphinx_feature_flags',  # Our own custom extension
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     'sphinxcontrib.redoc',
@@ -120,7 +126,8 @@ exclude_patterns = [
     '_recycling_bin',  # Deprecated files organized together
 ]
 
-master_doc = 'index'
+master_doc = 'index'  # Build entry point: The "home page"
+tocdepth = 1  # Default :maxdepth:
 
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"
@@ -263,11 +270,6 @@ pygments_style = "sphinx"
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
-
-def setup(app):
-    app.add_css_file(os.path.normpath('styles/main.css'))
-
-
 html_logo = 'https://docs.xsolla.cloud/en/latest/_static/logo.png'
 html_favicon = 'https://docs.xsolla.cloud/en/latest/_static/favicon.ico'
 
@@ -319,6 +321,26 @@ myst_enable_extensions = [
     "strikethrough",  # Enable strikethrough syntax
     "tasklist",  # Enable task list syntax
 ]
+
+# -- Feature Flags -----------------------------------------------------------
+# Turn any block of docs on/off - with optional fallbacks. EXAMPLE USE:
+"""
+.. feature-flag:: dev_toctree
+
+   This will show if True
+
+.. feature-flag:: dev_toctree
+   :fallback:
+
+   This will show if False
+"""
+
+feature_flags = {
+    'production_stage':  False,  # Expected: Nothing, else show dev toctree
+    'create_your_acct_link_to_new_xbe': False,  # Expected: New create acct page, else pricing page
+    'what_is_xbe_create_link_to_new_xbe': False,
+}
+
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
 # rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
