@@ -22,6 +22,7 @@ copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = '2024.07.0-TEST'
 
+
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
@@ -103,6 +104,8 @@ extensions = [
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     'sphinxcontrib.redoc',
+    'sphinx.ext.todo',
+    # Allows for TODO directives to exclude from build warns | https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
     # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses; https://sphinxcontrib-redoc.readthedocs.io/en/stable 
     # 'breathe',  # Doxygen API docs
     # 'sphinx_csharp',  # CSharp markdown
@@ -172,6 +175,14 @@ def setup_openapi():
 
 
 setup_openapi()
+
+# -- Extension: sphinx.ext.todo ------------------------------------------
+# Support for `todo` directive, passing it during sphinx builds
+# https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
+
+todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
+todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
+todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
 
 # -- Extension: sphinxcontrib.redoc --------------------------------------
 # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses
@@ -336,11 +347,10 @@ myst_enable_extensions = [
 """
 
 feature_flags = {
-    'production_stage':  False,  # Expected: Nothing, else show dev toctree
+    'production_stage': False,  # Expected: Nothing, else show dev toctree
     'create_your_acct_link_to_new_xbe': False,  # Expected: New create acct page, else pricing page
     'what_is_xbe_create_link_to_new_xbe': False,
 }
-
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
 # rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)

@@ -73,7 +73,6 @@ documentation_root = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath('.'))
 
-
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
@@ -84,6 +83,7 @@ extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
+    'sphinxcontrib.redoc',
     # 'breathe',  # Doxygen API docs
     # 'sphinx_csharp',  # CSharp markdown
     # 'sphinx.ext.autodoc',  # More API docgen tools
@@ -102,6 +102,7 @@ exclude_patterns = [
     'venv',
     'requirements.txt',
     'README.*',
+    '_recycling_bin',  # Deprecated files organized together
 ]
 
 master_doc = 'index'  # Build entry point: The "home page"
@@ -111,6 +112,13 @@ tocdepth = 1  # Default :maxdepth:
 primary_domain = "cpp"
 highlight_language = "cpp"
 
+# -- Extension: sphinx.ext.todo ------------------------------------------
+# Support for `todo` directive, passing it during sphinx builds
+# https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
+
+todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
+todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
+todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
 
 # -- Extension: Breathe --------------------------------------------------
 # Breathe allows you to embed Doxygen documentation into your docs.
@@ -210,23 +218,21 @@ html_context = {
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
-
 # -- MyST configuration ------------------------------------------------------
 # recommonmark successor to parse .md to .rst
 
 # Configuration for MyST-Parser
 myst_enable_extensions = [
-    "amsmath",          # Enable parsing and rendering of AMS math syntax
-    "dollarmath",       # Enable dollar math syntax
+    "amsmath",  # Enable parsing and rendering of AMS math syntax
+    "dollarmath",  # Enable dollar math syntax
     "html_admonition",  # Enable HTML admonitions
-    "html_image",       # Enable HTML image tags
-    "colon_fence",      # Enable colon fences for directives/roles
-    "smartquotes",      # Enable smart quotes
-    "replacements",     # Enable replacements syntax
-    "strikethrough",    # Enable strikethrough syntax
-    "tasklist",         # Enable task list syntax
+    "html_image",  # Enable HTML image tags
+    "colon_fence",  # Enable colon fences for directives/roles
+    "smartquotes",  # Enable smart quotes
+    "replacements",  # Enable replacements syntax
+    "strikethrough",  # Enable strikethrough syntax
+    "tasklist",  # Enable task list syntax
 ]
-
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
 # rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
