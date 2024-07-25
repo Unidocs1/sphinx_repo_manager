@@ -197,7 +197,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
       url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
       branch: 'dev'
       repo_sparse_path_override: 'Documentation~'
-      init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source'
+      init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
   sdk_unreal:
       url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
       branch: 'dev'
