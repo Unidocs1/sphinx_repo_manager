@@ -347,9 +347,10 @@ myst_enable_extensions = [
 """
 
 feature_flags = {
-    'production_stage': False,  # Expected: Nothing, else show dev toctree
-    'create_your_acct_link_to_new_xbe': False,  # Expected: New create acct page, else pricing page
-    'what_is_xbe_create_link_to_new_xbe': False,
+    'production-stage': False,  # Expected: Nothing, else show dev toctree
+    'create-your-acct-link-to-new-xbe': False,  # Expected: New create acct page, else pricing page
+    'what-is-xbe-create-link-to-new-xbe': False,
+    'welcome-release_notes-products_web_apps-libs': False
 }
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------

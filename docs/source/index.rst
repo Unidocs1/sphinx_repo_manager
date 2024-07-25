@@ -8,7 +8,7 @@ Xsolla Backend [XBE] - Welcome
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
-.. feature-flag:: production_stage
+.. feature-flag:: production-stage
    :fallback:
 
    .. toctree:: 
@@ -21,7 +21,7 @@ Xsolla Backend [XBE] - Welcome
       (!) All Tutorial Docs <content/-/_dev/all_tutorial_docs>
       (!) All Static Docs <content/-/index>
 
-.. feature-flag:: create_your_acct_link_to_new_xbe
+.. feature-flag:: create-your-acct-link-to-new-xbe
 
    .. toctree:: 
       :caption: Welcome
@@ -34,7 +34,7 @@ Xsolla Backend [XBE] - Welcome
       Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
       Release Notes <content/-/welcome/release_notes/current/index>
 
-.. feature-flag:: create_your_acct_link_to_new_xbe
+.. feature-flag:: create-your-acct-link-to-new-xbe
    :fallback:
 
    .. toctree:: 

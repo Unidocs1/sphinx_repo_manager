@@ -16,7 +16,7 @@ using the `:fallback:` option).
     extensions = ['sphinx_feature_flags']
     
     feature_flags = {
-        'production_stage': False,  # Example
+        'production-stage': False,  # Example
     }
     ```
 
@@ -25,14 +25,14 @@ using the `:fallback:` option).
 In any `.rst` file, wrap the `feature-flag` directive around any block:
 
     ```rst
-    .. feature-flag:: production_stage
+    .. feature-flag:: production-stage
     
-       This only shows if production_stage = True; it can be an entire toctree, too!
+       This only shows if production-stage = True; it can be an entire toctree, too!
     
-    .. feature-flag:: production_stage
+    .. feature-flag:: production-stage
        :fallback:
     
-       This only shows if production_stage = False.
+       This only shows if production-stage = False.
     ```
 
 ## Requirements

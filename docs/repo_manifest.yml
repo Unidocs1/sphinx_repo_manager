@@ -18,7 +18,7 @@ enable_repo_manager: true
 # - If enable_repo_manager && false, will skip this extension locally
 #   (useful if you 100% know all repos are up-to-date)
 # - Defaults to true, if omitted
-enable_repo_manager_local: false
+enable_repo_manager_local: true
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - Recommended just 1 if needing *chronological* debugging
