@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: 2.0.0-beta.1
+  version: 2.0.0-rc.1
 paths:
   /status:
     x-name: AXRStatusRoute
@@ -10734,8 +10734,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
       x-name: update
-  /custom-scripting/helloworld:
-    x-name: RoutTest
+  /hello:
+    x-name: jobs.newscript
     get:
       responses:
         "200":
@@ -10744,22 +10744,11 @@ paths:
             application/json:
               schema:
                 type: object
-      x-name: getHelloWorld
-  /custom-scripting/hellopromise:
-    x-name: RoutTest
-    get:
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: promise
-      x-name: getHello
-  /custom-scripting/hello/:id:
+      x-name: get
+  /hello/:id:
     parameters:
       - $ref: "#/components/parameters/id"
-    x-name: RoutTest
+    x-name: jobs.newscript
     get:
       responses:
         "200":
@@ -10768,7 +10757,7 @@ paths:
             application/json:
               schema:
                 type: object
-      x-name: getHelloId
+      x-name: getById
   /serverinstances:
     x-schema: models.ServerInstance
     x-name: routes.ServerInstanceRoute
@@ -13804,41 +13793,6 @@ paths:
               schema:
                 type: object
       x-name: getServiceStatus
-  /helloworld:
-    x-name: routes.HelloWorldRoute
-    get:
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: object
-      x-name: getHelloWorld
-  /hello:
-    x-name: jobs.newscript
-    get:
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: object
-      x-name: get
-  /hello/:id:
-    parameters:
-      - $ref: "#/components/parameters/id"
-    x-name: jobs.newscript
-    get:
-      responses:
-        "200":
-          description: Returned when the operation is successful.
-          content:
-            application/json:
-              schema:
-                type: object
-      x-name: getById
 components:
   schemas:
     Error:
@@ -15917,7 +15871,7 @@ components:
           format: date
           type: string
         starts:
-          default: 2024-07-10T16:36:47.790Z
+          default: 2024-07-24T21:11:55.054Z
           format: date
           type: string
         redeemed:
@@ -15989,7 +15943,7 @@ components:
           format: date
           type: string
         startDate:
-          default: 2024-07-10T16:36:47.791Z
+          default: 2024-07-24T21:11:55.054Z
           format: date
           type: string
         data:
@@ -16511,7 +16465,7 @@ components:
           default: []
           type: array
         lastHeartbeat:
-          default: 2024-07-17T21:31:06.443Z
+          default: 2024-07-25T07:36:52.335Z
           format: date
           type: string
         ownerUid:
@@ -16929,7 +16883,7 @@ components:
           default: null
           type: object
         lastHeartbeat:
-          default: 2024-07-17T21:29:24.154Z
+          default: 2024-07-24T21:14:39.752Z
           format: date
           type: string
         maxUsers:
