@@ -3,6 +3,7 @@ import re  # Regex
 import shutil
 import subprocess
 import shlex  # CLI helper
+from datetime import datetime
 from pathlib import Path
 
 import logging
@@ -10,8 +11,9 @@ from log_styles import *
 
 GIT_SPARSE_PRESERVED_DIRS_FILES = [
     '.git',
-    'RELEASE_NOTES.rst', 
+    'RELEASE_NOTES.rst',
 ]
+
 
 # Configure the logger
 class CustomFormatter(logging.Formatter):
@@ -202,7 +204,7 @@ class GitHelper:
         Clean the root level of the repo_path, leaving only [.git, docs] at root level and sparse_first_level directories.
         """
         # These dirs/files won't be touched
-        preserved_dirs_files = GIT_SPARSE_PRESERVED_DIRS_FILES  + [ sparse_first_level ]
+        preserved_dirs_files = GIT_SPARSE_PRESERVED_DIRS_FILES + [sparse_first_level]
         log_entries.append(colorize_action(f"  - Whitelisted sparse files: {preserved_dirs_files}"))
 
         # Add non-preserved dirs to .git/info/exclude before wiping
@@ -299,7 +301,7 @@ class GitHelper:
         run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
 
     @staticmethod
-    def git_stash(repo_path, stash_message='repo_mgr-autostash', log_entries=None):
+    def git_stash(repo_path, stash_message=None, log_entries=None):
         """
         Stash the working directory. Includes new/untracked files.
         -C == working git dir
@@ -307,6 +309,9 @@ class GitHelper:
         -m == message
         """
         GitHelper._throw_if_path_not_exists(repo_path)
+        if stash_message is None:
+            stash_message = f"repo_mgr_wip-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+
         cmd_arr = ['git', '-C', repo_path, 'stash', 'push', '-u', '-m', stash_message]
         run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
 
