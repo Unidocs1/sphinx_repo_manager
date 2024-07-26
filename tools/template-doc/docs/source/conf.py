@@ -96,13 +96,14 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
-    '_build',
-    'Thumbs.db',
-    '.DS_Store',
-    'venv',
-    'requirements.txt',
-    'README.*',
-    '_recycling_bin',  # Deprecated files organized together
+    '**/_build',
+    '**/build',
+    '**/_recycling_bin',  # Deprecated files organized together
+    '**/.DS_Store',
+    '**/README.*',
+    '**/requirements.txt',
+    '**/Thumbs.db',
+    '**/venv',
 ]
 
 master_doc = 'index'  # Build entry point: The "home page"
