@@ -8,8 +8,8 @@
 #
 ##############################################################################
 import os
-import subprocess  # for Doxyfile
 import sys
+from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -29,38 +29,6 @@ author = 'Xsolla'
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
 
-# # Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
-# if read_the_docs_build:
-#     gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
-#     if not gitlab_access_token:
-#         print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
-
-
-# # TODO: Look into Doxygen / Breathe integration
-# def configure_doxyfile(input_dir, output_dir):
-#     with open("Doxyfile.in", "r") as file:
-#         filedata = file.read()
-#
-#     filedata = filedata.replace("@DOXYGEN_INPUT_DIRECTORY@", input_dir)
-#     filedata = filedata.replace("@DOXYGEN_OUTPUT_DIRECTORY@", output_dir)
-#
-#     with open("Doxyfile", "w") as file:
-#         file.write(filedata)
-#
-#
-# breathe_projects = {}
-#
-# if read_the_docs_build:
-#     input_dir = "../sdk"
-#     output_dir = "_doxygen"
-#     configure_doxyfile(input_dir, output_dir)
-#     subprocess.call("doxygen Doxyfile", shell=True)
-#     breathe_projects["AcceleratXR"] = output_dir + "/xml"
-#     subprocess.call(
-#         "python -m breathe.apidoc -p AcceleratXR -o api ./_doxygen/xml", shell=True
-#     )
-#     print("---- Doxygen / Breathe Done ----")
-
 
 # -- Path setup --------------------------------------------------------------
 
@@ -77,16 +45,14 @@ sys.path.append(os.path.abspath('.'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 # Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'sphinxcontrib.redoc',
-    # 'breathe',  # Doxygen API docs
-    # 'sphinx_csharp',  # CSharp markdown
-    # 'sphinx.ext.autodoc',  # More API docgen tools
+    'sphinx.ext.todo',  # Allows for todo:: directive 
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -121,50 +87,19 @@ todo_include_todos = False  # If this is True, todo and todolist produce output,
 todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
 todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
 
-# -- Extension: Breathe --------------------------------------------------
-# Breathe allows you to embed Doxygen documentation into your docs.
-
-# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
-# breathe_default_project = "AcceleratXR"  # TODO: Name change
-
-# # Tell sphinx what the primary language being documented is + code highlighting
-# primary_domain = "cpp"
-# highlight_language = "cpp"
-
-
-# -- Extension: Breathe --------------------------------------------------
-# Breathe allows you to embed Doxygen documentation into your docs.
-
-# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
-# breathe_default_project = "AcceleratXR"  # TODO: Name change
-
-
-# -- C# domain configuration ----------------------------------------------
-
-# sphinx_csharp_test_links = read_the_docs_build
-# sphinx_csharp_multi_language = True
-# -- C# domain configuration ----------------------------------------------
-
-# sphinx_csharp_test_links = read_the_docs_build
-# sphinx_csharp_multi_language = True
-
-
 # -- Intersphinx Mapping -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 # Centralized link constants
+# TODO(XBND-891): Centralize Discord links, perhaps others
 
 # # Link constants shared across multiple docs
-# intersphinx_mapping = {
-#     'some-link-ref': ('https://some-link-ref.acceleratxr.io/en/latest/', None),
-# }
+objs_inv_path = None  # Use default
+intersphinx_mapping = {
+    'xbe-discord': ('https://discord.gg/XsollaBackend', objs_inv_path),  # TODO: Use this
+}
 
-# We recommend adding the following config value.
-# Sphinx defaults to automatically resolve *unresolved* labels using all your Intersphinx mappings.
-# This behavior has unintended side effects, namely that documentations local references can
-# suddenly resolve to an external location.
-# See also:
-# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
-# intersphinx_disabled_reftypes = ['*']
+# Ensure we only use intersphinx when we use :ref: role | https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
+intersphinx_disabled_reftypes = ['*']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -199,15 +134,15 @@ html_theme_options = {
     # Toc options >>
     'collapse_navigation': False,
     'sticky_navigation': True,
-    'navigation_depth': 2,  # (!) max depth; NOT default
-    'includehidden': True,
-    'titles_only': False
+    'navigation_depth': 2,  # (!) Important
+    # 'includehidden': True,
+    # 'titles_only': False,
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
 # Eg: This is used with themes and third-party extensions;
 # (!) `{{templating}}` in rst files with these *won't* work here:
-html_context = {
+html_context.update({
     'conf_py_path': '/source/',  # Path in the checkout to the docs root
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
@@ -215,7 +150,7 @@ html_context = {
     'gitlab_user': 'Core',  # Group
     'gitlab_repo': '%REPO_NAME%',  # Repo name
     'gitlab_version': 'master',  # Version
-}
+})
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 

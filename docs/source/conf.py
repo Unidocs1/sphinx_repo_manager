@@ -9,8 +9,6 @@
 ##############################################################################
 import os
 import sys
-# import yaml  # To process openapi.yaml
-# import subprocess  # for Doxyfile
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 
 # -- Project information -----------------------------------------------------
@@ -21,7 +19,6 @@ copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = '2024.07.0-TEST'
 
-
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
@@ -29,10 +26,9 @@ release = '2024.07.0-TEST'
 
 
 # -- Inline extensions -------------------------------------------------------
-# Instead of making an extension, for small things, we can just embed inline
+# Instead of making an extension for small things, we can just embed inline
 def setup(app):
-    app.add_css_file(os.path.normpath('styles/main.css'))
-
+    app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
 
 # -- Path setup --------------------------------------------------------------
 
@@ -46,22 +42,6 @@ sys.path.insert(0, os.path.abspath(''))
 
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
-
-# # Warn if GITLAB_ACCESS_TOKEN is !set; it's only required for private docs on !business RTD plan (eg: test acct)
-# if read_the_docs_build:
-#     gitlab_access_token = os.getenv('GITLAB_ACCESS_TOKEN')
-#     if not gitlab_access_token:
-#         print("Warning: GITLAB_ACCESS_TOKEN .env !set (ok if public repo or RTD business acct)")
-
-
-# # TODO: Look into Doxygen / Breathe integration
-# def configure_doxyfile(input_dir, output_dir):
-#     with open("Doxyfile.in", "r") as file:
-#         filedata = file.read()
-#
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
 
 # The absolute path to the directory containing conf.py.
 documentation_root = os.path.abspath(os.path.dirname(__file__))
@@ -92,8 +72,7 @@ repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
 # -- General configuration ---------------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
@@ -106,12 +85,7 @@ extensions = [
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     'sphinxcontrib.redoc',  # Converts OpenAPI spec json files into API docs
-    'sphinx.ext.todo',  # Allows for todo:: directive (possibly deprecated in favor of sphinx_feature_flags)
-    # Allows for TODO directives to exclude from build warns | https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
-    # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses; https://sphinxcontrib-redoc.readthedocs.io/en/stable 
-    # 'breathe',  # Doxygen API docs
-    # 'sphinx_csharp',  # CSharp markdown
-    # 'sphinx.ext.autodoc',  # More API docgen tools
+    'sphinx.ext.todo',  # Allows for todo:: directive 
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -201,53 +175,19 @@ print(f'[conf.py::sphinxcontrib.redoc] redoc[0].page: {redoc[0]["page"]}')
 print(f'[conf.py::sphinxcontrib.redoc] redoc[0].spec: {redoc[0]["spec"]}')
 print('')
 
-# -- Extension: Breathe --------------------------------------------------
-# Breathe allows you to embed Doxygen documentation into your docs.
-
-# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
-# breathe_default_project = "AcceleratXR"  # TODO: Name change
-
-
-# -- C# domain configuration ----------------------------------------------
-
-# sphinx_csharp_test_links = read_the_docs_build
-# sphinx_csharp_multi_language = True
-
-# # Tell sphinx what the primary language being documented is + code highlighting
-# primary_domain = "cpp"
-# highlight_language = "cpp"
-
-
-# -- Extension: Breathe --------------------------------------------------
-# Breathe allows you to embed Doxygen documentation into your docs.
-
-# breathe_projects = {"AcceleratXR": "./_doxygen/xml"}  # TODO: Name change
-# breathe_default_project = "AcceleratXR"  # TODO: Name change
-
-
-# -- C# domain configuration ----------------------------------------------
-
-# sphinx_csharp_test_links = read_the_docs_build
-# sphinx_csharp_multi_language = True
-
-
 # -- Intersphinx Mapping -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 # Centralized link constants
+# TODO(XBND-891): Centralize Discord links, perhaps others
 
 # # Link constants shared across multiple docs
-# intersphinx_mapping = {
-#     'some-link-ref': ('https://some-link-ref.acceleratxr.io/en/latest/', None),
-# }
+objs_inv_path = None  # Use default
+intersphinx_mapping = {
+    'xbe-discord': ('https://discord.gg/XsollaBackend', objs_inv_path),  # TODO: Use this
+}
 
-# We recommend adding the following config value.
-# Sphinx defaults to automatically resolve *unresolved* labels using all your Intersphinx mappings.
-# This behavior has unintended side effects, namely that documentations local references can
-# suddenly resolve to an external location.
-# See also:
-# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
-# intersphinx_disabled_reftypes = ['*']
-
+# Ensure we only use intersphinx when we use :ref: role | https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
+intersphinx_disabled_reftypes = ['*']
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -302,7 +242,7 @@ html_context.update({
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
 # -- MyST configuration ------------------------------------------------------
-# recommonmark successor to parse .md to .rst
+# Recommonmark successor to auto-parse .md to .rst
 
 # Configuration for MyST-Parser
 myst_enable_extensions = [
