@@ -93,10 +93,10 @@ todo_link_only = False  # If this is True, todolist produce output without file 
 # TODO(XBND-891): Centralize Discord links, perhaps others
 
 # # Link constants shared across multiple docs
-objs_inv_path = None  # Use default
-intersphinx_mapping = {
-    'xbe-discord': ('https://discord.gg/XsollaBackend', objs_inv_path),  # TODO: Use this
-}
+# objs_inv_path = None  # Use default
+# intersphinx_mapping = {
+#     'xbe-discord': ('https://discord.gg/XsollaBackend', objs_inv_path),
+# }
 
 # Ensure we only use intersphinx when we use :ref: role | https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
 intersphinx_disabled_reftypes = ['*']
