@@ -8,7 +8,6 @@
 #
 ##############################################################################
 import os
-import requests  # To download openapi.yaml
 import sys
 # import yaml  # To process openapi.yaml
 # import subprocess  # for Doxyfile
@@ -69,6 +68,7 @@ documentation_root = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
 sys.path.append(os.path.abspath('.'))
 
 # -- Read normalized repo_manifest.yml ---------------------------------------
@@ -95,16 +95,18 @@ repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
+html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
-    'sphinx_repo_manager',  # Our own custom extension
-    'sphinx_feature_flags',  # Our own custom extension
+    'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
+    'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
+    'sphinx_repo_manager',  # Our own custom extension to manage repos via repo_manifest.yml
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
-    'sphinxcontrib.redoc',
-    'sphinx.ext.todo',
+    'sphinxcontrib.redoc',  # Converts OpenAPI spec json files into API docs
+    'sphinx.ext.todo',  # Allows for todo:: directive (possibly deprecated in favor of sphinx_feature_flags)
     # Allows for TODO directives to exclude from build warns | https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
     # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses; https://sphinxcontrib-redoc.readthedocs.io/en/stable 
     # 'breathe',  # Doxygen API docs
@@ -137,45 +139,26 @@ tocdepth = 1  # Default :maxdepth:
 primary_domain = "cpp"
 highlight_language = "cpp"
 
-# -- OpenAPI Local Download ----------------------------------------------
-# The target server host is blocking CORS, so we grab it locally
-# Used for the sphinxcontrib.redoc extension
+# -- Extension: sphinx_openapi (OpenAPI Local Download/Updater) -----------
+# Used in combination with the sphinxcontrib.redoc extension
+# Use OpenAPI ext to download/update -> redoc ext to generate
 
 # Define the target json|yaml + path to save the downloaded OpenAPI spec
-# These vals will be shared later with the sphinxcontrib.redoc extension
-openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'  # We'll download this to _static/
-openapi_dir_path = '_specs'
-openapi_json_path = os.path.normpath(os.path.join(openapi_dir_path, 'openapi.json'))  # Main (7/10/2024)
-openapi_yaml_path = os.path.normpath(os.path.join(openapi_dir_path, 'openapi.yaml'))
+openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'
+openapi_dir_path = '_specs'  # Downloads json|yaml files to here
+openapi_file_type = 'json'  # 'json' or 'yaml' (we'll download them both, but generate from only 1)
 
 # Link here from rst with explicit ".html" ext (!) but NOT from a doctree
 openapi_generated_file_posix_path = Path(os.path.join(
-    'content', '-', 'api', 'index')).as_posix()  # Parse to forward/slashes/
+    'content', '-', 'api', 'index')).as_posix()  # Parses to forward/slashes/
 
-# If _specs dir !exists, create it
-if not os.path.exists(openapi_dir_path):
-    os.makedirs(openapi_dir_path)
-
-
-# Download the spec to source/_static/openapi.yaml
-def download_file(url, save_to_path):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(save_to_path, 'wb') as f:
-            f.write(response.content)
-        print(f'[conf.py] Successfully downloaded {url}')
-    else:
-        print(f'[conf.py] Failed to download {url}: {response.status_code}')
-
-
-def setup_openapi():
-    print('')
-    download_file(openapi_spec_url_noext + '.json', openapi_json_path)  # Main (7/10/2024)
-    download_file(openapi_spec_url_noext + '.yaml', openapi_yaml_path)
-    print('')
-
-
-setup_openapi()
+# Set the config values for the extension
+html_context.update({
+    'openapi_spec_url_noext': openapi_spec_url_noext,
+    'openapi_dir_path': openapi_dir_path,
+    'openapi_generated_file_posix_path': openapi_generated_file_posix_path,
+    'openapi_file_type': openapi_file_type,
+})
 
 # -- Extension: sphinx.ext.todo ------------------------------------------
 # Support for `todo` directive, passing it during sphinx builds
@@ -306,7 +289,7 @@ html_theme_options = {
 # This swaps vals in the actual built HTML (NOT the rst files).
 # Eg: This is used with themes and third-party extensions;
 # (!) `{{templating}}` in rst files with these *won't* work here:
-html_context = {
+html_context.update({
     'conf_py_path': '/source/',  # Path in the checkout to the docs root
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
@@ -314,7 +297,7 @@ html_context = {
     'gitlab_user': 'Core',  # Group
     'gitlab_repo': 'acceleratxr.io',  # Repo name
     'gitlab_version': 'master',  # Version
-}
+})
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 

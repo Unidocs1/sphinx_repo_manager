@@ -1,9 +1,15 @@
+"""
+Xsolla Sphinx Extension: sphinx_feature_flags
+- See README for more info
+"""
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives
 from sphinx.util.docutils import SphinxDirective
 
+
 class feature_flag_node(nodes.General, nodes.Element):
     pass
+
 
 class SphinxFeatureFlags(SphinxDirective):
     has_content = True
@@ -29,11 +35,14 @@ class SphinxFeatureFlags(SphinxDirective):
         else:
             return []
 
+
 def visit_feature_flag_node(self, node):
     pass
 
+
 def depart_feature_flag_node(self, node):
     pass
+
 
 def setup(app):
     app.add_config_value('feature_flags', {}, 'env')
