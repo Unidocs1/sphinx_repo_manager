@@ -274,7 +274,8 @@ feature_flags = {
     'production-stage': False,  # Expected: Nothing, else show dev toctree
     'create-your-acct-link-to-new-xbe': False,  # Expected: New create acct page, else pricing page
     'what-is-xbe-create-link-to-new-xbe': False,
-    'welcome-release_notes-products_web_apps-libs': False
+    'welcome-release_notes-products_web_apps-libs': False,
+    'new-xbe-openapi-doc': False,
 }
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------

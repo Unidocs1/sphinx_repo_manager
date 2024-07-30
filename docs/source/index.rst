@@ -69,6 +69,7 @@ Xsolla Backend [XBE] - Welcome
 
 .. toctree::
    :caption: API Reference
+   :maxdepth: 2
    :hidden:
 
    C++ SDK <content/-/api/sdk_cpp_ref>
