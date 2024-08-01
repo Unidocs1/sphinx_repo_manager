@@ -41,7 +41,7 @@ DEFAULT_DEFAULT_BRANCH = 'master'
 DEFAULT_PRESERVE_GITLAB_GROUP = True
 DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
 DEFAULT_REPOSITORIES = {}
-DEFAULT_REPO_SKIP_STASH_PULL_DEFAULT = False
+DEFAULT_SKIP_REPO_UPDATES = False
 
 # Options
 THROW_ON_MISSING_STATIC_REPO_NAME_DIR = False  # Recommended True
@@ -226,7 +226,7 @@ class SphinxRepoManager:
             repo_info.setdefault('branch', manifest['default_branch'])
 
         # Useful if we want to build with WIP changes (without stashing or committing)
-        repo_info.setdefault('skip_stash_pull', DEFAULT_REPO_SKIP_STASH_PULL_DEFAULT)
+        repo_info.setdefault('skip_repo_updates', DEFAULT_SKIP_REPO_UPDATES)
 
         # Explicitly normalize branch slashes/to/forward
         branch = repo_info['branch']
@@ -580,7 +580,7 @@ class SphinxRepoManager:
 
         tag = repo_info['tag'] if has_tag else None
         branch = repo_info['branch']
-        skip_stash_pull = repo_info['skip_stash_pull']
+        skip_repo_updates = repo_info['skip_repo_updates']
 
         # Clone the repo, if we haven't done so already
         cloned = False
@@ -630,8 +630,8 @@ class SphinxRepoManager:
             print(f'{colorize_action("*[REALTIME]")} [{repo_name}] ✅ | Successfully cloned')
             if stash_and_continue_if_wip:
                 already_stashed = True
-        elif skip_stash_pull:
-            action_str = colorize_action(f"🔃 | Skipping updates ({brighten('skip_stash_pull')})...")
+        elif skip_repo_updates:
+            action_str = colorize_action(f"🔃 | Skipping updates ({brighten('skip_repo_updates')})...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
         else:
             action_str = colorize_action(f"🔃 | Fetching updates...")
@@ -650,8 +650,8 @@ class SphinxRepoManager:
 
         # Checkout to the specific branch or tag
         has_branch = 'branch' in repo_info
-        if not cloned and has_branch and skip_stash_pull:
-            action_str = colorize_action(f"🔃 | Skipping branch checkout ({brighten('skip_stash_pull')})...")
+        if not cloned and has_branch and skip_repo_updates:
+            action_str = colorize_action(f"🔃 | Skipping branch checkout ({brighten('skip_repo_updates')})...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
         elif not cloned and has_branch:
             action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
@@ -673,8 +673,8 @@ class SphinxRepoManager:
                 already_stashed = True
 
         # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
-        if has_tag and skip_stash_pull:
-            action_str = colorize_action(f"🔃 | Skipping tag checkout ({brighten('skip_stash_pull')})...")
+        if has_tag and skip_repo_updates:
+            action_str = colorize_action(f"🔃 | Skipping tag checkout ({brighten('skip_repo_updates')})...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
         if has_tag:
             action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
@@ -698,8 +698,8 @@ class SphinxRepoManager:
         if self.shutdown_flag:  # Multi-threaded CTRL+C check
             raise SystemExit
 
-        if not cloned and skip_stash_pull:
-            action_str = colorize_action(f"🔃 | Skipping git pull ({brighten('skip_stash_pull')})...")
+        if not cloned and skip_repo_updates:
+            action_str = colorize_action(f"🔃 | Skipping git pull ({brighten('skip_repo_updates')})...")
             log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
         elif not cloned:
             should_stash = stash_and_continue_if_wip and not already_stashed
