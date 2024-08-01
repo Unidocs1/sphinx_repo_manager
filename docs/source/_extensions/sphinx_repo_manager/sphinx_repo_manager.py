@@ -77,6 +77,12 @@ class SphinxRepoManager:
             print("Signal received (CTRL+C), initiating graceful shutdown...")
         self.shutdown_flag = True
 
+    @staticmethod
+    def _print_realtime_log(msg):
+        """ When multi-threading via a Future, print realtime logs here for the main thread. """
+        print(msg)
+        sys.stdout.flush()
+
     def read_normalize_manifest(self):
         """
         Read and return the repository manifest from YAML file.
@@ -515,7 +521,8 @@ class SphinxRepoManager:
                     future.result()
 
                     num_done += 1
-                    completed_msg = f"✅ | Completed {brighten(f'{num_done}/{total_repos_num}')} repositories."
+                    completed_msg = (f"{colorize_action('*[REALTIME]')} ✅ | Completed "
+                                     f"{brighten(f'{num_done}/{total_repos_num}')} repositories.")
                     logger.info(colorize_success(completed_msg))
                 except Exception as e:
                     with self.lock:
@@ -583,8 +590,9 @@ class SphinxRepoManager:
             raise SystemExit
 
         if not os.path.exists(rel_tag_versioned_clone_src_path):
-            action_str = colorize_action(f"📦 | Sparse-cloning repo...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"[{repo_name}] 📦 | cloning repo...")
+            print(f'{colorize_action("*[REALTIME]")} {action_str}')
+            log_entries.append(action_str)
             log_entries.append(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
 
             git_helper = GitHelper()  # TODO: Place this instance @ top?
@@ -619,6 +627,7 @@ class SphinxRepoManager:
                 raise Exception(f"{additional_info}") from e
 
             cloned = True
+            print(f'{colorize_action("*[REALTIME]")} [{repo_name}] ✅ | Successfully cloned')
             if stash_and_continue_if_wip:
                 already_stashed = True
         elif skip_stash_pull:
