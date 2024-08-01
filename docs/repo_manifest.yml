@@ -11,14 +11,15 @@
 # - It *is safe* (and encouraged) to periodically wipe your source/ _repos-available + content dirs
 ##########################################################################################################
 
-# - If false, will skip this extension (for faster main doc iteration testing)
+# - (!) DANGEROUS: If false, will skip this extension both locally + on ReadTheDocs (RTD)
+# - Useful if you 100% know all repos are up-to-date for faster iterations
 # - Defaults to true, if omitted
 enable_repo_manager: true
 
 # - If enable_repo_manager && false, will skip this extension locally
-#   (useful if you 100% know all repos are up-to-date)
+# - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
 # - Defaults to true, if omitted
-enable_repo_manager_local: true
+enable_repo_manager_local: false
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - Recommended just 1 if needing *chronological* debugging
@@ -31,8 +32,7 @@ max_workers_local: 5
 max_workers_rtd: 1
 
 # - More-verbose logging or debugging 
-# - Throws arbitrary err on done with sphinx_repo_manager if local
-#   (prevents warning spam)
+# - Throws arbitrary err on done with sphinx_repo_manager if local (prevents warning spam)
 # - Defaults to false, if omitted
 debug_mode: false
 
