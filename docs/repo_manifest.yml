@@ -114,14 +114,14 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   #
   # Useful for testing WIP without having it be stashed away or require a commit (still pulls _static images)
   # Default false, if omitted
-  #skip_stash_pull: true
+  #skip_repo_updates: true
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Static >>
   xbe_static_docs:
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
     branch: 'main'
-    #skip_stash_pull: false
+    #skip_repo_updates: false
   # Services >>
   account_services:
     url: 'https://gitlab.acceleratxr.com/Core/account_services'
