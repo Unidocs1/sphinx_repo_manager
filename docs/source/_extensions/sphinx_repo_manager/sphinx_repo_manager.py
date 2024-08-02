@@ -44,7 +44,7 @@ DEFAULT_REPOSITORIES = {}
 DEFAULT_SKIP_REPO_UPDATES = False
 
 # Options
-THROW_ON_MISSING_STATIC_REPO_NAME_DIR = False  # Recommended True
+THROW_ON_REPO_ERROR = False  # Recommended True
 
 logger = logging.getLogger(__name__)  # Get logger instance
 
@@ -54,7 +54,8 @@ shutdown_flag = False
 
 # Custom exception class for repository management errors
 class RepositoryManagementError(Exception):
-    shutdown_flag = True
+    if THROW_ON_REPO_ERROR:
+        shutdown_flag = True
     pass
 
 
@@ -467,14 +468,13 @@ class SphinxRepoManager:
                 log_entries,
             )
         except Exception as e:
-            self.shutdown_flag = True  # Signal shutdown to other threads
-            self.errored_repo_name = repo_name
             info1 = (f"- HINT: For continued issues, try deleting your source/ "
                      f"`_repos-available/` and/or `content/` dirs to regenerate.")
             info2 = f"- HINT: You may see more logs below due to already-queued async-threaded logs"
             bright_info = colorize_error(brighten(f'{info1}\n{info2}\n'))
-
             error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}.\n{bright_info}"
+
+            self.errored_repo_name = repo_name
             raise RepositoryManagementError(f'\n{error_message}')
         finally:
             # Log the queued entries at once
@@ -539,9 +539,10 @@ class SphinxRepoManager:
                 except Exception as e:
                     with self.lock:
                         logger.error(f"Failed to manage repository: {str(e)}")
-                    for inner_future in futures:
-                        inner_future.cancel()
-                    raise SystemExit
+                    if THROW_ON_REPO_ERROR:
+                        for inner_future in futures: 
+                            inner_future.cancel()
+                        raise SystemExit
 
         all_completed_msg = f"✅ | Job's done ({brighten(total_repos_num)} repos)."
         logger.info(f'\n{colorize_success(all_completed_msg)}')
@@ -798,7 +799,7 @@ class SphinxRepoManager:
         log_entries.append(colorize_path(f"  - (1) From clone src path: '{brighten(abs_clone_src_nested_path)}'"))
         if not abs_clone_src_nested_path.exists():
             raise Exception(
-                f"Error creating symlink (1):\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found")
+                f"Error creating symlink (1):\n- {abs_clone_src_nested_path}\n- Src path !exists")
 
         log_entries.append(
             colorize_path(f"  - To symlink path: '{brighten(rel_selected_clone_path_root_symlink_src)}'"))
@@ -890,7 +891,7 @@ class SphinxRepoManager:
 
         if not abs_repo_static_dir_path.exists():
             err_msg = f"Error creating symlink (3):\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found"
-            if THROW_ON_MISSING_STATIC_REPO_NAME_DIR:
+            if THROW_ON_REPO_ERROR:
                 raise Exception(err_msg)  # TODO: Use this instead, once the architecture is setup
             else:
                 log_entries.append(colorize_warning(err_msg))
