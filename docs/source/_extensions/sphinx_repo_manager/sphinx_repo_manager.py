@@ -375,15 +375,19 @@ class SphinxRepoManager:
     def log_repo_paths(
             debug_mode,
             tag_versioned_clone_src_repo_name,
-            tag_versioned_clone_src_path,
+            rel_tag_versioned_clone_src_path,
             rel_symlinked_repo_path,
+            log_entries,
     ):
         """ Log paths for production [and optionally debugging, if debug_mode]. """
 
         action_str = colorize_action("Working Dirs:")
-        logger.info(f"📁 [{tag_versioned_clone_src_repo_name}] {action_str}")
-        logger.info(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
-        logger.info(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
+        log_entries.append(f"📁 [{tag_versioned_clone_src_repo_name}] {action_str}")
+
+        abs_tag_versioned_clone_src_path = Path(rel_tag_versioned_clone_src_path).resolve()
+        abs_symlinked_repo_path = Path(rel_symlinked_repo_path).resolve()
+        log_entries.append(colorize_path(f"  - Repo clone src path: '{brighten(abs_tag_versioned_clone_src_path.resolve())}'"))
+        log_entries.append(colorize_path(f"  - Repo symlink target path: '{brighten(abs_symlinked_repo_path.resolve())}'"))
 
     def process_repo(
             self,
@@ -442,9 +446,12 @@ class SphinxRepoManager:
         repo_name = _meta['repo_name']
 
         # Logs + Override checks
-        log_entries.append(colorize_action(f"📁 Working Dirs:"))
-        log_entries.append(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
-        log_entries.append(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
+        self.log_repo_paths(
+            debug_mode,
+            tag_versioned_clone_src_repo_name,
+            tag_versioned_clone_src_path,
+            rel_symlinked_repo_path,
+            log_entries)
 
         if has_repo_sparse_path_override:
             log_entries.append(
@@ -635,6 +642,9 @@ class SphinxRepoManager:
         elif skip_repo_updates:
             action_str = colorize_action(f"Skipping updates ({brighten('skip_repo_updates')})...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
+        elif has_tag:
+            action_str = colorize_action(f"Skipping updates ({brighten('has_tag')})...")
+            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         else:
             action_str = colorize_action(f"Fetching updates...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
@@ -652,10 +662,13 @@ class SphinxRepoManager:
 
         # Checkout to the specific branch or tag
         has_branch = 'branch' in repo_info
-        if not cloned and has_branch and skip_repo_updates:
+        should_skip_branch_checkout = not cloned and has_branch and skip_repo_updates
+        should_check_out_branch = not cloned and not has_tag and has_branch 
+        
+        if should_skip_branch_checkout:
             action_str = colorize_action(f"Skipping branch checkout ({brighten('skip_repo_updates')})...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
-        elif not cloned and has_branch:
+        elif should_check_out_branch:
             action_str = colorize_action(f"Checking out branch '{brighten(branch)}'...")
             log_entries.append(f"🔄 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
@@ -700,8 +713,10 @@ class SphinxRepoManager:
         if self.shutdown_flag:  # Multi-threaded CTRL+C check
             raise SystemExit
 
-        if not cloned and skip_repo_updates:
-            action_str = colorize_action(f"Skipping git pull ({brighten('skip_repo_updates')})...")
+        skip_git_pull = (not cloned and skip_repo_updates) or has_tag
+        if skip_git_pull:
+            skip_reason = 'has_tag' if has_tag else 'skip_repo_updates'
+            action_str = colorize_action(f"Skipping git pull ({brighten(skip_reason)})...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         elif not cloned:
             should_stash = stash_and_continue_if_wip and not already_stashed

@@ -22,6 +22,9 @@ enable_repo_manager: true
 enable_repo_manager_local: true
 
 # - Max workers for local sphinx_repo_manager for multi-threading
+# - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers. 
+#   - Eg; if 3 workers, the 1st 3 log results may be something like: Repo2{a,b,c}, Repo3{a,b,c}, Repo1{a,b,c}  
+#   - TODO: Explicitly track the repo# logged and await the correct chronological repo to show 
 # - Recommended just 1 if needing *chronological* debugging
 # - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
 max_workers_local: 5
