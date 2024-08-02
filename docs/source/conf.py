@@ -271,8 +271,8 @@ myst_enable_extensions = [
 """
 
 feature_flags = {
-    'production-stage': False,  # Expected: Nothing, else show dev toctree
-    'create-your-acct-link-to-new-xbe': False,  # Expected: New create acct page, else pricing page
+    'production-stage': True,  # True: Nothing; False: Show dev toctree
+    'create-your-acct-link-to-new-xbe': False,  # True: New create acct page; False: Pricing page
     'what-is-xbe-create-link-to-new-xbe': False,
     'welcome-release_notes-products_web_apps-libs': False,
     'new-xbe-openapi-doc': False,
