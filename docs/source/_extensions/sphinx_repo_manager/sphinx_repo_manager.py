@@ -74,7 +74,7 @@ class SphinxRepoManager:
 
     def _signal_handler(self, signum, frame):
         if not self.shutdown_flag:
-            print("Signal received (CTRL+C), initiating graceful shutdown...")
+            print("⛔ Signal received (CTRL+C), initiating graceful shutdown...")
         self.shutdown_flag = True
 
     @staticmethod
@@ -319,7 +319,8 @@ class SphinxRepoManager:
         # Ensure working dir is always from manifest working dir for consistency
         # (!) This particularly fixes a RTD bug that adds an extra source/ dir, breaking paths
         os.chdir(ABS_MANIFEST_PATH_DIR)
-        logger.info(colorize_path(f"- working_dir (ABS_MANIFEST_PATH_DIR): '{brighten(os.getcwd())}'"))
+        working_dir_msg = f"   - From working_dir (ABS_MANIFEST_PATH_DIR): '{brighten(os.getcwd())}'"
+        logger.info(colorize_path(working_dir_msg))
 
         manifest = self.read_normalize_manifest()
         self.debug_mode = manifest['debug_mode']
@@ -378,8 +379,8 @@ class SphinxRepoManager:
     ):
         """ Log paths for production [and optionally debugging, if debug_mode]. """
 
-        action_str = colorize_action(f"📁 | Working Dirs:")
-        logger.info(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+        action_str = colorize_action("Working Dirs:")
+        logger.info(f"📁 [{tag_versioned_clone_src_repo_name}] {action_str}")
         logger.info(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
         logger.info(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
 
@@ -394,15 +395,17 @@ class SphinxRepoManager:
         """ Process a single repository and queue logs. """
         log_entries = []
         _meta = repo_info['_meta']
+        repo_name = _meta['repo_name']
         tag_versioned_clone_src_repo_name = _meta['tag_versioned_clone_src_repo_name']  # eg: "account_services-v2.1.0"
         rel_symlinked_repo_path = _meta['rel_symlinked_repo_path']  # eg: "source/content/account_services"
         log_entries.append(colorize_action("\n-----------------------\n"
-                                           f"[Repo {current_repo_num}/{total_repos_num}]"))
+                                           f"[{repo_name}] [Repo {current_repo_num}/{total_repos_num}]"))
 
         # Ensure repo is active
         active = repo_info['active']
         if not active:
-            log_entries.append(colorize_action(f"[{rel_symlinked_repo_path}] Repository !active; skipping..."))
+            log_entries.append(colorize_action(f"{rel_symlinked_repo_path} Repository "
+                                               f"'{brighten(repo_name)}' !active; skipping..."))
             for entry in log_entries:
                 log_queue.put(entry)
             return
@@ -438,7 +441,7 @@ class SphinxRepoManager:
         repo_name = _meta['repo_name']
 
         # Logs + Override checks
-        log_entries.append(colorize_action(f"📁 | Working Dirs:"))
+        log_entries.append(colorize_action(f"📁 Working Dirs:"))
         log_entries.append(colorize_path(f"  - Repo clone src path: '{brighten(tag_versioned_clone_src_path)}'"))
         log_entries.append(colorize_path(f"  - Repo symlink target path: '{brighten(rel_symlinked_repo_path)}'"))
 
@@ -485,24 +488,28 @@ class SphinxRepoManager:
         self.init_dir_tree(manifest)
 
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
+        debug_mode = manifest['debug_mode']
         repositories = list(manifest['repositories'].items())
         log_queue = queue.Queue()  # Queue for handling log entries
 
         # Decide number of workers to use, depending if local or RTD host
         max_num_workers = manifest['max_workers_local'] if not self.read_the_docs_build \
             else manifest['max_workers_rtd']
-        logger.info(colorize_action(f"🤖 | Using {max_num_workers} worker(s) for multi-threading"))
+        logger.info(colorize_action(f"🤖 | Using {max_num_workers} worker(s) for multi-threading\n"))
 
         total_repos_num = len(repositories)
         current_repo_num = 1
         num_done = 0
 
-        with concurrent.futures.ThreadPoolExecutor(max_num_workers) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_num_workers) as executor:
             futures = []
             for repo_name, repo_info in repositories:
                 # Attempt to cancel all futures if a shutdown (CTRL+C) is detected
                 if self.shutdown_flag:
                     raise SystemExit
+
+                if debug_mode:
+                    logger.info(f'{colorize_action(brighten("*[REALTIME]"))} Starting {repo_name} mgmt...')
 
                 future = executor.submit(
                     self.process_repo,
@@ -516,34 +523,28 @@ class SphinxRepoManager:
                 current_repo_num += 1
 
             # Handle the completion of tasks, ensuring we process results or catch exceptions
-            for future in concurrent.futures.as_completed(futures):
+            for future_inner in concurrent.futures.as_completed(futures):
                 try:
-                    future.result()
+                    future_inner.result()
+
+                    # Process all remaining logs
+                    while not log_queue.empty():
+                        log_entry = log_queue.get()
+                        logger.info(log_entry)
 
                     num_done += 1
-                    completed_msg = (f"{colorize_action('*[REALTIME]')} ✅ | Completed "
+                    completed_msg = (f"{colorize_action(brighten('*[REALTIME]'))} ✅ | Completed "
                                      f"{brighten(f'{num_done}/{total_repos_num}')} repositories.")
                     logger.info(colorize_success(completed_msg))
                 except Exception as e:
                     with self.lock:
                         logger.error(f"Failed to manage repository: {str(e)}")
-                    for future in futures:
-                        future.cancel()
+                    for inner_future in futures:
+                        inner_future.cancel()
                     raise SystemExit
-        # Join all futures to ensure all threads have completed
-        for future in futures:
-            try:
-                future.result()
-            except concurrent.futures.CancelledError:
-                pass
 
-        # Process all remaining logs
-        while not log_queue.empty():
-            log_entry = log_queue.get()
-            logger.info(log_entry)
-
-        completed_msg = f"✅ | Job's done ({brighten(total_repos_num)} repos)."
-        logger.info(f'\n{colorize_success(completed_msg)}')
+        all_completed_msg = f"✅ | Job's done ({brighten(total_repos_num)} repos)."
+        logger.info(f'\n{colorize_success(all_completed_msg)}')
 
     def clone_and_symlink(
             self,
@@ -590,8 +591,8 @@ class SphinxRepoManager:
             raise SystemExit
 
         if not os.path.exists(rel_tag_versioned_clone_src_path):
-            action_str = colorize_action(f"[{repo_name}] 📦 | cloning repo...")
-            print(f'{colorize_action("*[REALTIME]")} {action_str}')
+            action_str = colorize_action(f"📦 [{repo_name}] Cloning repo...")
+            print(f'{colorize_action(brighten("*[REALTIME]"))} {action_str}')
             log_entries.append(action_str)
             log_entries.append(colorize_path(f"  - Src Repo URL: '{brighten(rel_tag_versioned_clone_src_path)}'"))
 
@@ -614,8 +615,8 @@ class SphinxRepoManager:
                 raise SystemExit
 
             # Clean the repo to only use the specified sparse paths
-            action_str = colorize_action(f"🧹 | Cleaning up what sparse-cloning missed...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action("Cleaning up what sparse-cloning missed...")
+            log_entries.append(f"🧹 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
             try:
                 GitHelper.git_clean_sparse_docs_clone(
@@ -627,15 +628,15 @@ class SphinxRepoManager:
                 raise Exception(f"{additional_info}") from e
 
             cloned = True
-            print(f'{colorize_action("*[REALTIME]")} [{repo_name}] ✅ | Successfully cloned')
+            print(f'{colorize_action(brighten("*[REALTIME]"))} ✅ [{repo_name}] Successfully cloned')
             if stash_and_continue_if_wip:
                 already_stashed = True
         elif skip_repo_updates:
-            action_str = colorize_action(f"🔃 | Skipping updates ({brighten('skip_repo_updates')})...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"Skipping updates ({brighten('skip_repo_updates')})...")
+            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         else:
-            action_str = colorize_action(f"🔃 | Fetching updates...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"Fetching updates...")
+            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
             try:
                 GitHelper.git_fetch(
@@ -651,11 +652,11 @@ class SphinxRepoManager:
         # Checkout to the specific branch or tag
         has_branch = 'branch' in repo_info
         if not cloned and has_branch and skip_repo_updates:
-            action_str = colorize_action(f"🔃 | Skipping branch checkout ({brighten('skip_repo_updates')})...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"Skipping branch checkout ({brighten('skip_repo_updates')})...")
+            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         elif not cloned and has_branch:
-            action_str = colorize_action(f"🔄 | Checking out branch '{brighten(branch)}'...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"Checking out branch '{brighten(branch)}'...")
+            log_entries.append(f"🔄 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
             should_stash = stash_and_continue_if_wip and not already_stashed
 
@@ -674,11 +675,11 @@ class SphinxRepoManager:
 
         # If we don't have a tag, just checking out the branch is enough (we'll grab the latest commit)
         if has_tag and skip_repo_updates:
-            action_str = colorize_action(f"🔃 | Skipping tag checkout ({brighten('skip_repo_updates')})...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"Skipping tag checkout ({brighten('skip_repo_updates')})...")
+            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         if has_tag:
-            action_str = colorize_action(f"🔄 | Checking out tag '{brighten(tag)}'...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"Checking out tag '{brighten(tag)}'...")
+            log_entries.append(f"🔄 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
             should_stash = stash_and_continue_if_wip and not already_stashed
 
@@ -699,8 +700,8 @@ class SphinxRepoManager:
             raise SystemExit
 
         if not cloned and skip_repo_updates:
-            action_str = colorize_action(f"🔃 | Skipping git pull ({brighten('skip_repo_updates')})...")
-            log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+            action_str = colorize_action(f"Skipping git pull ({brighten('skip_repo_updates')})...")
+            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         elif not cloned:
             should_stash = stash_and_continue_if_wip and not already_stashed
 
@@ -790,8 +791,8 @@ class SphinxRepoManager:
             log_entries,
     ):
         # (1) Symlink content -> to nested repo
-        action_str = colorize_action("🔗 | Symlinking repo nested sparse content...")
-        log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+        action_str = colorize_action("Symlinking repo nested sparse content...")
+        log_entries.append(f"🔗 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
         # Log + Validate clone src path
         log_entries.append(colorize_path(f"  - (1) From clone src path: '{brighten(abs_clone_src_nested_path)}'"))
@@ -839,8 +840,8 @@ class SphinxRepoManager:
                 abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath('RELEASE_NOTES.rst')
 
                 action_str = colorize_action(
-                    f"🔗 | Symlinking '{brighten('RELEASE_NOTES.rst')}' content (from clone src root)...")
-                log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+                    f"Symlinking '{brighten('RELEASE_NOTES.rst')}' content (from clone src root)...")
+                log_entries.append(f"🔗 [{tag_versioned_clone_src_repo_name}] {action_str}")
                 log_entries.append(
                     colorize_path(
                         f"  - (2) From clone src path: '{brighten(abs_existing_real_release_notes_path)}'"))
@@ -872,8 +873,8 @@ class SphinxRepoManager:
             log_entries,
     ):
         # (3) Symlink _static/{repo_name} -> to main doc _static/
-        action_str = colorize_action(f"🔗 | Symlinking '_static/{repo_name}'...")
-        log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {action_str}")
+        action_str = colorize_action(f"Symlinking '_static/{repo_name}'...")
+        log_entries.append(f"🔗 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
         # Log + Validate clone src path to _static/{repo_name}
         abs_repo_static_dir_path = Path(
@@ -957,8 +958,7 @@ class SphinxRepoManager:
 
         # -------------------
         # Done with this repo
-        success_str = colorize_success("✔️| Done.")
-        log_entries.append(f"[{tag_versioned_clone_src_repo_name}] {success_str}")
+        log_entries.append(f"✅️[{tag_versioned_clone_src_repo_name}] {colorize_success('Done.')}")
 
         if self.shutdown_flag:  # Multi-threaded CTRL+C check
             raise SystemExit
