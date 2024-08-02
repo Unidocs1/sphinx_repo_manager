@@ -8,8 +8,12 @@
 ##########################################################################
 
 try {
-    # Save the project root path
-    $projRoot = (Get-Location).Path + "\.."
+	# Save the original location
+	$originalLocation = Get-Location
+
+	# Normalize the project root path
+	$projRoot = Join-Path -Path $originalLocation.Path -ChildPath ".."
+	$projRoot = (Resolve-Path -Path $projRoot).ProviderPath
 
     # Check if the 'venv' directory exists
     if (Test-Path "$projRoot/venv") {
@@ -35,7 +39,6 @@ try {
     Write-Host ""
 
     # Install requirements
-    Write-Host ""
     Write-Host "Installing core requirements from '$projRoot/requirements.txt' ..."
     Write-Host ""
     Write-Host "-----------------------------------"
@@ -47,16 +50,11 @@ try {
     Write-Host ""
     Write-Host "-----------------------------------"
     python3 -m pip install -r "$projRoot/requirements-dev.txt"
-	
-    ## Create a symbolic link to sphinx_repo_manager for tooling
-    #Write-Host
-    #Write-Host "Creating symbolic link to sphinx_repo_manager for tooling..."
-    #python3 ./symlink_to_repo_manager.py
 }
 catch {
     Write-Host "An error occurred. Try deleting the project root proj root 'venv' directory and run the script again."
 }
 
+Set-Location $originalLocation
 Write-Host ""
 Write-Host Done.
-#Read-Host "Done. Press Enter to quit"
