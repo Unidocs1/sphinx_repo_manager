@@ -51,6 +51,7 @@ base_symlink_path: 'source/content'
 
 # - If repository omits 'branch', this will be the fallback 
 # - Defaults to 'master', if omitted
+# - Tag will be prioritized over branch, if set
 default_branch: 'master'
 
 # - Default path to individual repo dirs we [mostly] want to 
@@ -124,117 +125,148 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
     branch: 'main'
+    #tag: 'v1.0.0'
     #skip_repo_updates: false
   # Services >>
   account_services:
     url: 'https://gitlab.acceleratxr.com/Core/account_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v3.0.0'
   achievements_services:
     url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v3.0.0'
   asset_services:
     url: 'https://gitlab.acceleratxr.com/Core/asset_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v3.0.0'
   backup_services:
     url: 'https://gitlab.acceleratxr.com/Core/backup_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v3.0.0'
   leaderboard_services:
     url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v3.0.0'
   matchmaking_services:
     url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   notification_services:
     url: 'https://gitlab.acceleratxr.com/Core/notification_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   persona_services:
     url: 'https://gitlab.acceleratxr.com/Core/persona_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   progression_services:
     url: 'https://gitlab.acceleratxr.com/Core/progression_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   purchasing_services:
     url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   quest_services:
     url: 'https://gitlab.acceleratxr.com/Core/quest_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   reporting_services:
     url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   scripting_services:
     url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0-beta.2'  # TODO: Change to "v2.0.0" when ready
   server_instance_services:
     url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   telemetry_services:
     url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   validation_services:
     url: 'https://gitlab.acceleratxr.com/Core/validation_services'
-    branch: 'dev'
+    #branch: 'dev'
   world_services:
-      url: 'https://gitlab.acceleratxr.com/Core/world_services'
-      branch: 'dev'
+    url: 'https://gitlab.acceleratxr.com/Core/world_services'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   # Sdks >>
   sdk_cpp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v4.0.0'
   sdk_csharp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v3.0.0'
   sdk_nodejs:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v2.0.0'
   sdk_unity:
-      url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
-      branch: 'dev'
-      repo_sparse_path_override: 'Documentation~'
-      init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
+    #branch: 'dev'
+    tag: 'v3.0.0'
+    repo_sparse_path_override: 'Documentation~'
+    init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
   sdk_unreal:
-      url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
-      branch: 'dev'
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
+    #branch: 'dev'
+    tag: 'v4.0.0'
   # Other Products/Apps >>
   service_monitor:
     url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v3.2.0-beta.2'  # TODO: Change to "v3.2.0" when ready
   launcher:
     url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v4.0.0'
   console:
     url: 'https://gitlab.acceleratxr.com/Core/apps/console'
-    branch: 'dev'
+    #branch: 'dev'
+    tag: 'v6.0.1'
   xbeapp:
     url: 'https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp'
-    branch: 'dev'
+    #branch: 'dev'
   # Demos >>
   unitychessgame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
-    branch: 'dev'
+    branch: 'main'
+    #tag: 'TODO'
   lyrastartergame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
-    branch: 'dev'
+    #branch: 'dev'
+    #tag: 'TODO'
 #  # Libs/WebApps >>
 #  appconfig:
 #    url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
-#    branch: 'dev'
+#    #branch: 'dev'
 #  react-shared:
 #    url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
-#    branch: 'dev'
+#    #branch: 'dev'
 #  electron-shared:
 #    url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
-#    branch: 'dev'
+#    #branch: 'dev'
 #  # Composer >>
   service-core:
     url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
-    branch: 'dev'
+    #branch: 'dev'
+    #tag: 'TODO'

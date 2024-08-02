@@ -386,8 +386,10 @@ class SphinxRepoManager:
 
         abs_tag_versioned_clone_src_path = Path(rel_tag_versioned_clone_src_path).resolve()
         abs_symlinked_repo_path = Path(rel_symlinked_repo_path).resolve()
-        log_entries.append(colorize_path(f"  - Repo clone src path: '{brighten(abs_tag_versioned_clone_src_path.resolve())}'"))
-        log_entries.append(colorize_path(f"  - Repo symlink target path: '{brighten(abs_symlinked_repo_path.resolve())}'"))
+        log_entries.append(
+            colorize_path(f"  - Repo clone src path: '{brighten(abs_tag_versioned_clone_src_path.resolve())}'"))
+        log_entries.append(
+            colorize_path(f"  - Repo symlink target path: '{brighten(abs_symlinked_repo_path.resolve())}'"))
 
     def process_repo(
             self,
@@ -547,7 +549,7 @@ class SphinxRepoManager:
                     with self.lock:
                         logger.error(f"Failed to manage repository: {str(e)}")
                     if THROW_ON_REPO_ERROR:
-                        for inner_future in futures: 
+                        for inner_future in futures:
                             inner_future.cancel()
                         raise SystemExit
 
@@ -663,8 +665,8 @@ class SphinxRepoManager:
         # Checkout to the specific branch or tag
         has_branch = 'branch' in repo_info
         should_skip_branch_checkout = not cloned and has_branch and skip_repo_updates
-        should_check_out_branch = not cloned and not has_tag and has_branch 
-        
+        should_check_out_branch = not cloned and not has_tag and has_branch
+
         if should_skip_branch_checkout:
             action_str = colorize_action(f"Skipping branch checkout ({brighten('skip_repo_updates')})...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
