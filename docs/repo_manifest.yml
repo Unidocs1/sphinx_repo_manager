@@ -231,7 +231,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   service_monitor:
     url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
     #branch: 'dev'
-    tag: 'v3.2.0'
+    tag: 'v3.2.0-beta.2'  # TODO: Change to "v3.2.0" when ready
   launcher:
     url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
     #branch: 'dev'
