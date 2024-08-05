@@ -30,6 +30,14 @@
     font-style: normal;
 }
 
+/* Source Code Pro for mono code blocks */
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
+    font-weight: 400; /* Normal weight */
+    font-style: normal;
+}
+
 /* Jolting fix when jumping navigations or anchors */
 html {
     scroll-behavior: smooth;
@@ -67,9 +75,10 @@ h3, h4 {
     color: #FF045A; /* Xsolla Pink */
 }
 
-/* TODO: Change font for code blocks
+/* Code blocks; TODO: This doesn't seem to work */
 code, pre {
-    font-family: 'Courier New', monospace;
+    font-family: 'Source Code Pro', SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 400;
 }
 
 /* 

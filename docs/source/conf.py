@@ -195,18 +195,19 @@ intersphinx_disabled_reftypes = ['*']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
+# html_theme = 'piccolo_theme'
 
 # The name of the Pygments (syntax highlighting) style to use.
 # `sphinx` works very well with the RTD theme, but you can always change it
-pygments_style = "sphinx"
+pygments_style = "monokai"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
-html_logo = 'https://docs.xsolla.cloud/en/latest/_static/logo.png'
-html_favicon = 'https://docs.xsolla.cloud/en/latest/_static/favicon.ico'
+html_logo = '_static/images/logo.png'
+html_favicon = '_static/images/favicon.ico'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -217,7 +218,7 @@ html_theme_options = {
     'display_version': True,
     'prev_next_buttons_location': 'bottom',
     'style_external_links': True,
-    'style_nav_header_background': '#2D2926',
+    'style_nav_header_background': '#18171C',
     # Toc options >>
     'collapse_navigation': True,
     'sticky_navigation': True,  # Keep the navbar fixed to the top
