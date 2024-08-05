@@ -273,7 +273,7 @@ myst_enable_extensions = [
 
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'production-stage': False,
+    'production-stage': True,
     
     # True: [Navbar] New create acct page - False: Pricing page
     'parent-nav-create-your-acct-link-to-new-xbe': False,
