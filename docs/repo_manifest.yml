@@ -191,7 +191,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
     #branch: 'dev'
-    tag: 'v2.0.0'
+    tag: 'v3.0.0'
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
     #branch: 'dev'
@@ -223,7 +223,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   sdk_unity:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
     #branch: 'dev'
-    tag: 'v3.0.0'
+    #tag: 'v3.0.0'
     repo_sparse_path_override: 'Documentation~'
     init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
   sdk_unreal:
@@ -234,7 +234,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   service_monitor:
     url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
     #branch: 'dev'
-    tag: 'v3.2.0-beta.2'  # TODO: Change to "v3.2.0" when ready
+    tag: 'v3.2.0'
   launcher:
     url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
     #branch: 'dev'
