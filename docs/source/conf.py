@@ -219,8 +219,8 @@ html_theme_options = {
     'style_external_links': True,
     'style_nav_header_background': '#2D2926',
     # Toc options >>
-    'collapse_navigation': False,
-    'sticky_navigation': True,
+    'collapse_navigation': True,
+    'sticky_navigation': True,  # Keep the navbar fixed to the top
     'navigation_depth': 2,  # (!) Important
     # 'includehidden': True,
     # 'titles_only': False,
@@ -271,10 +271,19 @@ myst_enable_extensions = [
 """
 
 feature_flags = {
-    'production-stage': False,  # Expected: Nothing, else show dev toctree
-    'create-your-acct-link-to-new-xbe': False,  # Expected: New create acct page, else pricing page
-    'what-is-xbe-create-link-to-new-xbe': False,
+    # True: Nothing - False: Show dev toctree
+    'production-stage': False,
+    
+    # True: [Navbar] New create acct page - False: Pricing page
+    'parent-nav-create-your-acct-link-to-new-xbe': False,
+    
+    # True: [Doc Page] New create acct page - False: Pricing page
+    'what-is-xbe-doc-create-link-to-new-xbe': False,
+    
+    # True: Show web app libs (xbeapp, react, etc) - False: Hide
     'welcome-release_notes-products_web_apps-libs': False,
+    
+    # True: Show new openapi docs & hide old ones - False: Hide new openapi docs, show placeholders
     'new-xbe-openapi-doc': False,
 }
 

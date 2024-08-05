@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 /* 
 Merges separate toctrees into 1, useful for having
 different :maxdepth: sizes
