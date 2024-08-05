@@ -1,5 +1,75 @@
+/* Graphik Regular (Normal Weight) */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
+    font-weight: 400; /* Normal weight */
+    font-style: normal;
+}
+
+/* Graphik Medium */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
+    font-weight: 500; /* Medium weight */
+    font-style: normal;
+}
+
+/* Graphik Bold */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
+    font-weight: 700; /* Bold weight */
+    font-style: normal;
+}
+
+/* Graphik Thin */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    font-weight: 300; /* Thin weight */
+    font-style: normal;
+}
+
+/* Jolting fix when jumping navigations or anchors */
 html {
     scroll-behavior: smooth;
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 400;
+}
+
+/* Body font */
+body {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 400;
+}
+
+/* Heading font */
+h1, h2 {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 700; /* Bold for headings */
+}
+
+h2 {
+    color: #FF045A; /* Xsolla Pink */
+}
+
+h3, h4 {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 500; /* Medium for subheadings */
+}
+
+.small-text {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 300; /* Thin for smaller text */
+}
+
+.caption-text {
+    color: #FF045A; /* Xsolla Pink */
+}
+
+/* TODO: Change font for code blocks
+code, pre {
+    font-family: 'Courier New', monospace;
 }
 
 /* 
@@ -9,13 +79,4 @@ https://stackoverflow.com/a/64368882/6541639
 */ 
 .rst-content .toctree-wrapper:not(:last-child) ul {
    margin-bottom: 0;
-}
-
-h2 {
-    color: #FF045A; /* Xsolla Pink */
-}
-
-
-.caption-text {
-	color: #FF045A; /* Xsolla Pink */
 }
