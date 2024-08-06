@@ -43,6 +43,7 @@ documentation_root = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
 sys.path.append(os.path.abspath('.'))
 
 
@@ -89,6 +90,7 @@ extensions = [
     'sphinx_tabs.tabs',
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
+    'sphinx_image_min',  # Our own custom extension to minimizer images after build from build/ dir (set to CI only)
     'sphinx_repo_manager',  # Our own custom extension to manage repos via repo_manifest.yml
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
@@ -121,56 +123,12 @@ tocdepth = 1  # Default :maxdepth:
 primary_domain = "cpp"
 highlight_language = "cpp"
 
-# -- Inline Extension: Image Minimizer ------------------------------------
-# Optimizes ../build/_images/ if RTD CI
+# -- Sphinx Extension: Image Minimizer --------------------------------
+# Optimizes ../build/_images/ if RTD CI using Pillow
 
-from PIL import Image
-
-# Options
+# Configuration for the image optimizer extension
+img_optimization_enabled = True
 img_optimization_max_width = 1920
-
-
-def optimize_images(app, exception):
-    """Optimize images using Pillow when building on Read the Docs."""
-    if app.builder.name != 'html' or exception is not None:
-        return
-
-    try:
-        images_dir = os.path.join(app.outdir, '_images')  # Build _images output
-        optimize_images_with_pillow(images_dir, img_optimization_max_width)
-        print(f"[conf.py::optimize_images] Done.\n")
-    except Exception as e:
-        print(f"[conf.py::optimize_images] Error: {e}")
-
-
-def optimize_images_with_pillow(directory, max_width=1920):
-    """Optimize all PNG and JPEG images in the given directory using Pillow."""
-    print(f"\n[conf.py::optimize_images_with_pillow] Starting @ '{directory}'...")
-    for filename in os.listdir(directory):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):  # Handle both PNG and JPEG
-            file_path = os.path.join(directory, filename)
-            try:
-                with Image.open(file_path) as img:
-                    # Resize image if it's wider than max_width
-                    if img.width > max_width:
-                        ratio = max_width / float(img.width)
-                        new_height = int((float(img.height) * float(ratio)))
-                        img = img.resize(
-                            (max_width, new_height), 
-                            Image.Resampling.LANCZOS)  # HD downsampling
-
-                    # Convert to RGB if not already in RGB mode
-                    if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
-                        img = img.convert('RGBA')
-                    elif img.mode != 'RGB':
-                        img = img.convert('RGB')
-
-                    # Optimize image
-                    img.save(file_path, optimize=True, quality=85)  # Optimize with a quality setting for JPEG
-                print(f"Optimized {filename} using Pillow")
-            except Exception as e:
-                print(f"Error optimizing {filename}: {e}")
-
 
 # -- Extension: sphinx_openapi (OpenAPI Local Download/Updater) -----------
 # Used in combination with the sphinxcontrib.redoc extension

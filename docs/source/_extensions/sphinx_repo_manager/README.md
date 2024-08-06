@@ -24,8 +24,8 @@ proceeds.
 
 ## Requirements
 
-- Python 3.6 or higher
-- Sphinx 1.8 or higher
+- Python>=3.6
+- Sphinx>=1.8
 - PyYAML>6.0
 - colorama>=0.4.5
 

@@ -44,6 +44,7 @@ def depart_feature_flag_node(self, node):
     pass
 
 
+# ENTRY POINT >>
 def setup(app):
     app.add_config_value('feature_flags', {}, 'env')
     app.add_directive('feature-flag', SphinxFeatureFlags)

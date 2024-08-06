@@ -74,8 +74,8 @@ print('')
 
 ## Requirements
 
-- Python 3.6 or higher
-- Sphinx 1.8 or higher
+- Python>=3.6
+- Sphinx>=1.8
 
 This may work with older versions, but has not been tested.
 
