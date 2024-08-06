@@ -59,7 +59,6 @@ sys.path.append(os.path.abspath('.'))
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
-    'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'sphinxcontrib.redoc',
     'sphinx.ext.todo',  # Allows for todo:: directive 
@@ -96,17 +95,6 @@ highlight_language = "cpp"
 todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
 todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
 todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
-
-# -- Intersphinx Mapping -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
-# Centralized link constants
-# TODO(XBND-891): Centralize Discord links, perhaps others
-
-# # Link constants shared across multiple docs
-# objs_inv_path = None  # Use default
-# intersphinx_mapping = {
-#     'xbe-discord': ('https://discord.gg/XsollaBackend', objs_inv_path),
-# }
 
 # Ensure we only use intersphinx when we use :ref: role | https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
 intersphinx_disabled_reftypes = ['*']

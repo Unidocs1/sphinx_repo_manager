@@ -24,19 +24,6 @@ release = '2024.07.0-TEST'
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
 # release = '%GIT_TAG%'
 
-
-# -- Inline extensions -------------------------------------------------------
-# Instead of making an extension for small things, we can just embed inline
-def setup(app):
-    app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
-
-# Get current repo branch
-import git
-
-# Initialize the repository object to the current directory
-repo = git.Repo(search_parent_directories=True)
-current_branch = repo.active_branch.name
-
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -84,7 +71,6 @@ repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
-    'sphinx.ext.intersphinx',
     'sphinx_tabs.tabs',
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
@@ -181,20 +167,6 @@ redoc = [
 print(f'[conf.py::sphinxcontrib.redoc] redoc[0].page: {redoc[0]["page"]}')
 print(f'[conf.py::sphinxcontrib.redoc] redoc[0].spec: {redoc[0]["spec"]}')
 print('')
-
-# -- Intersphinx Mapping -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
-# Centralized link constants
-# TODO(XBND-891): Centralize Discord links, perhaps others
-
-# # Link constants shared across multiple docs
-# objs_inv_path = None  # Use default
-# intersphinx_mapping = {
-#     'xbe-discord': ('https://discord.gg/XsollaBackend', objs_inv_path),
-# }
-
-# Ensure we only use intersphinx when we use :ref: role | https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
-intersphinx_disabled_reftypes = ['*']
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
