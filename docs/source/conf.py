@@ -133,7 +133,7 @@ img_optimization_max_width = 1920
 
 # Define the target json|yaml + path to save the downloaded OpenAPI spec
 openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'
-openapi_dir_path = '_specs'  # Downloads json|yaml files to here
+openapi_dir_path = os.path.abspath(os.path.join('_specs'))  # Downloads json|yaml files to here
 openapi_file_type = 'json'  # 'json' or 'yaml' (we'll download them both, but generate from only 1)
 
 # Link here from rst with explicit ".html" ext (!) but NOT from a doctree

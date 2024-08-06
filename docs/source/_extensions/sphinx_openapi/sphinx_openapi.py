@@ -21,6 +21,8 @@ class SphinxOpenApi:
         self.openapi_dir_path = app.config.openapi_dir_path
         self.openapi_generated_file_posix_path = app.config.openapi_generated_file_posix_path
         self.openapi_file_type = OpenApiFileType[app.config.openapi_file_type.upper()]
+        self.openapi_file_path_no_ext = os.path.normpath(
+            os.path.join(self.openapi_dir_path, f'openapi'))
         self.openapi_file_path = os.path.normpath(
             os.path.join(self.openapi_dir_path, f'openapi.{self.openapi_file_type.value}'))
 
@@ -30,7 +32,7 @@ class SphinxOpenApi:
         if response.status_code == 200:
             with open(save_to_path, 'wb') as f:
                 f.write(response.content)
-            print(f'[sphinx_openapi.py] Successfully downloaded {url}')
+            print(f"[sphinx_openapi.py] Successfully downloaded {url} to: '{save_to_path}'")
         else:
             print(f'[sphinx_openapi.py] Failed to download {url}: {response.status_code}')
 
@@ -41,7 +43,15 @@ class SphinxOpenApi:
         if not os.path.exists(self.openapi_dir_path):
             os.makedirs(self.openapi_dir_path)
 
-        self.download_file(f'{self.openapi_spec_url_noext}.{self.openapi_file_type.value}', self.openapi_file_path)
+        try:
+            self.download_file(f'{self.openapi_spec_url_noext}.json', self.openapi_file_path_no_ext + '.json')
+        except Exception as e:
+            print(f'[sphinx_openapi.py] Failed to download {self.openapi_spec_url_noext}.json: {e}')
+        
+        try:
+            self.download_file(f'{self.openapi_spec_url_noext}.yaml', self.openapi_file_path_no_ext + '.yaml')
+        except Exception as e:
+            print(f'[sphinx_openapi.py] Failed to download {self.openapi_spec_url_noext}.yaml: {e}')
 
         print(f"[sphinx_openapi.py] OpenAPI spec file available at '{self.openapi_generated_file_posix_path}'")
 

@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: 2.0.0-rc.1
+  version: 2.0.0
 paths:
   /status:
     x-name: AXRStatusRoute
@@ -10735,7 +10735,7 @@ paths:
                 $ref: "#/components/schemas/Error"
       x-name: update
   /hello:
-    x-name: jobs.newscript
+    x-name: NewTestRoute
     get:
       responses:
         "200":
@@ -10744,7 +10744,9 @@ paths:
             application/json:
               schema:
                 type: object
-      x-name: get
+      x-name: getById
+    x-before:
+      - beforeMethod
   /hello/:id:
     parameters:
       - $ref: "#/components/parameters/id"
@@ -15871,7 +15873,7 @@ components:
           format: date
           type: string
         starts:
-          default: 2024-07-24T21:11:55.054Z
+          default: 2024-08-01T15:56:40.372Z
           format: date
           type: string
         redeemed:
@@ -15943,7 +15945,7 @@ components:
           format: date
           type: string
         startDate:
-          default: 2024-07-24T21:11:55.054Z
+          default: 2024-08-01T15:56:40.372Z
           format: date
           type: string
         data:
@@ -16465,7 +16467,7 @@ components:
           default: []
           type: array
         lastHeartbeat:
-          default: 2024-07-25T07:36:52.335Z
+          default: 2024-08-01T22:44:48.849Z
           format: date
           type: string
         ownerUid:
@@ -16760,7 +16762,7 @@ components:
           default: ""
           type: string
         timestamp:
-          default: 2024-07-27T05:31:44.972Z
+          default: 2024-08-01T23:11:08.555Z
           format: date
           type: string
         type:
@@ -16883,7 +16885,7 @@ components:
           default: null
           type: object
         lastHeartbeat:
-          default: 2024-07-24T21:14:39.752Z
+          default: 2024-08-01T23:11:11.848Z
           format: date
           type: string
         maxUsers:
@@ -17021,6 +17023,50 @@ components:
       x-baseClass: BaseMongoEntity
       x-cache: 30
       x-datastore: static
+    models.Item:
+      properties:
+        uid:
+          default: randomUUID()
+          description: The universally unique identifier of the entity.
+          type: string
+          x-identifier: true
+        dateCreated:
+          default: new Date()
+          description: The date and time that the entity was created.
+          format: date
+          type: string
+        dateModified:
+          default: new Date()
+          description: The date and time that the entity was last modified.
+          format: date
+          type: string
+        version:
+          default: 0
+          description: The optimistic lock version.
+          type: number
+        name:
+          default: ""
+          description: The unique name of the item.
+          type: string
+          x-identifier: true
+        quantity:
+          default: 0
+          description: The amount of the item that exists.
+          type: number
+        cost:
+          default: 0
+          description: The cost that must be paid by the user to acquire the item.
+          type: number
+      required:
+        - uid
+        - dateCreated
+        - dateModified
+        - version
+        - name
+        - quantity
+        - cost
+      x-baseClass: BaseEntity
+      x-datastore: sqlite
   responses: {}
   parameters:
     id:
