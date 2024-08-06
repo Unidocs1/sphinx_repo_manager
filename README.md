@@ -111,13 +111,6 @@ Source repo docs/  layout tree should be structured as follows, with example con
 	  - index.rst (entry point)
 ```
 
-### Template Doc
-
-See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
-
-* docs/README.md
-* docs/source/conf.py
-
 ## Apps & Extensions
 
 To describe what is installed, including extensions:
@@ -161,23 +154,19 @@ using Sphinx. **Overview:**
 - **Purpose**: [`sphinx-new-tab-lnk`] Sphinx extension that adds a target="_blank" attribute to external links in your documentation. This ensures that external links open in a new tab by default, preventing users from navigating away from your site.
 - **Documentation**: [sphinx-new-tab-lnk on PyPI](https://pypi.org/project/sphinx-new-tab-lnk)
 
-### DocGen Tools
+## Troubleshooting
 
-#### breathe
+### Known Issues
 
-TODO
+`sphinx_rtd_theme` versions `2.0.0` and `2.1.0rc1` has known issues, confirmed by switching themes that do not
+seem to have these issues:
 
-#### sphinx_csharp
+1. 1/4 second visual glitch on navbar (toctree) click when changing to *new* doc pages
+2. Bottom-right background color change for desktop resolutions
 
-TODO
+### Legacy Additional Troubleshooting
 
-#### sphinx.ext.autodoc
-
-TODO
-
-## Legacy Additional Troubleshooting
-
-### Clearing Cache
+#### Clearing Cache
 
 Delete these to regenerate them when you build again:
 
@@ -186,7 +175,7 @@ Delete these to regenerate them when you build again:
 3. Delete `source/_repos-available` (for use with `repo_manager`)
 4. Delete `source/_static/<any repo symlinks>` (for use with `repo_manager`)
 
-### Python Install Path (Legacy - Without Docker)
+#### Python Install Path (Legacy - Without Docker)
 
 As this can easily get error-prone, especially for new Python users, see below to install Python 3.10 from scratch:
 
@@ -228,6 +217,15 @@ As this can easily get error-prone, especially for new Python users, see below t
 	```
 
 ## Tools
+
+### Template Doc
+
+See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
+
+* docs/README.md
+* docs/source/conf.py
+
+### More Tools
 
 See tools/[README.md](tools/README.md)
 

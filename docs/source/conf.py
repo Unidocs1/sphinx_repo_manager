@@ -30,6 +30,13 @@ release = '2024.07.0-TEST'
 def setup(app):
     app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
 
+# Get current repo branch
+import git
+
+# Initialize the repository object to the current directory
+repo = git.Repo(search_parent_directories=True)
+current_branch = repo.active_branch.name
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -229,15 +236,16 @@ html_theme_options = {
 
 # This swaps vals in the actual built HTML (NOT the rst files).
 # Eg: This is used with themes and third-party extensions;
+# Doc | https://docs.readthedocs.io/en/stable/guides/edit-source-links-sphinx.html#gitlab 
 # (!) `{{templating}}` in rst files with these *won't* work here:
 html_context.update({
-    'conf_py_path': '/source/',  # Path in the checkout to the docs root
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
+    'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
     'gitlab_repo': 'acceleratxr.io',  # Repo name
-    'gitlab_version': 'master',  # Version
+    'gitlab_version': current_branch,  # Version
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md

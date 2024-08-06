@@ -23,12 +23,22 @@ author = 'Xsolla'
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
 # release = '%GIT_TAG%'
 
+# -- Inline extensions -------------------------------------------------------
+# Instead of making an extension for small things, we can just embed inline
+# def setup(app):
+#     app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
+
+# Get current repo branch
+import git
+
+# Initialize the repository object to the current directory
+repo = git.Repo(search_parent_directories=True)
+current_branch = repo.active_branch.name
 
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
-
 
 # -- Path setup --------------------------------------------------------------
 
@@ -101,7 +111,6 @@ todo_link_only = False  # If this is True, todolist produce output without file 
 # Ensure we only use intersphinx when we use :ref: role | https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
 intersphinx_disabled_reftypes = ['*']
 
-
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
@@ -141,15 +150,16 @@ html_theme_options = {
 
 # This swaps vals in the actual built HTML (NOT the rst files).
 # Eg: This is used with themes and third-party extensions;
+# Doc | https://docs.readthedocs.io/en/stable/guides/edit-source-links-sphinx.html#gitlab 
 # (!) `{{templating}}` in rst files with these *won't* work here:
 html_context.update({
-    'conf_py_path': '/source/',  # Path in the checkout to the docs root
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
+    'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
-    'gitlab_repo': '%REPO_NAME%',  # Repo name
-    'gitlab_version': 'master',  # Version
+    'gitlab_repo': 'acceleratxr.io',  # Repo name
+    'gitlab_version': current_branch,  # Repo branch
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md

@@ -1,16 +1,13 @@
-# for testing the master branch
-# git+git://github.com/svenevs/exhale.git#egg=exhale
-# See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
-#
-# For all doc repos, including the main multi-repo doc (to be copied to other repo `requirements.txt`):
-sphinx==7.4.7  				# TODO: Test 8.0.2 (from 7.4.7)
-sphinx_rtd_theme==2.1.0rc1 	# TODO: Keep an eye out for 2.1.0 (from 2.0.0) | https://pypi.org/project/sphinx-rtd-theme/
-myst_parser>=0.18.0  		# `recommonmark` successor
-sphinx_tabs>=3.4.5  		# https://pypi.org/project/sphinx-tabs/
+# For all doc repos, including the main multi-repo doc, to be copied to other repo `requirements.txt`:
+sphinx==7.4.7  				 # TODO: Test 8.0.2 (from 7.4.7)
+sphinx_rtd_theme==2.1.0rc1  # TODO: Keep an eye out for 2.1.0 (from 2.0.0) | https://pypi.org/project/sphinx-rtd-theme/
+myst-parser>=0.18.0  		 # `recommonmark` successor
+sphinx_tabs>=3.4.5  		    # https://pypi.org/project/sphinx-tabs/
+gitpython==3.1.43           # Aids "Edit with GitLab" btn | https://pypi.org/project/GitPython/ 
 
 # For this main multi-versioning multi-repo doc only >>
-PyYAML==6.0.1         		# Req'd for sphinx_repo_manager ext
-colorama==0.4.6       		# Req'd for sphinx_repo_manager ext
+PyYAML==6.0.1         		 # Req'd for sphinx_repo_manager ext
+colorama==0.4.6       		 # Req'd for sphinx_repo_manager ext
 sphinx-copybutton>=0.5.2    # https://pypi.org/project/sphinx-copybutton
 sphinx-new-tab-link>=0.5.2  # Opens all external links in new tab | https://pypi.org/project/sphinx-new-tab-link/
-sphinxcontrib-redoc>=1.6.0	# OpenAPI Docgen | https://sphinxcontrib-redoc.readthedocs.io/en/stable
+sphinxcontrib-redoc>=1.6.0	 # OpenAPI Docgen | https://sphinxcontrib-redoc.readthedocs.io/en/stable

@@ -1,8 +1,10 @@
+# for testing the master branch
+# git+git://github.com/svenevs/exhale.git#egg=exhale
+# See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
+#
 # For all doc repos, including the main multi-repo doc (to be copied to other repo `requirements.txt`):
-sphinx==7.3.7
-sphinx_rtd_theme>=2.0.0
-myst_parser>=0.18.0  # `recommonmark` successor
-sphinx_tabs>=3.4.5
-#breathe==4.35.0  # API DocGen: Provides bridge between Doxygen xml doc gen + sphinx (for C* languages)
-#exhale==0.3.7  # Builds on top of breathe to provide a simpler way to generate API docs for C++ projects
-#sphinx_csharp==0.1.8  # For DocGen (C#): syntax highlighting, auto-documentation
+sphinx==7.4.7                 # TODO: Test 8.0.2 (from 7.4.7)
+sphinx_rtd_theme==2.1.0rc1    # TODO: Keep an eye out for 2.1.0 (from 2.0.0) | https://pypi.org/project/sphinx-rtd-theme/
+myst-parser>=0.18.0  	      # `recommonmark` successor
+sphinx_tabs>=3.4.5            # https://pypi.org/project/sphinx-tabs/
+gitpython==3.1.43             # Aids "Edit with GitLab" btn | https://pypi.org/project/GitPython/ 
