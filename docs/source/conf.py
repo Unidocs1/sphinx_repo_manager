@@ -124,7 +124,7 @@ highlight_language = "cpp"
 # Optimizes ../build/_images/ if RTD CI using Pillow
 
 # Configuration for the image optimizer extension
-img_optimization_enabled = read_the_docs_build
+img_optimization_enabled = bool(read_the_docs_build)
 img_optimization_max_width = 1920
 
 # -- Extension: sphinx_openapi (OpenAPI Local Download/Updater) -----------
