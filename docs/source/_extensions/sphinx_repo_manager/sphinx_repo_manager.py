@@ -891,7 +891,7 @@ class SphinxRepoManager:
             log_entries,
     ):
         # (3) Symlink _static/{repo_name} -> to main doc _static/
-        action_str = colorize_action(f"Symlinking '_static/{repo_name}'...")
+        action_str = colorize_action(f"Symlinking '_static/images/{repo_name}'...")
         log_entries.append(f"🔗 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
         # Log + Validate clone src path to _static/{repo_name}
@@ -900,6 +900,7 @@ class SphinxRepoManager:
             rel_selected_repo_sparse_path,
             'source',
             '_static',
+            'images',
             repo_name,
         ).resolve()
 
@@ -913,8 +914,8 @@ class SphinxRepoManager:
             else:
                 log_entries.append(colorize_warning(err_msg))
 
-        # source/_static/{repo_name}; eg: "source/_static/account_services"
-        target_symlinked_static_dir_path = os.path.join(ABS_SOURCE_STATIC_DIR, repo_name)
+        # source/_static/{repo_name}; eg: "source/_static/images/account_services"
+        target_symlinked_static_dir_path = os.path.join(ABS_SOURCE_STATIC_DIR, 'images', repo_name)
 
         log_entries.append(colorize_path(f"  - To symlink path: "
                                          f"'{brighten(target_symlinked_static_dir_path)}'"))

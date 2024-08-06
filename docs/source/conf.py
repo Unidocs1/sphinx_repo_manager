@@ -45,6 +45,21 @@ sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flag
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
 sys.path.append(os.path.abspath('.'))
 
+
+# -- Inline extensions -------------------------------------------------------
+# Instead of making an extension for small things, we can just embed inline
+def setup(app):
+    app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
+    if read_the_docs_build:
+        app.connect('build-finished', optimize_images)
+
+
+# Get current repo branch >> Init the repository obj to the current dir
+import git
+
+repo = git.Repo(search_parent_directories=True)
+current_branch = repo.active_branch.name
+
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
@@ -105,6 +120,57 @@ tocdepth = 1  # Default :maxdepth:
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"
 highlight_language = "cpp"
+
+# -- Inline Extension: Image Minimizer ------------------------------------
+# Optimizes ../build/_images/ if RTD CI
+
+from PIL import Image
+
+# Options
+img_optimization_max_width = 1920
+
+
+def optimize_images(app, exception):
+    """Optimize images using Pillow when building on Read the Docs."""
+    if app.builder.name != 'html' or exception is not None:
+        return
+
+    try:
+        images_dir = os.path.join(app.outdir, '_images')  # Build _images output
+        optimize_images_with_pillow(images_dir, img_optimization_max_width)
+        print(f"[conf.py::optimize_images] Done.\n")
+    except Exception as e:
+        print(f"[conf.py::optimize_images] Error: {e}")
+
+
+def optimize_images_with_pillow(directory, max_width=1920):
+    """Optimize all PNG and JPEG images in the given directory using Pillow."""
+    print(f"\n[conf.py::optimize_images_with_pillow] Starting @ '{directory}'...")
+    for filename in os.listdir(directory):
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):  # Handle both PNG and JPEG
+            file_path = os.path.join(directory, filename)
+            try:
+                with Image.open(file_path) as img:
+                    # Resize image if it's wider than max_width
+                    if img.width > max_width:
+                        ratio = max_width / float(img.width)
+                        new_height = int((float(img.height) * float(ratio)))
+                        img = img.resize(
+                            (max_width, new_height), 
+                            Image.Resampling.LANCZOS)  # HD downsampling
+
+                    # Convert to RGB if not already in RGB mode
+                    if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
+                        img = img.convert('RGBA')
+                    elif img.mode != 'RGB':
+                        img = img.convert('RGB')
+
+                    # Optimize image
+                    img.save(file_path, optimize=True, quality=85)  # Optimize with a quality setting for JPEG
+                print(f"Optimized {filename} using Pillow")
+            except Exception as e:
+                print(f"Error optimizing {filename}: {e}")
+
 
 # -- Extension: sphinx_openapi (OpenAPI Local Download/Updater) -----------
 # Used in combination with the sphinxcontrib.redoc extension
@@ -254,16 +320,16 @@ myst_enable_extensions = [
 feature_flags = {
     # True: Nothing - False: Show dev toctree
     'production-stage': True,
-    
+
     # True: [Navbar] New create acct page - False: Pricing page
     'parent-nav-create-your-acct-link-to-new-xbe': False,
-    
+
     # True: [Doc Page] New create acct page - False: Pricing page
     'what-is-xbe-doc-create-link-to-new-xbe': False,
-    
+
     # True: Show web app libs (xbeapp, react, etc) - False: Hide
     'welcome-release_notes-products_web_apps-libs': False,
-    
+
     # True: Show new openapi docs & hide old ones - False: Hide new openapi docs, show placeholders
     'new-xbe-openapi-doc': False,
 }
