@@ -1,0 +1,279 @@
+%YAML 1.2
+---
+##########################################################################################################
+# This YAML file configures repository settings for the Sphinx documentation system.               
+# - Specifies base path for cloning and details for each version-controlled set of docs.           
+# - See repo[0] for a commented-out demo obj with all optional/overrided field example-use         
+# - Most all properties are OPTIONAL; see comment for fallback vals.                               
+# - Most path/slashes/are/normalized for you to prevent confusion; use whichever.                  
+# - init_clone_path will clone as '{repo_name}-{tag}' or '{repo_name}--{branch}'                   
+# - [Unversioned] Double dashes replace path/to/slashes. Eg: '{repo_name}--{path--to--branch}'     
+# - It *is safe* (and encouraged) to periodically wipe your source/ _repos-available + content dirs
+##########################################################################################################
+
+# - (!) DANGEROUS: If false, will skip this extension both locally + on ReadTheDocs (RTD)
+# - Useful if you 100% know all repos are up-to-date for faster iterations
+# - Defaults to true, if omitted
+enable_repo_manager: true
+
+# - If enable_repo_manager && false, will skip this extension locally
+# - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
+# - Defaults to true, if omitted
+enable_repo_manager_local: true
+
+# - Max workers for local sphinx_repo_manager for multi-threading
+# - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers. 
+#   - Eg; if 3 workers, the 1st 3 log results may be something like: Repo2{a,b,c}, Repo3{a,b,c}, Repo1{a,b,c}  
+#   - TODO: Explicitly track the repo# logged and await the correct chronological repo to show 
+# - Recommended just 1 if needing *chronological* debugging
+# - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
+max_workers_local: 5
+
+# - Max workers for ReadTheDocs deployment for multi-threading
+# - RTD has max 1 for free accts; use just 1 for debugging or free accts
+# - Defaults to 2, if omitted
+max_workers_rtd: 1
+
+# - More-verbose logging or debugging 
+# - Throws arbitrary err on done with sphinx_repo_manager if local (prevents warning spam)
+# - Defaults to false, if omitted
+debug_mode: false
+
+# - If true, will stash and continue if working directory is dirty
+# - Else throws err (stops); defaults to true, if omitted
+stash_and_continue_if_wip: true
+
+# - Default base path for cloning repos relative to this file 
+# - (!) On RTD, 'source/' prefix will be removed to resolve RTD bug
+# - Normalizes 'os/path/slashes'
+# - Defaults to 'source/content', if omitted
+base_symlink_path: 'source/content'
+
+# - If repository omits 'branch', this will be the fallback 
+# - Defaults to 'master', if omitted
+# - Tag will be prioritized over branch, if set
+default_branch: 'master'
+
+# - Default path to individual repo dirs we [mostly] want to 
+#   clone - instead of the entire repo 
+# - *Try* to be consistent between all repos, but can override via individual 
+# - Repository `repo_sparse_path` override; normalizes 'explicit/forward/slashes' 
+# - The parent dirs outside this will be 99% empty
+# - Default to 'docs', if omitted
+repo_sparse_path: 'docs'
+
+# - Default base for cloning; normalizes 'os/path/slashes'
+# - (!) On RTD, 'source/' prefix will be removed to resolve RTD bug 
+# - Defaults to source/_repos-available, if omitted
+init_clone_path: 'source/_repos-available'
+
+# - Supports {repo_sparse_path} template 
+# - When we symlink from init_clone_path, we may want to set the src deeper
+# - Nested than what we cloned; normalizes 'os/path/slashes'
+# - If kept default, you can access static content, like images, via `../_static/{repo_name}/images/`
+# - Defaults to '{repo_sparse_path}/source', if omitted
+init_clone_path_root_symlink_src: '{repo_sparse_path}/source/content'
+
+# ----------------------------------------------------------------------
+# For private repo access when testing with a !premium RTD account,
+# set GITLAB_ACCESS_TOKEN in RTD's web dashboard (still use HTTPS urls);
+# creds will be swapped @ .readthedocs.yaml
+repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted - essentially the same as !enable_repo_manager[_local]
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Mock repo demonstrating all opts/overrides (pointing to default fallbacks)
+  #mock_repo_example:
+  ## - .git suffix == optional;
+  ## - HTTPS only (until we add cert support in RTD)
+  ## - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
+  #url: 'https://gitlab.acceleratxr.com/Core/foo_services'
+  #
+  ## - Normally named your_repo_name, but static docs is special
+  ## - Relative to baseClonePath
+  ## - Normalizes os/path/slashes
+  ## - Default '{repo_name}-{tag}'
+  #symlink_path: 'foo_services'
+  #
+  ## - Normalizes os/path/slashes
+  ## - Default {default_branch}, if omitted
+  #branch: 'master'
+  #
+  ## - You may not want a tag, if you just want the latest branch commit
+  ## - (!) Don't forget to prefix with 'v', if target tags include this
+  #tag: 'v1.0.0'
+  #
+  ## - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
+  ## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
+  ## - Normalizes 'explicit/forward/slashes'
+  ## - The parent dirs outside this will be 99% empty
+  ## - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
+  #repo_sparse_path_override: 'docs'
+  #
+  ## - Supports {repo_sparse_path} template - will take override ver if present
+  ## - If true, overrides init_clone_path_root_symlink_src
+  ## - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
+  #init_clone_path_root_symlink_src_override: 'docs'
+  #
+  ## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+  #active: true  
+  #
+  # Useful for testing WIP without having it be stashed away or require a commit (still pulls _static images)
+  # Default false, if omitted
+  #skip_repo_updates: true
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Static >>
+  xbe_static_docs:
+    url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
+    symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
+    #branch: 'main'  # Dev stage
+    tag: 'v2024.06.0'  # Prod stage -- this particular repo should match macro version
+    #skip_repo_updates: false
+  # Services >>
+  account_services:
+    url: 'https://gitlab.acceleratxr.com/Core/account_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+  achievements_services:
+    url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+  asset_services:
+    url: 'https://gitlab.acceleratxr.com/Core/asset_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+  backup_services:
+    url: 'https://gitlab.acceleratxr.com/Core/backup_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  economy_services:
+    url: 'https://gitlab.acceleratxr.com/Core/economy_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+  leaderboard_services:
+    url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+  matchmaking_services:
+    url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  notification_services:
+    url: 'https://gitlab.acceleratxr.com/Core/notification_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  persona_services:
+    url: 'https://gitlab.acceleratxr.com/Core/persona_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  progression_services:
+    url: 'https://gitlab.acceleratxr.com/Core/progression_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  purchasing_services:
+    url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  quest_services:
+    url: 'https://gitlab.acceleratxr.com/Core/quest_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  reporting_services:
+    url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  scripting_services:
+    url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
+    #branch: 'dev'  # dev stage
+    tag: 'v2.0.0-beta.2'  # Prod stage; TODO: Change to "v2.0.0" when ready
+  server_instance_services:
+    url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  session_services:
+    url: 'https://gitlab.acceleratxr.com/Core/session_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+  social_services:
+    url: 'https://gitlab.acceleratxr.com/Core/social_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  telemetry_services:
+    url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  validation_services:
+    url: 'https://gitlab.acceleratxr.com/Core/validation_services'
+    #branch: 'dev'  # Dev stage
+    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
+    #tag:  'TODO'  # Prod stage
+  world_services:
+    url: 'https://gitlab.acceleratxr.com/Core/world_services'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  # Sdks >>
+  sdk_cpp:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
+    #branch: 'dev'  # Dev stage
+    tag: 'v4.0.0'  # Prod stage
+  sdk_csharp:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+  sdk_nodejs:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
+    #branch: 'dev'  # Dev stage
+    tag: 'v2.0.0'  # Prod stage
+  sdk_unity:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.0.0'  # Prod stage
+    repo_sparse_path_override: 'Documentation~'
+    init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
+  sdk_unreal:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
+    #branch: 'dev'  # Dev stage
+    tag: 'v4.0.0'  # Prod stage
+  # Other Products/Apps >>
+  service_monitor:
+    url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
+    #branch: 'dev'  # Dev stage
+    tag: 'v3.2.0'  # Prod stage
+  launcher:
+    url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
+    #branch: 'dev'  # Dev stage
+    tag: 'v4.0.0'  # Prod stage
+  console:
+    url: 'https://gitlab.acceleratxr.com/Core/apps/console'
+    #branch: 'dev'  # Dev stage
+    tag: 'v6.0.1'  # Prod stage
+  xbeapp:
+    url: 'https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp'
+    #branch: 'dev'  # Dev stage
+    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
+    #tag: 'TODO'  # Prod stage
+  # Demos >>
+  unitychessgame:
+    url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
+    #branch: 'dev'  # Dev stage
+    branch: 'main'  # Prod stage (TODO: Remove when prod tag set)
+    #tag: 'TODO'  # Prod stage
+  lyrastartergame:
+    url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
+    #branch: 'dev'  # Dev stage
+    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
+    #tag: 'TODO'  # Prod stage
+#  # Libs/WebApps >>
+#  appconfig:
+#    url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
+#    branch: 'dev'  # Dev stage
+#  react-shared:
+#    url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
+#    branch: 'dev'  # Dev stage
+#  electron-shared:
+#    url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
+#    branch: 'dev'  # Dev stage
+#  # Composer >>
+  service-core:
+    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
+    #branch: 'dev'  # Dev stage
+    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
+    #tag: 'TODO'  # Prod stage

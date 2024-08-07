@@ -1,0 +1,31 @@
+{
+    "name": "DevContainer",
+    "build": {
+        "dockerfile": "Dockerfile.dev",
+        "context": ".."
+    },
+    "mounts": ["type=cache,target=/app"],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "trond-snekvik.simple-rst",
+                "lextudio.restructuredtext",
+                "swyddfa.esbonio"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "editor.formatOnSaveMode": "modificationsIfAvailable",
+                "esbonio.sphinx.keepGoing": true,
+                "esbonio.server.enabled": true,
+                "esbonio.server.logLevel": "debug",
+                "esbonio.sphinx.makeMode": true,
+                "esbonio.sphinx.silent": false,
+                "esbonio.server.enableDevTools": true,
+                "esbonio.server.showDeprecationWarnings": true,
+                "notebook.formatOnSave.enabled": true,
+                "restructuredtext.linter.run": "onSave"
+            }
+        }
+    }
+}

@@ -1,77 +1,48 @@
-# acceleratxr.io (Master Doc)
+# %REPO_NAME%/docs (Single Doc)
 
-Master doc to create help docs from other repos with `make html` (`sphinx-build`). 
+Single doc - a content fragment of [the master doc](https://gitlab.acceleratxr.com/Core/acceleratxr.io) - is used to create help docs with `make html` (`sphinx-build`). 
+
+The master doc will pull this repo's root `docs/` dir and use this as part of the content into a single doc.
 
 This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubuntu, etc).
 
-## Quickstart
-
-1. Configure `docs/repo_manifest.yaml` (or leave defaults)
-2. Run `start-docker.ps1`
-3. Upon success, your browser will launch with `index.html` and stop the Docker instance.
-
 ## Prerequisites
 
-1. Copy `.env.template` -> to `.env` and fill your GitLab access token.
-	* 💡 Only needed for local testing; ReadTheDocs deployment uses its own cloud env vars.
+### Required
 
-You may either run via Docker (recommended) or locally (legacy):
+#### Windows
 
-### Docker Prereqs (Recommended)
-
-2. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-
-### Local Prereqs (Legacy)
-
-2. [Chocolatey](https://chocolatey.org/) CLI tool
+1. [Chocolatey](https://chocolatey.org/) CLI tool
 	- Once you have Choco, install `make` in an **ADMIN** terminal:
-	  ```powershell
-      choco install make --yes
-      ```
+		```powershell
+		choco install make --yes
+		```
+		
+#### Common
 
-3. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
+2. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
 	- See a recommended path to installing Python [below](#python-install-path)
 
-4. Run `tools/requirements-install.ps1`
-		
 ## Setup
 
-* Configure `docs/repo_manifest.yml` to configure repos/prefs (defaults are recommended)
+1. Run `tools/requirements-install.ps1` as a normal user.
 
-* **[Required for Xsolla repos]** If Docker tooling with _private_ repos:
-	1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) -> Run
-	2. Copy `.env.template` to `.env`
-	3. Fill the `GITLAB_ACCESS_KEY` field
-
-* **[Required for ReadTheDocs Private Repos]** For proper macro versioning:
-    1. [create an account](https://about.readthedocs.com/?ref=readthedocs.org)
-    2. At RTD web dashboard, create a new env var named `GITLAB_ACCESS_TOKEN` (⚠️ be aware this _may_ add plaintext server logs)
-	3. Update the `.readthedocs.yaml` -> `$READTHEDOCS_PROJECT` name
+2. Configure the `docs/repo_manifest.yml` (well-commented within) with your desired versioning/cloning.
 
 ## Build
 
-❗If you recently updated your `repo_manifest.yml` file, you may want to 1st wipe these `source/` dirs
-to ensure a clean build:
 
-1. `_repos-available`
-2. `content`
+1. To build from source, either run `make.bat` or run in PowerShell from `docs/`:
 
-### Docker (Recommended)
+```powershell
+make html
+```
 
-1. Run `start-docker.ps1`
+2. Open the built index via `build/html/content/index.html` (`make.bat` will auto-launch this)
 
-### Local Build (Legacy)
+### Speedy Build
 
-1. Run `tools/requirements-install.ps1`
-2. Run `docs/start.ps1`
-
-### Speedy Rebuild
-
-If you _just_ updated and want to build without going through `sphinx_repo_manager`, set either
-`repo_manifest.yml` field: 
-
-1. `enable_repo_manager` to `false` to disable for all repos
-2. OR set individual repo `active` to false (notably useful for actively updating the `xbe_static_docs` repo).
+If you _just_ updated and want to build without going through `repo_manager`, simply set `repo_manifest.yml` property `enable_repo_manager` to `false`.
 
 ### Debugging a Build
 
@@ -115,8 +86,7 @@ Source repo docs/  layout tree should be structured as follows, with example con
 
 To describe what is installed, including extensions:
 
-The `requirements.txt` file includes dependencies necessary for building and managing the documentation of our project
-using Sphinx. **Overview:**
+The `requirements.txt` file includes dependencies necessary for building and managing the documentation of our project using Sphinx. **Overview:**
 
 ### Sphinx
 
@@ -144,38 +114,32 @@ using Sphinx. **Overview:**
 - **Purpose**: [`PyYAML`] YAML parser and emitter for Python. It is used to handle YAML-formatted files within your documentation project, which can be useful for configuration files or other data-driven content.
 - **Documentation**: [PyYAML on PyPI](https://pypi.org/project/PyYAML/)
 
-### sphinx-copybutton
 
-- **Purpose**: [`sphinx-copybutton`] Sphinx extension that adds a copy button to code blocks in your documentation. This allows users to easily copy code snippets to their clipboard with a single click.
-- **Documentation**: [sphinx-copybutton on PyPI](https://pypi.org/project/sphinx-copybutton)
+### DocGen Tools
 
-### sphinx-new-tab-lnk
+#### breathe
 
-- **Purpose**: [`sphinx-new-tab-lnk`] Sphinx extension that adds a target="_blank" attribute to external links in your documentation. This ensures that external links open in a new tab by default, preventing users from navigating away from your site.
-- **Documentation**: [sphinx-new-tab-lnk on PyPI](https://pypi.org/project/sphinx-new-tab-lnk)
+TODO
 
-## Troubleshooting
+#### sphinx_csharp
 
-### Known Issues
+TODO
 
-`sphinx_rtd_theme` versions `2.0.0` and `2.1.0rc1` has known issues, confirmed by switching themes that do not
-seem to have these issues:
+#### sphinx.ext.autodoc
 
-1. 1/4 second visual glitch on navbar (toctree) click when changing to *new* doc pages
-2. Bottom-right background color change for desktop resolutions
+TODO
 
-### Legacy Additional Troubleshooting
+## Additional Troubleshooting
 
-#### Clearing Cache
+### Clearing Cache
 
 Delete these to regenerate them when you build again:
 
 1. Delete `build` (or `make clean` via CLI)
-2. Delete `source/content` (symlinks from `source/_repos-available`)
+2. Delete `source/content`
 3. Delete `source/_repos-available` (for use with `repo_manager`)
-4. Delete `source/_static/<any repo symlinks>` (for use with `repo_manager`)
 
-#### Python Install Path (Legacy - Without Docker)
+### Python Install Path
 
 As this can easily get error-prone, especially for new Python users, see below to install Python 3.10 from scratch:
 
@@ -215,19 +179,6 @@ As this can easily get error-prone, especially for new Python users, see below t
 	Write-Host "PYTHON_SCRIPTS_HOME set to: $env:PYTHON_SCRIPTS_HOME"
 	Write-Host "Scripts directory added to PATH."
 	```
-
-## Tools
-
-### Template Doc
-
-See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
-
-* docs/README.md
-* docs/source/conf.py
-
-### More Tools
-
-See tools/[README.md](tools/README.md)
 
 ## License
 
