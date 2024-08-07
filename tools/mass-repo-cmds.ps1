@@ -13,7 +13,7 @@ $FAIL_ON_1ST_ERR = $true
 # RUN YOUR CUSTOM COMMANDS HERE (or leave empty for dry run) >>
 function Run-CustomCmds {
     #git add .
-    #git commit -m "feat: Foo" -m "[XBND-123]"
+    #git commit -m "doc(fix): Foo" -m "[XBND-123]"
     #git pull
     #git push
 }
