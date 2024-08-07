@@ -2,7 +2,7 @@
 Xsolla Backend [XBE] - Welcome
 ==============================
 
-.. image:: /_static/images/features_banner.png
+.. image:: /_static/images/_local/features_banner.png
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>

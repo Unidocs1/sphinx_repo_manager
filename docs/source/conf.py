@@ -206,8 +206,8 @@ pygments_style = "monokai"
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
-html_logo = '_static/images/logo.png'
-html_favicon = '_static/images/favicon.ico'
+html_logo = '_static/images/_local/logo.png'
+html_favicon = '_static/images/_local/favicon.ico'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
