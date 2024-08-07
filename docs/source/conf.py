@@ -17,7 +17,7 @@ from pathlib import Path  # Path manipulation/normalization; allows / slashes fo
 project = 'Xsolla XBE'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = '2024.07.0-TEST'
+release = 'v2024.06.0'
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -51,12 +51,6 @@ sys.path.append(os.path.abspath('.'))
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
     app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
-
-# Get current repo branch >> Init the repository obj to the current dir
-import git
-
-repo = git.Repo(search_parent_directories=True)
-current_branch = repo.active_branch.name
 
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
@@ -234,11 +228,11 @@ html_theme_options = {
 html_context.update({
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
-    'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
     'gitlab_repo': 'acceleratxr.io',  # Repo name
-    'gitlab_version': current_branch,  # Version
+    'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
+    'gitlab_version': 'master',  # Version
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
