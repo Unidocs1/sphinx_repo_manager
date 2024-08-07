@@ -229,18 +229,20 @@ class SphinxRepoManager:
         # Useful if we want to build with WIP changes (without stashing or committing)
         repo_info.setdefault('skip_repo_updates', DEFAULT_SKIP_REPO_UPDATES)
 
+        # It's ok if !tag (we'll just checkout the branch); great for debugging
+        # (!) However, this will affect our naming convention, normally "{repo}-{tag_or_branch}"
+        tag = repo_info.get('tag', None)
+        has_tag = bool(tag)
+
+        # If tag, branch == tag
+        branch = repo_info['branch'] if not has_tag else tag
+        
         # Explicitly normalize branch slashes/to/forward
-        branch = repo_info['branch']
         repo_info['branch'] = branch.replace('\\', '/')
 
         # Default symlink_path == repo name (the end of url after the last slash/)
         repo_name = url.split('/')[-1]
         repo_info.setdefault('symlink_path', repo_name)
-
-        # It's ok if !tag (we'll just checkout the branch); great for debugging
-        # (!) However, this will affect our naming convention, normally "{repo}-{tag_or_branch}"
-        tag = repo_info.get('tag', None)
-        has_tag = bool(tag)
 
         # Set other defaults
         repo_info.setdefault('active', True)

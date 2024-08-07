@@ -100,7 +100,7 @@ class GitHelper:
     def git_fetch(repo_path, log_entries=None):
         """ Fetch all remote branches and tags *from the repo_path working dir (-C). """
         GitHelper._throw_if_path_not_exists(repo_path)
-        
+
         # --force works around the potential `rejected: would clobber existing tag` error
         cmd_arr = ['git', '-C', repo_path, 'fetch', '--all', '--tags', '--force']
         run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
@@ -252,7 +252,11 @@ class GitHelper:
             '--branch', branch,
             '-q', repo_url_dotgit, clone_to_path
         ]
-        run_subprocess_cmd(git_clone_filter_nocheckout_cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
+
+        run_subprocess_cmd(
+            git_clone_filter_nocheckout_cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries)
 
         sparse_checkout_init_cmd_arr = [
             'git', '-C', clone_to_path,
