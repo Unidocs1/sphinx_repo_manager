@@ -125,7 +125,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
     branch: 'main'  # Dev stage
-    #tag: 'v1.0.0'  # Prod stage
+    #tag: 'v2024.06.0'  # Prod stage -- this particular repo should match macro version
     #skip_repo_updates: false
   # Services >>
   account_services:
