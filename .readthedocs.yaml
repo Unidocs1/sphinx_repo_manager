@@ -1,21 +1,37 @@
-# .readthedocs.yaml
-# Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
-
-# Required
 version: 2
 
-# Set the version of Python and other tools you might need
 build:
-  os: ubuntu-22.04
+  os: ubuntu-lts-latest
   tools:
-    python: "3.10"
+    python: '3.10'
+  jobs:
+    post_create_environment:
+      - |
+        echo "--------------"
+        echo "[post_create_environment] Running post_create_environment setup..."
+        pwd
+        set -e
+        # This is only useful for private repos on a free test account
+        if [ -z "$GITLAB_ACCESS_TOKEN" ]; then
+          echo "[GITLAB_ACCESS_TOKEN] Not set. Skipping access token injection."
+        else
+          echo "[GITLAB_ACCESS_TOKEN] Injecting GitLab access token into the repository URL..."
+          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
+          echo "Verifying the URL swap..."
+          # Verify by using git to clone a small repo or fetch info
+          git ls-remote https://gitlab.acceleratxr.com/Core/acceleratxr.io.git || { echo "GITLAB_ACCESS_TOKEN_ URL swap verification failed: Bad perms? Expired?"; exit 1; }
+        fi
+    post_build:
+      - |
+        echo "--------------"
+        echo "[post_build] Finding account_services (as example)..."
+        find . -type d -name "account_services" -print
 
-# Build documentation in the docs/ directory with Sphinx
-sphinx:
-   configuration: source/conf.py
-
-# Optionally declare the Python requirements required to build your docs
 python:
-   install:
-   - requirements: requirements.txt
+  install:
+    - requirements: requirements.txt
+
+sphinx:
+  builder: html
+  configuration: docs/source/conf.py
+  fail_on_warning: false  # TODO: Set this to true after fixing all warnings

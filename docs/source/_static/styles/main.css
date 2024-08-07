@@ -1,0 +1,91 @@
+/* Graphik Regular (Normal Weight) */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
+    font-weight: 400; /* Normal weight */
+    font-style: normal;
+}
+
+/* Graphik Medium */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
+    font-weight: 500; /* Medium weight */
+    font-style: normal;
+}
+
+/* Graphik Bold */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
+    font-weight: 700; /* Bold weight */
+    font-style: normal;
+}
+
+/* Graphik Thin */
+@font-face {
+    font-family: 'Graphik';
+    src: url('_static/fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    font-weight: 300; /* Thin weight */
+    font-style: normal;
+}
+
+/* Source Code Pro for mono code blocks */
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
+    font-weight: 400; /* Normal weight */
+    font-style: normal;
+}
+
+/* Jolting fix when jumping navigations or anchors */
+html {
+    scroll-behavior: smooth;
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 400;
+}
+
+/* Body font */
+body {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 400;
+}
+
+/* Heading font */
+h1, h2 {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 700; /* Bold for headings */
+}
+
+h2 {
+    color: #FF045A; /* Xsolla Pink */
+}
+
+h3, h4 {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 500; /* Medium for subheadings */
+}
+
+.small-text {
+    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-weight: 300; /* Thin for smaller text */
+}
+
+.caption-text {
+    color: #FF045A; /* Xsolla Pink */
+}
+
+/* Code blocks; TODO: This doesn't seem to work */
+code, pre {
+    font-family: 'Source Code Pro', SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 400;
+}
+
+/* 
+Merges separate toctrees into 1, useful for having
+different :maxdepth: sizes
+https://stackoverflow.com/a/64368882/6541639 
+*/ 
+.rst-content .toctree-wrapper:not(:last-child) ul {
+   margin-bottom: 0;
+}

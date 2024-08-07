@@ -1,0 +1,7 @@
+# no tabs, only spaces
+# 4 spaces per indent level
+
+[*]
+indent_style = space
+indent_size = 4
+tab_width = 4
