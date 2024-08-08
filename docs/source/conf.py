@@ -17,7 +17,7 @@ from pathlib import Path  # Path manipulation/normalization; allows / slashes fo
 project = 'Xsolla XBE'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = 'v2024.06.0'
+release = 'v2024.07.0'
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.abspath(''))
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
-read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
+read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
 
 # The absolute path to the directory containing conf.py.
 documentation_root = os.path.abspath(os.path.dirname(__file__))
@@ -268,7 +268,7 @@ myst_enable_extensions = [
 
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'production-stage': True,
+    'production-stage': read_the_docs_build,
 
     # True: [Navbar] New create acct page - False: Pricing page
     'parent-nav-create-your-acct-link-to-new-xbe': False,

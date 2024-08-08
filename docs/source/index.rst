@@ -83,7 +83,7 @@ Xsolla Backend [XBE] - Welcome
    :caption: Legal
    :hidden:
    
-   Eula <content/-/legal/eula/index>
+   EULA <content/-/legal/eula/index>
 
 .. toctree::
    :caption: Need Help?

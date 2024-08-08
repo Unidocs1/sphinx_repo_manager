@@ -124,8 +124,8 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   xbe_static_docs:
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
-    branch: 'main'  # Dev stage
-    #tag: 'v2024.06.0'  # Prod stage -- this particular repo should match macro version
+    branch: 'feat/v2024.07.0'  # Dev stage
+    #tag: 'v2024.07.0'  # Prod stage -- this particular repo should match macro version
     #skip_repo_updates: false
   # Services >>
   account_services:
@@ -147,7 +147,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
     branch: 'dev'  # Dev stage
-    #tag: 'v3.0.0'  # Prod stage
+    #tag: 'v3.0.1'  # Prod stage
   leaderboard_services:
     url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
     branch: 'dev'  # Dev stage
@@ -174,16 +174,16 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
     #tag: 'v2.0.0'  # Prod stage
   quest_services:
     url: 'https://gitlab.acceleratxr.com/Core/quest_services'
-    branch: 'dev'  # dev stage
-    #tag: 'v2.0.0'  # Prod stage
+    branch: 'dev'  # Dev stage
+    #tag: 'v2.0.1'  # Prod stage
   reporting_services:
     url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
-    branch: 'dev'  # dev stage
+    branch: 'dev'  # Dev stage
     #tag: 'v2.0.0'  # Prod stage
   scripting_services:
     url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
     branch: 'dev'  # dev stage
-    #tag: 'v2.0.0-beta.2'  # Prod stage; TODO: Change to "v2.0.0" when ready
+    #tag: 'v2.0.0'  # Prod stage
   server_instance_services:
     url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
     branch: 'dev'  # Dev stage
@@ -191,7 +191,7 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
     branch: 'dev'  # Dev stage
-    #tag: 'v3.0.0'  # Prod stage
+    #tag: 'v3.0.1'  # Prod stage
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
     branch: 'dev'  # Dev stage
@@ -200,9 +200,10 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
     url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
     branch: 'dev'  # Dev stage
     #tag: 'v2.0.0'  # Prod stage
-  validation_services:
+  validation_services:  # DEPRECATED: Will soon be merged into purchasing_services
     url: 'https://gitlab.acceleratxr.com/Core/validation_services'
     branch: 'dev'  # Dev stage
+    #branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
     #tag:  'TODO'  # Prod stage
   world_services:
     url: 'https://gitlab.acceleratxr.com/Core/world_services'
@@ -247,30 +248,32 @@ repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted
   xbeapp:
     url: 'https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp'
     branch: 'dev'  # Dev stage
-    #tag: 'TODO'  # Prod stage
+    #branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
+    #tag: 'TODO'  # TODO Prod stage
   # Demos >>
   unitychessgame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
     branch: 'dev'  # Dev stage
     #branch: 'main'  # Prod stage (TODO: Remove when prod tag set)
-    #tag: 'TODO'  # Prod stage
+    #tag: 'TODO'  # TODO Prod stage
   lyrastartergame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
     branch: 'dev'  # Dev stage
     #branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
-    #tag: 'TODO'  # Prod stage
+    #tag: 'TODO'  # TODO Prod stage
 #  # Libs/WebApps >>
 #  appconfig:
 #    url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
-#    branch: 'dev'
+#    branch: 'dev'  # Dev stage
 #  react-shared:
 #    url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
-#    branch: 'dev'
+#    branch: 'dev'  # Dev stage
 #  electron-shared:
 #    url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
-#    branch: 'dev'
+#    branch: 'dev'  # Dev stage
 #  # Composer >>
   service-core:
     url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
     branch: 'dev'  # Dev stage
+    #branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
     #tag: 'TODO'  # Prod stage
