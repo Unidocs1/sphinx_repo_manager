@@ -187,11 +187,6 @@ repositories:
 #    production_stage:
 #      checkout: 'v2.0.0'
 #      checkout_type: 'tag'
-#  validation_services:  # DEPRECATED: Will soon be merged into purchasing_services
-#    url: 'https://gitlab.acceleratxr.com/Core/validation_services'
-#    production_stage:
-#      checkout: 'master'
-#      checkout_type: 'branch'  # TODO: Use tag
 #  world_services:
 #    url: 'https://gitlab.acceleratxr.com/Core/world_services'
 #    production_stage:
