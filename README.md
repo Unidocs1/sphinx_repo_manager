@@ -6,14 +6,14 @@ This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubun
 
 ## Quickstart
 
-1. Configure `docs/repo_manifest.yaml` (or leave defaults)
-2. Run `start-docker.ps1`
-3. Upon success, your browser will launch with `index.html` and stop the Docker instance.
+1. Configure `docs/repo_manifest.yaml` (ok to leave defaults)
+2. Copy `.env.template` -> to `.env` and set `GITLAB_ACCESS_TOKEN`
+3. Run `start-docker.ps1` (or `make html` at `docs/`)
+4. Upon success, your browser will launch with `index.html` and stop the Docker instance.
 
 ## Prerequisites
 
-1. Copy `.env.template` -> to `.env` and fill your GitLab access token.
-	* 💡 Only needed for local testing; ReadTheDocs deployment uses its own cloud env vars.
+1. Prepare your gitlab access key.
 
 You may either run via Docker (recommended) or locally (legacy):
 
@@ -36,17 +36,13 @@ You may either run via Docker (recommended) or locally (legacy):
 		
 ## Setup
 
-* Configure `docs/repo_manifest.yml` to configure repos/prefs (defaults are recommended)
-
-* **[Required for Xsolla repos]** If Docker tooling with _private_ repos:
-	1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) -> Run
-	2. Copy `.env.template` to `.env`
-	3. Fill the `GITLAB_ACCESS_KEY` field
-
-* **[Required for ReadTheDocs Private Repos]** For proper macro versioning:
-    1. [create an account](https://about.readthedocs.com/?ref=readthedocs.org)
-    2. At RTD web dashboard, create a new env var named `GITLAB_ACCESS_TOKEN` (⚠️ be aware this _may_ add plaintext server logs)
-	3. Update the `.readthedocs.yaml` -> `$READTHEDOCS_PROJECT` name
+1. Configure `docs/repo_manifest.yml` to configure repos/prefs: Defaults are ok, but note the top-level `stage`
+* **For local testing:** Setup `.env` prop `GITLAB_ACCESS_KEY` (for local testing only)
+* **For ReadTheDocs (RTD) Deployment:**
+  1. [create a RTD account](https://about.readthedocs.com/?ref=readthedocs.org)
+  2. At RTD web dashboard, create a new env var named `GITLAB_ACCESS_TOKEN`
+  3. (⚠️ Be aware this _may_ log your access token on bad configurations; this will be fixed later)
+  4. [Deprecated step] Update the `.readthedocs.yaml` -> `$READTHEDOCS_PROJECT` name
 
 ## Build
 

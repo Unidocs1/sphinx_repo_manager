@@ -11,10 +11,10 @@
 # - It *is safe* (and encouraged) to periodically wipe your source/ _repos-available + content dirs
 ##########################################################################################################
 
-# - Determines which repo to checkout
-# - Choices: dev, production
-# - Defaults to 'dev', if omitted
-stage: 'dev'
+# - Determines which repo info to use for git checkout
+# - Choices: 'dev_stage', 'production_stage'
+# - Defaults to 'dev_stage', if omitted
+stage: 'dev_stage'
 
 # - (!) DANGEROUS: If false, will skip this extension both locally + on ReadTheDocs (RTD)
 # - Useful if you 100% know all repos are up-to-date for faster iterations
@@ -94,7 +94,7 @@ repositories:
       checkout: 'feat/v2024.07.0'
       checkout_type: 'branch'
     production_stage:
-      checkout: 'v2024.07.0'  # This particular repo should match the main doc macro version
+      checkout: 'feat/v2024.07.0'  # This particular repo should match the main doc macro version
       checkout_type: 'tag'
   # Backend Services >>
   account_services:
