@@ -8,6 +8,7 @@ from pathlib import Path  # Path ops
 import re  # regex ops
 import sys  # Just for sys.exit, if !repositories
 import time  # How long did it take to build?
+import traceback  # Allow for stacktracing
 
 # Async >>
 import concurrent.futures  # Async multitasking
@@ -30,6 +31,7 @@ ABS_MANIFEST_PATH_DIR = os.path.dirname(ABS_MANIFEST_PATH)
 ABS_SOURCE_STATIC_DIR = os.path.join(ABS_MANIFEST_PATH_DIR, 'source', '_static')
 
 # Constants for default settings
+DEFAULT_STAGE = 'dev_stage'  # 'dev_stage' or 'production_stage'
 DEFAULT_MAX_WORKERS_LOCAL = 5
 DEFAULT_MAX_WORKERS_RTD = 1  # Max 1 for free tiers; 2 for premium
 DEFAULT_DEBUG_MODE = False
@@ -37,7 +39,7 @@ DEFAULT_STASH_AND_CONTINUE_IF_WIP = True
 DEFAULT_INIT_CLONE_PATH = 'source/_repos-available'
 DEFAULT_BASE_SYMLINK_PATH = 'source/content'
 DEFAULT_REPO_SPARSE_PATH = 'docs'
-DEFAULT_DEFAULT_BRANCH = 'master'
+DEFAULT_DEFAULT_BRANCH = 'dev'  # Since we'll be working with tags, 'master' wouldn't make sense as a fallback
 DEFAULT_PRESERVE_GITLAB_GROUP = True
 DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
 DEFAULT_REPOSITORIES = {}
@@ -106,8 +108,8 @@ class SphinxRepoManager:
         with open(self.manifest_path, 'r') as file:
             manifest = yaml.safe_load(file)
 
-        # Remove .git from urls; inject hidden _meta prop per repo, etc
-        # (!) Exits if repositories are empty
+            # Remove .git from urls; inject hidden _meta prop per repo, etc
+            # (!) Exits if repositories are empty
         manifest = self.validate_normalize_manifest_set_meta(manifest)
         self.manifest = manifest
 
@@ -134,6 +136,7 @@ class SphinxRepoManager:
         logger.info(colorize_action("🧹 | Validating & normalizing manifest..."))
 
         # Set constant root defaults
+        manifest.setdefault('stage', DEFAULT_STAGE)
         manifest.setdefault('max_workers_local', DEFAULT_MAX_WORKERS_LOCAL)
         manifest.setdefault('max_workers_rtd', DEFAULT_MAX_WORKERS_RTD)
         manifest.setdefault('debug_mode', DEFAULT_DEBUG_MODE)
@@ -189,7 +192,8 @@ class SphinxRepoManager:
             repo_info['_meta'] = {
                 'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
                 'repo_name': '',  # eg: "account_services"
-                'has_tag': False,  # True if tag exists
+                'has_tag': False,
+                'selected_repo_stage_info': {},  # { checkout, checkout_type }
 
                 'rel_selected_repo_sparse_path': '',
 
@@ -212,6 +216,26 @@ class SphinxRepoManager:
                 'tag_versioned_clone_path_to_inner_static': '',
             }
 
+        # Dev or Production stage? Set fallbacks toe ach
+        default_branch = manifest['default_branch']
+        fallback_stage_info = {
+            'checkout': default_branch,
+            'checkout_type': 'branch',
+        }
+        repo_info.setdefault('dev_stage', fallback_stage_info)
+        repo_info.setdefault('production_stage', fallback_stage_info)
+
+        stage = manifest['stage']  # 'dev_stage' or 'production_stage'
+        selected_repo_stage_info = repo_info[stage]
+        selected_repo_stage_info.setdefault('checkout', fallback_stage_info['checkout'])
+        selected_repo_stage_info.setdefault('checkout_type', fallback_stage_info['checkout_type'])
+
+        # Explicitly normalize checkout slashes/to/forward (if branch)
+        selected_repo_stage_info['checkout'] = selected_repo_stage_info['checkout'].replace('\\', '/')
+        selected_stage_checkout_branch_or_tag_name = selected_repo_stage_info['checkout']  # Defaults to 'master'
+        selected_stage_checkout_type = selected_repo_stage_info['checkout_type']  # 'branch' or 'tag'
+        has_tag = selected_stage_checkout_type == 'tag'
+
         # url: Req'd - Strip ".git" from suffix, if any (including SSH urls; we'll add it back via url_dotgit)
         url = repo_info.get('url', None)
         if not url:
@@ -222,23 +246,12 @@ class SphinxRepoManager:
             url = url[:-4]
         repo_info['url'] = url
 
-        # Default branch == parent {default_branch}
-        if 'default_branch' not in repo_info:
-            repo_info.setdefault('branch', manifest['default_branch'])
-
         # Useful if we want to build with WIP changes (without stashing or committing)
         repo_info.setdefault('skip_repo_updates', DEFAULT_SKIP_REPO_UPDATES)
 
         # It's ok if !tag (we'll just checkout the branch); great for debugging
         # (!) However, this will affect our naming convention, normally "{repo}-{tag_or_branch}"
-        tag = repo_info.get('tag', None)
-        has_tag = bool(tag)
-
-        # If tag, branch == tag
-        branch = repo_info['branch'] if not has_tag else tag
-        
-        # Explicitly normalize branch slashes/to/forward
-        repo_info['branch'] = branch.replace('\\', '/')
+        tag = selected_stage_checkout_branch_or_tag_name if has_tag else None
 
         # Default symlink_path == repo name (the end of url after the last slash/)
         repo_name = url.split('/')[-1]
@@ -268,7 +281,7 @@ class SphinxRepoManager:
             # "repo-{"cleaned_branch"}"; eg: "account-services--master" or "account-services--some_nested_branch"
             # ^ Notice the "--" double slash separator. Only accept alphanumeric chars; replace all others with "_"
             pattern = r'\W+'
-            normalized_repo_name_for_dir = branch.replace("/", "--")
+            normalized_repo_name_for_dir = selected_stage_checkout_branch_or_tag_name.replace("/", "--")
             normalized_repo_name_for_dir = re.sub(pattern, '_', normalized_repo_name_for_dir)
             _meta['tag_versioned_clone_src_repo_name'] = f"{repo_name}--{normalized_repo_name_for_dir}"
 
@@ -395,6 +408,7 @@ class SphinxRepoManager:
 
     def process_repo(
             self,
+            stage,
             repo_info,
             stash_and_continue_if_wip,
             log_queue,
@@ -468,6 +482,7 @@ class SphinxRepoManager:
         # Pass the info (mostly paths) to an individual repo handler
         try:
             self.clone_and_symlink(
+                stage,
                 repo_info,
                 repo_name,
                 tag_versioned_clone_src_repo_name,
@@ -483,7 +498,8 @@ class SphinxRepoManager:
                      f"`_repos-available/` and/or `content/` dirs to regenerate.")
             info2 = f"- HINT: You may see more logs below due to already-queued async-threaded logs"
             bright_info = colorize_error(brighten(f'{info1}\n{info2}\n'))
-            error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}.\n{bright_info}"
+            stacktrace = traceback.format_exc()
+            error_message = f"\n{Fore.RED}Failed to clone_and_symlink: {str(e)}.\n{stacktrace}\n{bright_info}"
 
             self.errored_repo_name = repo_name
             raise RepositoryManagementError(f'\n{error_message}')
@@ -500,6 +516,7 @@ class SphinxRepoManager:
 
         stash_and_continue_if_wip = manifest['stash_and_continue_if_wip']
         debug_mode = manifest['debug_mode']
+        stage = manifest['stage']
         repositories = list(manifest['repositories'].items())
         log_queue = queue.Queue()  # Queue for handling log entries
 
@@ -524,6 +541,7 @@ class SphinxRepoManager:
 
                 future = executor.submit(
                     self.process_repo,
+                    stage,
                     repo_info,
                     stash_and_continue_if_wip,
                     log_queue,
@@ -560,6 +578,7 @@ class SphinxRepoManager:
 
     def clone_and_symlink(
             self,
+            stage,  # 'dev_stage' or 'production_stage'
             repo_info,
             repo_name,
             tag_versioned_clone_src_repo_name,
@@ -576,6 +595,7 @@ class SphinxRepoManager:
         3. Create a RELEASE_NOTES symlink
         4. Create a _static/{repo_name} symlink
         ----------------------------------------------
+        - stage                                      # eg: "dev_stage" or "production_stage"
         - repo_name                                  # eg: "account_services"
         - rel_tag_versioned_clone_src_repo_name      # eg: "account_services-v2.1.0"
         - rel_init_clone_path                        # eg: "source/_repos-available"
@@ -589,11 +609,11 @@ class SphinxRepoManager:
         """
         _meta = repo_info['_meta']
         repo_url_dotgit = _meta['url_dotgit']
-        has_tag = _meta['has_tag']
-
-        tag = repo_info['tag'] if has_tag else None
-        branch = repo_info['branch']
         skip_repo_updates = repo_info['skip_repo_updates']
+
+        repo_stage_info = repo_info[stage]  # { checkout, checkout_type }
+        checkout_branch_or_tag_name = repo_stage_info['checkout']
+        has_tag = _meta['has_tag']
 
         # Clone the repo, if we haven't done so already
         cloned = False
@@ -615,7 +635,7 @@ class SphinxRepoManager:
                 git_helper.git_sparse_clone(
                     rel_tag_versioned_clone_src_path,
                     repo_url_dotgit,
-                    branch,
+                    checkout_branch_or_tag_name,
                     rel_selected_repo_sparse_path,
                     stash_and_continue_if_wip,
                     log_entries=log_entries)
@@ -673,7 +693,7 @@ class SphinxRepoManager:
             action_str = colorize_action(f"Skipping branch checkout ({brighten('skip_repo_updates')})...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         elif should_check_out_branch:
-            action_str = colorize_action(f"Checking out branch '{brighten(branch)}'...")
+            action_str = colorize_action(f"Checking out branch '{brighten(checkout_branch_or_tag_name)}'...")
             log_entries.append(f"🔄 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
             should_stash = stash_and_continue_if_wip and not already_stashed
@@ -681,11 +701,11 @@ class SphinxRepoManager:
             try:
                 GitHelper.git_checkout(
                     rel_tag_versioned_clone_src_path,
-                    branch,
+                    checkout_branch_or_tag_name,
                     should_stash,
                     log_entries=log_entries)
             except Exception as e:
-                additional_info = f"Error checking out branch '{brighten(branch)}' for '{brighten(repo_name)}':\n- {str(e)}"
+                additional_info = f"Error checking out branch '{brighten(checkout_branch_or_tag_name)}' for '{brighten(repo_name)}':\n- {str(e)}"
                 raise Exception(f"{additional_info}") from e
 
             if stash_and_continue_if_wip:
@@ -696,7 +716,7 @@ class SphinxRepoManager:
             action_str = colorize_action(f"Skipping tag checkout ({brighten('skip_repo_updates')})...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         if has_tag:
-            action_str = colorize_action(f"Checking out tag '{brighten(tag)}'...")
+            action_str = colorize_action(f"Checking out tag '{brighten(checkout_branch_or_tag_name)}'...")
             log_entries.append(f"🔄 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
             should_stash = stash_and_continue_if_wip and not already_stashed
@@ -704,11 +724,12 @@ class SphinxRepoManager:
             try:
                 GitHelper.git_checkout(
                     rel_tag_versioned_clone_src_path,
-                    tag,
+                    checkout_branch_or_tag_name,
                     should_stash,
                     log_entries=log_entries)
             except Exception as e:
-                additional_info = f"Error checking out tag '{brighten(tag)}' for '{brighten(repo_name)}':\n- {str(e)}"
+                additional_info = (f"Error checking out tag '{brighten(checkout_branch_or_tag_name)}'"
+                                   f"for'{brighten(repo_name)}':\n- {str(e)}")
                 raise Exception(f"{additional_info}") from e
 
             if stash_and_continue_if_wip:
