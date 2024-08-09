@@ -107,7 +107,10 @@ exclude_patterns = [
     '**/venv',
 ]
 
-html_extra_path = ['robots.txt']
+html_extra_path = [
+    'robots.txt',  # Only index latest ver to crawlers
+    'sitemap.xml',  # Show latest ver -> release notes -> feats -> api docs
+]
 
 master_doc = 'index'  # Build entry point: The "home page"
 tocdepth = 1  # Default :maxdepth:
