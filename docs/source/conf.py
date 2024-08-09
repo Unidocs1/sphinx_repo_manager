@@ -14,7 +14,7 @@ from pathlib import Path  # Path manipulation/normalization; allows / slashes fo
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Xsolla XBE'
+project = 'Xsolla Backend [XBE] Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = 'v2024.07.0'
@@ -87,6 +87,7 @@ extensions = [
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     'sphinxcontrib.redoc',  # Converts OpenAPI spec json files into API docs
     'sphinx.ext.todo',  # Allows for todo:: directive 
+    'sphinxext.opengraph',  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -118,6 +119,43 @@ tocdepth = 1  # Default :maxdepth:
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"
 highlight_language = "cpp"
+
+# -- Sphinx Extension: sphinxext-opengraph ----------------------------
+# For embed preview info, such as when link is dropped into Discord/FB.
+# https://github.com/wpilibsuite/sphinxext-opengraph?tab=readme-ov-file#options
+
+# The main og:banner @ 1200x630 (minimized)
+ogp_image = '_static/images/_local/xbe-banner-og-1200x630.min.png'
+
+# True to use each page's first image, if available. If set to True
+# but no image is found, Sphinx will use ogp_image instead.
+ogp_use_first_image = False
+
+ogp_custom_meta_tags = [
+    # HTML
+    '<title>Xsolla Backend [XBE] Docs</title>',
+    
+    # Image
+    '<meta property="og:image:type" content="image/png">',
+    '<meta property="og:image:width" content="1200">',
+    '<meta property="og:image:height" content="630">',
+    '<meta name="description" content="The most complete online gaming platform">',
+    
+    # FB
+    '<meta property="og:url" content="https://docs.xsolla.cloud/">'
+    '<meta property="og:type" content="website">',
+    '<meta property="og:title" content="Xsolla Backend [XBE] Docs">',
+    '<meta property="og:description" content="The most complete online gaming platform">',
+    #'<meta property="og:image" content="https://external/link.png">',
+    
+    # Twitter / X
+    '<meta name="twitter:card" content="summary_large_image">',
+    '<meta property="twitter:domain" content="docs.xsolla.cloud">',
+    '<meta property="twitter:url" content="https://docs.xsolla.cloud/">',
+    '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
+    '<meta name="twitter:description" content="The most complete online gaming platform">',
+    #'<meta name="twitter:image" content="https://external/link.png">',   
+]
 
 # -- Sphinx Extension: Image Minimizer --------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
