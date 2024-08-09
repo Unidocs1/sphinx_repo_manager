@@ -102,232 +102,222 @@ repositories:
     production_stage:
       checkout: 'v3.0.0'
       checkout_type: 'tag' 
-#  achievements_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
-#    production_stage:
-#      checkout: 'v3.0.0'
-#      checkout_type: 'tag'
-#  asset_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/asset_services'
-#    production_stage:
-#      checkout: 'v3.0.0'
-#      checkout_type: 'tag'
-#  backup_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/backup_services'
-#    production_stage:
-#      checkout: '2.0.0'
-#      checkout_type: 'tag'
-#  economy_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/economy_services'
-#    production_stage:
-#      checkout: 'v3.0.1'
-#      checkout_type: 'tag'
-#  leaderboard_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
-#    production_stage:
-#      checkout: 'v3.0.0'
-#      checkout_type: 'tag'
-#  matchmaking_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  notification_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/notification_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  persona_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/persona_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  progression_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/progression_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  purchasing_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  quest_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/quest_services'
-#    production_stage:
-#      checkout: 'v2.0.1'
-#      checkout_type: 'tag'
-#  reporting_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  scripting_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  server_instance_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  session_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/session_services'
-#    production_stage:
-#      checkout: 'v3.0.1'
-#      checkout_type: 'tag'
-#  social_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/social_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  telemetry_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  validation_services:  # DEPRECATED: Will soon be merged into purchasing_services
-#    url: 'https://gitlab.acceleratxr.com/Core/validation_services'
-#    production_stage:
-#      checkout: 'master'
-#      checkout_type: 'branch'  # TODO: Use tag
-#  world_services:
-#    url: 'https://gitlab.acceleratxr.com/Core/world_services'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  # Sdks >>
-#  sdk_cpp:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
-#    production_stage:
-#      checkout: 'v4.0.0'
-#      checkout_type: 'tag'
-#  sdk_csharp:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
-#    production_stage:
-#      checkout: 'v3.0.0'
-#      checkout_type: 'tag'
-#  sdk_nodejs:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
-#    production_stage:
-#      checkout: 'v2.0.0'
-#      checkout_type: 'tag'
-#  sdk_unity:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
-#    production_stage:
-#      checkout: 'v3.0.0'
-#      checkout_type: 'tag'
-#    repo_sparse_path_override: 'Documentation~'
-#    init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
-#  sdk_unreal:
-#    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
-#    production_stage:
-#      checkout: 'v4.0.0'
-#      checkout_type: 'tag'
-#  # Other Products/Apps >>
-#  service_monitor:
-#    url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
-#    production_stage:
-#      checkout: 'v3.2.0'
-#      checkout_type: 'tag'
-#  launcher:
-#    url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
-#    production_stage:
-#      checkout: 'v4.0.0'
-#      checkout_type: 'tag'
-#  console:
-#    url: 'https://gitlab.acceleratxr.com/Core/apps/console'
-#    production_stage:
-#      checkout: 'v6.0.1'
-#      checkout_type: 'tag'
-#  xbeapp:
-#    url: 'https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp'
-#    production_stage:
-#      checkout: 'master'
-#      checkout_type: 'branch'  # TODO: Use tag
-#  # Demos >>
-#  unitychessgame:
-#    url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
-#    production_stage:
-#      checkout: 'master'
-#      checkout_type: 'branch'  # TODO: Use tag
-#  lyrastartergame:
-#    url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
-#    production_stage:
-#      checkout: 'master'
-#      checkout_type: 'branch'  # TODO: Use tag
-##  # Composer >>
-#  service-core:
-#    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
-#    production_stage:
-#      checkout: 'master'
-#      checkout_type: 'branch'  # TODO: Use tag
-#  
-#############################################
-## UNUSED REPOS (Possibly used later)
-#############################################
-#  
-### Libs/WebApps >>
-##appconfig:
-##  url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
-##  production_stage:
-##    checkout: 'master'
-##    checkout_type: 'branch'
-##react-shared:
-##  url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
-##  production_stage:
-##    checkout: 'master'
-##    checkout_type: 'branch'  # TODO: Use tag
-##electron-shared:
-##  url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
-##  production_stage:
-##    checkout: 'master'
-##    checkout_type: 'branch'  # TODO: Use tag
+  achievements_services:
+    url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
+    production_stage:
+      checkout: 'v3.0.0'
+      checkout_type: 'tag'
+  asset_services:
+    url: 'https://gitlab.acceleratxr.com/Core/asset_services'
+    production_stage:
+      checkout: 'v3.0.0'
+      checkout_type: 'tag'
+  backup_services:
+    url: 'https://gitlab.acceleratxr.com/Core/backup_services'
+    production_stage:
+      checkout: '2.0.0'
+      checkout_type: 'tag'
+  economy_services:
+    url: 'https://gitlab.acceleratxr.com/Core/economy_services'
+    production_stage:
+      checkout: 'v3.0.1'
+      checkout_type: 'tag'
+  leaderboard_services:
+    url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
+    production_stage:
+      checkout: 'v3.0.0'
+      checkout_type: 'tag'
+  matchmaking_services:
+    url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  notification_services:
+    url: 'https://gitlab.acceleratxr.com/Core/notification_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  persona_services:
+    url: 'https://gitlab.acceleratxr.com/Core/persona_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  progression_services:
+    url: 'https://gitlab.acceleratxr.com/Core/progression_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  purchasing_services:
+    url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  quest_services:
+    url: 'https://gitlab.acceleratxr.com/Core/quest_services'
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
+  reporting_services:
+    url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  scripting_services:
+    url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  server_instance_services:
+    url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  session_services:
+    url: 'https://gitlab.acceleratxr.com/Core/session_services'
+    production_stage:
+      checkout: 'v3.0.1'
+      checkout_type: 'tag'
+  social_services:
+    url: 'https://gitlab.acceleratxr.com/Core/social_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  telemetry_services:
+    url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  world_services:
+    url: 'https://gitlab.acceleratxr.com/Core/world_services'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  # Sdks >>
+  sdk_cpp:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
+    production_stage:
+      checkout: 'v4.0.0'
+      checkout_type: 'tag'
+  sdk_csharp:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
+    production_stage:
+      checkout: 'v3.0.0'
+      checkout_type: 'tag'
+  sdk_nodejs:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
+  sdk_unity:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
+    production_stage:
+      checkout: 'v3.0.0'
+      checkout_type: 'tag'
+    repo_sparse_path_override: 'Documentation~'
+    init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
+  sdk_unreal:
+    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
+    production_stage:
+      checkout: 'v4.0.0'
+      checkout_type: 'tag'
+  # Other Products/Apps >>
+  service_monitor:
+    url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
+    production_stage:
+      checkout: 'v3.2.0'
+      checkout_type: 'tag'
+  launcher:
+    url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
+    production_stage:
+      checkout: 'v4.0.0'
+      checkout_type: 'tag'
+  console:
+    url: 'https://gitlab.acceleratxr.com/Core/apps/console'
+    production_stage:
+      checkout: 'v6.0.1'
+      checkout_type: 'tag'
+  # Demos >>
+  unitychessgame:
+    url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
+    production_stage:
+      checkout: 'master'
+      checkout_type: 'branch'  # TODO: Use tag
+  lyrastartergame:
+    url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
+    production_stage:
+      checkout: 'master'
+      checkout_type: 'branch'  # TODO: Use tag
+  # Composer >>
+  service-core:
+    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
+    production_stage:
+      checkout: 'master'
+      checkout_type: 'branch'  # TODO: Use tag
+
+############################################
+# UNUSED REPOS (Possibly used later)
+############################################
+
+## Libs/WebApps >>
+#appconfig:
+#  url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
+#  production_stage:
+#    checkout: 'master'
+#    checkout_type: 'branch'
+#react-shared:
+#  url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
+#  production_stage:
+#    checkout: 'master'
+#    checkout_type: 'branch'  # TODO: Use tag
+#electron-shared:
+#  url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
+#  production_stage:
+#    checkout: 'master'
+#    checkout_type: 'branch'  # TODO: Use tag
+
+############################################
+# EXAMPLE REPO WITH ALL OPTIONS -- COMMENTED
+############################################
+
+#mock_repo_example:
+## - .git suffix == optional;
+## - HTTPS only (until we add cert support in RTD)
+## - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
+#url: 'https://gitlab.acceleratxr.com/Core/foo_services'
 #
-#############################################
-## EXAMPLE REPO WITH ALL OPTIONS -- COMMENTED
-#############################################
+## - Normally named your_repo_name, but static docs is special
+## - Relative to baseClonePath
+## - Normalizes os/path/slashes
+## - Default '{repo_name}-{tag}'
+#symlink_path: 'foo_services'
 #
-##mock_repo_example:
-### - .git suffix == optional;
-### - HTTPS only (until we add cert support in RTD)
-### - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
-##url: 'https://gitlab.acceleratxr.com/Core/foo_services'
-##
-### - Normally named your_repo_name, but static docs is special
-### - Relative to baseClonePath
-### - Normalizes os/path/slashes
-### - Default '{repo_name}-{tag}'
-##symlink_path: 'foo_services'
-##
-### Expects branch || tag (usually branch); if missing, falls back to {default_branch}
-### This can optionally be be omitted since {default_branch} is 'dev', if using the default
-##dev_stage:
-##  checkout: 'dev'  # Normalizes os/path/slashes
-##  checkout_type: 'branch'  # Expects branch or tag; assumes 'branch' if missing
-##
-### Expects branch || tag (usually tag); if missing, falls back to {default_branch}
-##production_stage:
-##  checkout: 'v1.0.0'  # (!) Don't forget to prefix with 'v' to follow XBE standards
-##  checkout_type: 'tag'
-##
-### - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
-### - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
-### - Normalizes 'explicit/forward/slashes'
-### - The parent dirs outside this will be 99% empty
-### - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
-##repo_sparse_path_override: 'docs'
-##
-### - Supports {repo_sparse_path} template - will take override ver if present
-### - If true, overrides init_clone_path_root_symlink_src
-### - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
-##init_clone_path_root_symlink_src_override: 'docs'
-##
-### False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
-##active: true  
-##
-### - Useful for testing multi-repo WIP without having it be stashed away or require a commit
-### - Still pulls from `_static/images/{repo_name}/`
-### - Default false, if omitted
-##skip_repo_updates: false
+## Expects branch || tag (usually branch); if missing, falls back to {default_branch}
+## This can optionally be be omitted since {default_branch} is 'dev', if using the default
+#dev_stage:
+#  checkout: 'dev'  # Normalizes os/path/slashes
+#  checkout_type: 'branch'  # Expects branch or tag; assumes 'branch' if missing
+#
+## Expects branch || tag (usually tag); if missing, falls back to {default_branch}
+#production_stage:
+#  checkout: 'v1.0.0'  # (!) Don't forget to prefix with 'v' to follow XBE standards
+#  checkout_type: 'tag'
+#
+## - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
+## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
+## - Normalizes 'explicit/forward/slashes'
+## - The parent dirs outside this will be 99% empty
+## - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
+#repo_sparse_path_override: 'docs'
+#
+## - Supports {repo_sparse_path} template - will take override ver if present
+## - If true, overrides init_clone_path_root_symlink_src
+## - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
+#init_clone_path_root_symlink_src_override: 'docs'
+#
+## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+#active: true  
+#
+## - Useful for testing multi-repo WIP without having it be stashed away or require a commit
+## - Still pulls from `_static/images/{repo_name}/`
+## - Default false, if omitted
+#skip_repo_updates: false
