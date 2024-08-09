@@ -107,6 +107,8 @@ exclude_patterns = [
     '**/venv',
 ]
 
+html_extra_path = ['robots.txt']
+
 master_doc = 'index'  # Build entry point: The "home page"
 tocdepth = 1  # Default :maxdepth:
 
