@@ -115,12 +115,12 @@ repositories:
   backup_services:
     url: 'https://gitlab.acceleratxr.com/Core/backup_services'
     production_stage:
-      checkout: '2.0.0'
+      checkout: '2.0.0'  # TODO: Tag !found
       checkout_type: 'tag'
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
     production_stage:
-      checkout: 'v3.0.1'
+      checkout: 'v3.0.1'  # TODO: Tag !found
       checkout_type: 'tag'
   leaderboard_services:
     url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
@@ -155,7 +155,7 @@ repositories:
   quest_services:
     url: 'https://gitlab.acceleratxr.com/Core/quest_services'
     production_stage:
-      checkout: 'v2.0.1'
+      checkout: 'v2.0.1'  # TODO: Tag !found
       checkout_type: 'tag'
   reporting_services:
     url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
@@ -175,7 +175,7 @@ repositories:
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
     production_stage:
-      checkout: 'v3.0.1'
+      checkout: 'v3.0.1'  # TODO: Tag !found
       checkout_type: 'tag'
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
@@ -211,7 +211,7 @@ repositories:
   sdk_unity:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
     production_stage:
-      checkout: 'v3.0.0'
+      checkout: 'v3.0.0'  # TODO: Tag found, but this will fail (!docs); needs update merged from dev
       checkout_type: 'tag'
     repo_sparse_path_override: 'Documentation~'
     init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
@@ -240,12 +240,12 @@ repositories:
   unitychessgame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
     production_stage:
-      checkout: 'master'
+      checkout: 'master'  # TODO: This will fail (!docs); needs update merged from dev
       checkout_type: 'branch'  # TODO: Use tag
   lyrastartergame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
     production_stage:
-      checkout: 'master'
+      checkout: 'master'  # TODO: This will fail (!docs); needs update merged from dev
       checkout_type: 'branch'  # TODO: Use tag
   # Composer >>
   service-core:
