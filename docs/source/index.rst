@@ -129,7 +129,7 @@ concentrate on creating games without the worries of backend infrastructure.
 Development Cost
 ^^^^^^^^^^^^^^^^
 
-Budget constraints are a major challenge. Many platforms overpromise but underdeliver, leading to hidden costs and
+Budget constraints are a major challenge. Many platforms over-promise but under-deliver, leading to hidden costs and
 additional development work. With Xsolla Backend, you get a platform engineered to meet the highest AAA standards.
 Our source-available approach ensures you have full control and flexibility to customize as needed.
 
