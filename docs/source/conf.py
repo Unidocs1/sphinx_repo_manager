@@ -129,7 +129,7 @@ highlight_language = "cpp"
 
 ogp_site_url = "https://docs.xsolla.cloud/"  # Full https:// url with lingering slash/
 ogp_use_first_image = False  # We want to always use our consistent banner; we can potentially per-page override this
-# ogp_description = 'The most complete online gaming platform'  # We probably want this per-page
+ogp_title = project  # "XBE Docs"
 
 # EXTERNAL og:banner @ 1200x630 (minimized) url; TODO: Change this to /latest next patch
 ogp_image = 'https://docs.xsolla.cloud/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png'
