@@ -107,3 +107,4 @@ docs/source/_static/images/xbeapp
 
 # Ignore auto-gen'd openapi specs
 docs/source/_specs/openapi.*
+docs/source/_specs/openapi.json

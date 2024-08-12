@@ -1,3 +1,5 @@
+/* -- FONT FACES ----------------------------------------------------------------> */
+
 /* Graphik Regular (Normal Weight) */
 @font-face {
     font-family: 'Graphik';
@@ -37,6 +39,8 @@
     font-weight: 400; /* Normal weight */
     font-style: normal;
 }
+
+/* -- THEME OVERRIDES ----------------------------------------------------------> */
 
 /* Jolting fix when jumping navigations or anchors */
 html {
@@ -88,4 +92,12 @@ https://stackoverflow.com/a/64368882/6541639
 */ 
 .rst-content .toctree-wrapper:not(:last-child) ul {
    margin-bottom: 0;
+}
+
+/* 
+ * Bug workaround for unresponsive tables that won't auto-wrap (thanks, Korne127)
+ * https://github.com/readthedocs/sphinx_rtd_theme/issues/1505#issuecomment-2258832864 
+ */
+.wy-table-responsive table td, .wy-table-responsive table th {
+    white-space: normal;
 }
