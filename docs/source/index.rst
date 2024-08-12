@@ -2,7 +2,8 @@
 Xsolla Backend [XBE] - Welcome
 ==============================
 
-.. image:: /_static/images/_local/features_banner.png
+.. image:: /_static/images/_local/xbe-banner-1200x478.min.png
+   :alt: XBE Docs
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
@@ -91,7 +92,7 @@ Xsolla Backend [XBE] - Welcome
    
    Chat With Us! <https://discord.gg/XsollaBackend>
 
-**Xsolla Backend** \[XBE\] is a powerful backend engine for building highly-scalable online games and entertainment
+**Xsolla Backend** [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
 products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
 matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
 
@@ -103,6 +104,8 @@ matchmaking and identity to quest systems - enabling you to craft modern online 
 
 Why Choose Xsolla Backend?
 --------------------------
+
+Xsolla Backend is the most **complete** online gaming platform:
 
 1. **Trusted Technology:** Powered by :doc:`AcceleratXR <content/-/welcome/history>` with source-available tech backed by experienced Xsolla veterans.
 2. **Rapid Development:** Streamlined developer process to build cross-play, multiplayer games.

@@ -8,13 +8,14 @@
 #
 ##############################################################################
 import os
+import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Xsolla Backend [XBE] Docs'
+project = 'XBE Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = 'v2024.07.0'
@@ -51,6 +52,8 @@ sys.path.append(os.path.abspath('.'))
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
     app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
+    app.connect('build-finished', copy_open_graph_img_to_build)
+
 
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
@@ -124,38 +127,49 @@ highlight_language = "cpp"
 # For embed preview info, such as when link is dropped into Discord/FB.
 # https://github.com/wpilibsuite/sphinxext-opengraph?tab=readme-ov-file#options
 
-# The main og:banner @ 1200x630 (minimized)
-ogp_image = '_static/images/_local/xbe-banner-og-1200x630.min.png'
+ogp_site_url = "https://docs.xsolla.cloud/"  # Full https:// url with lingering slash/
+ogp_use_first_image = False  # We want to always use our consistent banner; we can potentially per-page override this
+ogp_title = project  # "XBE Docs"
 
-# True to use each page's first image, if available. If set to True
-# but no image is found, Sphinx will use ogp_image instead.
-ogp_use_first_image = False
+# EXTERNAL og:banner @ 1200x630 (minimized) url; TODO: Change this to /latest next patch
+ogp_image = 'https://docs.xsolla.cloud/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png'
 
 ogp_custom_meta_tags = [
-    # HTML
-    '<title>Xsolla Backend [XBE] Docs</title>',
-    
     # Image
     '<meta property="og:image:type" content="image/png">',
     '<meta property="og:image:width" content="1200">',
     '<meta property="og:image:height" content="630">',
-    '<meta name="description" content="The most complete online gaming platform">',
-    
+    #'<meta name="description" content="The most complete online gaming platform">',
+
     # FB
     '<meta property="og:url" content="https://docs.xsolla.cloud/">'
     '<meta property="og:type" content="website">',
-    '<meta property="og:title" content="Xsolla Backend [XBE] Docs">',
-    '<meta property="og:description" content="The most complete online gaming platform">',
-    #'<meta property="og:image" content="https://external/link.png">',
-    
+    # f'<meta property="og:title" content="{project}">',
+    # f'<meta property="og:description" content={ogp_description}>',
+    # '<meta property="og:image" content="https://external/link.png">',
+
     # Twitter / X
     '<meta name="twitter:card" content="summary_large_image">',
     '<meta property="twitter:domain" content="docs.xsolla.cloud">',
     '<meta property="twitter:url" content="https://docs.xsolla.cloud/">',
-    '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
-    '<meta name="twitter:description" content="The most complete online gaming platform">',
-    #'<meta name="twitter:image" content="https://external/link.png">',   
+    #'<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
+    #'<meta name="twitter:description" content="The most complete online gaming platform">',
+    # '<meta name="twitter:image" content="https://external/link.png">',
 ]
+
+
+# If we don't use the open graph image directly (we use a smaller variant in the docs),
+# We need to manually mv it to the build images dir
+def copy_open_graph_img_to_build(app, exception):
+    html_og_image = os.path.abspath('source/_static/images/_local/xbe-banner-og-1200x630.min.png')
+    build_images_dir = os.path.abspath(os.path.join(app.outdir, '_images'))
+
+    print(f"\n[conf.py::sphinxext.opengraph] Copying og:image locally "
+          f"from\n'{html_og_image}'\n"
+          f"to\n'{build_images_dir}'\n...")
+    shutil.copy(html_og_image, build_images_dir)
+    print('Done.\n')
+
 
 # -- Sphinx Extension: Image Minimizer --------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
