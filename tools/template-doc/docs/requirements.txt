@@ -3,8 +3,8 @@
 # See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
 #
 # For all doc repos, including the main multi-repo doc (to be copied to other repo `requirements.txt`):
-sphinx==7.4.7                 # TODO: Test 8.0.2 (from 7.4.7)
-sphinx_rtd_theme==2.1.0rc1    # TODO: Keep an eye out for 2.1.0 (from 2.0.0) | https://pypi.org/project/sphinx-rtd-theme/
-myst-parser>=0.18.0  	      # `recommonmark` successor
-sphinx_tabs>=3.4.5            # https://pypi.org/project/sphinx-tabs/
-gitpython==3.1.43             # Aids "Edit with GitLab" btn | https://pypi.org/project/GitPython/ 
+sphinx==7.4.7  				 # TODO: Test 8.0.2 (from 7.4.7)
+sphinx_rtd_theme==2.1.0rc1  # Testing 3.0.0 pre release via 2.1.0rc1 to fix theme bugs; revert to 2.0.0 if issues; keep eye on 3.0.0 release | https://pypi.org/project/sphinx-rtd-theme
+myst-parser>=0.18.0  		 # `recommonmark` successor
+sphinx-tabs>=3.4.5  		    # https://pypi.org/project/sphinx-tabs
+gitpython>=3.1.43           # Aids "Edit with GitLab" btn | https://pypi.org/project/GitPython

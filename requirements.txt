@@ -2,7 +2,7 @@
 sphinx==7.4.7				# TODO: Test 8.0.2 (from 7.4.7)
 sphinx_rtd_theme==2.1.0rc1	# Testing 3.0.0 pre release via 2.1.0rc1 to fix theme bugs; revert to 2.0.0 if issues; keep eye on 3.0.0 release | https://pypi.org/project/sphinx-rtd-theme
 myst-parser>=4.0.0			# `recommonmark` successor
-sphinx_tabs>=3.4.5			# https://pypi.org/project/sphinx-tabs
+sphinx-tabs>=3.4.5			# https://pypi.org/project/sphinx-tabs
 gitpython>=3.1.43			# Aids "Edit with GitLab" btn | https://pypi.org/project/GitPython
 
 # For this main multi-versioning multi-repo doc only >>
