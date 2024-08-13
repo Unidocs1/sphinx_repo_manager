@@ -4,6 +4,7 @@ Xsolla Backend [XBE] - Welcome
 
 .. image:: /_static/images/_local/xbe-banner-1200x478.min.png
    :alt: XBE Docs
+   :width: 720px
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
