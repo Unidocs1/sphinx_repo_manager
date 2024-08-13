@@ -122,14 +122,14 @@ Xsolla Backend is the most **complete** online gaming platform:
 :doc:`Get started now <content/-/welcome/quickstart>` for free!
 
 Our Philosophy
-~~~~~~~~~~~~~~
+--------------
 
 * Faster time to market
 * Reduced development cost
 * Lower cost of ownership
 
 Time to Market
-^^^^^^^^^^^^^^
+--------------
 
 Unlike other platforms that offer limited features focused on simple mobile games, Xsolla Backend is built by
 fellow game developer veterans who understand the challenges of timely product delivery.
@@ -138,7 +138,7 @@ Our priority is to equip you with a **complete** suite of built-in systems and f
 concentrate on creating games without the worries of backend infrastructure.
 
 Development Cost
-^^^^^^^^^^^^^^^^
+----------------
 
 Budget constraints are a major challenge. Many platforms over-promise but under-deliver, leading to hidden costs and
 additional development work. With Xsolla Backend, you get a platform engineered to meet the highest AAA standards.
@@ -148,7 +148,7 @@ Save time, reduce costs and eliminate surprises with Xsolla Backend — the reli
 solution for your game development needs.
 
 Total Cost of Ownership
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 The true measure of a game's success lies in its ability to remain profitable long after launch. Many games have failed
 due to exorbitant hosting and operational costs that outpace revenue. At Xsolla Backend, we understand this challenge
