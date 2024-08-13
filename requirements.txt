@@ -10,6 +10,6 @@ PyYAML>=6.0.1         		# Req'd for sphinx_repo_manager ext
 colorama>=0.4.6       		# Req'd for sphinx_repo_manager ext
 sphinx-copybutton>=0.5.2  	# https://pypi.org/project/sphinx-copybutton
 sphinx-new-tab-link>=0.5.2	# Opens all external links in new tab | https://pypi.org/project/sphinx-new-tab-link
-sphinxcontrib-redoc>=1.6.	# OpenAPI Docgen | https://sphinxcontrib-redoc.readthedocs.io/en/stable
+sphinxcontrib-redoc>=1.6.0	# OpenAPI Docgen | https://sphinxcontrib-redoc.readthedocs.io/en/stable
 pillow>=10.4.0            	# Minimize images on CI | https://pypi.org/project/pillow
 sphinxext-opengraph>=0.9.1	# Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
