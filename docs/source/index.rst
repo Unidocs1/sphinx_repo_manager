@@ -1,5 +1,3 @@
-og:description: Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment products covering a robust set of features.
-
 .. meta::
    :description: Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and
                  entertainment products covering a robust set of features.
