@@ -245,8 +245,7 @@ print('')
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
-# html_theme = 'piccolo_theme'
+html_theme = 'sphinx_book_theme'
 
 # The name of the Pygments (syntax highlighting) style to use.
 # `sphinx` works very well with the RTD theme, but you can always change it
@@ -260,22 +259,41 @@ html_static_path = ['_static']
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
+# The theme to use for HTML and HTML Help pages
 html_theme_options = {
-    'canonical_url': 'https://docs.xsolla.cloud',
-    'analytics_id': 'UA-136672390-2',  # Provided by Google in your dashboard
-    'logo_only': True,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': True,
-    'style_nav_header_background': '#18171C',
-    # Toc options >>
-    'collapse_navigation': True,
-    'sticky_navigation': True,  # Keep the navbar fixed to the top
-    'navigation_depth': 2,  # (!) Important
-    # 'includehidden': True,
-    # 'titles_only': False,
+    # # RTD THEME (DEPRECATED) >>
+    # 'nav_title': project,  # Appears in opengraph metadata, meta title & top breadcrumbs
+    # 'base_url': 'https://docs.xsolla.cloud/',
+    # 'color_primary': 'blue', 
+    # 'color_accent': 'light-blue',
+    # 'repo_url': 'https://gitlab.acceleratxr.com/Core/acceleratxr.io/',
+    # 'repo_name': 'acceleratxr.io',
+    # 'globaltoc_depth': 2,  # Visible levels of the global TOC; Default: 2
+    # 'globaltoc_collapse': False,  # Expand the global TOC by default
+    # 'globaltoc_includehidden': True,  # Show the TOC in the sidebar
+    # 'master_doc': 'index', # Set the master doc for the project
+
+    # BOOK THEME >>
+    'show_toc_level': 2,
+    'home_page_in_toc': False,
+    "path_to_docs": "docs/",
+    "use_repository_button": False,
+    "use_edit_page_button": False,
+    "use_issues_button": True,
+    "extra_navbar": "",
+    "extra_footer": "",
+    "repository_url": "https://gitlab.acceleratxr.com/Core/acceleratxr.io",
+    "repository_branch": "main",
+    "max_navbar_depth": 2,
+    "show_navbar_depth": 1,  # Gow deep should we initially auto-expand the left navbar?
+    "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
+    "pygments_light_style": "monokai",  # May get overwritten by pygments_style
+    
+    # TODO: Awaiting API keys (submitted; reqs manual approval)
+    # "algolia": {  # book
+    #     "api_key": "your_algolia_api_key",
+    #     "index_name": "your_index_name",
+    # },
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
@@ -290,6 +308,7 @@ html_context.update({
     'gitlab_repo': 'acceleratxr.io',  # Repo name
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_version': 'master',  # Version
+    'doc_path': 'docs/source',
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md

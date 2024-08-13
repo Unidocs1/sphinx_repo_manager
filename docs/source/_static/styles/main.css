@@ -3,7 +3,7 @@
 /* Graphik Regular (Normal Weight) */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
+    src: url('../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
     font-weight: 400; /* Normal weight */
     font-style: normal;
 }
@@ -11,7 +11,7 @@
 /* Graphik Medium */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
+    src: url('../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
     font-weight: 500; /* Medium weight */
     font-style: normal;
 }
@@ -19,7 +19,7 @@
 /* Graphik Bold */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
+    src: url('../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
     font-weight: 700; /* Bold weight */
     font-style: normal;
 }
@@ -27,7 +27,7 @@
 /* Graphik Thin */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    src: url('../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
     font-weight: 300; /* Thin weight */
     font-style: normal;
 }
@@ -35,7 +35,7 @@
 /* Source Code Pro for mono code blocks */
 @font-face {
     font-family: 'Source Code Pro';
-    src: url('_static/fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
+    src: url('../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
     font-weight: 400; /* Normal weight */
     font-style: normal;
 }
@@ -45,43 +45,51 @@
 /* Jolting fix when jumping navigations or anchors */
 html {
     scroll-behavior: smooth;
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-family: 'Graphik', "Impact", 'Open Sans', 'Lato', sans-serif;
     font-weight: 400;
+
+    --pst-font-family-base-system: "Graphik", "Impact", -apple-system, "BlinkMacSystemFont",
+    "Segoe UI", "Helvetica Neue", "Arial", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+    
+    --pst-font-family-monospace-system: "Source Code Pro", "Impact", "SFMono-Regular", "Menlo",
+    "Consolas", "Monaco", "Liberation Mono", "Lucida Console", monospace;
+    
+    --pst-font-family-base: var(--pst-font-family-base-system);
+    --pst-font-family-heading: var(--pst-font-family-base-system);
+    --pst-font-family-monospace: var(--pst-font-family-monospace-system);
+}
+
+html[data-theme="dark"] {
+    --background: red; 
+    --on-background: pink;
 }
 
 /* Body font */
 body {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-family: var(--pst-font-family-base), sans-serif;
     font-weight: 400;
 }
 
 /* Heading font */
-h1, h2 {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
-    font-weight: 700; /* Bold for headings */
+h1, h2, h3, h4, h5, h6, .small-text {
+    font-family: var(--pst-font-family-heading), sans-serif;
 }
 
-h2 {
-    color: #FF045A; /* Xsolla Pink */
+/* Pink Text */
+h2, .caption-text {
+    color: #FF045A !important; /* Xsolla Pink */
 }
 
-h3, h4 {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
-    font-weight: 500; /* Medium for subheadings */
-}
-
-.small-text {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
-    font-weight: 300; /* Thin for smaller text */
-}
-
-.caption-text {
-    color: #FF045A; /* Xsolla Pink */
+/* Override the book theme orange hover color */
+:root {
+    --color-primary: #0073f7; /* Replace with your desired color */
+    --color-accent: #00c77e;  /* If needed, replace this too */
 }
 
 /* Code blocks; TODO: This doesn't seem to work */
 code, pre {
-    font-family: 'Source Code Pro', SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: var(--pst-font-family-monospace-system), monospace;
     font-weight: 400;
 }
 
@@ -101,3 +109,4 @@ https://stackoverflow.com/a/64368882/6541639
 .wy-table-responsive table td, .wy-table-responsive table th {
     white-space: normal;
 }
+
