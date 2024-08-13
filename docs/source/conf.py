@@ -261,45 +261,35 @@ html_favicon = '_static/images/_local/favicon.ico'
 
 # The theme to use for HTML and HTML Help pages
 html_theme_options = {
-    # Set the name of the project to appear in the navigation.
-    'nav_title': project,
-
-    # Set the base URL for the project
-    'base_url': 'https://docs.xsolla.cloud/',
-
-    # Set the color and the accent color for the theme
-    'color_primary': 'blue',
-    'color_accent': 'light-blue',
-
-    # Set the repo location to link to the GitHub repo
-    'repo_url': 'https://gitlab.acceleratxr.com/Core/acceleratxr.io/',
-    'repo_name': 'acceleratxr.io',
-
-    # Visible levels of the global TOC; Default: 2
-    'globaltoc_depth': 2,
-
-    # Expand the global TOC by default
-    'globaltoc_collapse': False,
-
-    # Show the TOC in the sidebar
-    'globaltoc_includehidden': True,
-
-    # Set the master doc for the project
-    'master_doc': 'index',
+    # # RTD THEME (DEPRECATED) >>
+    # 'nav_title': project,  # Appears in opengraph metadata, meta title & top breadcrumbs
+    # 'base_url': 'https://docs.xsolla.cloud/',
+    # 'color_primary': 'blue', 
+    # 'color_accent': 'light-blue',
+    # 'repo_url': 'https://gitlab.acceleratxr.com/Core/acceleratxr.io/',
+    # 'repo_name': 'acceleratxr.io',
+    # 'globaltoc_depth': 2,  # Visible levels of the global TOC; Default: 2
+    # 'globaltoc_collapse': False,  # Expand the global TOC by default
+    # 'globaltoc_includehidden': True,  # Show the TOC in the sidebar
+    # 'master_doc': 'index', # Set the master doc for the project
 
     # BOOK THEME >>
     'show_toc_level': 2,
-    'home_page_in_toc': True,
+    'home_page_in_toc': False,
     "path_to_docs": "docs/",
-    "use_repository_button": True,
-    "use_edit_page_button": True,
+    "use_repository_button": False,
+    "use_edit_page_button": False,
     "use_issues_button": True,
     "extra_navbar": "",
     "extra_footer": "",
     "repository_url": "https://gitlab.acceleratxr.com/Core/acceleratxr.io",
     "repository_branch": "main",
+    "max_navbar_depth": 2,
+    "show_navbar_depth": 1,  # Gow deep should we initially auto-expand the left navbar?
+    "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
+    "pygments_light_style": "monokai",  # May get overwritten by pygments_style
     
-    # TODO
+    # TODO: Awaiting API keys (submitted; reqs manual approval)
     # "algolia": {  # book
     #     "api_key": "your_algolia_api_key",
     #     "index_name": "your_index_name",
@@ -318,6 +308,7 @@ html_context.update({
     'gitlab_repo': 'acceleratxr.io',  # Repo name
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_version': 'master',  # Version
+    'doc_path': 'docs/source',
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
