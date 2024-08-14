@@ -1,10 +1,18 @@
 /* -- FONT FACES ----------------------------------------------------------------> */
 
+/* Sharp Grotesk Medium */
+@font-face {
+    font-family: 'Sharp Grotesk';
+    src: url('../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
+    font-weight: 300 600; /* Apply to multiple weights, but it will look the same */
+    font-style: normal;
+}
+
 /* Graphik Regular (Normal Weight) */
 @font-face {
     font-family: 'Graphik';
     src: url('../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
-    font-weight: 400; /* Normal weight */
+    font-weight: normal; /* Normal weight */
     font-style: normal;
 }
 
@@ -20,7 +28,7 @@
 @font-face {
     font-family: 'Graphik';
     src: url('../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
-    font-weight: 700; /* Bold weight */
+    font-weight: 600; /* Bold weight */
     font-style: normal;
 }
 
@@ -45,35 +53,59 @@
 /* Jolting fix when jumping navigations or anchors */
 html {
     scroll-behavior: smooth;
-    font-family: 'Graphik', "Impact", 'Open Sans', 'Lato', sans-serif;
+    font-family: 'Graphik', 'Impact', 'Open Sans', 'Lato', sans-serif;
     font-weight: 400;
 
-    --pst-font-family-base-system: "Graphik", "Impact", -apple-system, "BlinkMacSystemFont",
-    "Segoe UI", "Helvetica Neue", "Arial", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
-    
-    --pst-font-family-monospace-system: "Source Code Pro", "Impact", "SFMono-Regular", "Menlo",
-    "Consolas", "Monaco", "Liberation Mono", "Lucida Console", monospace;
-    
+    --pst-font-family-base-system: 'Graphik', 'Impact',
+    -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue',
+    'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+
+    --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', 'Impact', -apple-system,
+    'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+    --pst-font-family-monospace-system: 'Source Code Pro', 'Impact',
+    'SFMono-Regular', 'Menlo', 'Consolas', 'Monaco', 'Liberation Mono',
+    'Lucida Console', monospace;
+
     --pst-font-family-base: var(--pst-font-family-base-system);
-    --pst-font-family-heading: var(--pst-font-family-base-system);
+    --pst-font-family-heading: var(--pst-font-family-base-heading);
     --pst-font-family-monospace: var(--pst-font-family-monospace-system);
 }
 
-html[data-theme="dark"] {
-    --background: red; 
-    --on-background: pink;
-}
-
-/* Body font */
 body {
     font-family: var(--pst-font-family-base), sans-serif;
     font-weight: 400;
 }
 
 /* Heading font */
-h1, h2, h3, h4, h5, h6, .small-text {
+h1, h2, h3 {
     font-family: var(--pst-font-family-heading), sans-serif;
+}
+
+h4, h5, h6, .small-text {
+    font-family: var(--pst-font-family-base), sans-serif;
+}
+
+h1 {
+    font-size: 175%;
+}
+
+h2 {
+    font-size: 150%;
+}
+
+h3 {
+    font-size: 125%
+}
+
+h4 {
+    font-size: 115%
+}
+
+h5 {
+    font-size: 110%
 }
 
 /* Pink Text */
@@ -81,10 +113,14 @@ h2, .caption-text {
     color: #FF045A !important; /* Xsolla Pink */
 }
 
-/* Override the book theme orange hover color */
-:root {
-    --color-primary: #0073f7; /* Replace with your desired color */
-    --color-accent: #00c77e;  /* If needed, replace this too */
+/* Left nav */
+.nav, .page-toc .nav-link {
+    font-size: 105%;
+}
+
+/* Right subnav */
+.page-toc {
+    font-size: 103%;
 }
 
 /* Code blocks; TODO: This doesn't seem to work */
@@ -93,20 +129,167 @@ code, pre {
     font-weight: 400;
 }
 
-/* 
-Merges separate toctrees into 1, useful for having
-different :maxdepth: sizes
-https://stackoverflow.com/a/64368882/6541639 
-*/ 
-.rst-content .toctree-wrapper:not(:last-child) ul {
-   margin-bottom: 0;
+/* Selected right-column navbar item */
+.toc-entry a.nav-link.active {
+    font-weight: 400;
 }
 
 /* 
- * Bug workaround for unresponsive tables that won't auto-wrap (thanks, Korne127)
- * https://github.com/readthedocs/sphinx_rtd_theme/issues/1505#issuecomment-2258832864 
+ * Merges separate toctrees into 1, useful for having
+ * different :maxdepth: sizes
+ * https://stackoverflow.com/a/64368882/6541639 
+*/
+.rst-content .toctree-wrapper:not(:last-child) ul {
+    margin-bottom: 0;
+}
+
+/* 
+ * Bug workaround for unresponsive tables that won't auto-wrap 
+ * Thanks, Korne127 | https://github.com/readthedocs/sphinx_rtd_theme/issues/1505#issuecomment-2258832864 
  */
 .wy-table-responsive table td, .wy-table-responsive table th {
     white-space: normal;
 }
 
+/* 
+ * We currently only allocated time to style the dark theme.
+ * Thanks, choldgraf | https://github.com/executablebooks/sphinx-book-theme/issues/750
+ */
+button.theme-switch-button {
+    display: none !important;
+}
+
+/* -- MAIN COLOR THEME -------------------------------------------------------- */
+
+html[data-theme='dark'] {
+    /* Main theme */
+    --pst-color-primary: #00c77e;
+    --pst-color-secondary: #3691f9;
+    --pst-color-surface: #00244d;
+    --pst-color-text-base: #fafbfc; /* Body; but doesn't apply to <p>? */
+    --darkreader-inline-color: #fafbfc;
+    
+    /* Link colors */
+    --pst-link-color: #3691f9; /* Link color */
+    --pst-link-hover-color: #00c77e; /* Link hover color */
+    --pst-color-text-muted: #c5d0db;
+    --pst-color-border: transparent;
+}
+
+/* Match Xsolla's sharp edge logo on all pics */
+img {
+    border-radius: 0 !important;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    padding-right: 30px !important;
+}
+
+/* Navbar */
+.nav.bd-sidenav .reference.internal {
+    color: #fafbfc;
+}
+
+/* Left navbar bg color */
+.bd-sidebar-primary {
+    background-color: rgba(0, 36, 77, 0.1);
+}
+
+/* Left navbar hover color */
+.nav.bd-sidenav .reference.internal:hover {
+    /*color: white !important;*/
+    color: var(--pst-link-hover-color) !important;
+}
+
+.toctree-wrapper .compound {
+    text-decoration: none;
+}
+
+.search-button-field {
+    background: linear-gradient(225deg, rgba(18, 18, 18, 0.1) 20%, rgb(0, 36, 77) 70%)
+}
+
+/* Fix: Stop making images dark in dark theme */
+html[data-theme='dark'] img:not(.only-dark, .dark-light) {
+    filter: none;
+}
+
+/* -- BODY -------------------------------------------------------------------- */
+
+/* Body toctree: Show bullets for children (theme hides, by default) */
+.toctree-wrapper li.toctree-l2 {
+    list-style-type: disc; /* Adds the bullet points */
+    margin-left: 1.5em; /* Adjusts the indentation if needed */
+    padding-left: 0.5em; /* Adjust the padding if necessary */
+}
+.toctree-wrapper li.toctree-l3,
+.toctree-wrapper li.toctree-l4,
+.toctree-wrapper li.toctree-l5 {
+    list-style-type: square; /* Adds the bullet points */
+    margin-left: 1.5em; /* Adjusts the indentation if needed */
+    padding-left: 0.5em; /* Adjust the padding if necessary */
+}
+
+
+/* -- LINKS ------------------------------------------------------------------- */
+
+a:hover {
+    text-decoration-thickness: 1px !important;
+}
+
+.bd-main a {
+    text-decoration: none
+}
+
+.bd-main a:hover {
+    text-decoration: none;
+}
+
+/* -- XSOLLA UI -------------------------------------------------------------- */
+
+.xsui-button {
+    font-family: 'Graphik', -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, Helvetica, Arial;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    line-height: 24px;
+    text-transform: uppercase;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 40px;
+    color: #fff !important;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color .1s ease-in-out, border-color .1s ease-in-out, color .1s ease-in-out, opacity .1s ease-in-out, box-shadow .1s ease-in-out;
+}
+
+.xsui-button--appearance-primary {
+    background-color: #00c77e !important;
+    border-color: #00c77e !important;
+    box-shadow: 0 4px 16px rgba(0, 199, 126, .32);
+}
+
+.xsui-button--appearance-primary:hover {
+    background-color: #01b170 !important;
+    border-color: #01b170 !important;
+    box-shadow: 0 8px 16px rgba(0, 199, 126, .32);
+}
+
+.xsui-button--size-md {
+    min-width: 140px;
+    padding: 9px 32px;
+}
+
+.xsui-button__wrapper {
+    position: relative;
+}
+
+.xsui-button__content {
+    display: flex;
+    align-items: center;
+}
