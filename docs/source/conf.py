@@ -276,18 +276,21 @@ html_theme_options = {
     # BOOK THEME >>
     'show_toc_level': 2,
     'home_page_in_toc': False,
-    "path_to_docs": "docs/",
-    "use_repository_button": False,
-    "use_edit_page_button": False,
-    "use_issues_button": True,
-    "extra_navbar": "",
-    "extra_footer": "",
+    "path_to_docs": "docs/source/",
+    # "extra_navbar": "",
+    # "extra_footer": "",
+    "repository_provider": "gitlab",
     "repository_url": "https://gitlab.acceleratxr.com/Core/acceleratxr.io",
     "repository_branch": "main",
     "max_navbar_depth": 2,
     "show_navbar_depth": 1,  # Gow deep should we initially auto-expand the left navbar?
     "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
     "pygments_light_style": "monokai",  # May get overwritten by pygments_style
+    "use_fullscreen_button": False,  # Redundant in modern browsers
+    "use_download_button": False,  # Redundant in modern browsers
+    "use_repository_button": True,
+    "use_edit_page_button": False,
+    "use_issues_button": True,
     
     # TODO: Awaiting API keys (submitted; reqs manual approval)
     # "algolia": {  # book
@@ -342,9 +345,10 @@ myst_enable_extensions = [
    This will show if False
 """
 
+fallback_to_production_stage_if_not_rtd = True
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'production-stage': read_the_docs_build,
+    'production-stage': read_the_docs_build or fallback_to_production_stage_if_not_rtd,
 
     # True: [Navbar] New create acct page - False: Pricing page
     'parent-nav-create-your-acct-link-to-new-xbe': False,

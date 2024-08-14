@@ -14,6 +14,10 @@ Xsolla Backend [XBE] - Welcome
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
+.. raw:: html
+
+   <br><br>
+
 .. feature-flag:: production-stage
    :fallback:
 
@@ -37,8 +41,8 @@ Xsolla Backend [XBE] - Welcome
       Features <content/-/welcome/features>
       Quickstart <content/-/welcome/quickstart>
       Demo <content/-/welcome/demo_env>
-      Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
       Release Notes <content/-/welcome/release_notes/current/index>
+      Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
 
 .. feature-flag:: parent-nav-create-your-acct-link-to-new-xbe
    :fallback:
@@ -51,8 +55,8 @@ Xsolla Backend [XBE] - Welcome
       Features <content/-/welcome/features>
       Quickstart <content/-/welcome/quickstart>
       Demo <content/-/welcome/demo_env>
-      Create Your Account <https://www.acceleratxr.com/pricing>
       Release Notes <content/-/welcome/release_notes/current/index>
+      Create Your Account <https://www.acceleratxr.com/pricing>
 
 .. toctree::
    :caption: Concepts
@@ -116,7 +120,13 @@ Xsolla Backend is the most **complete** online gaming platform:
 2. **Rapid Development:** Streamlined developer process to build cross-play, multiplayer games.
 3. **Cost-Effective:** Only 5% of gross sales, free hosting and unlimited support.
 
-:doc:`Get started now <content/-/welcome/quickstart>` for free!
+.. raw:: html
+
+   <a class="xsui-button xsui-button--appearance-primary xsui-button--size-md xsui-button--color-blue" href="content/-/welcome/quickstart.html">
+      <div class="xsui-button__wrapper">
+         <div class="xsui-button__content">Get Started Now for Free!</div>
+      </div>
+   </a>
 
 Our Philosophy
 --------------
