@@ -621,8 +621,9 @@ class SphinxRepoManager:
 
         if self.shutdown_flag:  # Multi-threaded CTRL+C check
             raise SystemExit
-
-        if not os.path.exists(rel_tag_versioned_clone_src_path):
+        
+        clone_repo = not os.path.exists(rel_tag_versioned_clone_src_path) 
+        if clone_repo:
             action_str = colorize_action(f"📦 [{repo_name}] Cloning repo...")
             print(f'{colorize_action(brighten("*[REALTIME]"))} {action_str}')
             log_entries.append(action_str)
@@ -663,16 +664,21 @@ class SphinxRepoManager:
             print(f'{colorize_action(brighten("*[REALTIME]"))} ✅ [{repo_name}] Successfully cloned')
             if stash_and_continue_if_wip:
                 already_stashed = True
-        elif skip_repo_updates:
-            action_str = colorize_action(f"Skipping updates ({brighten('skip_repo_updates')})...")
-            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
-        elif has_tag:
-            action_str = colorize_action(f"Skipping updates ({brighten('has_tag')})...")
-            log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
         else:
-            action_str = colorize_action(f"Fetching updates...")
+            # No need to clone: Let's still fetch (no pull) - including tags
+            if skip_repo_updates:
+                action_str = colorize_action(f"Skipping pulled updates ({brighten('skip_repo_updates')}),"
+                                             f"but we'll still fetch...")
+                log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
+            elif has_tag:
+                action_str = colorize_action(f"Skipping pulled updates ({brighten('has_tag')}),"
+                                             f"but we'll still fetch...")
+                log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
+            else:
+                action_str = colorize_action(f"Fetching updates...")
             log_entries.append(f"🔃 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
+            # Fetch (only), including new tags
             try:
                 GitHelper.git_fetch(
                     rel_tag_versioned_clone_src_path,
@@ -684,7 +690,7 @@ class SphinxRepoManager:
         if self.shutdown_flag:  # Multi-threaded CTRL+C check
             raise SystemExit
 
-        # Checkout to the specific branch or tag
+        # Checkout to the specific branch or tag (!) Requires a git fetch if checking out new tags)
         has_branch = 'branch' in repo_info
         should_skip_branch_checkout = not cloned and has_branch and skip_repo_updates
         should_check_out_branch = not cloned and not has_tag and has_branch
