@@ -607,6 +607,7 @@ class SphinxRepoManager:
         - log_entries will be appended with the results of the operation, logging in chunks
           - This is to handle async logs so it's still chronological
         """
+
         _meta = repo_info['_meta']
         repo_url_dotgit = _meta['url_dotgit']
         skip_repo_updates = repo_info['skip_repo_updates']
@@ -621,8 +622,8 @@ class SphinxRepoManager:
 
         if self.shutdown_flag:  # Multi-threaded CTRL+C check
             raise SystemExit
-        
-        clone_repo = not os.path.exists(rel_tag_versioned_clone_src_path) 
+
+        clone_repo = not os.path.exists(rel_tag_versioned_clone_src_path)
         if clone_repo:
             action_str = colorize_action(f"📦 [{repo_name}] Cloning repo...")
             print(f'{colorize_action(brighten("*[REALTIME]"))} {action_str}')
@@ -632,17 +633,17 @@ class SphinxRepoManager:
             git_helper = GitHelper()  # TODO: Place this instance @ top?
 
             try:
-
                 git_helper.git_sparse_clone(
                     rel_tag_versioned_clone_src_path,
                     repo_url_dotgit,
                     checkout_branch_or_tag_name,
+                    has_tag,
                     rel_selected_repo_sparse_path,
                     stash_and_continue_if_wip,
                     log_entries=log_entries)
             except Exception as e:
-                additional_info = f"Error sparse-cloning repo '{brighten(repo_name)}':\n- {str(e)}"
-                raise Exception(f"{additional_info}") from e
+                inner_additional_info = f"Error sparse-cloning repo '{brighten(repo_name)}':\n- {str(e)}"
+                raise Exception(f"{inner_additional_info}") from e
 
             if self.shutdown_flag:  # Multi-threaded CTRL+C check
                 raise SystemExit
