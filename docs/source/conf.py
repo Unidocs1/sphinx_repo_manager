@@ -8,16 +8,17 @@
 #
 ##############################################################################
 import os
+import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Xsolla XBE'
+project = 'XBE Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = 'v2024.06.0'
+release = 'v2024.07.0'
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -35,7 +36,8 @@ sys.path.insert(0, os.path.abspath(''))
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
-read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
+read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
+fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
 
 # The absolute path to the directory containing conf.py.
 documentation_root = os.path.abspath(os.path.dirname(__file__))
@@ -51,6 +53,8 @@ sys.path.append(os.path.abspath('.'))
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
     app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
+    app.connect('build-finished', copy_open_graph_img_to_build)
+
 
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
@@ -87,6 +91,7 @@ extensions = [
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     'sphinxcontrib.redoc',  # Converts OpenAPI spec json files into API docs
     'sphinx.ext.todo',  # Allows for todo:: directive 
+    'sphinxext.opengraph',  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -107,12 +112,65 @@ exclude_patterns = [
     '**/venv',
 ]
 
+html_extra_path = [
+    'robots.txt',  # Only index latest ver to crawlers
+    'sitemap.xml',  # Show latest ver -> release notes -> feats -> api docs
+]
+
 master_doc = 'index'  # Build entry point: The "home page"
 tocdepth = 1  # Default :maxdepth:
 
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"
 highlight_language = "cpp"
+
+# -- Sphinx Extension: sphinxext-opengraph ----------------------------
+# For embed preview info, such as when link is dropped into Discord/FB.
+# https://github.com/wpilibsuite/sphinxext-opengraph?tab=readme-ov-file#options
+
+ogp_site_url = "https://docs.xsolla.cloud/"  # Full https:// url with lingering slash/
+ogp_use_first_image = False  # We want to always use our consistent banner; we can potentially per-page override this
+ogp_title = project  # "XBE Docs"
+
+# EXTERNAL og:banner @ 1200x630 (minimized) url; TODO: Change this to /latest next patch
+ogp_image = 'https://docs.xsolla.cloud/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png'
+
+ogp_custom_meta_tags = [
+    # Image
+    '<meta property="og:image:type" content="image/png">',
+    '<meta property="og:image:width" content="1200">',
+    '<meta property="og:image:height" content="630">',
+    # '<meta name="description" content="The most complete online gaming platform">',
+
+    # FB
+    '<meta property="og:url" content="https://docs.xsolla.cloud/">'
+    '<meta property="og:type" content="website">',
+    # f'<meta property="og:title" content="{project}">',
+    # f'<meta property="og:description" content={ogp_description}>',
+    # '<meta property="og:image" content="https://external/link.png">',
+
+    # Twitter / X
+    '<meta name="twitter:card" content="summary_large_image">',
+    '<meta property="twitter:domain" content="docs.xsolla.cloud">',
+    '<meta property="twitter:url" content="https://docs.xsolla.cloud/">',
+    # '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
+    # '<meta name="twitter:description" content="The most complete online gaming platform">',
+    # '<meta name="twitter:image" content="https://external/link.png">',
+]
+
+
+# If we don't use the open graph image directly (we use a smaller variant in the docs),
+# We need to manually mv it to the build images dir
+def copy_open_graph_img_to_build(app, exception):
+    html_og_image = os.path.abspath('source/_static/images/_local/xbe-banner-og-1200x630.min.png')
+    build_images_dir = os.path.abspath(os.path.join(app.outdir, '_images'))
+
+    print(f"\n[conf.py::sphinxext.opengraph] Copying og:image locally "
+          f"from\n'{html_og_image}'\n"
+          f"to\n'{build_images_dir}'\n...")
+    shutil.copy(html_og_image, build_images_dir)
+    print('Done.\n')
+
 
 # -- Sphinx Extension: Image Minimizer --------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
@@ -188,8 +246,7 @@ print('')
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
-# html_theme = 'piccolo_theme'
+html_theme = 'sphinx_book_theme'
 
 # The name of the Pygments (syntax highlighting) style to use.
 # `sphinx` works very well with the RTD theme, but you can always change it
@@ -203,22 +260,62 @@ html_static_path = ['_static']
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
+# The theme to use for HTML and HTML Help pages
 html_theme_options = {
-    'canonical_url': 'https://docs.xsolla.cloud',
-    'analytics_id': 'UA-136672390-2',  # Provided by Google in your dashboard
-    'logo_only': True,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': True,
-    'style_nav_header_background': '#18171C',
-    # Toc options >>
-    'collapse_navigation': True,
-    'sticky_navigation': True,  # Keep the navbar fixed to the top
-    'navigation_depth': 2,  # (!) Important
-    # 'includehidden': True,
-    # 'titles_only': False,
+    # # RTD THEME (DEPRECATED) >>
+    # 'nav_title': project,  # Appears in opengraph metadata, meta title & top breadcrumbs
+    # 'base_url': 'https://docs.xsolla.cloud/',
+    # 'color_primary': 'blue', 
+    # 'color_accent': 'light-blue',
+    # 'repo_url': 'https://gitlab.acceleratxr.com/Core/acceleratxr.io/',
+    # 'repo_name': 'acceleratxr.io',
+    # 'globaltoc_depth': 2,  # Visible levels of the global TOC; Default: 2
+    # 'globaltoc_collapse': False,  # Expand the global TOC by default
+    # 'globaltoc_includehidden': True,  # Show the TOC in the sidebar
+    # 'master_doc': 'index', # Set the master doc for the project
+
+    # BOOK THEME >>
+    'show_toc_level': 2,
+    'home_page_in_toc': False,
+    "path_to_docs": "docs/source/",
+    "repository_provider": "gitlab",
+    "repository_url": "https://gitlab.acceleratxr.com/Core/acceleratxr.io",
+    "repository_branch": "main",
+    "max_navbar_depth": 2,
+    "show_navbar_depth": 1,  # Gow deep should we initially auto-expand the left navbar?
+    "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
+    "pygments_light_style": "monokai",  # May get overwritten by pygments_style
+    "use_fullscreen_button": False,  # Redundant in modern browsers
+    "use_download_button": False,  # Redundant in modern browsers
+    "use_repository_button": True,
+    "use_edit_page_button": False,
+    "use_issues_button": True,
+    "icon_links": [  # TODO: Perhaps add something from https://shields.io ?
+        {
+            "name": "Discord",
+            "url": "https://discord.gg/XsollaBackend",
+            "icon": "fa-brands fa-discord",
+            "attributes": {"target": "_blank"},
+        },
+    ],
+    "article_header_end": [
+        "navbar-icon-links",
+        "article-header-buttons",
+    ],
+
+    # TODO: Awaiting API keys (submitted; reqs manual approval)
+    # "algolia": {  # book
+    #     "api_key": "your_algolia_api_key",
+    #     "index_name": "your_index_name",
+    # },
+}
+
+html_sidebars = {
+    "**": [
+        "navbar-logo",
+        "search-button-field",
+        "sbt-sidebar-nav",
+    ],
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
@@ -233,6 +330,7 @@ html_context.update({
     'gitlab_repo': 'acceleratxr.io',  # Repo name
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_version': 'master',  # Version
+    'doc_path': 'docs/source',
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
@@ -268,13 +366,11 @@ myst_enable_extensions = [
 
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'production-stage': True,
+    'production-stage': read_the_docs_build or fallback_to_production_stage_if_not_rtd,
 
-    # True: [Navbar] New create acct page - False: Pricing page
-    'parent-nav-create-your-acct-link-to-new-xbe': False,
-
-    # True: [Doc Page] New create acct page - False: Pricing page
-    'what-is-xbe-doc-create-link-to-new-xbe': False,
+    # True: [Navbar, Docs] Create Acct -> AXR pricing si te
+    # False: New login page @ https://xsolla.cloud 
+    'use-new-price-page-url': False,
 
     # True: Show web app libs (xbeapp, react, etc) - False: Hide
     'welcome-release_notes-products_web_apps-libs': False,

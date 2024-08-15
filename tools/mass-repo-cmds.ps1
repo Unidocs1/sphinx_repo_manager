@@ -9,13 +9,21 @@
 $REPOS_AVAIL_DIR = "../docs/source/_repos-available"
 $STARTING_DIR = Get-Location
 $FAIL_ON_1ST_ERR = $true
+$MASTER_MAIN_BRANCH_PROTECTION = $true  # Fail on master || main branch
 
 # RUN YOUR CUSTOM COMMANDS HERE (or leave empty for dry run) >>
 function Run-CustomCmds {
+    # Add your custom commands here, for example:
     #git add .
     #git commit -m "doc(fix): Foo" -m "[XBND-123]"
     #git pull
     #git push
+}
+
+function Get-CurrentBranch {
+    # Gets the current branch name
+    $branch = git rev-parse --abbrev-ref HEAD
+    return $branch
 }
 
 function Start-RepoCmds {
@@ -29,6 +37,13 @@ function Start-RepoCmds {
     Write-Output "-------------------------------"
     Write-Output "@ Repo: '${dirPath}'"
     
+    $currentBranch = Get-CurrentBranch
+
+    if ($MASTER_MAIN_BRANCH_PROTECTION -and ($currentBranch -eq 'master' -or $currentBranch -eq 'main')) {
+        Write-Warning "Skipping repository '$dirPath' because it is on a protected branch: '$currentBranch'"
+        return
+    }
+
     Run-CustomCmds
 	
     Write-Output ""

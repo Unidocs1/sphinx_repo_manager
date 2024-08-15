@@ -104,3 +104,7 @@ docs/source/_static/images/validation_services
 docs/source/_static/images/world_services
 docs/source/_static/images/xbe_static_docs
 docs/source/_static/images/xbeapp
+
+# Ignore auto-gen'd openapi specs
+docs/source/_specs/openapi.*
+docs/source/_specs/openapi.json

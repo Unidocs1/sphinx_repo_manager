@@ -11,6 +11,11 @@
 # - It *is safe* (and encouraged) to periodically wipe your source/ _repos-available + content dirs
 ##########################################################################################################
 
+# - Determines which repo info to use for git checkout
+# - Choices: 'dev_stage', 'production_stage'
+# - Defaults to 'dev_stage', if omitted
+stage: 'production_stage'
+
 # - (!) DANGEROUS: If false, will skip this extension both locally + on ReadTheDocs (RTD)
 # - Useful if you 100% know all repos are up-to-date for faster iterations
 # - Defaults to true, if omitted
@@ -19,7 +24,6 @@ enable_repo_manager: true
 # - If enable_repo_manager && false, will skip this extension locally
 # - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
 # - Defaults to true, if omitted
-enable_repo_manager_local: true
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers. 
@@ -50,9 +54,9 @@ stash_and_continue_if_wip: true
 base_symlink_path: 'source/content'
 
 # - If repository omits 'branch', this will be the fallback 
-# - Defaults to 'master', if omitted
+# - Defaults to 'dev', if omitted
 # - Tag will be prioritized over branch, if set
-default_branch: 'master'
+default_branch: 'dev'
 
 # - Default path to individual repo dirs we [mostly] want to 
 #   clone - instead of the entire repo 
@@ -74,206 +78,245 @@ init_clone_path: 'source/_repos-available'
 # - Defaults to '{repo_sparse_path}/source', if omitted
 init_clone_path_root_symlink_src: '{repo_sparse_path}/source/content'
 
-# ----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# (!) SEE MOCK REPO EXAMPLE @ BOTTOM, CONTAINING ALL [HEAVILY-COMMENTED] OPTIONS
 # For private repo access when testing with a !premium RTD account,
-# set GITLAB_ACCESS_TOKEN in RTD's web dashboard (still use HTTPS urls);
-# creds will be swapped @ .readthedocs.yaml
-repositories: # Dictionary of <repo_name, repo_data>; defaults to {}, if omitted - essentially the same as !enable_repo_manager[_local]
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Mock repo demonstrating all opts/overrides (pointing to default fallbacks)
-  #mock_repo_example:
-  ## - .git suffix == optional;
-  ## - HTTPS only (until we add cert support in RTD)
-  ## - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
-  #url: 'https://gitlab.acceleratxr.com/Core/foo_services'
-  #
-  ## - Normally named your_repo_name, but static docs is special
-  ## - Relative to baseClonePath
-  ## - Normalizes os/path/slashes
-  ## - Default '{repo_name}-{tag}'
-  #symlink_path: 'foo_services'
-  #
-  ## - Normalizes os/path/slashes
-  ## - Default {default_branch}, if omitted
-  #branch: 'master'
-  #
-  ## - You may not want a tag, if you just want the latest branch commit
-  ## - (!) Don't forget to prefix with 'v', if target tags include this
-  #tag: 'v1.0.0'
-  #
-  ## - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
-  ## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
-  ## - Normalizes 'explicit/forward/slashes'
-  ## - The parent dirs outside this will be 99% empty
-  ## - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
-  #repo_sparse_path_override: 'docs'
-  #
-  ## - Supports {repo_sparse_path} template - will take override ver if present
-  ## - If true, overrides init_clone_path_root_symlink_src
-  ## - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
-  #init_clone_path_root_symlink_src_override: 'docs'
-  #
-  ## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
-  #active: true  
-  #
-  # Useful for testing WIP without having it be stashed away or require a commit (still pulls _static images)
-  # Default false, if omitted
-  #skip_repo_updates: true
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Static >>
+#   set GITLAB_ACCESS_TOKEN in RTD's web dashboard (still use HTTPS urls);
+#   creds will be swapped @ .readthedocs.yaml
+# Dictionary of <repo_name, repo_data>; defaults to {}, if omitted, which would be the same as !enable_repo_manager
+repositories:
+  # Static docs containing most !repo content >>
   xbe_static_docs:
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
-    #branch: 'main'  # Dev stage
-    tag: 'v2024.06.0'  # Prod stage -- this particular repo should match macro version
-    #skip_repo_updates: false
-  # Services >>
+    dev_stage:
+      checkout: 'feat/v2024.07.0'
+      checkout_type: 'branch'
+    production_stage:
+      checkout: 'v2024.07.0'  # This particular repo should match the main doc macro version
+      checkout_type: 'tag'
+  # Backend Services >>
   account_services:
     url: 'https://gitlab.acceleratxr.com/Core/account_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.1'
+      checkout_type: 'tag' 
   achievements_services:
     url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.1'
+      checkout_type: 'tag'
   asset_services:
     url: 'https://gitlab.acceleratxr.com/Core/asset_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.0'
+      checkout_type: 'tag'
   backup_services:
     url: 'https://gitlab.acceleratxr.com/Core/backup_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.1'
+      checkout_type: 'tag'
   leaderboard_services:
     url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.1'
+      checkout_type: 'tag'
   matchmaking_services:
     url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   notification_services:
     url: 'https://gitlab.acceleratxr.com/Core/notification_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   persona_services:
     url: 'https://gitlab.acceleratxr.com/Core/persona_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   progression_services:
     url: 'https://gitlab.acceleratxr.com/Core/progression_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   purchasing_services:
     url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   quest_services:
     url: 'https://gitlab.acceleratxr.com/Core/quest_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   reporting_services:
     url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   scripting_services:
     url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
-    #branch: 'dev'  # dev stage
-    tag: 'v2.0.0-beta.2'  # Prod stage; TODO: Change to "v2.0.0" when ready
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   server_instance_services:
     url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.1'
+      checkout_type: 'tag'
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   telemetry_services:
     url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
-  validation_services:
-    url: 'https://gitlab.acceleratxr.com/Core/validation_services'
-    #branch: 'dev'  # Dev stage
-    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
-    #tag:  'TODO'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   world_services:
     url: 'https://gitlab.acceleratxr.com/Core/world_services'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.1'
+      checkout_type: 'tag'
   # Sdks >>
   sdk_cpp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
-    #branch: 'dev'  # Dev stage
-    tag: 'v4.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v4.0.0'
+      checkout_type: 'tag'
   sdk_csharp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.0'
+      checkout_type: 'tag'
   sdk_nodejs:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
-    #branch: 'dev'  # Dev stage
-    tag: 'v2.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v2.0.0'
+      checkout_type: 'tag'
   sdk_unity:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.0.0'  # TODO: Tag found, but this will fail (!docs); needs update merged from dev
+      checkout_type: 'tag'
     repo_sparse_path_override: 'Documentation~'
     init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
   sdk_unreal:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
-    #branch: 'dev'  # Dev stage
-    tag: 'v4.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v4.0.0'
+      checkout_type: 'tag'
   # Other Products/Apps >>
   service_monitor:
     url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
-    #branch: 'dev'  # Dev stage
-    tag: 'v3.2.0'  # Prod stage
+    production_stage:
+      checkout: 'v3.2.0'
+      checkout_type: 'tag'
   launcher:
     url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
-    #branch: 'dev'  # Dev stage
-    tag: 'v4.0.0'  # Prod stage
+    production_stage:
+      checkout: 'v4.0.0'
+      checkout_type: 'tag'
   console:
     url: 'https://gitlab.acceleratxr.com/Core/apps/console'
-    #branch: 'dev'  # Dev stage
-    tag: 'v6.0.1'  # Prod stage
-  xbeapp:
-    url: 'https://gitlab.acceleratxr.com/acceleratxr/apps/xbeapp'
-    #branch: 'dev'  # Dev stage
-    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
-    #tag: 'TODO'  # Prod stage
+    production_stage:
+      checkout: 'v6.0.1'
+      checkout_type: 'tag'
   # Demos >>
   unitychessgame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
-    #branch: 'dev'  # Dev stage
-    branch: 'main'  # Prod stage (TODO: Remove when prod tag set)
-    #tag: 'TODO'  # Prod stage
+    production_stage:
+      checkout: 'main'  # TODO: This will fail (!docs); needs update merged from dev; TODO: Mv branch to `master`?
+      checkout_type: 'branch'  # TODO: Use tag
   lyrastartergame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
-    #branch: 'dev'  # Dev stage
-    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
-    #tag: 'TODO'  # Prod stage
-#  # Libs/WebApps >>
-#  appconfig:
-#    url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
-#    branch: 'dev'  # Dev stage
-#  react-shared:
-#    url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
-#    branch: 'dev'  # Dev stage
-#  electron-shared:
-#    url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
-#    branch: 'dev'  # Dev stage
-#  # Composer >>
+    production_stage:
+      checkout: 'master'  # TODO: This will fail (!docs); needs update merged from dev
+      checkout_type: 'branch'  # TODO: Use tag
+  # Composer >>
   service-core:
     url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
-    #branch: 'dev'  # Dev stage
-    branch: 'master'  # Prod stage (TODO: Remove when prod tag set)
-    #tag: 'TODO'  # Prod stage
+    production_stage:
+      checkout: 'master'
+      checkout_type: 'branch'  # TODO: Use tag
+
+############################################
+# UNUSED REPOS (Possibly used later)
+############################################
+
+## Libs/WebApps >>
+#appconfig:
+#  url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
+#  production_stage:
+#    checkout: 'master'
+#    checkout_type: 'branch'
+#react-shared:
+#  url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
+#  production_stage:
+#    checkout: 'master'
+#    checkout_type: 'branch'  # TODO: Use tag
+#electron-shared:
+#  url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
+#  production_stage:
+#    checkout: 'master'
+#    checkout_type: 'branch'  # TODO: Use tag
+
+############################################
+# EXAMPLE REPO WITH ALL OPTIONS -- COMMENTED
+############################################
+
+#mock_repo_example:
+## - .git suffix == optional;
+## - HTTPS only (until we add cert support in RTD)
+## - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
+#url: 'https://gitlab.acceleratxr.com/Core/foo_services'
+#
+## - Normally named your_repo_name, but static docs is special
+## - Relative to baseClonePath
+## - Normalizes os/path/slashes
+## - Default '{repo_name}-{tag}'
+#symlink_path: 'foo_services'
+#
+## Expects branch || tag (usually branch); if missing, falls back to {default_branch}
+## This can optionally be be omitted since {default_branch} is 'dev', if using the default
+#dev_stage:
+#  checkout: 'dev'  # Normalizes os/path/slashes
+#  checkout_type: 'branch'  # Expects branch or tag; assumes 'branch' if missing
+#
+## Expects branch || tag (usually tag); if missing, falls back to {default_branch}
+#production_stage:
+#  checkout: 'v1.0.0'  # (!) Don't forget to prefix with 'v' to follow XBE standards
+#  checkout_type: 'tag'
+#
+## - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
+## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
+## - Normalizes 'explicit/forward/slashes'
+## - The parent dirs outside this will be 99% empty
+## - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
+#repo_sparse_path_override: 'docs'
+#
+## - Supports {repo_sparse_path} template - will take override ver if present
+## - If true, overrides init_clone_path_root_symlink_src
+## - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
+#init_clone_path_root_symlink_src_override: 'docs'
+#
+## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+#active: true  
+#
+## - Useful for testing multi-repo WIP without having it be stashed away or require a commit
+## - Still pulls from `_static/images/{repo_name}/`
+## - Default false, if omitted
+#skip_repo_updates: false

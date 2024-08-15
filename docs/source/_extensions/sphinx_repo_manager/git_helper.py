@@ -156,6 +156,7 @@ class GitHelper:
             rel_init_clone_path,
             repo_url_dotgit,
             branch,
+            branch_is_tag,
             preserve_gitlab_group,
             log_entries=None,
     ):
@@ -177,7 +178,7 @@ class GitHelper:
 
         git_clone_cmd_arr = [
             'git', 'clone',
-            '--branch', branch,
+            '--branch', branch, '--single-branch',  # --single-branch allows for cloning tags like this
             '-q',
             repo_url_dotgit, rel_init_clone_path,
         ]
@@ -237,6 +238,7 @@ class GitHelper:
             clone_to_path,
             repo_url_dotgit,
             branch,
+            branch_is_tag,
             repo_sparse_path,
             stash_and_continue_if_wip,
             log_entries=None
@@ -246,10 +248,11 @@ class GitHelper:
         (!) repo_sparse_path is a single string that will be combined into an arr.
         (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
         """
+        
         git_clone_filter_nocheckout_cmd_arr = [
             'git', 'clone',
             '--filter=blob:none', '--no-checkout',
-            '--branch', branch,
+            '--branch', branch, '--single-branch',  # --single-branch allows for cloning tags like this
             '-q', repo_url_dotgit, clone_to_path
         ]
 
