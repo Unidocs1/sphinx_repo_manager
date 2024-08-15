@@ -235,6 +235,11 @@ class SphinxRepoManager:
         selected_stage_checkout_branch_or_tag_name = selected_repo_stage_info['checkout']  # Defaults to 'master'
         selected_stage_checkout_type = selected_repo_stage_info['checkout_type']  # 'branch' or 'tag'
         has_tag = selected_stage_checkout_type == 'tag'
+        
+        # Sanity check tag -- in XBE, we prefix with `v`
+        if has_tag and not selected_stage_checkout_branch_or_tag_name.startswith('v'):
+            print(f'{colorize_error(brighten("*[REALTIME]"))} tag \'{selected_stage_checkout_branch_or_tag_name}\' '
+                  f'does NOT prefix with a "v"')
 
         # url: Req'd - Strip ".git" from suffix, if any (including SSH urls; we'll add it back via url_dotgit)
         url = repo_info.get('url', None)
