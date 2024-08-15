@@ -14,10 +14,6 @@ Xsolla Backend [XBE] - Welcome
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
-.. raw:: html
-
-   <br><br>
-
 .. feature-flag:: production-stage
    :fallback:
 
