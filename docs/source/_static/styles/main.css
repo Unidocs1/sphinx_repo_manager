@@ -1,17 +1,53 @@
+:root {
+    --xsui-brand-pink-color: #FF005B;
+    --xsui-brand-pink-color-low-opacity: #FCAECA; /* Inline code markdown */
+    --xsui-brand-blue-color: #0073f7; /* Table row hover */
+    --xsui-marine-green-action-color: #00c77e;
+    --xsui-marine-green-slightly-darker-action-color: #00C77EFF;
+    --xsui-crimson-red-color: #eb002f;
+    --xsui-bold-orange-color: #ff8111;
+    --xsui-bluish-black-color: #00244d;
+    --xsui-bluish-darker-black-color: #000e1e; /* Code block bg */
+    --xsui-bluish-darker-gray-secondary-text: #747e8a;
+    --xsui-bluish-dark-gray-disabled-text: #a0abb8;
+    --xsui-bluish-light-gray-borders-text: #c5d0db;
+    --xsui-bluish-lighter-pearl-gray-table-cell: #fafbfc;
+    --xsui-bluish-lightest-gray-white-bg: #f7faff;
+
+    --xsui-start-color-gradient-bright-sky: #489dff; /* Admonition info bg */
+    --xsui-start-color-gradient-coral-orange: #ff497f; /* Admonition warning bg */
+    --xsui-start-color-gradient-blue-violet: #ac2eff; /* Admonition attention bg */
+
+    --xsui-gradient-bright-sky: linear-gradient(90deg, var(--xsui-start-color-gradient-bright-sky), #00ffca); /* Admonition info bg */
+    --xsui-gradient-coral-orange: linear-gradient(90deg, var(--xsui-start-color-gradient-coral-orange), #fcdd40); /* Admonition warning bg */
+    --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb); /* Admonition attention bg */
+
+    /*--xsui-green-color: #0bb200;  !* Light theme only *!*/
+    /*--xsui-dark-yellow-color: #ffc500; */ /* Light theme only */
+}
+
 /* -- FONT FACES ----------------------------------------------------------------> */
+
+/* Sharp Grotesk Medium */
+@font-face {
+    font-family: 'Sharp Grotesk';
+    src: url('../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
+    font-weight: 300 600; /* Apply to multiple weights, but it will look the same */
+    font-style: normal;
+}
 
 /* Graphik Regular (Normal Weight) */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
-    font-weight: 400; /* Normal weight */
+    src: url('../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
+    font-weight: normal; /* Normal weight */
     font-style: normal;
 }
 
 /* Graphik Medium */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
+    src: url('../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
     font-weight: 500; /* Medium weight */
     font-style: normal;
 }
@@ -19,15 +55,15 @@
 /* Graphik Bold */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
-    font-weight: 700; /* Bold weight */
+    src: url('../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
+    font-weight: 600; /* Bold weight */
     font-style: normal;
 }
 
 /* Graphik Thin */
 @font-face {
     font-family: 'Graphik';
-    src: url('_static/fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    src: url('../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
     font-weight: 300; /* Thin weight */
     font-style: normal;
 }
@@ -35,7 +71,7 @@
 /* Source Code Pro for mono code blocks */
 @font-face {
     font-family: 'Source Code Pro';
-    src: url('_static/fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
+    src: url('../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
     font-weight: 400; /* Normal weight */
     font-style: normal;
 }
@@ -47,57 +83,346 @@ html {
     scroll-behavior: smooth;
     font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
     font-weight: 400;
+
+    --pst-font-family-base-system: 'Graphik', -apple-system,
+    'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue',
+    'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+
+    --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', -apple-system,
+    'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+    --pst-font-family-monospace-system: 'Source Code Pro', 'SFMono-Regular',
+    'Menlo', 'Consolas', 'Monaco', 'Liberation Mono',
+    'Lucida Console', monospace;
+
+    --pst-font-family-base: var(--pst-font-family-base-system);
+    --pst-font-family-heading: var(--pst-font-family-base-heading);
+    --pst-font-family-monospace: var(--pst-font-family-monospace-system);
 }
 
-/* Body font */
 body {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
+    font-family: var(--pst-font-family-base), sans-serif;
     font-weight: 400;
 }
 
 /* Heading font */
-h1, h2 {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
-    font-weight: 700; /* Bold for headings */
+h1, h2, h3 {
+    font-family: var(--pst-font-family-heading), sans-serif;
+}
+
+h4, h5, h6, .small-text {
+    font-family: var(--pst-font-family-base), sans-serif;
+}
+
+h1 {
+    font-size: 175%;
 }
 
 h2 {
-    color: #FF045A; /* Xsolla Pink */
+    font-size: 150%;
 }
 
-h3, h4 {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
-    font-weight: 500; /* Medium for subheadings */
+h3 {
+    font-size: 125%
 }
 
-.small-text {
-    font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
-    font-weight: 300; /* Thin for smaller text */
+h4 {
+    font-size: 115%
 }
 
-.caption-text {
-    color: #FF045A; /* Xsolla Pink */
+h5 {
+    font-size: 110%
+}
+
+/* The # hashtag next to headers to copy url */
+.headerlink {
+    color: var(--xsui-brand-pink-color) !important;
+}
+
+/* Pink Text */
+h2, .caption-text {
+    color: #FF045A !important; /* Xsolla Pink */
+}
+
+/* Left nav */
+.nav, .page-toc .nav-link {
+    font-size: 105%;
+}
+
+/* Right subnav */
+.page-toc {
+    font-size: 103%;
 }
 
 /* Code blocks; TODO: This doesn't seem to work */
 code, pre {
-    font-family: 'Source Code Pro', SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: var(--pst-font-family-monospace-system), monospace;
+    font-weight: 400;
+    background-color: var(--xsui-bluish-darker-black-color);
+}
+
+/* Unselected code block tab */
+.sphinx-tabs-tab {
+    color: var(--xsui-bluish-dark-gray-disabled-text) !important;
+}
+
+/* Selected code block tab */
+.sphinx-tabs-tab[aria-selected="true"] {
+    color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important;
+    background-color: transparent !important;
+}
+
+/* Code block outer padding */
+.sphinx-tabs-panel {
+    padding: 0 !important;
+    border: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background: none !important;
+}
+
+/* Selected right-column navbar item */
+.toc-entry a.nav-link.active {
     font-weight: 400;
 }
 
 /* 
-Merges separate toctrees into 1, useful for having
-different :maxdepth: sizes
-https://stackoverflow.com/a/64368882/6541639 
-*/ 
+ * Merges separate toctrees into 1, useful for having
+ * different :maxdepth: sizes
+ * https://stackoverflow.com/a/64368882/6541639 
+*/
 .rst-content .toctree-wrapper:not(:last-child) ul {
-   margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 /* 
- * Bug workaround for unresponsive tables that won't auto-wrap (thanks, Korne127)
- * https://github.com/readthedocs/sphinx_rtd_theme/issues/1505#issuecomment-2258832864 
+ * Bug workaround for unresponsive tables that won't auto-wrap 
+ * Thanks, Korne127 | https://github.com/readthedocs/sphinx_rtd_theme/issues/1505#issuecomment-2258832864 
  */
 .wy-table-responsive table td, .wy-table-responsive table th {
     white-space: normal;
+}
+
+.table thead > tr > th {
+    background-color: var(--xsui-bluish-darker-black-color);
+    border-bottom: 2px solid white !important; /* Adjust the thickness as needed */
+}
+
+/* 
+ * We currently only allocated time to style the dark theme.
+ * Thanks, choldgraf | https://github.com/executablebooks/sphinx-book-theme/issues/750
+ */
+button.theme-switch-button {
+    display: none !important;
+}
+
+/* Consistent top-right button colors */
+.pst-navbar-icon:hover {
+    color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important;
+    text-decoration: none;
+}
+
+/* -- ADMONITION ------------------------------------------------------------------- */
+
+/* Admonition (note/warning directive) top banner text color */
+div.admonition > .admonition-title::after {
+    color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important;
+}
+
+/* note:: directive (admonition) top banner */
+.admonition.note > .admonition-title, div.admonition.note > .admonition-title {
+    background: var(--xsui-gradient-bright-sky);
+}
+
+/* warning:: directive (admonition) left vert line color */
+.admonition.note, div.admonition.note {
+    border-color: var(--xsui-start-color-gradient-bright-sky);
+}
+
+/* warning:: directive (admonition) top banner */
+.admonition.warning > .admonition-title, div.admonition.warning > .admonition-title {
+    background: var(--xsui-gradient-coral-orange);
+}
+
+/* warning:: directive (admonition) left vert line color */
+.admonition.warning, div.admonition.warning {
+    border-color: var(--xsui-start-color-gradient-coral-orange);
+}
+
+/* attention:: directive (admonition) top banner */
+.admonition.attention > .admonition-title, div.admonition.attention > .admonition-title {
+    background: var(--xsui-gradient-blue-violet);
+}
+
+/* attention:: directive (admonition) left vert line color */
+.admonition.attention, div.admonition.attention {
+    border-color: var(--xsui-start-color-gradient-blue-violet);
+}
+
+/* -- MAIN COLOR THEME -------------------------------------------------------- */
+
+html[data-theme='dark'] {
+    /* Main theme */
+    --pst-color-primary: var(--xsui-marine-green-action-color);
+    --pst-color-secondary: #0081fd;
+    --pst-color-surface: var(--xsui-bluish-black-color);
+    --pst-color-text-base: var(--xsui-bluish-lighter-pearl-gray-table-cell); /* Body; but doesn't apply to <p>? */
+    --darkreader-inline-color: var(--xsui-bluish-lighter-pearl-gray-table-cell);
+    --pst-color-accent: var(--xsui-marine-green-action-color);
+    --pst-color-table-row-hover-bg: var(--xsui-brand-blue-color);
+    /* Table row hover /*
+       --pst-color-inline-code: TODO; /* Markdown color /*
+   
+       /* Link colors */
+    --pst-link-color: #3691f9; /* Link color */
+    --pst-link-hover-color: var(--xsui-marine-green-action-color); /* Link hover color */
+    --pst-color-text-muted: var(--xsui-bluish-light-gray-borders-text); /* Xsolla's actual muted color is too dark */
+    --pst-color-border: transparent;
+}
+
+/* Match Xsolla's sharp edge logo on all pics */
+img {
+    border-radius: 0 !important;
+    margin-bottom: 1.15rem; /* BUG FIX: No bottom spacing after images */
+}
+
+/* The extension default colors are too dark */
+button.copybtn.success {
+    border-color: var(--xsui-marine-green-action-color);
+    color: var(--xsui-marine-green-slightly-darker-action-color);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    padding-right: 30px !important;
+}
+
+/* Navbar */
+.nav.bd-sidenav .reference.internal {
+    color: var(--xsui-bluish-lighter-pearl-gray-table-cell);
+}
+
+/* Left navbar bg color */
+.bd-sidebar-primary {
+    background-color: #101318 /* Xsolla's Phantom color at 0.1 opacity */
+}
+
+/* Left navbar hover color */
+.nav.bd-sidenav .reference.internal:hover {
+    /*color: white !important;*/
+    color: var(--pst-link-hover-color) !important;
+}
+
+.toctree-wrapper .compound {
+    text-decoration: none;
+}
+
+.search-button-field {
+    background: linear-gradient(225deg, rgba(18, 18, 18, 0.1) 20%, rgb(0, 36, 77) 70%)
+}
+
+/* Fix: Stop making images dark in dark theme */
+html[data-theme='dark'] img:not(.only-dark, .dark-light) {
+    filter: none;
+}
+
+/* -- BODY -------------------------------------------------------------------- */
+
+/* Body toctree: Show bullets for children (theme hides, by default) */
+.toctree-wrapper li.toctree-l1 {
+    font-weight: bold;
+}
+
+.toctree-wrapper li.toctree-l2 {
+    list-style-type: disc; /* Adds the bullet points */
+    font-weight: normal;
+    margin-left: 1.5em; /* Adjusts the indentation if needed */
+    padding-left: 0.5em; /* Adjust the padding if necessary */
+}
+
+.toctree-wrapper li.toctree-l3,
+.toctree-wrapper li.toctree-l4,
+.toctree-wrapper li.toctree-l5 {
+    list-style-type: square; /* Adds the bullet points */
+    font-weight: normal;
+    margin-left: 1.5em; /* Adjusts the indentation if needed */
+    padding-left: 0.5em; /* Adjust the padding if necessary */
+}
+
+/* -- LINKS ------------------------------------------------------------------- */
+
+a:hover {
+    text-decoration-thickness: 1px !important;
+}
+
+.bd-main a {
+    text-decoration: none
+}
+
+.bd-main a:hover {
+    text-decoration: none;
+}
+
+/* -- XSOLLA UI -------------------------------------------------------------- */
+
+.xsui-button {
+    font-family: 'Graphik', -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, Helvetica, Arial;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    line-height: 24px;
+    text-transform: uppercase;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 40px;
+    color: #fff !important;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color .1s ease-in-out, border-color .1s ease-in-out, color .1s ease-in-out, opacity .1s ease-in-out, box-shadow .1s ease-in-out;
+}
+
+.xsui-button--appearance-primary {
+    background-color: var(--xsui-marine-green-action-color) !important;
+    border-color: var(--xsui-marine-green-action-color) !important;
+    box-shadow: 0 4px 16px rgba(0, 199, 126, .32);
+}
+
+.xsui-button--appearance-primary:hover {
+    background-color: #01b170 !important;
+    border-color: #01b170 !important;
+    box-shadow: 0 8px 16px rgba(0, 199, 126, .32);
+}
+
+.xsui-button--size-md {
+    min-width: 140px;
+    padding: 9px 32px;
+}
+
+.xsui-button__wrapper {
+    position: relative;
+}
+
+.xsui-button__content {
+    display: flex;
+    align-items: center;
+}
+
+/* -- WEBKIT SCROLLBARS FOR !FIREFOX ------------------------------------------------- */
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.bd-sidebar-primary::-webkit-scrollbar {
+    display: none;
+}
+
+/* Show scrollbar normally in Firefox */
+@-moz-document url-prefix() {
+    .bd-sidebar-primary {
+        scrollbar-width: auto; /* Ensure scrollbars remain visible in Firefox */
+    }
 }
