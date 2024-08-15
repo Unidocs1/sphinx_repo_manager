@@ -632,11 +632,11 @@ class SphinxRepoManager:
             git_helper = GitHelper()  # TODO: Place this instance @ top?
 
             try:
-
                 git_helper.git_sparse_clone(
                     rel_tag_versioned_clone_src_path,
                     repo_url_dotgit,
                     checkout_branch_or_tag_name,
+                    has_tag,
                     rel_selected_repo_sparse_path,
                     stash_and_continue_if_wip,
                     log_entries=log_entries)
