@@ -1,8 +1,15 @@
+.. meta::
+   :description: Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and
+                 entertainment products covering a robust set of features.
+   :keywords: xbe, xsolla backend, axr, acceleratxr, backend, backend as a service, gbaas, doc, docs, api docs, api, openapi, xbe docs, xsolla docs, xsolla backend docs
+
 ==============================
 Xsolla Backend [XBE] - Welcome
 ==============================
 
-.. image:: /_static/images/_local/features_banner.png
+.. image:: /_static/images/_local/xbe-banner-1200x478.min.png
+   :alt: XBE Docs
+   :width: 720px
 
 .. TIPS:
 .. xbe_static_docs content can be found symlinked to <content/-/> for shorter url slugs. Eg: <content/-/welcome/index>
@@ -21,7 +28,7 @@ Xsolla Backend [XBE] - Welcome
       (!) All Tutorial Docs <content/-/_dev/all_tutorial_docs>
       (!) All Static Docs <content/-/index>
 
-.. feature-flag:: parent-nav-create-your-acct-link-to-new-xbe
+.. feature-flag:: use-new-price-page-url
 
    .. toctree:: 
       :caption: Welcome
@@ -31,10 +38,10 @@ Xsolla Backend [XBE] - Welcome
       Features <content/-/welcome/features>
       Quickstart <content/-/welcome/quickstart>
       Demo <content/-/welcome/demo_env>
-      Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
       Release Notes <content/-/welcome/release_notes/current/index>
+      Create Your Account <https://xsolla.cloud>
 
-.. feature-flag:: parent-nav-create-your-acct-link-to-new-xbe
+.. feature-flag:: use-new-price-page-url
    :fallback:
 
    .. toctree:: 
@@ -45,8 +52,8 @@ Xsolla Backend [XBE] - Welcome
       Features <content/-/welcome/features>
       Quickstart <content/-/welcome/quickstart>
       Demo <content/-/welcome/demo_env>
-      Create Your Account <https://www.acceleratxr.com/pricing>
       Release Notes <content/-/welcome/release_notes/current/index>
+      Create Your Account <https://www.acceleratxr.com/pricing>
 
 .. toctree::
    :caption: Concepts
@@ -83,7 +90,7 @@ Xsolla Backend [XBE] - Welcome
    :caption: Legal
    :hidden:
    
-   Eula <content/-/legal/eula/index>
+   EULA <content/-/legal/eula/index>
 
 .. toctree::
    :caption: Need Help?
@@ -91,7 +98,7 @@ Xsolla Backend [XBE] - Welcome
    
    Chat With Us! <https://discord.gg/XsollaBackend>
 
-**Xsolla Backend** \[XBE\] is a powerful backend engine for building highly-scalable online games and entertainment
+**Xsolla Backend** [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
 products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
 matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
 
@@ -104,21 +111,29 @@ matchmaking and identity to quest systems - enabling you to craft modern online 
 Why Choose Xsolla Backend?
 --------------------------
 
+Xsolla Backend is the most **complete** online gaming platform:
+
 1. **Trusted Technology:** Powered by :doc:`AcceleratXR <content/-/welcome/history>` with source-available tech backed by experienced Xsolla veterans.
 2. **Rapid Development:** Streamlined developer process to build cross-play, multiplayer games.
 3. **Cost-Effective:** Only 5% of gross sales, free hosting and unlimited support.
 
-:doc:`Get started now <content/-/welcome/quickstart>` for free!
+.. raw:: html
+
+   <a class="xsui-button xsui-button--appearance-primary xsui-button--size-md xsui-button--color-blue" href="content/-/welcome/quickstart.html">
+      <div class="xsui-button__wrapper">
+         <div class="xsui-button__content">Get Started Now for Free!</div>
+      </div>
+   </a>
 
 Our Philosophy
-~~~~~~~~~~~~~~
+--------------
 
 * Faster time to market
 * Reduced development cost
 * Lower cost of ownership
 
 Time to Market
-^^^^^^^^^^^^^^
+--------------
 
 Unlike other platforms that offer limited features focused on simple mobile games, Xsolla Backend is built by
 fellow game developer veterans who understand the challenges of timely product delivery.
@@ -127,9 +142,9 @@ Our priority is to equip you with a **complete** suite of built-in systems and f
 concentrate on creating games without the worries of backend infrastructure.
 
 Development Cost
-^^^^^^^^^^^^^^^^
+----------------
 
-Budget constraints are a major challenge. Many platforms overpromise but underdeliver, leading to hidden costs and
+Budget constraints are a major challenge. Many platforms over-promise but under-deliver, leading to hidden costs and
 additional development work. With Xsolla Backend, you get a platform engineered to meet the highest AAA standards.
 Our source-available approach ensures you have full control and flexibility to customize as needed.
 
@@ -137,7 +152,7 @@ Save time, reduce costs and eliminate surprises with Xsolla Backend — the reli
 solution for your game development needs.
 
 Total Cost of Ownership
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 The true measure of a game's success lies in its ability to remain profitable long after launch. Many games have failed
 due to exorbitant hosting and operational costs that outpace revenue. At Xsolla Backend, we understand this challenge
