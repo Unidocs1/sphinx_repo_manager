@@ -239,7 +239,7 @@ repositories:
   unitychessgame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
     production_stage:
-      checkout: 'master'  # TODO: This will fail (!docs); needs update merged from dev
+      checkout: 'main'  # TODO: This will fail (!docs); needs update merged from dev; TODO: Mv branch to `master`?
       checkout_type: 'branch'  # TODO: Use tag
   lyrastartergame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
