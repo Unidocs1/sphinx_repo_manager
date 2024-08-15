@@ -114,7 +114,7 @@ repositories:
   backup_services:
     url: 'https://gitlab.acceleratxr.com/Core/backup_services'
     production_stage:
-      checkout: '2.0.1'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
