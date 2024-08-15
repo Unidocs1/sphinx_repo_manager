@@ -100,12 +100,12 @@ repositories:
   account_services:
     url: 'https://gitlab.acceleratxr.com/Core/account_services'
     production_stage:
-      checkout: 'v3.0.0'
+      checkout: 'v3.0.1'
       checkout_type: 'tag' 
   achievements_services:
     url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
     production_stage:
-      checkout: 'v3.0.0'
+      checkout: 'v3.0.1'
       checkout_type: 'tag'
   asset_services:
     url: 'https://gitlab.acceleratxr.com/Core/asset_services'
@@ -115,7 +115,7 @@ repositories:
   backup_services:
     url: 'https://gitlab.acceleratxr.com/Core/backup_services'
     production_stage:
-      checkout: '2.0.0'  # TODO: Tag !found
+      checkout: '2.0.1'  # TODO: Tag !found
       checkout_type: 'tag'
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
@@ -125,32 +125,32 @@ repositories:
   leaderboard_services:
     url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
     production_stage:
-      checkout: 'v3.0.0'
+      checkout: 'v3.0.1'
       checkout_type: 'tag'
   matchmaking_services:
     url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   notification_services:
     url: 'https://gitlab.acceleratxr.com/Core/notification_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   persona_services:
     url: 'https://gitlab.acceleratxr.com/Core/persona_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   progression_services:
     url: 'https://gitlab.acceleratxr.com/Core/progression_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   purchasing_services:
     url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   quest_services:
     url: 'https://gitlab.acceleratxr.com/Core/quest_services'
@@ -160,17 +160,17 @@ repositories:
   reporting_services:
     url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   scripting_services:
     url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   server_instance_services:
     url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
@@ -180,17 +180,17 @@ repositories:
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   telemetry_services:
     url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   world_services:
     url: 'https://gitlab.acceleratxr.com/Core/world_services'
     production_stage:
-      checkout: 'v2.0.0'
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   # Sdks >>
   sdk_cpp:
