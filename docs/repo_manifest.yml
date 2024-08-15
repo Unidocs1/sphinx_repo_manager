@@ -93,7 +93,7 @@ repositories:
       checkout: 'feat/v2024.07.0'
       checkout_type: 'branch'
     production_stage:
-      checkout: 'feat/v2024.07.0'  # This particular repo should match the main doc macro version
+      checkout: 'v2024.07.0'  # This particular repo should match the main doc macro version
       checkout_type: 'tag'
   # Backend Services >>
   account_services:
@@ -114,12 +114,12 @@ repositories:
   backup_services:
     url: 'https://gitlab.acceleratxr.com/Core/backup_services'
     production_stage:
-      checkout: '2.0.1'  # TODO: Tag !found
+      checkout: '2.0.1'
       checkout_type: 'tag'
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
     production_stage:
-      checkout: 'v3.0.1'  # TODO: Tag !found
+      checkout: 'v3.0.1'
       checkout_type: 'tag'
   leaderboard_services:
     url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
@@ -154,7 +154,7 @@ repositories:
   quest_services:
     url: 'https://gitlab.acceleratxr.com/Core/quest_services'
     production_stage:
-      checkout: 'v2.0.1'  # TODO: Tag !found
+      checkout: 'v2.0.1'
       checkout_type: 'tag'
   reporting_services:
     url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
@@ -174,7 +174,7 @@ repositories:
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
     production_stage:
-      checkout: 'v3.0.1'  # TODO: Tag !found
+      checkout: 'v3.0.1'
       checkout_type: 'tag'
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
