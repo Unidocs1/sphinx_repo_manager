@@ -218,6 +218,12 @@ button.theme-switch-button {
     display: none !important;
 }
 
+/* Consistent top-right button colors */
+.pst-navbar-icon:hover {
+    color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important;
+    text-decoration: none;
+}
+
 /* -- ADMONITION ------------------------------------------------------------------- */
 
 /* Admonition (note/warning directive) top banner text color */
