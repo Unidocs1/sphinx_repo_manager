@@ -28,7 +28,7 @@ Xsolla Backend [XBE] - Welcome
       (!) All Tutorial Docs <content/-/_dev/all_tutorial_docs>
       (!) All Static Docs <content/-/index>
 
-.. feature-flag:: parent-nav-create-your-acct-link-to-new-xbe
+.. feature-flag:: use-new-price-page-url
 
    .. toctree:: 
       :caption: Welcome
@@ -39,9 +39,9 @@ Xsolla Backend [XBE] - Welcome
       Quickstart <content/-/welcome/quickstart>
       Demo <content/-/welcome/demo_env>
       Release Notes <content/-/welcome/release_notes/current/index>
-      Create Your Account <https://xbeapp.xbe.xsolla.cloud/auth/sign-in>
+      Create Your Account <https://xsolla.cloud>
 
-.. feature-flag:: parent-nav-create-your-acct-link-to-new-xbe
+.. feature-flag:: use-new-price-page-url
    :fallback:
 
    .. toctree:: 
