@@ -176,14 +176,11 @@ class GitHelper:
         if os.path.exists(rel_init_clone_path):
             raise Exception(f"Tried to clone to path, but dir already exists: '{rel_init_clone_path}'")
 
-        branch_cmds_arr = [ '--branch', branch ]
-        if branch_is_tag:
-            branch_cmds_arr.append('--single-branch')  # Treat tag as branch
-
         git_clone_cmd_arr = [
             'git', 'clone',
-            branch_cmds_arr,
-            '-q', repo_url_dotgit, rel_init_clone_path,
+            '--branch', branch, '--single-branch',  # --single-branch allows for cloning tags like this
+            '-q',
+            repo_url_dotgit, rel_init_clone_path,
         ]
 
         run_subprocess_cmd(
@@ -252,14 +249,10 @@ class GitHelper:
         (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
         """
         
-        branch_cmds_arr = [ '--branch', branch ]
-        if branch_is_tag:
-            branch_cmds_arr.append('--single-branch')  # Treat tag as branch
-        
         git_clone_filter_nocheckout_cmd_arr = [
             'git', 'clone',
             '--filter=blob:none', '--no-checkout',
-            branch_cmds_arr,
+            '--branch', branch, '--single-branch',  # --single-branch allows for cloning tags like this
             '-q', repo_url_dotgit, clone_to_path
         ]
 
