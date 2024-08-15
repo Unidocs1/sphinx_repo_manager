@@ -139,7 +139,7 @@ ogp_custom_meta_tags = [
     '<meta property="og:image:type" content="image/png">',
     '<meta property="og:image:width" content="1200">',
     '<meta property="og:image:height" content="630">',
-    #'<meta name="description" content="The most complete online gaming platform">',
+    # '<meta name="description" content="The most complete online gaming platform">',
 
     # FB
     '<meta property="og:url" content="https://docs.xsolla.cloud/">'
@@ -152,8 +152,8 @@ ogp_custom_meta_tags = [
     '<meta name="twitter:card" content="summary_large_image">',
     '<meta property="twitter:domain" content="docs.xsolla.cloud">',
     '<meta property="twitter:url" content="https://docs.xsolla.cloud/">',
-    #'<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
-    #'<meta name="twitter:description" content="The most complete online gaming platform">',
+    # '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
+    # '<meta name="twitter:description" content="The most complete online gaming platform">',
     # '<meta name="twitter:image" content="https://external/link.png">',
 ]
 
@@ -300,8 +300,8 @@ html_theme_options = {
     "article_header_end": [
         "navbar-icon-links",
         "article-header-buttons",
-    ],    
-    
+    ],
+
     # TODO: Awaiting API keys (submitted; reqs manual approval)
     # "algolia": {  # book
     #     "api_key": "your_algolia_api_key",

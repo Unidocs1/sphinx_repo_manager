@@ -7,7 +7,7 @@
     --xsui-crimson-red-color: #eb002f;
     --xsui-bold-orange-color: #ff8111;
     --xsui-bluish-black-color: #00244d;
-    --xsui-bluish-darker-black-color: #000e1e; /* Code block bg */ 
+    --xsui-bluish-darker-black-color: #000e1e; /* Code block bg */
     --xsui-bluish-darker-gray-secondary-text: #747e8a;
     --xsui-bluish-dark-gray-disabled-text: #a0abb8;
     --xsui-bluish-light-gray-borders-text: #c5d0db;
@@ -17,7 +17,7 @@
     --xsui-start-color-gradient-bright-sky: #489dff; /* Admonition info bg */
     --xsui-start-color-gradient-coral-orange: #ff497f; /* Admonition warning bg */
     --xsui-start-color-gradient-blue-violet: #ac2eff; /* Admonition attention bg */
-    
+
     --xsui-gradient-bright-sky: linear-gradient(90deg, var(--xsui-start-color-gradient-bright-sky), #00ffca); /* Admonition info bg */
     --xsui-gradient-coral-orange: linear-gradient(90deg, var(--xsui-start-color-gradient-coral-orange), #fcdd40); /* Admonition warning bg */
     --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb); /* Admonition attention bg */
@@ -204,7 +204,7 @@ code, pre {
 .wy-table-responsive table td, .wy-table-responsive table th {
     white-space: normal;
 }
- 
+
 .table thead > tr > th {
     background-color: var(--xsui-bluish-darker-black-color);
     border-bottom: 2px solid white !important; /* Adjust the thickness as needed */
@@ -235,6 +235,7 @@ div.admonition > .admonition-title::after {
 .admonition.note > .admonition-title, div.admonition.note > .admonition-title {
     background: var(--xsui-gradient-bright-sky);
 }
+
 /* warning:: directive (admonition) left vert line color */
 .admonition.note, div.admonition.note {
     border-color: var(--xsui-start-color-gradient-bright-sky);
@@ -244,6 +245,7 @@ div.admonition > .admonition-title::after {
 .admonition.warning > .admonition-title, div.admonition.warning > .admonition-title {
     background: var(--xsui-gradient-coral-orange);
 }
+
 /* warning:: directive (admonition) left vert line color */
 .admonition.warning, div.admonition.warning {
     border-color: var(--xsui-start-color-gradient-coral-orange);
@@ -253,6 +255,7 @@ div.admonition > .admonition-title::after {
 .admonition.attention > .admonition-title, div.admonition.attention > .admonition-title {
     background: var(--xsui-gradient-blue-violet);
 }
+
 /* attention:: directive (admonition) left vert line color */
 .admonition.attention, div.admonition.attention {
     border-color: var(--xsui-start-color-gradient-blue-violet);
@@ -268,10 +271,11 @@ html[data-theme='dark'] {
     --pst-color-text-base: var(--xsui-bluish-lighter-pearl-gray-table-cell); /* Body; but doesn't apply to <p>? */
     --darkreader-inline-color: var(--xsui-bluish-lighter-pearl-gray-table-cell);
     --pst-color-accent: var(--xsui-marine-green-action-color);
-    --pst-color-table-row-hover-bg: var(--xsui-brand-blue-color); /* Table row hover /*
-    --pst-color-inline-code: TODO; /* Markdown color /*
-
-    /* Link colors */
+    --pst-color-table-row-hover-bg: var(--xsui-brand-blue-color);
+    /* Table row hover /*
+       --pst-color-inline-code: TODO; /* Markdown color /*
+   
+       /* Link colors */
     --pst-link-color: #3691f9; /* Link color */
     --pst-link-hover-color: var(--xsui-marine-green-action-color); /* Link hover color */
     --pst-color-text-muted: var(--xsui-bluish-light-gray-borders-text); /* Xsolla's actual muted color is too dark */
@@ -287,7 +291,7 @@ img {
 /* The extension default colors are too dark */
 button.copybtn.success {
     border-color: var(--xsui-marine-green-action-color);
-    color: var(--xsui-marine-green-slightly-darker-action-color); 
+    color: var(--xsui-marine-green-slightly-darker-action-color);
 }
 
 .navbar-brand {
@@ -331,12 +335,14 @@ html[data-theme='dark'] img:not(.only-dark, .dark-light) {
 .toctree-wrapper li.toctree-l1 {
     font-weight: bold;
 }
+
 .toctree-wrapper li.toctree-l2 {
     list-style-type: disc; /* Adds the bullet points */
     font-weight: normal;
     margin-left: 1.5em; /* Adjusts the indentation if needed */
     padding-left: 0.5em; /* Adjust the padding if necessary */
 }
+
 .toctree-wrapper li.toctree-l3,
 .toctree-wrapper li.toctree-l4,
 .toctree-wrapper li.toctree-l5 {
@@ -405,4 +411,18 @@ a:hover {
 .xsui-button__content {
     display: flex;
     align-items: center;
+}
+
+/* -- WEBKIT SCROLLBARS FOR !FIREFOX ------------------------------------------------- */
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.bd-sidebar-primary::-webkit-scrollbar {
+    display: none;
+}
+
+/* Show scrollbar normally in Firefox */
+@-moz-document url-prefix() {
+    .bd-sidebar-primary {
+        scrollbar-width: auto; /* Ensure scrollbars remain visible in Firefox */
+    }
 }
