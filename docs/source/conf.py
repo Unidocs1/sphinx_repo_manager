@@ -37,6 +37,7 @@ sys.path.insert(0, os.path.abspath(''))
 
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
+fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
 
 # The absolute path to the directory containing conf.py.
 documentation_root = os.path.abspath(os.path.dirname(__file__))
@@ -363,16 +364,13 @@ myst_enable_extensions = [
    This will show if False
 """
 
-fallback_to_production_stage_if_not_rtd = True
 feature_flags = {
     # True: Nothing - False: Show dev toctree
     'production-stage': read_the_docs_build or fallback_to_production_stage_if_not_rtd,
 
-    # True: [Navbar] New create acct page - False: Pricing page
-    'parent-nav-create-your-acct-link-to-new-xbe': False,
-
-    # True: [Doc Page] New create acct page - False: Pricing page
-    'what-is-xbe-doc-create-link-to-new-xbe': False,
+    # True: [Navbar, Docs] Create Acct -> AXR pricing si te
+    # False: New login page @ https://xsolla.cloud 
+    'use-new-price-page-url': False,
 
     # True: Show web app libs (xbeapp, react, etc) - False: Hide
     'welcome-release_notes-products_web_apps-libs': False,
