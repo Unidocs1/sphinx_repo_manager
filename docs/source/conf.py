@@ -277,8 +277,6 @@ html_theme_options = {
     'show_toc_level': 2,
     'home_page_in_toc': False,
     "path_to_docs": "docs/source/",
-    # "extra_navbar": "",
-    # "extra_footer": "",
     "repository_provider": "gitlab",
     "repository_url": "https://gitlab.acceleratxr.com/Core/acceleratxr.io",
     "repository_branch": "main",
@@ -291,12 +289,32 @@ html_theme_options = {
     "use_repository_button": True,
     "use_edit_page_button": False,
     "use_issues_button": True,
+    "icon_links": [  # TODO: Perhaps add something from https://shields.io ?
+        {
+            "name": "Discord",
+            "url": "https://discord.gg/XsollaBackend",
+            "icon": "fa-brands fa-discord",
+            "attributes": {"target": "_blank"},
+        },
+    ],
+    "article_header_end": [
+        "navbar-icon-links",
+        "article-header-buttons",
+    ],    
     
     # TODO: Awaiting API keys (submitted; reqs manual approval)
     # "algolia": {  # book
     #     "api_key": "your_algolia_api_key",
     #     "index_name": "your_index_name",
     # },
+}
+
+html_sidebars = {
+    "**": [
+        "navbar-logo",
+        "search-button-field",
+        "sbt-sidebar-nav",
+    ],
 }
 
 # This swaps vals in the actual built HTML (NOT the rst files).
