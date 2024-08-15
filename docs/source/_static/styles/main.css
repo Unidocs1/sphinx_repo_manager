@@ -406,3 +406,17 @@ a:hover {
     display: flex;
     align-items: center;
 }
+
+/* -- WEBKIT SCROLLBARS FOR !FIREFOX ------------------------------------------------- */
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.bd-sidebar-primary::-webkit-scrollbar {
+    display: none;
+}
+
+/* Show scrollbar normally in Firefox */
+@-moz-document url-prefix() {
+    .bd-sidebar-primary {
+        scrollbar-width: auto; /* Ensure scrollbars remain visible in Firefox */
+    }
+}
