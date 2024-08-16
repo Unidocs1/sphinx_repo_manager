@@ -83,7 +83,7 @@ repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
-    # 'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
+    'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     'sphinx_tabs.tabs',
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
@@ -261,14 +261,14 @@ html_static_path = ['_static']
 
 html_css_files = [
     'styles/main.css',
+    # 'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
     'styles/algolia.css',
-    'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
 ]
 
-html_js_files = [
-    # ('https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js', {'defer': 'defer'}),
-    ('js/algolia.js', {'defer': 'defer'}),
-]
+# html_js_files = [
+#     'https://cdn.jsdelivr.net/npm/@docsearch/js@3',
+#     ('js/algolia.js', {'defer': 'defer'}),
+# ]
 
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
@@ -351,6 +351,12 @@ docsearch_index_name = "xsolla-dev"
 docsearch_container = "#search-input"  # search-input.form-control
 docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
                                  f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}")
+
+html_context.update({
+    "docsearch_app_id": docsearch_app_id,
+    "docsearch_api_key": docsearch_api_key,
+    "docsearch_index_name": docsearch_index_name,
+})
 
 # -- MyST configuration ------------------------------------------------------
 # Recommonmark successor to auto-parse .md to .rst
