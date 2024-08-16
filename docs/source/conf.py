@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import os
+import requests
 import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
@@ -19,6 +20,7 @@ project = 'XBE Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = 'v2024.07.0'
+version = release
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -52,7 +54,6 @@ sys.path.append(os.path.abspath('.'))
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
-    app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
     app.connect('build-finished', copy_open_graph_img_to_build)
 
 
@@ -82,6 +83,7 @@ repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
+    # 'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     'sphinx_tabs.tabs',
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
@@ -257,6 +259,17 @@ pygments_style = "monokai"
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
+html_css_files = [
+    'styles/main.css',
+    'styles/algolia.css',
+    'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
+]
+
+html_js_files = [
+    # ('https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js', {'defer': 'defer'}),
+    ('js/algolia.js', {'defer': 'defer'}),
+]
+
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
 
@@ -302,12 +315,6 @@ html_theme_options = {
         "navbar-icon-links",
         "article-header-buttons",
     ],
-
-    # TODO: Awaiting API keys (submitted; reqs manual approval)
-    # "algolia": {  # book
-    #     "api_key": "your_algolia_api_key",
-    #     "index_name": "your_index_name",
-    # },
 }
 
 html_sidebars = {
@@ -334,6 +341,16 @@ html_context.update({
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
+
+# -- Sphinx Extension: sphinxext_docsearch ----------------------------
+# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
+
+docsearch_app_id = "DBTSGB2DXO"  # Public
+docsearch_api_key = "76ed6e20fd14ee41fefb7fe47af731c0"  # Public
+docsearch_index_name = "xsolla-dev"
+docsearch_container = "#search-input"  # search-input.form-control
+docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
+                                 f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}")
 
 # -- MyST configuration ------------------------------------------------------
 # Recommonmark successor to auto-parse .md to .rst
