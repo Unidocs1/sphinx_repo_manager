@@ -1,13 +1,6 @@
 /*!* https://github.com/jupyter-book/jupyter-book/issues/1324#issuecomment-1512757574 *!*/
 
-/* Hide search button from article-header-buttons
-Removing `search_bar_text` from 
-`html_theme_options` in conf.py doesn't work */
-.search-button {
-    display: none;
-}
-
-/* Hide the search wrapper window when hitting Ctrl+K */
+/* Hide the old search wrapper window when hitting Ctrl+K */
 .search-button__wrapper.show {
     display: none !important;
 }

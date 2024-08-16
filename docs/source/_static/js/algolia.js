@@ -1,4 +1,4 @@
-// // [This script should be loaded deferred]
+// [This script should be loaded deferred]
 // const versionMetaTag = document.querySelector('meta[name="docsearch:version"]');
 // const version = versionMetaTag ? versionMetaTag.getAttribute('content') : null;
 // console.log("DocSearch version:", version);
@@ -12,13 +12,13 @@
 // // const inputDocsearchId = 'docsearch';
 // const inputDocsearchId = 'search-input';
 // const hashedInputDocsearchId = '#' + inputDocsearchId;
-//
-// // // Create the element
-// // const container = document.querySelector(".article-header-buttons");
-// // let docsearchDiv = document.createElement("DIV")
-// // docsearchDiv.id = inputDocsearchId;
-// // container.appendChild(docsearchDiv);
-//
+
+// // Create the element
+// const container = document.querySelector(".article-header-buttons");
+// let docsearchDiv = document.createElement("DIV")
+// docsearchDiv.id = inputDocsearchId;
+// container.appendChild(docsearchDiv);
+
 // // Initialize Algolia DocSearch after 0.1s
 // setTimeout(() => {
 // 	const docSearchOpts = {
@@ -48,3 +48,17 @@
 // 		console.log('[Algolia] NOT ready');
 // 	}
 // }, 100);
+
+// On click, emulate CTRL+K to bring up search UI for both buttons
+const searchButtons = document.querySelectorAll('.search-button__button');
+searchButtons.forEach(button => {
+	button.addEventListener('click', () => {
+		console.log('[js/algolia.js] Clicked search btn');
+		const event = new KeyboardEvent('keydown', {
+			key: 'k',
+			ctrlKey: true,
+			bubbles: true // Allows the event to propagate up through the DOM
+		});
+		document.dispatchEvent(event);
+	});
+});

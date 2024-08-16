@@ -265,10 +265,10 @@ html_css_files = [
     'styles/algolia.css',
 ]
 
-# html_js_files = [
-#     'https://cdn.jsdelivr.net/npm/@docsearch/js@3',
-#     ('js/algolia.js', {'defer': 'defer'}),
-# ]
+html_js_files = [
+    # 'https://cdn.jsdelivr.net/npm/@docsearch/js@3',
+    ('js/algolia.js', {'defer': 'defer'}),
+]
 
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
@@ -345,10 +345,11 @@ source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 # -- Sphinx Extension: sphinxext_docsearch ----------------------------
 # Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
 
-docsearch_app_id = "DBTSGB2DXO"  # Public
-docsearch_api_key = "76ed6e20fd14ee41fefb7fe47af731c0"  # Public
+docsearch_app_id = "O9A3CDDIXM"  # Public
+docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public
 docsearch_index_name = "xsolla-dev"
-docsearch_container = "#search-input"  # search-input.form-control
+# docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
+docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
 docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
                                  f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}")
 
