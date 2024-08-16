@@ -246,33 +246,6 @@ repositories:
     production_stage:
       checkout: 'master'  # TODO: This will fail (!docs); needs update merged from dev
       checkout_type: 'branch'  # TODO: Use tag
-  # Composer >>
-  service-core:
-    url: 'https://gitlab.acceleratxr.com/acceleratxr/composerjs/service-core'
-    production_stage:
-      checkout: 'master'
-      checkout_type: 'branch'  # TODO: Use tag
-
-############################################
-# UNUSED REPOS (Possibly used later)
-############################################
-
-## Libs/WebApps >>
-#appconfig:
-#  url: 'https://gitlab.acceleratxr.com/Core/tools/appconfig'
-#  production_stage:
-#    checkout: 'master'
-#    checkout_type: 'branch'
-#react-shared:
-#  url: 'https://gitlab.acceleratxr.com/Core/tools/react-shared'
-#  production_stage:
-#    checkout: 'master'
-#    checkout_type: 'branch'  # TODO: Use tag
-#electron-shared:
-#  url: 'https://gitlab.acceleratxr.com/Core/tools/electron-shared'
-#  production_stage:
-#    checkout: 'master'
-#    checkout_type: 'branch'  # TODO: Use tag
 
 ############################################
 # EXAMPLE REPO WITH ALL OPTIONS -- COMMENTED
