@@ -3,7 +3,6 @@ Xsolla Sphinx Extension: sphinx_image_min
 - Optimizes images in the build/_images directory using Pillow
 """
 import os
-from docutils import nodes
 from sphinx.util.docutils import SphinxDirective
 from PIL import Image
 

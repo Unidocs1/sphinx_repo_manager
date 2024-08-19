@@ -17,32 +17,32 @@
 			"default_value": "Documentation"
 		},
 		"lvl1": {
-			"selector": "header h1, article h1, main h1, h1, head > title",
-			"default_value": ""
+			"selector": "article h1",
+			"default_value": null
 		},
 		"content": {
-			"selector": "article p, article li, main p, main li, p, li",
-			"default_value": ""
+			"selector": "article p, article li",
+			"default_value": null
 		},
 		"lvl2": {
-			"selector": "article h2, main h2, h2",
-			"default_value": ""
+			"selector": "article h2",
+			"default_value": null
 		},
 		"lvl3": {
-			"selector": "article h3, main h3, h3",
-			"default_value": ""
+			"selector": "article h3",
+			"default_value": null
 		},
 		"lvl4": {
-			"selector": "article h4, main h4, h4",
-			"default_value": ""
+			"selector": "article h4",
+			"default_value": null
 		},
 		"lvl5": {
-			"selector": "article h5, main h5, h5",
-			"default_value": ""
+			"selector": "article h5",
+			"default_value": null
 		},
 		"lvl6": {
-			"selector": "article h6, main h6, h6",
-			"default_value": ""
+			"selector": "article h6",
+			"default_value": null
 		}
 	},
 	"custom_settings": {

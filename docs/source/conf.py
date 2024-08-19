@@ -346,13 +346,9 @@ source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
 # -- Sphinx Extension: Algolia Crawler ---------------------------------------
 
-# This is *very lengthy* - if we're not explicitly testing (or a production build),
-# we probably want this turned off completely
-algolia_crawler_enabled = False  # TODO: Create a production-prep script (XBND-1065) to run this instead of sphinx ext
-
 # Determine which json config to use; used in `sphinxext_docsearch` below!
-algolia_crawler_config_stage = 'production_stage'  # 'dev_stage' or 'production_stage' or 'none' (skips extension)
-# algolia_crawler_config_stage = manifest_stage  # 'dev_stage' or 'production_stage' or 'none' (skips extension)
+algolia_crawler_config_stage = None  # 'dev_stage' or 'production_stage' or None (skips extension)
+# algolia_crawler_config_stage = manifest_stage  # 'dev_stage' or 'production_stage' or None (skips extension)
 
 # -- Sphinx Extension: sphinxext_docsearch ----------------------------
 # Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
