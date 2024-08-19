@@ -8,7 +8,6 @@
 #
 ##############################################################################
 import os
-import requests
 import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
@@ -48,7 +47,7 @@ sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
-#sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
 sys.path.append(os.path.abspath('.'))
 
 
@@ -70,8 +69,9 @@ repo_manager = SphinxRepoManager(manifest_path)
 manifest = repo_manager.read_normalize_manifest()
 
 # Extract common props
-repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
-print(f'[conf.py::repo_manifest.yml] Num repos found: {len(repos)}')
+manifest_stage = manifest['stage']  # 'dev_stage' or 'prod_stage'
+manifest_repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
+print(f'[conf.py::repo_manifest.yml] Num repos found: {len(manifest_repos)}')
 
 # TODO: Use these below for dynamic info pulled from repo_manifest.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
@@ -86,6 +86,7 @@ extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     'sphinx_tabs.tabs',
+    'sphinx_algolia_crawler',  # Our own custom extension to crawl our build site for our AI-powered search indexing
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
     'sphinx_image_min',  # Our own custom extension to minimizer images after build from build/ dir (set to CI only)
@@ -343,14 +344,26 @@ html_context.update({
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
+# -- Sphinx Extension: Algolia Crawler ---------------------------------------
+
+# This is *very lengthy* - if we're not explicitly testing (or a production build),
+# we probably want this turned off completely
+algolia_crawler_enabled = False  # TODO: Create a production-prep script (XBND-1065) to run this instead of sphinx ext
+
+# Determine which json config to use; used in `sphinxext_docsearch` below!
+algolia_crawler_config_stage = 'production_stage'  # 'dev_stage' or 'production_stage' or 'none' (skips extension)
+# algolia_crawler_config_stage = manifest_stage  # 'dev_stage' or 'production_stage' or 'none' (skips extension)
+
 # -- Sphinx Extension: sphinxext_docsearch ----------------------------
 # Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
 
 docsearch_app_id = "O9A3CDDIXM"  # Public
 docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public (private "write" key is for the scraper)
-docsearch_index_name = "dev_XSOLLA"
+docsearch_index_name = "prod_XSOLLA" if algolia_crawler_config_stage == "production_stage" else "dev_XSOLLA"
+
 # docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
 docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
+
 docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
                                  f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}")
 

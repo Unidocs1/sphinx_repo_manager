@@ -2,14 +2,26 @@
 
 ## Description
 
-This Sphinx extension (if .env exists) wraps around Docker to scrape our site
-for Algolia AI search. This should be run locally; NOT in ReadTheDocs(RST)
-since it invokes Docker.
+This Sphinx extension (that can also be run standalone) wraps around Docker to
+scrape our site for Algolia AI search. This should be run locally; NOT in ReadTheDocs(RST)
+since it invokes Docker. This ultimately emulates this `docker` command:
+
+```bash
+docker run -it --env-file=.env -e "CONFIG=$(cat config.json | jq -r tostring)" algolia/docsearch-scraper
+```
 
 ## Setup
 
 1. Edit `config.json`
 2. Copy `.env.template` to `.env` and set
+
+### Optional
+
+In `conf.py`, set (showing defaults):
+
+```py
+algolia_crawler_config_stage = 'dev_stage'  # 'dev_stage' or 'production_stage' or 'none' (skips extension)
+```
 
 ## Usage
 
@@ -36,7 +48,11 @@ extensions = [ 'sphinx_algolia_crawler' ]
 - Python>=3.6
 - Sphinx>=1.8
 - Docker Desktop
-- jq:
+
+### Raw Command
+
+If you're trying to run the raw Docker command in CLI, you require `jq`:
+
 ```bash
 # Bash
 sudo apt-get install jq
