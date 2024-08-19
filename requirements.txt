@@ -13,4 +13,4 @@ sphinx-new-tab-link>=0.5.2	# Opens all external links in new tab | https://pypi.
 sphinxcontrib-redoc>=1.6.0	# OpenAPI Docgen | https://sphinxcontrib-redoc.readthedocs.io/en/stable
 pillow>=10.4.0            	# Minimize images on CI | https://pypi.org/project/pillow
 sphinxext-opengraph>=0.9.1	# Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
-sphinx-docsearch>=0.0.7    # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
+sphinx-docsearch>=0.0.7    	# AI-powered DocSearch | https://pypi.org/project/sphinx-docsearch/

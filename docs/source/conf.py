@@ -48,6 +48,7 @@ sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
+#sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
 sys.path.append(os.path.abspath('.'))
 
 
@@ -346,8 +347,8 @@ source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 # Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
 
 docsearch_app_id = "O9A3CDDIXM"  # Public
-docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public
-docsearch_index_name = "xsolla-dev"
+docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public (private "write" key is for the scraper)
+docsearch_index_name = "dev_XSOLLA"
 # docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
 docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
 docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
