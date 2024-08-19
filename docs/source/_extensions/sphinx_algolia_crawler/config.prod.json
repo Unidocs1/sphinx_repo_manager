@@ -1,0 +1,109 @@
+{
+	"index_name": "prod_XSOLLA",
+	"start_urls": [
+		"https://docs.xsolla.cloud/en/latest/"
+	],
+	"rate_limit": 8,
+	"max_depth": 10,
+	"render_js": false,
+	"sitemap_urls": [],
+	"ignore_canonical_to": false,
+	"discovery_patterns": [
+		"https://docs.xsolla.cloud/en/latest/**"
+	],
+	"selectors": {
+		"lvl0": {
+			"selector": "",
+			"default_value": "Documentation"
+		},
+		"lvl1": {
+			"selector": "article h1",
+			"default_value": null
+		},
+		"content": {
+			"selector": "article p, article li",
+			"default_value": null
+		},
+		"lvl2": {
+			"selector": "article h2",
+			"default_value": null
+		},
+		"lvl3": {
+			"selector": "article h3",
+			"default_value": null
+		},
+		"lvl4": {
+			"selector": "article h4",
+			"default_value": null
+		},
+		"lvl5": {
+			"selector": "article h5",
+			"default_value": null
+		},
+		"lvl6": {
+			"selector": "article h6",
+			"default_value": null
+		}
+	},
+	"custom_settings": {
+		"attributesForFaceting": [
+			"type",
+			"lang"
+		],
+		"attributesToRetrieve": [
+			"hierarchy",
+			"content",
+			"anchor",
+			"url",
+			"url_without_anchor",
+			"type"
+		],
+		"attributesToHighlight": [
+			"hierarchy",
+			"content"
+		],
+		"attributesToSnippet": [
+			"content:10"
+		],
+		"camelCaseAttributes": [
+			"hierarchy",
+			"content"
+		],
+		"searchableAttributes": [
+			"unordered(hierarchy.lvl0)",
+			"unordered(hierarchy.lvl1)",
+			"unordered(hierarchy.lvl2)",
+			"unordered(hierarchy.lvl3)",
+			"unordered(hierarchy.lvl4)",
+			"unordered(hierarchy.lvl5)",
+			"unordered(hierarchy.lvl6)",
+			"content"
+		],
+		"distinct": true,
+		"attributeForDistinct": "url",
+		"customRanking": [
+			"desc(weight.pageRank)",
+			"desc(weight.level)",
+			"asc(weight.position)"
+		],
+		"ranking": [
+			"words",
+			"filters",
+			"typo",
+			"attribute",
+			"proximity",
+			"exact",
+			"custom"
+		],
+		"highlightPreTag": "<span class=\"algolia-docsearch-suggestion--highlight\">",
+		"highlightPostTag": "</span>",
+		"minWordSizefor1Typo": 3,
+		"minWordSizefor2Typos": 7,
+		"allowTyposOnNumericTokens": false,
+		"minProximity": 1,
+		"ignorePlurals": true,
+		"advancedSyntax": true,
+		"attributeCriteriaComputedByMinProximity": true,
+		"removeWordsIfNoResults": "allOptional"
+	}
+}

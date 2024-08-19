@@ -19,6 +19,7 @@ project = 'XBE Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = 'v2024.07.0'
+version = release
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -46,13 +47,13 @@ sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
 sys.path.append(os.path.abspath('.'))
 
 
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
-    app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
     app.connect('build-finished', copy_open_graph_img_to_build)
 
 
@@ -68,8 +69,9 @@ repo_manager = SphinxRepoManager(manifest_path)
 manifest = repo_manager.read_normalize_manifest()
 
 # Extract common props
-repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
-print(f'[conf.py::repo_manifest.yml] Num repos found: {len(repos)}')
+manifest_stage = manifest['stage']  # 'dev_stage' or 'prod_stage'
+manifest_repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
+print(f'[conf.py::repo_manifest.yml] Num repos found: {len(manifest_repos)}')
 
 # TODO: Use these below for dynamic info pulled from repo_manifest.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
@@ -82,7 +84,9 @@ repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
+    'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     'sphinx_tabs.tabs',
+    'sphinx_algolia_crawler',  # Our own custom extension to crawl our build site for our AI-powered search indexing
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
     'sphinx_image_min',  # Our own custom extension to minimizer images after build from build/ dir (set to CI only)
@@ -257,6 +261,17 @@ pygments_style = "monokai"
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
+html_css_files = [
+    'styles/main.css',
+    # 'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
+    'styles/algolia.css',
+]
+
+html_js_files = [
+    # 'https://cdn.jsdelivr.net/npm/@docsearch/js@3',
+    ('js/algolia.js', {'defer': 'defer'}),
+]
+
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
 
@@ -302,12 +317,6 @@ html_theme_options = {
         "navbar-icon-links",
         "article-header-buttons",
     ],
-
-    # TODO: Awaiting API keys (submitted; reqs manual approval)
-    # "algolia": {  # book
-    #     "api_key": "your_algolia_api_key",
-    #     "index_name": "your_index_name",
-    # },
 }
 
 html_sidebars = {
@@ -334,6 +343,31 @@ html_context.update({
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
+
+# -- Sphinx Extension: Algolia Crawler ---------------------------------------
+
+# Determine which json config to use; used in `sphinxext_docsearch` below!
+algolia_crawler_config_stage = None  # 'dev_stage' or 'production_stage' or None (skips extension)
+# algolia_crawler_config_stage = manifest_stage  # 'dev_stage' or 'production_stage' or None (skips extension)
+
+# -- Sphinx Extension: sphinxext_docsearch ----------------------------
+# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
+
+docsearch_app_id = "O9A3CDDIXM"  # Public
+docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public (private "write" key is for the scraper)
+docsearch_index_name = "prod_XSOLLA" if algolia_crawler_config_stage == "production_stage" else "dev_XSOLLA"
+
+# docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
+docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
+
+docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
+                                 f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}")
+
+html_context.update({
+    "docsearch_app_id": docsearch_app_id,
+    "docsearch_api_key": docsearch_api_key,
+    "docsearch_index_name": docsearch_index_name,
+})
 
 # -- MyST configuration ------------------------------------------------------
 # Recommonmark successor to auto-parse .md to .rst

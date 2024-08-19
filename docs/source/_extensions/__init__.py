@@ -3,3 +3,6 @@ from . import sphinx_repo_manager
 from .sphinx_repo_manager import git_helper
 
 from . import sphinx_feature_flags
+from . import sphinx_image_min
+from . import sphinx_openapi
+from . import sphinx_algolia_crawler
