@@ -3,72 +3,61 @@ Xsolla Sphinx Extension: sphinx_algolia_crawler
 - See README for more info
 """
 import os
-import sys
-import subprocess
-import json
+import requests
+import argparse
 
 
 class SphinxAlgoliaCrawler:
     """
-    A class to execute the Algolia DocSearch scraper during the Sphinx build process.
-    - Checks for the presence of `.env` and the appropriate config file based on the stage.
-    - Runs the DocSearch scraper using Docker if the necessary files are present.
+    A class to trigger the Algolia DocSearch crawler during the Sphinx build process.
+    - Uses the Algolia API to reindex the crawler.
     """
 
-    def run(self, stage, script_dir):
+    def __init__(
+            self,
+            app_id,
+            secret_write_api_key,
+            crawler_id,
+            script_dir
+    ):
+        self.app_id = app_id
+        self.secret_write_api_key = secret_write_api_key
+        self.script_dir = script_dir
+        self.crawler_id = crawler_id
+
+    def run(self):
         """
-        Run the Algolia DocSearch scraper based on the provided stage.
+        Trigger the Algolia DocSearch crawler via the Algolia API.
         """
-        if stage == 'none':
+        if not self.app_id or not self.secret_write_api_key:
+            print("[sphinx_algolia_crawler] App ID or API key not provided, skipping crawler trigger.")
             return
 
-        config_filename = 'config.dev.json' if stage == 'dev_stage' else 'config.prod.json'
-        print(f"\n[sphinx_algolia_crawler] Config file: {config_filename}")
-
-        config_file_path = os.path.join(script_dir, config_filename)
-
-        if not os.path.exists(config_file_path):
-            print(f"[sphinx_algolia_crawler] Config file '{config_file_path}' not found.")
-            return
-
-        env_file = os.path.join(script_dir, '.env')
-        if not os.path.exists(env_file):
-            print(f"[sphinx_algolia_crawler] .env file not found at '{env_file}'. See .env.template for guidance.")
+        if not self.crawler_id:
+            print(f"[sphinx_algolia_crawler] No crawler ID provided, skipping crawler trigger.")
             return
 
         try:
-            result = self.run_docker_scraper(env_file, config_file_path)
-            print(f"[sphinx_algolia_crawler] DocSearch scraper completed successfully:\n{result.stdout}")
-        except subprocess.CalledProcessError as e:
-            print(f"[sphinx_algolia_crawler] Error running DocSearch scraper:\n{e.stderr}")
+            result = self.trigger_algolia_crawler(self.crawler_id)
+            if result.status_code == 200:
+                print("[sphinx_algolia_crawler] Crawler triggered successfully.")
+            else:
+                print(f"[sphinx_algolia_crawler] Failed to trigger crawler: "
+                      f"Error {result.status_code} - {result.text}")
+        except requests.RequestException as e:
+            print(f"[sphinx_algolia_crawler] Error triggering Algolia crawler: {str(e)}")
 
-    @staticmethod
-    def run_docker_scraper(env_file, json_config_path):
+    def trigger_algolia_crawler(self, crawler_id):
         """
-        Runs the Docker-based DocSearch scraper.
-        - Emulates the behavior of 'CONFIG=$(cat config.json | jq -r tostring)'
+        Triggers the Algolia crawler via their API.
         """
-        with open(json_config_path, 'r') as file:
-            config_content = json.load(file)
+        url = f"https://crawler.algolia.com/api/1/crawlers/{crawler_id}/reindex"
+        headers = {
+            "X-Algolia-API-Key": self.secret_write_api_key,
+            "X-Algolia-Application-Id": self.app_id
+        }
 
-        compact_json_string = json.dumps(config_content)
-
-        args = [
-            'docker', 'run', '-it',
-            '--env-file', env_file,
-            '-e', f'CONFIG={compact_json_string}',
-            'algolia/docsearch-scraper'
-        ]
-
-        print(f"Running Docker command: {' '.join(args)}")
-
-        return subprocess.run(
-            args,
-            check=True,
-            capture_output=False,
-            shell=False,
-            text=True,
-        )
+        return requests.post(url, headers=headers)
 
 
 # ENTRY POINT (Sphinx) >>
@@ -76,14 +65,24 @@ def setup(app):
     """
     Entry point for the Sphinx extension.
     """
-    app.add_config_value('algolia_crawler_config_stage', 'dev_stage', 'env')
+    app.add_config_value('algolia_crawler_enabled', False, 'env')
+    app.add_config_value('algolia_crawler_app_id', '', 'env')
+    app.add_config_value('algolia_crawler_secret_write_api_key', '', 'env')
+    app.add_config_value('algolia_crawler_id', '', 'env')
 
     def on_build_finished(app, exception):
-        stage = app.config.algolia_crawler_config_stage
-        script_dir = os.path.abspath(os.path.dirname(__file__))
-        if stage:
-            crawler = SphinxAlgoliaCrawler()
-            crawler.run(stage, script_dir)
+        if app.config.algolia_crawler_enabled:
+            app_id = app.config.algolia_crawler_app_id
+            secret_write_api_key = app.config.algolia_crawler_secret_write_api_key
+            crawler_id = app.config.algolia_crawler_id
+            script_dir = os.path.abspath(os.path.dirname(__file__))
+
+            crawler = SphinxAlgoliaCrawler(
+                app_id,
+                secret_write_api_key,
+                crawler_id,
+                script_dir)
+            crawler.run()
 
     app.connect('build-finished', on_build_finished)
 
@@ -92,28 +91,24 @@ def setup(app):
 if __name__ == "__main__":
     """
     Standalone execution of the script.
-    - Requires the config file name to be passed as the first argument.
-    - Checks for `.env` in the current directory.
-    - Executes the Docker-based DocSearch scraper if `.env` is found.
+    - Requires the App ID and API Key as arguments.
     """
-    if len(sys.argv) < 2:
-        print("[sphinx_algolia_crawler] Error: You must provide the config file name as the first argument.")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Trigger the v1 Algolia DocSearch Crawler | "
+                                                 "https://www.algolia.com/doc/rest-api/crawler/")
+    parser.add_argument('--app_id', required=True, help="The public Algolia App id")
+    parser.add_argument('--api_key', required=True, help="The secret Algolia API write key")
+    parser.add_argument('--crawler_id', required=True, help="The crawler id (not index name)")
+    args = parser.parse_args()
 
-    config_filename = sys.argv[1]  # eg: 'config.dev.json'
     script_dir = os.path.normpath(os.path.abspath(
         os.path.dirname(os.path.abspath(__file__))))
-    env_file_path = os.path.join(script_dir, '.env')
-    config_file_path = os.path.join(script_dir, config_filename)
-
-    if not os.path.exists(env_file_path):
-        raise FileNotFoundError(
-            f"[sphinx_algolia_crawler] .env file not found at '{env_file_path}': See '.env.template.'")
-    if not os.path.exists(config_file_path):
-        raise FileNotFoundError(f"[sphinx_algolia_crawler] Json Config file '{config_file_path}' not found.")
 
     try:
-        crawler = SphinxAlgoliaCrawler()
-        crawler.run('custom', script_dir)
-    except subprocess.CalledProcessError as e:
-        print(f"[sphinx_algolia_crawler] Error running DocSearch scraper: {e.stderr}")
+        crawler = SphinxAlgoliaCrawler(
+            args.app_id,
+            args.api_key,
+            args.crawler_id,
+            script_dir)
+        crawler.run()
+    except requests.RequestException as e:
+        print(f"[sphinx_algolia_crawler] Error triggering Algolia crawler: {str(e)}")

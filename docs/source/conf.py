@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.abspath(''))
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
-read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
+is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
 fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
 
 # The absolute path to the directory containing conf.py.
@@ -180,7 +180,7 @@ def copy_open_graph_img_to_build(app, exception):
 # Optimizes ../build/_images/ if RTD CI using Pillow
 
 # Configuration for the image optimizer extension
-img_optimization_enabled = bool(read_the_docs_build)
+img_optimization_enabled = bool(is_read_the_docs_build)
 img_optimization_max_width = 1920
 
 # -- Extension: sphinx_openapi (OpenAPI Local Download/Updater) -----------
@@ -344,17 +344,29 @@ html_context.update({
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
-# -- Sphinx Extension: Algolia Crawler ---------------------------------------
-
-# Determine which json config to use; used in `sphinxext_docsearch` below!
-algolia_crawler_config_stage = None  # 'dev_stage' or 'production_stage' or None (skips extension)
-# algolia_crawler_config_stage = manifest_stage  # 'dev_stage' or 'production_stage' or None (skips extension)
-
-# -- Sphinx Extension: sphinxext_docsearch ----------------------------
-# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
+# -- Sphinx Extensions (SHARED): Algolia Crawler + sphinxext_docsearch --------------------------------------------
 
 docsearch_app_id = "O9A3CDDIXM"  # Public
-docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public (private "write" key is for the scraper)
+
+# -- Sphinx Extension: Algolia Crawler ----------------------------------------------------------------------------
+# Crawling is *slow* and temporarily takes search offline while reindexing, so it should only trigger @ RTD
+
+algolia_crawler_enabled = is_read_the_docs_build
+
+# Get from project root .env -- for local testing only (optional).
+# We'd normally just trigger this on RTD CI: On RTD, we set the env var @ dashboard
+algolia_crawler_secret_write_api_key = os.getenv("ALGOLIA_CRAWLER_SECRET_WRITE_API_KEY")
+
+# Not to be confused with index name
+algolia_crawler_id = "TODO"
+
+# -- Sphinx Extension: sphinxext_docsearch ------------------------------------------------------------------------
+# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
+
+# Which index to select? 'dev_stage' or 'production_stage' (None skips extension)
+algolia_crawler_config_stage = manifest_stage
+
+docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public read key
 docsearch_index_name = "prod_XSOLLA" if algolia_crawler_config_stage == "production_stage" else "dev_XSOLLA"
 
 # docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
@@ -400,7 +412,7 @@ myst_enable_extensions = [
 
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'production-stage': read_the_docs_build or fallback_to_production_stage_if_not_rtd,
+    'production-stage': is_read_the_docs_build or fallback_to_production_stage_if_not_rtd,
 
     # True: [Navbar, Docs] Create Acct -> AXR pricing si te
     # False: New login page @ https://xsolla.cloud 
