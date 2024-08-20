@@ -1,6 +1,8 @@
 User-agent: *
 
 Allow: /en/latest/
+Allow: /sitemap.xml
+
 Disallow: /
 
 Sitemap: https://docs.xsolla.cloud/sitemap.xml
