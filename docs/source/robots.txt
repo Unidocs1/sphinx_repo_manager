@@ -1,5 +1,7 @@
-User-agent: *
+User-agent: Algolia Crawler
+Allow: /
 
+User-agent: *
 Allow: /en/latest/
 Allow: /sitemap.xml
 
