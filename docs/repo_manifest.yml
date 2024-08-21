@@ -90,9 +90,9 @@ repositories:
   xbe_static_docs:
     url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
-    dev_stage:
-      checkout: 'feat/v2024.07.0'
-      checkout_type: 'branch'
+    #dev_stage:
+    #  checkout: 'feat/v2024.07.0'
+    #  checkout_type: 'branch'
     production_stage:
       # This particular repo should match the main doc macro version
       # (!) This production checkout version below is important and used for tooling to check target ver 
