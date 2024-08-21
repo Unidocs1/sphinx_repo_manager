@@ -3,21 +3,24 @@
 ## Description
 
 This Sphinx extension (that can also be run standalone) uses Algolia's v1 Crawler API 
-to trigger a crawl, for either our dev or production stage:
+to trigger a crawl. RTD uses Production stage, but Dev stage can be triggered either 
+via standalone Python CLI call or by setting project root `.env` (see `.env.template`).
 
-https://www.algolia.com/doc/rest-api/crawler/#tag/actions/operation/crawlUrls
+See [Algolia Crawler API Doc](https://www.algolia.com/doc/rest-api/crawler/#tag/actions/operation/crawlUrls)
 
 ## Sphinx Setup
 
-## Set Secret
+## Set RTD Env
 
-In ReadTheDocs' env var dashboard, set `ALGOLIA_CRAWLER_SECRET_API_KEY`.
+In ReadTheDocs' env var dashboard, set:
 
-💡 Add this to your root proj `.env` to test locally
+1. `ALGOLIA_CRAWLER_USER_ID`
+2. `ALGOLIA_CRAWLER_API_KEY`
+3. `ALGOLIA_CRAWLER_ID`
+
+💡 Add this to your root proj `.env` to test locally (or as a standalone Python app)
 
 ### conf.py
-
-Ensure the following are set:
 
 ```py
 import sys, os
@@ -25,9 +28,9 @@ import sys, os
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
 extensions = [ 'sphinx_algolia_crawler' ]
 
-algolia_crawler_enabled = True  # Crawling is slow; you may only want this for RTD CI
-docsearch_app_id = 'TODO'
-algolia_crawler_id = 'TODO'  # Not to be confused with index name
+# While this example merely turns it on, you probably want to check if RTD /latest production
+# See `xbe_docs` `conf.py` for examples of how we checked for this
+algolia_crawler_enabled = True
 ```
 
 ## Usage

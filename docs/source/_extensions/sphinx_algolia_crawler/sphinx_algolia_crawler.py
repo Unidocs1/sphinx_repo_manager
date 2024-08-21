@@ -2,10 +2,14 @@
 Xsolla Sphinx Extension: sphinx_algolia_crawler
 - See README for more info
 """
+import base64
 import os
 import requests
 import argparse
+from dotenv import load_dotenv  # Import the dotenv package to load .env
 
+# Load environment variables from the .env file (for local testing)
+load_dotenv()
 
 class SphinxAlgoliaCrawler:
     """
@@ -13,71 +17,54 @@ class SphinxAlgoliaCrawler:
     - Uses the Algolia API to reindex the crawler.
     """
 
-    def __init__(
-            self,
-            app_id,
-            secret_write_api_key,
-            crawler_id,
-            script_dir
-    ):
-        self.app_id = app_id
-        self.secret_write_api_key = secret_write_api_key
+    def __init__(self, algolia_crawler_user_id, algolia_crawler_api_key, algolia_crawler_id, script_dir):
+        self.algolia_crawler_user_id = algolia_crawler_user_id
+        self.algolia_crawler_api_key = algolia_crawler_api_key
+        self.algolia_crawler_id = algolia_crawler_id
         self.script_dir = script_dir
-        self.crawler_id = crawler_id
 
     def run(self):
         """
         Trigger the Algolia DocSearch crawler via the Algolia API.
         """
-        print(f"[sphinx_algolia_crawler] Checking if we should init Algolia DocSearch crawler...")
+        print(f"\n[sphinx_algolia_crawler] Determining if we should run Algolia DocSearch crawler...")
 
-        if not self.app_id or not self.secret_write_api_key:
-            print("[sphinx_algolia_crawler] App ID or API key not provided, skipping crawler trigger.")
+        if not self.algolia_crawler_user_id:
+            print("[sphinx_algolia_crawler] .env `ALGOLIA_CRAWLER_USER_ID` missing; skipping crawler trigger.\n")
             return
 
-        if not self.crawler_id:
-            print(f"[sphinx_algolia_crawler] No crawler ID provided, skipping crawler trigger.")
+        if not self.algolia_crawler_api_key:
+            print("[sphinx_algolia_crawler] .env `ALGOLIA_CRAWLER_API_KEY` missing; skipping crawler trigger.\n")
+            return
+
+        if not self.algolia_crawler_id:
+            print(f"[sphinx_algolia_crawler] No `ALGOLIA_CRAWLER_ID` provided; skipping crawler trigger.\n")
             return
 
         try:
-            result = self.trigger_algolia_crawler(self.crawler_id)
-            if result.status_code == 200:
-                print("[sphinx_algolia_crawler] Crawler triggered successfully.")
-            else:
-                print(f"[sphinx_algolia_crawler] Failed to trigger crawler: "
-                      f"Error {result.status_code} - {result.text}")
+            result = self.trigger_algolia_crawler()
+            result.raise_for_status()  # Raise an exception for HTTP error responses
+            crawler_id_last_4 = self.algolia_crawler_id[-4:]
+            print(f"[sphinx_algolia_crawler] Crawler triggered successfully for crawler_id '...{crawler_id_last_4}'\n")
+        except requests.HTTPError as http_err:
+            print(f"[sphinx_algolia_crawler] HTTP error occurred: {http_err}\n")
         except requests.RequestException as e:
-            print(f"[sphinx_algolia_crawler] Error triggering Algolia crawler: {str(e)}")
+            print(f"[sphinx_algolia_crawler] Error triggering Algolia crawler: {str(e)}\n")
 
-    def trigger_algolia_crawler(self, crawler_id):
+    def trigger_algolia_crawler(self):
         """
-        Triggers the Algolia crawler via their API.
+        Triggers the Algolia crawler via their API using Basic Authentication.
         """
-        url = f"https://crawler.algolia.com/api/1/crawlers/{crawler_id}/reindex"
+        url = f"https://crawler.algolia.com/api/1/crawlers/{self.algolia_crawler_id}/reindex"
+        credentials = f"{self.algolia_crawler_user_id}:{self.algolia_crawler_api_key}"
+        encoded_credentials = base64.b64encode(credentials.encode()).decode("utf-8")
+
         headers = {
-            "X-Algolia-API-Key": self.secret_write_api_key,
-            "X-Algolia-Application-Id": self.app_id,
+            "Authorization": f"Basic {encoded_credentials}",
+            "Content-Type": "application/json"
         }
 
         return requests.post(url, headers=headers)
-
-
-def get_validate_algolia_crawler_secret_api_key(app):
-    """
-    Prioritize RTD's `ALGOLIA_CRAWLER_SECRET_API_KEY` environment variable.
-    If not found, fall back to the local configuration in `conf.py`.
-    """
-    algolia_crawler_secret_api_key = os.getenv('ALGOLIA_CRAWLER_SECRET_API_KEY')
-
-    if not algolia_crawler_secret_api_key:
-        algolia_crawler_secret_api_key = app.config.algolia_crawler_secret_api_key
-
-    # Additional validation
-    if not algolia_crawler_secret_api_key or \
-            algolia_crawler_secret_api_key == '<optional-to_test_algolia_crawler_locally>':
-        print(f"[sphinx_algolia_crawler] !ALGOLIA_CRAWLER_SECRET_API_KEY detected: Skipping crawler trigger.\n")
-
-    return algolia_crawler_secret_api_key
 
 
 # ENTRY POINT (Sphinx) >>
@@ -85,27 +72,27 @@ def setup(app):
     """
     Entry point for the Sphinx extension.
     """
-    app.add_config_value('algolia_crawler_enabled', False, 'env')
-    app.add_config_value('algolia_crawler_app_id', '', 'env')
-    app.add_config_value('algolia_crawler_id', '', 'env')
+    # Load from .env
+    algolia_crawler_user_id = os.getenv('ALGOLIA_CRAWLER_USER_ID')
+    algolia_crawler_api_key = os.getenv('ALGOLIA_CRAWLER_API_KEY')
+    algolia_crawler_id = os.getenv('ALGOLIA_CRAWLER_ID')
 
-    # Prioritize RTD's env var key, then local (*if* exists)
-    algolia_crawler_secret_api_key = get_validate_algolia_crawler_secret_api_key(app)
-    app.config.algolia_crawler_secret_api_key = algolia_crawler_secret_api_key
-
+    # Ensure `algolia_crawler_enabled` is retrieved from conf.py
     def on_build_finished(app, exception):
-        if app.config.algolia_crawler_enabled:
-            app_id = app.config.algolia_crawler_app_id
-            secret_write_api_key = app.config.algolia_crawler_secret_api_key
-            crawler_id = app.config.algolia_crawler_id
-            script_dir = os.path.abspath(os.path.dirname(__file__))
+        algolia_crawler_enabled = app.config.get('algolia_crawler_enabled', False)
+        if not algolia_crawler_enabled:
+            print(f"\n[sphinx_algolia_crawler] Crawler not enabled; skipping extension.\n")
+            return
 
-            crawler = SphinxAlgoliaCrawler(
-                app_id,
-                secret_write_api_key,
-                crawler_id,
-                script_dir)
-            crawler.run()
+        script_dir = os.path.abspath(os.path.dirname(__file__))
+
+        crawler = SphinxAlgoliaCrawler(
+            algolia_crawler_user_id,
+            algolia_crawler_api_key,
+            algolia_crawler_id,
+            script_dir
+        )
+        crawler.run()
 
     app.connect('build-finished', on_build_finished)
 
@@ -114,13 +101,13 @@ def setup(app):
 if __name__ == "__main__":
     """
     Standalone execution of the script.
-    - Requires the App ID and API Key as arguments.
+    - Requires the Crawler User ID and API Key as arguments.
     """
-    parser = argparse.ArgumentParser(description="Trigger the v1 Algolia DocSearch Crawler | "
+    parser = argparse.ArgumentParser(description="Trigger the Algolia DocSearch Crawler | "
                                                  "https://www.algolia.com/doc/rest-api/crawler/")
-    parser.add_argument('--app_id', required=True, help="The public Algolia App id")
-    parser.add_argument('--api_key', required=True, help="The secret Algolia API write key")
-    parser.add_argument('--crawler_id', required=True, help="The crawler id (not index name)")
+    parser.add_argument('--crawler_user_id', required=True)
+    parser.add_argument('--crawler_api_key', required=True)
+    parser.add_argument('--crawler_id', required=True)
     args = parser.parse_args()
 
     script_dir = os.path.normpath(os.path.abspath(
@@ -128,10 +115,11 @@ if __name__ == "__main__":
 
     try:
         crawler = SphinxAlgoliaCrawler(
-            args.app_id,
-            args.api_key,
+            args.crawler_user_id,
+            args.crawler_api_key,
             args.crawler_id,
-            script_dir)
+            script_dir
+        )
         crawler.run()
     except requests.RequestException as e:
-        print(f"[sphinx_algolia_crawler] Error triggering Algolia crawler: {str(e)}")
+        print(f"[sphinx_algolia_crawler-standalone] Error triggering Algolia crawler: {str(e)}")

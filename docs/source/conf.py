@@ -11,6 +11,10 @@ import os
 import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
+from dotenv import load_dotenv
+
+# Load the .env file
+load_dotenv()
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -39,6 +43,9 @@ sys.path.insert(0, os.path.abspath(''))
 # Check if we're running on Read the Docs' servers
 is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
 fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
+
+rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
+rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
 
 # The absolute path to the directory containing conf.py.
 documentation_root = os.path.abspath(os.path.dirname(__file__))
@@ -345,29 +352,20 @@ html_context.update({
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
-# -- Sphinx Extensions (SHARED): Algolia Crawler + sphinxext_docsearch --------------------------------------------
-docsearch_app_id_dev = "DBTSGB2DXO"
-docsearch_app_id_prod = "CKS2O35GXS"
-docsearch_app_id = docsearch_app_id_prod if manifest_stage_is_production \
-    else docsearch_app_id_dev
-
 # -- Sphinx Extension: Algolia Crawler ----------------------------------------------------------------------------
-# Crawling is *slow* and temporarily takes search offline while reindexing, so it should only trigger @ RTD
+# Crawling is *slow* and temporarily takes search offline while reindexing: Only trigger @ RTD /latest prod build
+# (!) /dev builds can be manually triggered: Use `sphinx_algolia_crawler.py` standalone or see root proj .env.template
 
-algolia_crawler_enabled = is_read_the_docs_build
-
-# Get from project root .env -- for local testing only (optional).
-# We'd normally just trigger this on RTD CI: On RTD, we set the env var @ dashboard
-algolia_crawler_secret_api_key = os.getenv("ALGOLIA_CRAWLER_SECRET_API_KEY")
-
-# Not to be confused with index name
-algolia_crawler_id_dev = "xsolla-66baf2264eaf0200364c4a7c"
-algolia_crawler_id_prod = "xsolla-66baf2c24eaf0200364c4a7d"
-algolia_crawler_id = algolia_crawler_id_prod if manifest_stage_is_production \
-    else algolia_crawler_id_dev
+algolia_crawler_enabled = rtd_version_is_latest
 
 # -- Sphinx Extension: sphinxext_docsearch ------------------------------------------------------------------------
 # Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
+
+algolia_docsearch_app_id_dev = "DBTSGB2DXO"
+algolia_docsearch_app_id_prod = "CKS2O35GXS"
+
+docsearch_app_id = algolia_docsearch_app_id_prod if manifest_stage_is_production \
+    else algolia_docsearch_app_id_dev
 
 # Which index to select? 'dev_stage' or 'production_stage' (None skips extension)
 algolia_crawler_config_stage = manifest_stage
