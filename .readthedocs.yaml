@@ -19,7 +19,7 @@ build:
           git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
           echo "Verifying the URL swap..."
           # Verify by using git to clone a small repo or fetch info
-          git ls-remote https://gitlab.acceleratxr.com/Core/acceleratxr.io.git || { echo "GITLAB_ACCESS_TOKEN_ URL swap verification failed: Bad perms? Expired?"; exit 1; }
+          git ls-remote https://gitlab.acceleratxr.com/Core/xbe_docs.git || { echo "GITLAB_ACCESS_TOKEN_ URL swap verification failed: Bad perms? Expired?"; exit 1; }
         fi
     post_build:
       - |

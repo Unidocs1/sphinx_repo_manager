@@ -1,4 +1,4 @@
-# acceleratxr.io/tools
+# xbe_docs/tools
 
 From "perfect doc" templates to scripts to get things done:
 

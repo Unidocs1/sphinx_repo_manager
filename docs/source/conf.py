@@ -282,8 +282,8 @@ html_theme_options = {
     # 'base_url': 'https://docs.xsolla.cloud/',
     # 'color_primary': 'blue', 
     # 'color_accent': 'light-blue',
-    # 'repo_url': 'https://gitlab.acceleratxr.com/Core/acceleratxr.io/',
-    # 'repo_name': 'acceleratxr.io',
+    # 'repo_url': 'https://gitlab.acceleratxr.com/Core/xbe_docs/',
+    # 'repo_name': 'xbe_docs',
     # 'globaltoc_depth': 2,  # Visible levels of the global TOC; Default: 2
     # 'globaltoc_collapse': False,  # Expand the global TOC by default
     # 'globaltoc_includehidden': True,  # Show the TOC in the sidebar
@@ -294,7 +294,7 @@ html_theme_options = {
     'home_page_in_toc': False,
     "path_to_docs": "docs/source/",
     "repository_provider": "gitlab",
-    "repository_url": "https://gitlab.acceleratxr.com/Core/acceleratxr.io",
+    "repository_url": "https://gitlab.acceleratxr.com/Core/xbe_docs",
     "repository_branch": "main",
     "max_navbar_depth": 2,
     "show_navbar_depth": 1,  # Gow deep should we initially auto-expand the left navbar?
@@ -336,7 +336,7 @@ html_context.update({
     'display_gitlab': True,  # Integrate Gitlab
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
-    'gitlab_repo': 'acceleratxr.io',  # Repo name
+    'gitlab_repo': 'xbe_docs',  # Repo name
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_version': 'master',  # Version
     'doc_path': 'docs/source',
