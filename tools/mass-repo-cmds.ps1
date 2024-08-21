@@ -63,8 +63,7 @@ function Main {
         # Resolve the full path of the repos directory
         $resolvedReposDir = Resolve-Path $REPOS_AVAIL_DIR
         Set-Location $resolvedReposDir
-        Write-Output "BASE DIR:"
-        pwd
+        Write-Output "BASE DIR: $(pwd)"
 
         # Find all git repositories recursively
         $gitRepositories = Find-GitRepos -rootDir $resolvedReposDir
