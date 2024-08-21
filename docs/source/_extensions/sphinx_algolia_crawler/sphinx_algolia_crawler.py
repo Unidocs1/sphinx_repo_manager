@@ -11,6 +11,7 @@ from dotenv import load_dotenv  # Import the dotenv package to load .env
 # Load environment variables from the .env file (for local testing)
 load_dotenv()
 
+
 class SphinxAlgoliaCrawler:
     """
     A class to trigger the Algolia DocSearch crawler during the Sphinx build process.
@@ -41,13 +42,25 @@ class SphinxAlgoliaCrawler:
             print(f"[sphinx_algolia_crawler] No `ALGOLIA_CRAWLER_ID` provided; skipping crawler trigger.\n")
             return
 
+        result = None  # Initialize result to None to avoid referencing before assignment
         try:
             result = self.trigger_algolia_crawler()
             result.raise_for_status()  # Raise an exception for HTTP error responses
             crawler_id_last_4 = self.algolia_crawler_id[-4:]
             print(f"[sphinx_algolia_crawler] Crawler triggered successfully for crawler_id '...{crawler_id_last_4}'\n")
         except requests.HTTPError as http_err:
-            print(f"[sphinx_algolia_crawler] HTTP error occurred: {http_err}\n")
+            if result is not None:
+                try:
+                    error_info = result.json().get('error', {})
+                    error_code = error_info.get('code', 'N/A')
+                    error_message = error_info.get('message', 'No error message provided')
+                    print(f"[sphinx_algolia_crawler] HTTP error occurred: "
+                          f"{http_err.response.status_code} - {error_code} - {error_message}\n")
+                except ValueError:
+                    # Handle case where response body isn't JSON
+                    print(f"[sphinx_algolia_crawler] HTTP error occurred: {http_err.response.status_code} - {http_err.response.text}\n")
+            else:
+                print(f"[sphinx_algolia_crawler] HTTP error occurred but no response to parse: {http_err}\n")
         except requests.RequestException as e:
             print(f"[sphinx_algolia_crawler] Error triggering Algolia crawler: {str(e)}\n")
 
@@ -72,18 +85,16 @@ def setup(app):
     """
     Entry point for the Sphinx extension.
     """
-    # Load from .env
-    algolia_crawler_user_id = os.getenv('ALGOLIA_CRAWLER_USER_ID')
-    algolia_crawler_api_key = os.getenv('ALGOLIA_CRAWLER_API_KEY')
-    algolia_crawler_id = os.getenv('ALGOLIA_CRAWLER_ID')
+    app.add_config_value('algolia_crawler_enabled', False, rebuild=False)
 
-    # Ensure `algolia_crawler_enabled` is retrieved from conf.py
     def on_build_finished(app, exception):
-        algolia_crawler_enabled = app.config.get('algolia_crawler_enabled', False)
-        if not algolia_crawler_enabled:
+        if not app.config.algolia_crawler_enabled:
             print(f"\n[sphinx_algolia_crawler] Crawler not enabled; skipping extension.\n")
             return
 
+        algolia_crawler_user_id = os.getenv('ALGOLIA_CRAWLER_USER_ID')
+        algolia_crawler_api_key = os.getenv('ALGOLIA_CRAWLER_API_KEY')
+        algolia_crawler_id = os.getenv('ALGOLIA_CRAWLER_ID')
         script_dir = os.path.abspath(os.path.dirname(__file__))
 
         crawler = SphinxAlgoliaCrawler(
@@ -94,7 +105,7 @@ def setup(app):
         )
         crawler.run()
 
-    app.connect('build-finished', on_build_finished)
+    app.connect('build-finished', on_build_finished, priority=800)
 
 
 # ENTRY POINT (Standalone) >>
@@ -118,7 +129,7 @@ if __name__ == "__main__":
             args.crawler_user_id,
             args.crawler_api_key,
             args.crawler_id,
-            script_dir
+            script_dir,
         )
         crawler.run()
     except requests.RequestException as e:
