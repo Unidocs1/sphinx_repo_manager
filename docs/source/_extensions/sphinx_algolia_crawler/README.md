@@ -9,6 +9,12 @@ https://www.algolia.com/doc/rest-api/crawler/#tag/actions/operation/crawlUrls
 
 ## Sphinx Setup
 
+## Set Secret
+
+In ReadTheDocs' env var dashboard, set `ALGOLIA_CRAWLER_SECRET_API_KEY`.
+
+💡 Add this to your root proj `.env` to test locally
+
 ### conf.py
 
 Ensure the following are set:
@@ -21,7 +27,6 @@ extensions = [ 'sphinx_algolia_crawler' ]
 
 algolia_crawler_enabled = True  # Crawling is slow; you may only want this for RTD CI
 docsearch_app_id = 'TODO'
-algolia_crawler_secret_write_api_key = 'TODO'
 algolia_crawler_id = 'TODO'  # Not to be confused with index name
 ```
 

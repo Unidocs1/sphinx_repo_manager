@@ -54,7 +54,7 @@ class SphinxAlgoliaCrawler:
         url = f"https://crawler.algolia.com/api/1/crawlers/{crawler_id}/reindex"
         headers = {
             "X-Algolia-API-Key": self.secret_write_api_key,
-            "X-Algolia-Application-Id": self.app_id
+            "X-Algolia-Application-Id": self.app_id,
         }
 
         return requests.post(url, headers=headers)
@@ -67,7 +67,7 @@ def setup(app):
     """
     app.add_config_value('algolia_crawler_enabled', False, 'env')
     app.add_config_value('algolia_crawler_app_id', '', 'env')
-    app.add_config_value('algolia_crawler_secret_write_api_key', '', 'env')
+    app.add_config_value('algolia_crawler_secret_api_key', '', 'env')
     app.add_config_value('algolia_crawler_id', '', 'env')
 
     def on_build_finished(app, exception):

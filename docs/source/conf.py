@@ -70,6 +70,7 @@ manifest = repo_manager.read_normalize_manifest()
 
 # Extract common props
 manifest_stage = manifest['stage']  # 'dev_stage' or 'prod_stage'
+manifest_stage_is_production = manifest_stage == 'prod_stage'
 manifest_repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
 print(f'[conf.py::repo_manifest.yml] Num repos found: {len(manifest_repos)}')
 
@@ -345,8 +346,10 @@ html_context.update({
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
 # -- Sphinx Extensions (SHARED): Algolia Crawler + sphinxext_docsearch --------------------------------------------
-
-docsearch_app_id = "O9A3CDDIXM"  # Public
+docsearch_app_id_dev = "DBTSGB2DXO"
+docsearch_app_id_prod = "CKS2O35GXS"
+docsearch_app_id = docsearch_app_id_prod if manifest_stage_is_production \
+    else docsearch_app_id_dev
 
 # -- Sphinx Extension: Algolia Crawler ----------------------------------------------------------------------------
 # Crawling is *slow* and temporarily takes search offline while reindexing, so it should only trigger @ RTD
@@ -355,10 +358,13 @@ algolia_crawler_enabled = is_read_the_docs_build
 
 # Get from project root .env -- for local testing only (optional).
 # We'd normally just trigger this on RTD CI: On RTD, we set the env var @ dashboard
-algolia_crawler_secret_write_api_key = os.getenv("ALGOLIA_CRAWLER_SECRET_WRITE_API_KEY")
+algolia_crawler_secret_write_api_key = os.getenv("ALGOLIA_CRAWLER_SECRET_API_KEY")
 
 # Not to be confused with index name
-algolia_crawler_id = "TODO"
+algolia_crawler_id_dev = "xsolla-66baf2264eaf0200364c4a7c"
+algolia_crawler_id_prod = "xsolla-66baf2c24eaf0200364c4a7d"
+algolia_crawler_id = algolia_crawler_id_prod if manifest_stage_is_production \
+    else algolia_crawler_id_dev
 
 # -- Sphinx Extension: sphinxext_docsearch ------------------------------------------------------------------------
 # Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
