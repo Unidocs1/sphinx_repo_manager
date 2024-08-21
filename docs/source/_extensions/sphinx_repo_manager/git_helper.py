@@ -3,11 +3,10 @@ import re  # Regex
 import shutil
 import subprocess
 import shlex  # CLI helper
-from datetime import datetime
-from pathlib import Path
-
 import logging
 from log_styles import *
+from datetime import datetime
+from pathlib import Path
 
 GIT_SPARSE_PRESERVED_DIRS_FILES = [
     '.git',
@@ -57,16 +56,24 @@ def log_pretty_cli_cmd(cmd_arr, log_entries=None):
 
 def redact_url_secret(url):
     """ Redact any credentials in the URL. """
-    url_pattern = re.compile(r'https://([^:/]*:[^@]*)@')
-    return url_pattern.sub('https://REDACTED-SECRET@', url)
+    try:
+        url_pattern = re.compile(r'https://([^:/]*:[^@]*)@')
+        return url_pattern.sub('https://REDACTED-SECRET@', url)
+    except Exception:
+        return url
 
 
-def run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True, log_entries=None):
+def run_subprocess_cmd(
+        cmd_arr,
+        check_throw_on_cli_err=True,
+        log_entries=None,
+):
     """ Run a subprocess command and handle errors. """
     redacted_cmd_arr = [redact_url_secret(part) for part in cmd_arr]
     log_pretty_cli_cmd(redacted_cmd_arr, log_entries)
 
     try:
+        GitHelper.clean_command_array(cmd_arr)
         result = subprocess.run(cmd_arr, capture_output=True, text=True)
 
         if result.returncode != 0:
@@ -125,6 +132,11 @@ class GitHelper:
         return True
 
     @staticmethod
+    def clean_command_array(cmd_arr):
+        """ Filter out None or empty string values. """
+        cmd_arr[:] = [arg for arg in cmd_arr if arg]
+
+    @staticmethod
     def _get_gitlab_base_url(repo_url):
         """
         Extract the GitLab base URL from the given repo URL.
@@ -176,9 +188,10 @@ class GitHelper:
         if os.path.exists(rel_init_clone_path):
             raise Exception(f"Tried to clone to path, but dir already exists: '{rel_init_clone_path}'")
 
+        single_branch = '--single-branch' if branch_is_tag else None  # Nones cleaned @ rub_subprocess_cmd
         git_clone_cmd_arr = [
             'git', 'clone',
-            '--branch', branch, '--single-branch',  # --single-branch allows for cloning tags like this
+            '--branch', branch, single_branch,
             '-q',
             repo_url_dotgit, rel_init_clone_path,
         ]
@@ -248,12 +261,12 @@ class GitHelper:
         (!) repo_sparse_path is a single string that will be combined into an arr.
         (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
         """
-        
-        single_branch = '--single-branch' if branch_is_tag else ''
+
+        single_branch = '--single-branch' if branch_is_tag else None  # Nones cleaned @ rub_subprocess_cmd 
         git_clone_filter_nocheckout_cmd_arr = [
             'git', 'clone',
             '--filter=blob:none', '--no-checkout',
-            '--branch', branch, single_branch,  # --single-branch allows for cloning tags like this
+            '--branch', branch, single_branch,
             '-q', repo_url_dotgit, clone_to_path
         ]
 
