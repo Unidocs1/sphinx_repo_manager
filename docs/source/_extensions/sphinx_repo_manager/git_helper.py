@@ -249,10 +249,11 @@ class GitHelper:
         (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
         """
         
+        single_branch = '--single-branch' if branch_is_tag else ''
         git_clone_filter_nocheckout_cmd_arr = [
             'git', 'clone',
             '--filter=blob:none', '--no-checkout',
-            '--branch', branch, '--single-branch',  # --single-branch allows for cloning tags like this
+            '--branch', branch, single_branch,  # --single-branch allows for cloning tags like this
             '-q', repo_url_dotgit, clone_to_path
         ]
 
