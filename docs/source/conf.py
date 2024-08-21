@@ -358,7 +358,7 @@ algolia_crawler_enabled = is_read_the_docs_build
 
 # Get from project root .env -- for local testing only (optional).
 # We'd normally just trigger this on RTD CI: On RTD, we set the env var @ dashboard
-algolia_crawler_secret_write_api_key = os.getenv("ALGOLIA_CRAWLER_SECRET_API_KEY")
+algolia_crawler_secret_api_key = os.getenv("ALGOLIA_CRAWLER_SECRET_API_KEY")
 
 # Not to be confused with index name
 algolia_crawler_id_dev = "xsolla-66baf2264eaf0200364c4a7c"

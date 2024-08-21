@@ -29,6 +29,8 @@ class SphinxAlgoliaCrawler:
         """
         Trigger the Algolia DocSearch crawler via the Algolia API.
         """
+        print(f"[sphinx_algolia_crawler] Checking if we should init Algolia DocSearch crawler...")
+
         if not self.app_id or not self.secret_write_api_key:
             print("[sphinx_algolia_crawler] App ID or API key not provided, skipping crawler trigger.")
             return
@@ -60,6 +62,24 @@ class SphinxAlgoliaCrawler:
         return requests.post(url, headers=headers)
 
 
+def get_validate_algolia_crawler_secret_api_key(app):
+    """
+    Prioritize RTD's `ALGOLIA_CRAWLER_SECRET_API_KEY` environment variable.
+    If not found, fall back to the local configuration in `conf.py`.
+    """
+    algolia_crawler_secret_api_key = os.getenv('ALGOLIA_CRAWLER_SECRET_API_KEY')
+
+    if not algolia_crawler_secret_api_key:
+        algolia_crawler_secret_api_key = app.config.algolia_crawler_secret_api_key
+
+    # Additional validation
+    if not algolia_crawler_secret_api_key or \
+            algolia_crawler_secret_api_key == '<optional-to_test_algolia_crawler_locally>':
+        print(f"[sphinx_algolia_crawler] !ALGOLIA_CRAWLER_SECRET_API_KEY detected: Skipping crawler trigger.\n")
+
+    return algolia_crawler_secret_api_key
+
+
 # ENTRY POINT (Sphinx) >>
 def setup(app):
     """
@@ -67,13 +87,16 @@ def setup(app):
     """
     app.add_config_value('algolia_crawler_enabled', False, 'env')
     app.add_config_value('algolia_crawler_app_id', '', 'env')
-    app.add_config_value('algolia_crawler_secret_api_key', '', 'env')
     app.add_config_value('algolia_crawler_id', '', 'env')
+
+    # Prioritize RTD's env var key, then local (*if* exists)
+    algolia_crawler_secret_api_key = get_validate_algolia_crawler_secret_api_key(app)
+    app.config.algolia_crawler_secret_api_key = algolia_crawler_secret_api_key
 
     def on_build_finished(app, exception):
         if app.config.algolia_crawler_enabled:
             app_id = app.config.algolia_crawler_app_id
-            secret_write_api_key = app.config.algolia_crawler_secret_write_api_key
+            secret_write_api_key = app.config.algolia_crawler_secret_api_key
             crawler_id = app.config.algolia_crawler_id
             script_dir = os.path.abspath(os.path.dirname(__file__))
 
