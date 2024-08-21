@@ -146,7 +146,7 @@ html_context.update({
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_host': 'gitlab.acceleratxr.com',
     'gitlab_user': 'Core',  # Group
-    'gitlab_repo': 'acceleratxr.io',  # Repo name
+    'gitlab_repo': 'xbe_docs',  # Repo name
     'gitlab_version': current_branch,  # Repo branch
 })
 
