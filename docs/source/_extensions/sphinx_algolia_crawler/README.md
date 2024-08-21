@@ -2,65 +2,47 @@
 
 ## Description
 
-This Sphinx extension (that can also be run standalone) wraps around Docker to
-scrape our site for Algolia AI search. This should be run locally; NOT in ReadTheDocs(RST)
-since it invokes Docker. This ultimately emulates this `docker` command:
+This Sphinx extension (that can also be run standalone) uses Algolia's v1 Crawler API 
+to trigger a crawl, for either our dev or production stage:
 
-```bash
-docker run -it --env-file=.env -e "CONFIG=$(cat config.json | jq -r tostring)" algolia/docsearch-scraper
-```
+https://www.algolia.com/doc/rest-api/crawler/#tag/actions/operation/crawlUrls
 
-## Setup
+## Sphinx Setup
 
-1. Edit `config.json`
-2. Copy `.env.template` to `.env` and set
+### conf.py
 
-### Optional
-
-In `conf.py`, set (showing defaults):
-
-```py
-algolia_crawler_config_stage = 'dev_stage'  # 'dev_stage' or 'production_stage' or 'none' (skips extension)
-```
-
-## Usage
-
-### Standalone
-
-```bash
-python3 sphinx_algolia_crawler.py
-```
-
-### Sphinx Ext
-
-Add the following to your `conf.py`:
+Ensure the following are set:
 
 ```py
 import sys, os
 
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
 extensions = [ 'sphinx_algolia_crawler' ]
+
+algolia_crawler_enabled = True  # Crawling is slow; you may only want this for RTD CI
+docsearch_app_id = 'TODO'
+algolia_crawler_secret_write_api_key = 'TODO'
+algolia_crawler_id = 'TODO'  # Not to be confused with index name
 ```
 
+## Usage
+
+### Standalone
+
+See the `-h` (help) command:
+
+```bash
+python3 .\sphinx_algolia_crawler.py -h
+```
+
+### Sphinx Ext
+
+If `conf.py` setup is set and `algolia_crawler_enabled`, this will automatically trigger when the build is done.
 
 ## Requirements
 
 - Python>=3.6
 - Sphinx>=1.8
-- Docker Desktop
-
-### Raw Command
-
-If you're trying to run the raw Docker command in CLI, you require `jq`:
-
-```bash
-# Bash
-sudo apt-get install jq
-```
-```powershell
-# PowerShell
-winget install jqlang.jq
-```
 
 This may work with older versions, but has not been tested.
 
@@ -80,7 +62,7 @@ See `if is_standalone:` block.
 
 - Windows 11 via PowerShell 7
 - Ubuntu 22.04 WSL2 Shell
-- (!) RTD is unlikely to run a Docker container
+- ReadTheDocs (RTD) CI Deployment (Ubuntu 22.04)
 
 ## Notes
 

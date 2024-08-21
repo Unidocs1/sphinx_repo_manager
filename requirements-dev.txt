@@ -8,3 +8,4 @@ lsp_devtools
 rstcheck
 python-dotenv
 pytest  # For tools/production_prep
+
