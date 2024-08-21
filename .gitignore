@@ -70,40 +70,10 @@ docs/source/content
 # Env var handling for when RTD has no access to private repos
 .env
 
-# Ignore all expected _static symlinks at docs/source/_static/
-docs/source/_static/images/account_services
-docs/source/_static/images/achievements_services
-docs/source/_static/images/asset_services
-docs/source/_static/images/backup_services
-docs/source/_static/images/console
-docs/source/_static/images/economy_services
-docs/source/_static/images/launcher
-docs/source/_static/images/leaderboard_services
-docs/source/_static/images/lyrastartergame
-docs/source/_static/images/matchmaking_services
-docs/source/_static/images/notification_services
-docs/source/_static/images/persona_services
-docs/source/_static/images/progression_services
-docs/source/_static/images/purchasing_services
-docs/source/_static/images/quest_services
-docs/source/_static/images/reporting_services
-docs/source/_static/images/scripting_services
-docs/source/_static/images/sdk_cpp
-docs/source/_static/images/sdk_csharp
-docs/source/_static/images/sdk_nodejs
-docs/source/_static/images/sdk_unity
-docs/source/_static/images/sdk_unreal
-docs/source/_static/images/server_instance_services
-docs/source/_static/images/service_monitor
-docs/source/_static/images/service-core
-docs/source/_static/images/session_services
-docs/source/_static/images/social_services
-docs/source/_static/images/telemetry_services
-docs/source/_static/images/unitychessgame
-docs/source/_static/images/validation_services
-docs/source/_static/images/world_services
-docs/source/_static/images/xbe_static_docs
-docs/source/_static/images/xbeapp
+# Ignore all expected _static symlinks at docs/source/_static/ (except _local)
+docs/source/_static/images/*
+!docs/source/_static/images/_local
+!docs/source/_static/images/_local/*
 
 # Ignore auto-gen'd openapi specs
 docs/source/_specs/openapi.*
