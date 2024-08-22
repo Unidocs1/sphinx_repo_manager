@@ -368,10 +368,14 @@ docsearch_app_id = algolia_docsearch_app_id_prod if manifest_stage_is_production
     else algolia_docsearch_app_id_dev
 
 # Which index to select? 'dev_stage' or 'production_stage' (None skips extension)
-algolia_crawler_config_stage = manifest_stage
+docsearch_index_name = "xsolla"  # From Algolia dash "Data Sources" -> "Indices"
 
-docsearch_api_key = "be7a2c0f077007172aa49638d22778b0"  # Public read key
-docsearch_index_name = "prod_XSOLLA" if algolia_crawler_config_stage == "production_stage" else "dev_XSOLLA"
+# Public read key
+docsearch_api_key_dev = "a98b6eb7635b38887be38212d12318fa"
+docsearch_api_key_prod = "4ebb45dbcdd78f224f1b24c28ba7fd9e"
+docsearch_api_key = docsearch_api_key_prod if manifest_stage_is_production \
+    else docsearch_api_key_dev
+
 
 # docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
 docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
