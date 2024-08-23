@@ -22,7 +22,7 @@ extensions = ['sphinx_openapi', 'sphinxcontrib.redoc']
 # Use OpenAPI ext to download/update -> redoc ext to generate
 
 # Define the target json|yaml + path to save the downloaded OpenAPI spec
-openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'
+openapi_spec_url_noext = 'https://api.demo.goxbe.xsolla.cloud/v1/openapi'
 openapi_dir_path = '_specs'  # Downloads json|yaml files to here
 openapi_file_type = 'json'  # 'json' or 'yaml' (we'll download them both, but generate from only 1)
 
