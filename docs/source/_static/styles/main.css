@@ -1,6 +1,7 @@
 :root {
     --xsui-brand-pink-color: #FF005B;
-    --xsui-brand-pink-color-low-opacity: #FCAECA; /* Inline code markdown */
+    --xsui-brand-pink-color-bright: #FCAECA; /* Inline code markdown */
+    --xsui-brand-pink-color-dark: #80002E; /* blockquote border-left */
     --xsui-brand-blue-color: #0073f7; /* Table row hover */
     --xsui-marine-green-action-color: #00c77e;
     --xsui-marine-green-slightly-darker-action-color: #00C77EFF;
@@ -272,6 +273,7 @@ html[data-theme='dark'] {
     --darkreader-inline-color: var(--xsui-bluish-lighter-pearl-gray-table-cell);
     --pst-color-accent: var(--xsui-marine-green-action-color);
     --pst-color-table-row-hover-bg: var(--xsui-brand-blue-color);
+    --pst-color-inline-code-links: var(--xsui-marine-green-action-color);
     /* Table row hover /*
        --pst-color-inline-code: TODO; /* Markdown color /*
    
@@ -280,6 +282,22 @@ html[data-theme='dark'] {
     --pst-link-hover-color: var(--xsui-marine-green-action-color); /* Link hover color */
     --pst-color-text-muted: var(--xsui-bluish-light-gray-borders-text); /* Xsolla's actual muted color is too dark */
     --pst-color-border: transparent;
+}
+
+blockquote {
+    background: linear-gradient(150deg, #000e1e 0%, transparent 50%);
+    border-left: .20em solid var(--xsui-brand-pink-color-dark)
+}
+
+/* Make any parent <li> (that has children) within section children bold */
+.bd-article section ul > li:has(ul) {
+    font-weight: bold;
+}
+.bd-article section ul > li:has(ul) ul li {
+    font-weight: normal;
+}
+.bd-article section ul > li:has(ul) ul li:has(ul) {
+    font-weight: bold;
 }
 
 /* Match Xsolla's sharp edge logo on all pics */
