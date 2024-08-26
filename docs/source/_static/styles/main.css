@@ -164,6 +164,12 @@ code, pre {
     background-color: var(--xsui-bluish-darker-black-color);
 }
 
+/* Give the code block linenos gutter some padding + dark gray border */
+span.linenos {
+    margin-right: 1.2em;
+    border-right: 1px solid var(--xsui-bluish-darker-gray-secondary-text);
+}
+
 /* Unselected code block tab */
 .sphinx-tabs-tab {
     color: var(--xsui-bluish-dark-gray-disabled-text) !important;
