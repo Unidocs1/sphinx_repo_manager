@@ -15,3 +15,5 @@ pillow>=10.4.0            	# Minimize images on CI | https://pypi.org/project/pi
 sphinxext-opengraph>=0.9.1	# Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
 sphinx-docsearch>=0.0.7    # AI-powered DocSearch | https://pypi.org/project/sphinx-docsearch
 python-dotenv>=1.0.1       # load_dotenv() to load .env | https://pypi.org/project/python-dotenv
+orjson>=3.10.7             # To efficiently preprocess giant json files (like openapi) | https://pypi.org/project/orjson
+requests>=2.32.3           # Simple http lib, notably used to get the latest openapi docs | https://pypi.org/project/requests 

@@ -74,7 +74,3 @@ docs/source/content
 docs/source/_static/images/*
 !docs/source/_static/images/_local
 !docs/source/_static/images/_local/*
-
-# Ignore auto-gen'd openapi specs
-docs/source/_specs/openapi.*
-docs/source/_specs/openapi.json

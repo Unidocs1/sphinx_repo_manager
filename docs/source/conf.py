@@ -184,25 +184,32 @@ def copy_open_graph_img_to_build(app, exception):
     print('Done.\n')
 
 
-# -- Sphinx Extension: Image Minimizer --------------------------------
+# -- Sphinx Extension: Image Minimizer -------------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
 
 # Configuration for the image optimizer extension
 img_optimization_enabled = bool(is_read_the_docs_build)
 img_optimization_max_width = 1920
 
+# -- OpenAPI Shared: Used in multiple extensions --------------------------
+
+openapi_dir_path = os.path.abspath(os.path.join('_static', 'specs'))  # Downloads json|yaml files to here
+
+# Link here from rst with explicit ".html" ext (!) but NOT from a doctree
+openapi_generated_file_posix_path = Path(os.path.join(
+    'content', '-', 'api', 'index')).as_posix()  # Parses to forward/slashes/
+
 # -- Extension: sphinx_openapi (OpenAPI Local Download/Updater) -----------
 # Used in combination with the sphinxcontrib.redoc extension
 # Use OpenAPI ext to download/update -> redoc ext to generate
 
 # Define the target json|yaml + path to save the downloaded OpenAPI spec
-openapi_spec_url_noext = 'https://api.demo.goxbe.xsolla.cloud/v1/openapi'
-openapi_dir_path = os.path.abspath(os.path.join('_specs'))  # Downloads json|yaml files to here
-openapi_file_type = 'json'  # 'json' or 'yaml' (we'll download them both, but generate from only 1)
+openapi_spec_url_noext = 'https://api.demo.goxbe.cloud/v1/openapi'
+sys.path.append(openapi_dir_path)  # TODO: Is this redundant?
 
-# Link here from rst with explicit ".html" ext (!) but NOT from a doctree
-openapi_generated_file_posix_path = Path(os.path.join(
-    'content', '-', 'api', 'index')).as_posix()  # Parses to forward/slashes/
+# 'json' or 'yaml' (we'll download them both, but generate from only 1)
+# (!) Currently, only json is fully functional and, additionally, supports preprocessing in the ext
+openapi_file_type = 'json'
 
 # Set the config values for the extension
 html_context.update({
@@ -212,30 +219,23 @@ html_context.update({
     'openapi_file_type': openapi_file_type,
 })
 
-# -- Extension: sphinx.ext.todo ------------------------------------------
-# Support for `todo` directive, passing it during sphinx builds
-# https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
-
-todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
-todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
-todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
-
 # -- Extension: sphinxcontrib.redoc --------------------------------------
 # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses
 # (!) Prereq: OpenAPI Local Download (above)
 # Doc | https://sphinxcontrib-redoc.readthedocs.io/en/stable
 # Demo | https://sphinxcontrib-redoc.readthedocs.io/en/stable/api/github/
 
-# Intentional forward/slashes/ for html; eg: "_specs/openapi.json"
+# (!) Works around a critical bug that default grabs old 1.x ver (that !supports OpenAPI 3+)
+redoc_uri = 'https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'
+
+# Intentional forward/slashes/ for html; eg: "_static/specs/openapi.json"
 xbe_spec = openapi_dir_path + '/openapi.json'
-github_demo_spec = openapi_dir_path + '/github-demo.yml'
 
 redoc = [
     {
         'name': 'Xsolla Backend API',
         'page': openapi_generated_file_posix_path,  # content/-/api/index
-        # 'spec': '_specs/openapi.json',  # (!) Ours Currently won't build due to errs: `/components/schemas/ACLRecordMongo". Token "ACLRecordMongo" does not exist`
-        'spec': github_demo_spec,  # DELETE ME AFTER DONE WITH TESTS!
+        'spec': '_static/specs/openapi.json',
         'embed': True,  # Local file only (!) but embed is less powerful
         'opts': {
             'lazy-rendering': True,  # Formerly called `lazy`; almost required for giant docs
@@ -249,9 +249,17 @@ redoc = [
     },
 ]
 
-print(f'[conf.py::sphinxcontrib.redoc] redoc[0].page: {redoc[0]["page"]}')
-print(f'[conf.py::sphinxcontrib.redoc] redoc[0].spec: {redoc[0]["spec"]}')
+print(f'[conf.py::sphinxcontrib.redoc] Build from redoc[0].spec: {redoc[0]["spec"]}')
+print(f'[conf.py::sphinxcontrib.redoc] Displaying at redoc[0].page: {redoc[0]["page"]}')
 print('')
+
+# -- Extension: sphinx.ext.todo ------------------------------------------
+# Support for `todo` directive, passing it during sphinx builds
+# https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
+
+todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
+todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
+todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -376,7 +384,6 @@ docsearch_api_key_prod = "4ebb45dbcdd78f224f1b24c28ba7fd9e"
 docsearch_api_key = docsearch_api_key_prod if manifest_stage_is_production \
     else docsearch_api_key_dev
 
-
 # docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
 docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
 
@@ -430,7 +437,7 @@ feature_flags = {
     'welcome-release_notes-products_web_apps-libs': False,
 
     # True: Show new openapi docs & hide old ones - False: Hide new openapi docs, show placeholders
-    'new-xbe-openapi-doc': False,
+    'new-xbe-openapi-doc': True,
 }
 
 # -- Append rst_epilog to the bottom of *every* doc file ---------------------
