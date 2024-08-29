@@ -79,9 +79,8 @@
 
 /* -- THEME OVERRIDES ----------------------------------------------------------> */
 
-/* Jolting fix when jumping navigations or anchors */
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* Jolting fix when jumping navigations or anchors */
     font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
     font-weight: 400;
 
@@ -408,7 +407,12 @@ a:hover {
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color .1s ease-in-out, border-color .1s ease-in-out, color .1s ease-in-out, opacity .1s ease-in-out, box-shadow .1s ease-in-out;
+    transition:
+            background-color .1s ease-in-out,
+            border-color .1s ease-in-out,
+            color .1s ease-in-out,
+            opacity .1s ease-in-out,
+            box-shadow .1s ease-in-out;
 }
 
 .xsui-button--appearance-primary {

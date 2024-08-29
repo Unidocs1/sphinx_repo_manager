@@ -237,6 +237,7 @@ redoc = [
         'page': openapi_generated_file_posix_path,  # content/-/api/index
         'spec': '_static/specs/openapi.json',
         'embed': True,  # Local file only (!) but embed is less powerful
+        'template': '_templates/redoc.j2',
         'opts': {
             'lazy-rendering': True,  # Formerly called `lazy`; almost required for giant docs
             'required-props-first': True,  # Useful, (!) but slower
