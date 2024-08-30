@@ -17,3 +17,4 @@ sphinx-docsearch>=0.0.7    # AI-powered DocSearch | https://pypi.org/project/sph
 python-dotenv>=1.0.1       # load_dotenv() to load .env | https://pypi.org/project/python-dotenv
 orjson>=3.10.7             # To efficiently preprocess giant json files (like openapi) | https://pypi.org/project/orjson
 requests>=2.32.3           # Simple http lib, notably used to get the latest openapi docs | https://pypi.org/project/requests 
+sphinxcontrib-sass>=0.3.4  # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass

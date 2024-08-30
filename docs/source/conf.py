@@ -93,7 +93,7 @@ html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
     'myst_parser',  # recommonmark successor
     'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
-    'sphinx_tabs.tabs',
+    'sphinx_tabs.tabs',  # Add tabs to code blocks | https://sphinx-tabs.readthedocs.io/en/latest
     'sphinx_algolia_crawler',  # Our own custom extension to crawl our build site for our AI-powered search indexing
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
@@ -102,6 +102,7 @@ extensions = [
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     'sphinxcontrib.redoc',  # Converts OpenAPI spec json files into API docs
+    'sphinxcontrib.sass',  # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass
     'sphinx.ext.todo',  # Allows for todo:: directive 
     'sphinxext.opengraph',  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
 ]
@@ -183,6 +184,17 @@ def copy_open_graph_img_to_build(app, exception):
     shutil.copy(html_og_image, build_images_dir)
     print('Done.\n')
 
+
+# -- Sphinx Extension: sphinxcontrib-sass ----------------------------------
+# SCSS->CSS; doc | https://pypi.org/project/sphinxcontrib-sass
+
+sass_targets = {
+    "main.scss": "main.css",
+    "redoc.scss": "redoc.css",
+    "algolia.scss": "algolia.css",
+}
+sass_src_dir = "_static/styles/sass"
+sass_out_dir = "_static/styles/css"
 
 # -- Sphinx Extension: Image Minimizer -------------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
@@ -279,9 +291,9 @@ pygments_style = "monokai"
 html_static_path = ['_static']
 
 html_css_files = [
-    'styles/main.css',
+    'styles/css/main.css',
     # 'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
-    'styles/algolia.css',
+    'styles/css/algolia.css',
 ]
 
 html_js_files = [

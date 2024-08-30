@@ -1,3 +1,5 @@
+/* CSS autogen'd from SASS at sphinx-build time */
+
 :root {
     --xsui-brand-pink-color: #FF005B;
     --xsui-brand-pink-color-bright: #FCAECA; /* Inline code markdown */
@@ -22,62 +24,41 @@
     --xsui-gradient-bright-sky: linear-gradient(90deg, var(--xsui-start-color-gradient-bright-sky), #00ffca); /* Admonition info bg */
     --xsui-gradient-coral-orange: linear-gradient(90deg, var(--xsui-start-color-gradient-coral-orange), #fcdd40); /* Admonition warning bg */
     --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb); /* Admonition attention bg */
-
-    /*--xsui-green-color: #0bb200;  !* Light theme only *!*/
-    /*--xsui-dark-yellow-color: #ffc500; */ /* Light theme only */
 }
 
-/* -- FONT FACES ----------------------------------------------------------------> */
+/* FONT FACES ----------------------------------------------------------------> */
 
-/* Sharp Grotesk Medium */
 @font-face {
     font-family: 'Sharp Grotesk';
-    src: url('../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
+    src: url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
     font-weight: 300 600; /* Apply to multiple weights, but it will look the same */
     font-style: normal;
 }
 
-/* Graphik Regular (Normal Weight) */
 @font-face {
     font-family: 'Graphik';
-    src: url('../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
+    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
     font-weight: normal; /* Normal weight */
     font-style: normal;
 }
 
-/* Graphik Medium */
 @font-face {
     font-family: 'Graphik';
-    src: url('../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
-    font-weight: 500; /* Medium weight */
+    src: url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
+    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2'),
+    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    font-weight: 300 600; /* Thin to Bold weights */
     font-style: normal;
 }
 
-/* Graphik Bold */
-@font-face {
-    font-family: 'Graphik';
-    src: url('../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
-    font-weight: 600; /* Bold weight */
-    font-style: normal;
-}
-
-/* Graphik Thin */
-@font-face {
-    font-family: 'Graphik';
-    src: url('../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
-    font-weight: 300; /* Thin weight */
-    font-style: normal;
-}
-
-/* Source Code Pro for mono code blocks */
 @font-face {
     font-family: 'Source Code Pro';
-    src: url('../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
+    src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
     font-weight: 400; /* Normal weight */
     font-style: normal;
 }
 
-/* -- THEME OVERRIDES ----------------------------------------------------------> */
+/* THEME OVERRIDES ----------------------------------------------------------> */
 
 html {
     scroll-behavior: smooth; /* Jolting fix when jumping navigations or anchors */
@@ -112,10 +93,6 @@ h1, h2, h3 {
     font-family: var(--pst-font-family-heading), sans-serif;
 }
 
-h4, h5, h6, .small-text {
-    font-family: var(--pst-font-family-base), sans-serif;
-}
-
 h1 {
     font-size: 175%;
 }
@@ -125,15 +102,15 @@ h2 {
 }
 
 h3 {
-    font-size: 125%
+    font-size: 125%;
 }
 
 h4 {
-    font-size: 115%
+    font-size: 115%;
 }
 
 h5 {
-    font-size: 110%
+    font-size: 110%;
 }
 
 /* The # hashtag next to headers to copy url */
@@ -156,7 +133,7 @@ h2, .caption-text {
     font-size: 103%;
 }
 
-/* Code blocks; TODO: This doesn't seem to work */
+/* Code blocks */
 code, pre {
     font-family: var(--pst-font-family-monospace-system), monospace;
     font-weight: 400;
@@ -206,7 +183,7 @@ span.linenos {
 /* 
  * Bug workaround for unresponsive tables that won't auto-wrap 
  * Thanks, Korne127 | https://github.com/readthedocs/sphinx_rtd_theme/issues/1505#issuecomment-2258832864 
- */
+*/
 .wy-table-responsive table td, .wy-table-responsive table th {
     white-space: normal;
 }
@@ -230,7 +207,7 @@ button.theme-switch-button {
     text-decoration: none;
 }
 
-/* -- ADMONITION ------------------------------------------------------------------- */
+/* ADMONITION ------------------------------------------------------------------- */
 
 /* Admonition (note/warning directive) top banner text color */
 div.admonition > .admonition-title::after {
@@ -267,7 +244,7 @@ div.admonition > .admonition-title::after {
     border-color: var(--xsui-start-color-gradient-blue-violet);
 }
 
-/* -- MAIN COLOR THEME -------------------------------------------------------- */
+/* MAIN COLOR THEME -------------------------------------------------------- */
 
 html[data-theme='dark'] {
     /* Main theme */
@@ -279,10 +256,7 @@ html[data-theme='dark'] {
     --pst-color-accent: var(--xsui-marine-green-action-color);
     --pst-color-table-row-hover-bg: var(--xsui-brand-blue-color);
     --pst-color-inline-code-links: var(--xsui-marine-green-action-color);
-    /* Table row hover /*
-       --pst-color-inline-code: TODO; /* Markdown color /*
-   
-       /* Link colors */
+    /* Table row hover */
     --pst-link-color: #3691f9; /* Link color */
     --pst-link-hover-color: var(--xsui-marine-green-action-color); /* Link hover color */
     --pst-color-text-muted: var(--xsui-bluish-light-gray-borders-text); /* Xsolla's actual muted color is too dark */
@@ -352,7 +326,7 @@ html[data-theme='dark'] img:not(.only-dark, .dark-light) {
     filter: none;
 }
 
-/* -- BODY -------------------------------------------------------------------- */
+/* BODY -------------------------------------------------------------------- */
 
 /* Body toctree: Show bullets for children (theme hides, by default) */
 .toctree-wrapper li.toctree-l1 {
@@ -375,7 +349,7 @@ html[data-theme='dark'] img:not(.only-dark, .dark-light) {
     padding-left: 0.5em; /* Adjust the padding if necessary */
 }
 
-/* -- LINKS ------------------------------------------------------------------- */
+/* LINKS ------------------------------------------------------------------- */
 
 a:hover {
     text-decoration-thickness: 1px !important;
@@ -389,7 +363,7 @@ a:hover {
     text-decoration: none;
 }
 
-/* -- XSOLLA UI -------------------------------------------------------------- */
+/* XSOLLA UI -------------------------------------------------------------- */
 
 .xsui-button {
     font-family: 'Graphik', -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, Helvetica, Arial;
@@ -441,7 +415,7 @@ a:hover {
     align-items: center;
 }
 
-/* -- WEBKIT SCROLLBARS FOR !FIREFOX ------------------------------------------------- */
+/* WEBKIT SCROLLBARS FOR !FIREFOX ------------------------------------------------- */
 
 /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
 .bd-sidebar-primary::-webkit-scrollbar {
