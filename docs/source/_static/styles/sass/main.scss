@@ -2,13 +2,16 @@
 
 :root {
     --xsui-brand-pink-color: #FF005B;
+    --xsui-brand-pink-color-brighter: #ffdde9; /* Inline code markdown */
     --xsui-brand-pink-color-bright: #FCAECA; /* Inline code markdown */
     --xsui-brand-pink-color-dark: #80002E; /* blockquote border-left */
     --xsui-brand-blue-color: #0073f7; /* Table row hover */
     --xsui-marine-green-action-color: #00c77e;
-    --xsui-marine-green-slightly-darker-action-color: #00C77EFF;
+    --xsui-marine-green-dark-action-color: #006E46;
     --xsui-crimson-red-color: #eb002f;
+    --xsui-destruction-red-color: #fc2b55;
     --xsui-bold-orange-color: #ff8111;
+    --xsui-brightened-orange-yellow-color: #ffa04c;
     --xsui-bluish-black-color: #00244d;
     --xsui-bluish-darker-black-color: #000e1e; /* Code block bg */
     --xsui-bluish-darker-gray-secondary-text: #747e8a;
@@ -37,16 +40,11 @@
 
 @font-face {
     font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
-    font-weight: normal; /* Normal weight */
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
+    url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
+    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
+                    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
+    );
     font-weight: 300 600; /* Thin to Bold weights */
     font-style: normal;
 }
@@ -99,6 +97,7 @@ h1 {
 
 h2 {
     font-size: 150%;
+    color: var(--xsui-brand-pink-color) !important;
 }
 
 h3 {
@@ -119,8 +118,8 @@ h5 {
 }
 
 /* Pink Text */
-h2, .caption-text {
-    color: #FF045A !important; /* Xsolla Pink */
+.caption-text {
+    color: var(--xsui-brand-pink-color) !important;
 }
 
 /* Left nav */
@@ -272,9 +271,11 @@ blockquote {
 .bd-article section ul > li:has(ul) {
     font-weight: bold;
 }
+
 .bd-article section ul > li:has(ul) ul li {
     font-weight: normal;
 }
+
 .bd-article section ul > li:has(ul) ul li:has(ul) {
     font-weight: bold;
 }
@@ -288,7 +289,7 @@ img {
 /* The extension default colors are too dark */
 button.copybtn.success {
     border-color: var(--xsui-marine-green-action-color);
-    color: var(--xsui-marine-green-slightly-darker-action-color);
+    color: var(--xsui-marine-green-action-color);
 }
 
 .navbar-brand {
@@ -356,7 +357,7 @@ a:hover {
 }
 
 .bd-main a {
-    text-decoration: none
+    text-decoration: none;
 }
 
 .bd-main a:hover {
@@ -381,12 +382,11 @@ a:hover {
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition:
-            background-color .1s ease-in-out,
-            border-color .1s ease-in-out,
-            color .1s ease-in-out,
-            opacity .1s ease-in-out,
-            box-shadow .1s ease-in-out;
+    transition: background-color .1s ease-in-out,
+    border-color .1s ease-in-out,
+    color .1s ease-in-out,
+    opacity .1s ease-in-out,
+    box-shadow .1s ease-in-out;
 }
 
 .xsui-button--appearance-primary {
