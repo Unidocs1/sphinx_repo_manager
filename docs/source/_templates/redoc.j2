@@ -4,8 +4,11 @@
     <title>{{ name | default('API documentation') }}</title>
     <meta charset="{{ encoding | default('utf-8') }}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ pathto('_static/styles/css/redoc.css', 1) }}">
 </head>
 <body>
+
+<!-- REDOC START -->
 <redoc
         {{ 'lazy-rendering' if opts['lazy-rendering'] }}
         {{ 'suppress-warnings' if opts['suppress-warnings'] }}
@@ -23,19 +26,74 @@
 {% if embed %}
     <script type="application/json" id="spec">
     {{ spec }}
-
     </script>
 {% endif %}
 <script>
+	let spec;
 	{% if embed %}
-		var spec = JSON.parse(document.getElementById('spec').innerHTML);
+		spec = JSON.parse(document.getElementById('spec').innerHTML);
 	{% else %}
-		var spec = "{{ pathto(spec, 1) }}";
+		spec = "{{ pathto(spec, 1) }}";
 	{% endif %}
-	Redoc.init(spec);
-</script>
 
-<!-- Load the custom CSS last -->
-<link rel="stylesheet" href="{{ pathto('_static/styles/redoc.css', 1) }}">
+	// Define the theme configuration directly as a JavaScript object
+	const xsuiBrandPinkColor = '#FF005B';
+	const xsui_bluish_lightest_gray_white_bg = '#f7faff';
+	const xsuiBluishDarkGrayDisabledText = '#a0abb8';
+	const xsuiBluishDarkerBlackColor = '#000e1e';
+	const xsuiBluishBlackColor = '#00244d';
+	const xsuiMarineGreenSlightlyDarkerActionColor = '#00C77EFF';
+	const xsuiBluishDarkerGraySecondaryText = '#747e8a';
+	const xsuiBluishLighterPearlGrayTableCell = '#fafbfc';
+	const customGetColor = '#00FF00'; // Custom color for GET 200 response
+
+	const themeConfig = {
+		theme: {
+			colors: {
+				primary: { main: xsuiBrandPinkColor },
+				text: {
+					primary: xsui_bluish_lightest_gray_white_bg,
+					secondary: xsuiBluishDarkGrayDisabledText,
+				},
+				background: {
+					default: xsuiBluishDarkerBlackColor,
+					paper: xsuiBluishBlackColor,
+				},
+				border: { dark: '#44475a' },
+				http: {
+					get: customGetColor, // Modify GET status color here
+					post: '#ffb86c',
+					put: '#f1fa8c',
+					delete: '#ff5555',
+					patch: '#bd93f9',
+					options: '#8be9fd',
+					head: '#ff79c6',
+					trace: xsuiBluishDarkerGraySecondaryText,
+				},
+			},
+			typography: {
+				fontFamily: 'Arial, sans-serif',
+				fontSize: '14px',
+				headings: {
+					fontFamily: 'Georgia, serif',
+					fontWeight: 'bold',
+					color: xsuiBluishLighterPearlGrayTableCell,
+				},
+			},
+			sidebar: {
+				backgroundColor: xsuiBluishDarkerBlackColor,
+				textColor: xsuiBluishLighterPearlGrayTableCell,
+			},
+			rightPanel: {
+				backgroundColor: xsuiBluishDarkerBlackColor,
+				textColor: xsuiBluishLighterPearlGrayTableCell,
+			},
+		},
+	};
+
+	Redoc.init(spec, themeConfig); // Apply the themeConfig object
+</script>
+<!-- REDOC END -->
+
 </body>
 </html>

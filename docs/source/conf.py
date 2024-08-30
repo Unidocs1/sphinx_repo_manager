@@ -12,6 +12,8 @@ import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 from dotenv import load_dotenv
+from jinja2 import FileSystemLoader, Environment
+from sphinx.jinja2glue import SphinxFileSystemLoader
 
 # Load the .env file
 load_dotenv()
@@ -62,7 +64,6 @@ sys.path.append(os.path.abspath('.'))
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
     app.connect('build-finished', copy_open_graph_img_to_build)
-
 
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
