@@ -26,6 +26,7 @@
 {% if embed %}
     <script type="application/json" id="spec">
     {{ spec }}
+    
     </script>
 {% endif %}
 <script>
@@ -37,47 +38,92 @@
 	{% endif %}
 
 	// Define the theme configuration directly as a JavaScript object
-	const xsuiBrandPinkColor = '#FF005B';
-	const xsui_bluish_lightest_gray_white_bg = '#f7faff';
+	const xsuiBrandPinkColor = '#ff005b';
+	const xsuiBluishLightestGrayWhiteBg = '#f7faff';
 	const xsuiBluishDarkGrayDisabledText = '#a0abb8';
 	const xsuiBluishDarkerBlackColor = '#000e1e';
 	const xsuiBluishBlackColor = '#00244d';
-	const xsuiMarineGreenSlightlyDarkerActionColor = '#00C77EFF';
+	const xsuiMarineGreenActionColor = '#00c77e';
 	const xsuiBluishDarkerGraySecondaryText = '#747e8a';
 	const xsuiBluishLighterPearlGrayTableCell = '#fafbfc';
-	const customGetColor = '#00FF00'; // Custom color for GET 200 response
+	const xsuiBrandPinkColorBrighter = '#ffdde9';
+	const xsuiBrandPinkColorBright = '#fcaeca';
+	const xsuiBrandPinkColorDark = '#80002e';
+	const xsuiMarineGreenDarkActionColor = '#006E46';
+	const xsuiStartColorGradientBrightSky = '#489dff';
+	const xsuiStartColorGradientBlueViolet = '#ac2eff';
+	const xsuiBoldOrangeColor = '#ff8111';
+	const xsuiDestructionRedColor = '#fc2b55';
+	const xsuiBrightenedOrangeYellowColor = '#ffa04c';
+	const xsuiBrandBlueColor = '#0073f7';
 
 	const themeConfig = {
 		theme: {
 			colors: {
 				primary: { main: xsuiBrandPinkColor },
+				secondary: 'violet',
+				tonalOffset: 0.2,  // Adjusts how light/dark variants are generated
+				hover: {
+					text: xsuiMarineGreenActionColor,
+				},
 				text: {
-					primary: xsui_bluish_lightest_gray_white_bg,
+					primary: xsuiBluishLightestGrayWhiteBg,
 					secondary: xsuiBluishDarkGrayDisabledText,
 				},
 				background: {
 					default: xsuiBluishDarkerBlackColor,
 					paper: xsuiBluishBlackColor,
 				},
-				border: { dark: '#44475a' },
+				border: {
+					maindark: '#44475a',
+				},
 				http: {
-					get: customGetColor, // Modify GET status color here
-					post: '#ffb86c',
-					put: '#f1fa8c',
-					delete: '#ff5555',
-					patch: '#bd93f9',
-					options: '#8be9fd',
-					head: '#ff79c6',
+					// The tiny [VERB] banners
+					get: xsuiMarineGreenDarkActionColor,
+					post: xsuiBoldOrangeColor,
+					patch: xsuiBoldOrangeColor,
+					put: xsuiBrandBlueColor,
+					delete: xsuiDestructionRedColor,
+					options: xsuiStartColorGradientBrightSky,
+					head: xsuiBrandPinkColor,
 					trace: xsuiBluishDarkerGraySecondaryText,
+				},
+				responses: {
+					// Found in body via the dropdown blocks
+					success: {
+						color: xsuiBluishLightestGrayWhiteBg,
+						backgroundColor: xsuiMarineGreenDarkActionColor,
+						borderColor: xsuiBluishLightestGrayWhiteBg,
+					},
+					error: {
+						color: xsuiBrandPinkColorBrighter,
+						backgroundColor: xsuiBrandPinkColorDark,
+						borderColor: xsuiBrandPinkColor,
+					},
+					redirect: {
+						color: xsuiBluishLightestGrayWhiteBg,
+						backgroundColor: '#44475a',
+						borderColor: '#bd93f9',
+					},
 				},
 			},
 			typography: {
-				fontFamily: 'Arial, sans-serif',
+				fontFamily: 'Graphik, Helvetica Neue, Arial, sans-serif !important',
 				fontSize: '14px',
 				headings: {
-					fontFamily: 'Georgia, serif',
-					fontWeight: 'bold',
+					fontFamily: 'Sharp Grotesk, Helvetica Neue, sans-serif !important',
+					//fontWeight: 'bold',
 					color: xsuiBluishLighterPearlGrayTableCell,
+				},
+				code: {
+					fontFamily: 'Source Code Pro, Consolas, monospace !important',
+					fontSize: '13px',
+					color: xsuiBluishLighterPearlGrayTableCell,
+				},
+				links: {
+					color: xsuiMarineGreenActionColor,
+					visited: xsuiMarineGreenDarkActionColor,
+					hover: xsuiStartColorGradientBrightSky,
 				},
 			},
 			sidebar: {

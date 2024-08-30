@@ -1,16 +1,41 @@
 /* CSS autogen'd from SASS at sphinx-build time */
 /* (!) Redoc requires `important!` overrides for almost everything */
 /* TODO: Remove unused parts (currently mostly copied from main.css) */
+/* FONT FACES ----------------------------------------------------------------> */
+@font-face {
+  font-family: 'Sharp Grotesk';
+  src: url("../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf") format("opentype");
+  font-weight: 400;
+  /* Apply to multiple weights, but it will look the same */
+  font-style: normal; }
+
+@font-face {
+  font-family: 'Graphik';
+  src: url("../../fonts/Graphik/Graphik-Regular-Web.woff2") format("woff2"), url("../../fonts/Graphik/Graphik-Medium-Web.woff2") format("woff2"), url("../../fonts/Graphik/Graphik-Bold-Web.woff2") format("woff2", url("../../fonts/Graphik/Graphik-Thin-Web.woff2") format("woff2"));
+  font-weight: 300 600;
+  /* Thin to Bold weights */
+  font-style: normal; }
+
+/* Source Code Pro for mono code blocks */
+@font-face {
+  font-family: 'Source Code Pro' !important;
+  src: url("../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2") format("woff2") !important;
+  font-weight: 400 !important;
+  /* Normal weight */
+  font-style: normal !important; }
+
 :root {
-  --xsui-brand-pink-color: #FF005B !important;
-  --xsui-brand-pink-color-bright: #FCAECA !important;
+  --xsui-brand-pink-color: #ff005b !important;
+  --xsui-brand-pink-color-brighter: #ffdde9 !important;
   /* Inline code markdown */
-  --xsui-brand-pink-color-dark: #80002E !important;
+  --xsui-brand-pink-color-bright: #fcaeca !important;
+  /* Inline code markdown */
+  --xsui-brand-pink-color-dark: #80002e !important;
   /* blockquote border-left */
   --xsui-brand-blue-color: #0073f7 !important;
   /* Table row hover */
   --xsui-marine-green-action-color: #00c77e !important;
-  --xsui-marine-green-slightly-darker-action-color: #00C77EFF !important;
+  --xsui-marine-green-dark-action-color: #006E46 !important;
   --xsui-crimson-red-color: #eb002f !important;
   --xsui-bold-orange-color: #ff8111 !important;
   --xsui-bluish-black-color: #00244d !important;
@@ -32,85 +57,20 @@
   --xsui-gradient-coral-orange: linear-gradient(90deg, var(--xsui-start-color-gradient-coral-orange), #fcdd40) !important;
   /* Admonition warning bg */
   --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb) !important;
-  /* Admonition attention bg */ }
-
-/* FONT FACES ----------------------------------------------------------------> */
-/* Sharp Grotesk Medium */
-@font-face {
-  font-family: 'Sharp Grotesk' !important;
-  src: url("../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf") format("opentype") !important;
-  font-weight: 300 600 !important;
-  /* Apply to multiple weights, but it will look the same */
-  font-style: normal !important; }
-
-/* Graphik Regular (Normal Weight) */
-@font-face {
-  font-family: 'Graphik' !important;
-  src: url("../../fonts/Graphik/Graphik-Regular-Web.woff2") format("woff2") !important;
-  font-weight: normal !important;
-  /* Normal weight */
-  font-style: normal !important; }
-
-/* Graphik Medium */
-@font-face {
-  font-family: 'Graphik' !important;
-  src: url("../../fonts/Graphik/Graphik-Medium-Web.woff2") format("woff2") !important;
-  font-weight: 500 !important;
-  /* Medium weight */
-  font-style: normal !important; }
-
-/* Graphik Bold */
-@font-face {
-  font-family: 'Graphik' !important;
-  src: url("../../fonts/Graphik/Graphik-Bold-Web.woff2") format("woff2") !important;
-  font-weight: 600 !important;
-  /* Bold weight */
-  font-style: normal !important; }
-
-/* Graphik Thin */
-@font-face {
-  font-family: 'Graphik' !important;
-  src: url("../../fonts/Graphik/Graphik-Thin-Web.woff2") format("woff2") !important;
-  font-weight: 300 !important;
-  /* Thin weight */
-  font-style: normal !important; }
-
-/* Source Code Pro for mono code blocks */
-@font-face {
-  font-family: 'Source Code Pro' !important;
-  src: url("../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2") format("woff2") !important;
-  font-weight: 400 !important;
-  /* Normal weight */
-  font-style: normal !important; }
+  /* Admonition attention bg */
+  --pst-font-family-base-system: 'Graphik', -apple-system,
+        'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue',
+        'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol' !important;
+  --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', -apple-system,
+        'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+  --pst-font-family-base-monospace: 'Source Code Pro', 'SFMono-Regular',
+        'Menlo', 'Consolas', 'Monaco', 'Liberation Mono',
+        'Lucida Console', monospace !important; }
 
 /* THEME OVERRIDES ----------------------------------------------------------> */
-body, .redoc .api-content {
-  font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif !important;
-  font-weight: 400 !important; }
-
-html {
-  font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif !important;
-  font-weight: 400 !important;
-  --pst-font-family-base-system: 'Graphik', -apple-system,
-  'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue',
-  'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-  'Segoe UI Symbol' !important;
-  --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', -apple-system,
-  'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif,
-  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
-  --pst-font-family-monospace-system: 'Source Code Pro', 'SFMono-Regular',
-  'Menlo', 'Consolas', 'Monaco', 'Liberation Mono',
-  'Lucida Console', monospace !important;
-  --pst-font-family-base: var(--pst-font-family-base-system) !important;
-  --pst-font-family-heading: var(--pst-font-family-base-heading) !important;
-  --pst-font-family-monospace: var(--pst-font-family-monospace-system) !important; }
-
-body, .redoc .api-content {
-  font-family: 'Graphik', sans-serif; }
-
 body {
-  font-family: var(--pst-font-family-base), sans-serif !important;
-  font-weight: 400 !important;
   background-color: var(--xsui-bluish-darker-black-color) !important;
   margin: 0 !important;
   /* Only found in redoc! */
@@ -119,14 +79,15 @@ body {
 
 /* Adjustments for specific ReDoc components */
 .redoc .api-content {
-  background-color: #2E2E2E; }
+  background-color: #2E2E2E;
+  /* Dark gray */ }
 
 /* Heading font */
 h1, h2, h3 {
-  font-family: white, sans-serif !important; }
+  font-family: var(--pst-font-family-base-heading), sans-serif !important; }
 
 h4, h5, h6, .small-text {
-  font-family: var(--pst-font-family-base), sans-serif !important; }
+  font-family: var(--pst-font-family-base-system), sans-serif !important; }
 
 h1 {
   /*font-size: 175% !important;*/
@@ -151,18 +112,25 @@ h5 {
 h6 {
   color: var(--xsui-bluish-lightest-gray-white-bg) !important; }
 
-/* The # hashtag next to headers to copy url */
-.headerlink {
-  color: var(--xsui-brand-pink-color) !important; }
-
 /* Pink Text */
 h2, .caption-text {
   color: #FF045A !important;
   /* Xsolla Pink */ }
 
+p {
+  font-family: var(--pst-font-family-base-system), sans-serif !important; }
+
+/* Left bar */
+span[tabindex="0"][width="calc(100% - 38px)"] {
+  font-family: 'YourDesiredFont', sans-serif !important; }
+
+/* Font for the HTTP method labels (e.g., GET, POST) */
+li[role="menuitem"] {
+  font-family: var(--pst-font-family-base-system), sans-serif !important; }
+
 /* Code blocks */
 code, pre {
-  font-family: var(--pst-font-family-monospace-system), monospace !important;
+  font-family: var(--pst-font-family-base-monospace), monospace !important;
   font-weight: 400 !important;
   background-color: var(--xsui-bluish-darker-black-color) !important; }
 
@@ -220,3 +188,7 @@ img {
   border-radius: 0 !important;
   margin-bottom: 1.15rem !important;
   /* BUG FIX: No bottom spacing after images */ }
+
+/* Links hover color white */
+a:hover {
+  color: white; }

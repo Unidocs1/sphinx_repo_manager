@@ -71,12 +71,12 @@ html {
   --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', -apple-system,
     'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  --pst-font-family-monospace-system: 'Source Code Pro', 'SFMono-Regular',
+  --pst-font-family-base-monospace: 'Source Code Pro', 'SFMono-Regular',
     'Menlo', 'Consolas', 'Monaco', 'Liberation Mono',
     'Lucida Console', monospace;
   --pst-font-family-base: var(--pst-font-family-base-system);
   --pst-font-family-heading: var(--pst-font-family-base-heading);
-  --pst-font-family-monospace: var(--pst-font-family-monospace-system); }
+  --pst-font-family-base-monospace: var(--pst-font-family-base-monospace); }
 
 body {
   font-family: var(--pst-font-family-base), sans-serif;
@@ -120,7 +120,7 @@ h5 {
 
 /* Code blocks */
 code, pre {
-  font-family: var(--pst-font-family-monospace-system), monospace;
+  font-family: var(--pst-font-family-base-monospace), monospace;
   font-weight: 400;
   background-color: var(--xsui-bluish-darker-black-color); }
 
