@@ -79,12 +79,12 @@ Xsolla Backend [XBE] - Welcome
    :maxdepth: 2
    :hidden:
 
-   C++ SDK <content/-/api/sdk_cpp_ref>
-   C# SDK <content/-/api/sdk_csharp_ref>
+   C++ SDK <https://acceleratxr.io/projects/sdk-cpp/en/latest/api>
+   C# SDK <https://docs.xsolla.cloud/projects/sdk-csharp/en/latest>
    NodeJS SDK <content/-/api/sdk_nodejs_ref>
    Unity SDK <content/-/api/sdk_unity_ref>
    Unreal SDK <content/-/api/sdk_unreal_ref>
-   OpenAPI <content/-/api/openapi>
+   API Docs <content/-/api/index>
 
 .. toctree::
    :caption: Legal
