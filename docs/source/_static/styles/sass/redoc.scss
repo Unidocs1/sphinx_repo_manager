@@ -15,14 +15,12 @@
     font-family: 'Graphik';
     src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
     url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
-                    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
-    );
+    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2'),
+    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
     font-weight: 300 600; /* Thin to Bold weights */
     font-style: normal;
 }
 
-/* Source Code Pro for mono code blocks */
 @font-face {
     font-family: 'Source Code Pro' !important;
     src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2') !important;
@@ -30,104 +28,86 @@
     font-style: normal !important;
 }
 
+/* ROOT VARIABLES ----------------------------------------------------------> */
+
 :root {
     --xsui-brand-pink-color: #ff005b !important;
-    --xsui-brand-pink-color-brighter: #ffdde9 !important; /* Inline code markdown */
-    --xsui-brand-pink-color-bright: #fcaeca !important; /* Inline code markdown */
-    --xsui-brand-pink-color-dark: #80002e !important; /* blockquote border-left */
-    --xsui-brand-blue-color: #0073f7 !important; /* Table row hover */
+    --xsui-brand-pink-color-brighter: #ffdde9 !important;
+    --xsui-brand-pink-color-bright: #fcaeca !important;
+    --xsui-brand-pink-color-dark: #80002e !important;
+    --xsui-brand-blue-color: #0073f7 !important;
     --xsui-marine-green-action-color: #00c77e !important;
     --xsui-marine-green-dark-action-color: #006E46 !important;
     --xsui-crimson-red-color: #eb002f !important;
     --xsui-bold-orange-color: #ff8111 !important;
+    --xsui-destruction-red-color: #fc2b55;
     --xsui-bluish-black-color: #00244d !important;
-    --xsui-bluish-darker-black-color: #000e1e !important; /* Code block bg */
+    --xsui-bluish-darker-black-color: #000e1e !important;
     --xsui-bluish-darker-gray-secondary-text: #747e8a !important;
     --xsui-bluish-dark-gray-disabled-text: #a0abb8 !important;
     --xsui-bluish-light-gray-borders-text: #c5d0db !important;
     --xsui-bluish-lighter-pearl-gray-table-cell: #fafbfc !important;
     --xsui-bluish-lightest-gray-white-bg: #f7faff !important;
 
-    --xsui-start-color-gradient-bright-sky: #489dff !important; /* Admonition info bg */
-    --xsui-start-color-gradient-coral-orange: #ff497f !important; /* Admonition warning bg */
-    --xsui-start-color-gradient-blue-violet: #ac2eff !important; /* Admonition attention bg */
+    --xsui-start-color-gradient-bright-sky: #489dff !important;
+    --xsui-start-color-gradient-coral-orange: #ff497f !important;
+    --xsui-start-color-gradient-blue-violet: #ac2eff !important;
 
-    --xsui-gradient-bright-sky: linear-gradient(90deg, var(--xsui-start-color-gradient-bright-sky), #00ffca) !important; /* Admonition info bg */
-    --xsui-gradient-coral-orange: linear-gradient(90deg, var(--xsui-start-color-gradient-coral-orange), #fcdd40) !important; /* Admonition warning bg */
-    --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb) !important; /* Admonition attention bg */
+    --xsui-gradient-bright-sky: linear-gradient(90deg, var(--xsui-start-color-gradient-bright-sky), #00ffca) !important;
+    --xsui-gradient-coral-orange: linear-gradient(90deg, var(--xsui-start-color-gradient-coral-orange), #fcdd40) !important;
+    --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb) !important;
 
-    --pst-font-family-base-system: 'Graphik', -apple-system,
-        'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue',
-        'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol' !important;
+    --pst-font-family-base-system: 'Graphik', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
 
-    --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', -apple-system,
-        'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+    --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
 
-    --pst-font-family-base-monospace: 'Source Code Pro', 'SFMono-Regular',
-        'Menlo', 'Consolas', 'Monaco', 'Liberation Mono',
-        'Lucida Console', monospace !important;
+    --pst-font-family-base-monospace: 'Source Code Pro', 'SFMono-Regular', 'Menlo', 'Consolas', 'Monaco', 'Liberation Mono', 'Lucida Console', monospace !important;
 }
 
 /* THEME OVERRIDES ----------------------------------------------------------> */
 
 body {
     background-color: var(--xsui-bluish-darker-black-color) !important;
-    margin: 0 !important; /* Only found in redoc! */
-    padding: 0 !important; /* Only found in redoc! */
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* Adjustments for specific ReDoc components */
 .redoc .api-content {
-    background-color: #2E2E2E; /* Dark gray */
+    background-color: #2E2E2E;
 }
 
-/* Heading font */
+/* Headings */
 h1, h2, h3 {
     font-family: var(--pst-font-family-base-heading), sans-serif !important;
-}
-
-h4, h5, h6, .small-text {
-    font-family: var(--pst-font-family-base-system), sans-serif !important;
-}
-
-h1 {
-    /*font-size: 175% !important;*/
     color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important;
 }
 
 h2 {
-    /*font-size: 150% !important;*/
     color: var(--xsui-brand-pink-color) !important;
 }
 
-h3 {
-    /*font-size: 125% !important;*/
+h3, h4, h5, h6 {
+    font-family: var(--pst-font-family-base-system), sans-serif !important;
     color: var(--xsui-bluish-light-gray-borders-text) !important;
 }
 
-h4 {
-    /*font-size: 115% !important;*/
+h4, h5, h6, .small-text {
     color: var(--xsui-bluish-lightest-gray-white-bg) !important;
 }
 
-h5 {
-    /*font-size: 110% !important;*/
-    color: var(--xsui-bluish-lightest-gray-white-bg) !important;
-}
-
-h6 {
-    color: var(--xsui-bluish-lightest-gray-white-bg) !important;
-}
-
-/* Pink Text */
+/* Specific Pink Text */
 h2, .caption-text {
-    color: #FF045A !important; /* Xsolla Pink */
+    color: #FF045A !important;
 }
 
+/* Paragraphs */
 p {
     font-family: var(--pst-font-family-base-system), sans-serif !important;
+}
+
+/* Body dropdowns: Fade out instead of overwhelming solid block color */
+.api-content div div div div div button:has(> svg) {
+    background-image: linear-gradient(160deg, transparent 0%, #000e1e 50%) !important;
 }
 
 /* Left bar */
@@ -135,87 +115,92 @@ span[tabindex="0"][width="calc(100% - 38px)"] {
     font-family: 'YourDesiredFont', sans-serif !important;
 }
 
-/* Font for the HTTP method labels (e.g., GET, POST) */
+/* HTTP method labels */
 li[role="menuitem"] {
     font-family: var(--pst-font-family-base-system), sans-serif !important;
 }
 
 /* Code blocks */
 code, pre {
-    font-family: var(--pst-font-family-base-monospace), monospace !important;
+    font-family: var(--pst-font-family-base-monospace), sans-serif !important;
     font-weight: 400 !important;
     background-color: var(--xsui-bluish-darker-black-color) !important;
 }
 
-/* Give the code block linenos gutter some padding + dark gray border */
-span.linenos {
-    margin-right: 1.2em !important;
-    border-right: 1px solid var(--xsui-bluish-darker-gray-secondary-text) !important;
-}
-
-/* ADMONITION ------------------------------------------------------------------- */
-
-/* Admonition (note/warning directive) top banner text color */
-div.admonition > .admonition-title::after {
-    color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important;
-}
-
-/* note:: directive (admonition) top banner */
-.admonition.note > .admonition-title, div.admonition.note > .admonition-title {
-    background: var(--xsui-gradient-bright-sky) !important;
-}
-
-/* warning:: directive (admonition) left vert line color */
-.admonition.note, div.admonition.note {
-    border-color: var(--xsui-start-color-gradient-bright-sky) !important;
-}
-
-/* warning:: directive (admonition) top banner */
-.admonition.warning > .admonition-title, div.admonition.warning > .admonition-title {
-    background: var(--xsui-gradient-coral-orange) !important;
-}
-
-/* warning:: directive (admonition) left vert line color */
-.admonition.warning, div.admonition.warning {
-    border-color: var(--xsui-start-color-gradient-coral-orange) !important;
-}
-
-/* attention:: directive (admonition) top banner */
-.admonition.attention > .admonition-title, div.admonition.attention > .admonition-title {
-    background: var(--xsui-gradient-blue-violet) !important;
-}
-
-/* attention:: directive (admonition) left vert line color */
-.admonition.attention, div.admonition.attention {
-    border-color: var(--xsui-start-color-gradient-blue-violet) !important;
-}
-
 /* MAIN COLOR THEME -------------------------------------------------------- */
-blockquote {
-    background: linear-gradient(150deg, #000e1e 0%, transparent 50%) !important;
-    border-left: .20em solid var(--xsui-brand-pink-color-dark) !important;
-}
 
-/* Make any parent <li> (that has children) within section children bold */
-.bd-article section ul > li:has(ul) {
-    font-weight: bold !important;
-}
-
-.bd-article section ul > li:has(ul) ul li {
-    font-weight: normal !important;
-}
-
-.bd-article section ul > li:has(ul) ul li:has(ul) {
-    font-weight: bold !important;
-}
-
-/* Match Xsolla's sharp edge logo on all pics */
+/* Image adjustments */
 img {
     border-radius: 0 !important;
-    margin-bottom: 1.15rem !important; /* BUG FIX: No bottom spacing after images */
+    margin-bottom: 1.15rem !important;
 }
 
-/* Links hover color white */
+/* Link hover - eg, the top "Download" btn */
 a:hover {
     color: white;
+}
+
+/* RIGHT COLUMN TABS -------------------------------------------------------- */
+
+li[role="tab"] {
+    padding: inherit !important;
+    border: none !important;
+}
+
+.react-tabs__tab--selected {
+    background-color: #006E46;
+    background: linear-gradient(175deg, #00c77e, #006E46) !important;
+    transition: background-color .1s ease-in-out,
+    border-color .1s ease-in-out,
+    color .1s ease-in-out,
+    opacity .1s ease-in-out,
+    box-shadow .1s ease-in-out !important;
+
+    /* Tab appearance */
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    padding-bottom: 0 !important;
+
+    &.tab-success {
+        background: var(--xsui-marine-green-dark-action-color)
+        linear-gradient(175deg, #00c77e, var(--xsui-marine-green-dark-action-color)) !important;
+    }
+
+    &.tab-error {
+        background: var(--xsui-destruction-red-color)
+        linear-gradient(175deg, #ff6a7d, var(--xsui-destruction-red-color)) !important;
+    }
+
+    &:hover,
+    &.tab-error:hover,
+    &.tab-success:hover {
+        pointer-events: auto !important;
+        cursor: default !important;
+        background-color: inherit !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Right column HTTP verb dropdown */
+.api-content {
+    div[aria-hidden="false"] {
+        /* Outer */
+        div {
+            background-color: black !important;
+        }
+
+        /* Inner */
+        > div {
+            background: linear-gradient(350deg, black 0%, #00244d 100%) !important;
+        }
+    }
+}
+
+/* Right column change the "application/json" to a consistent font */ 
+.react-tabs__tab-panel div div div:first-of-type {
+    font-family: inherit !important;
+}
+.react-tabs__tab-panel div div div:first-of-type * {
+    font-family: unset;
 }

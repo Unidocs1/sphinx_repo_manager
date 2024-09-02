@@ -255,7 +255,7 @@ redoc = [
             'lazy-rendering': True,  # Formerly called `lazy`; almost required for giant docs
             'required-props-first': True,  # Useful, (!) but slower
             'native-scrollbars': False,  # Improves perf on big specs when False
-            'expand-responses': ["200", "201"],
+            'expand-responses':  [],  # "200", "201",
             'suppress-warnings': False,
             'hide-hostname': False,
             'untrusted-spec': False,
