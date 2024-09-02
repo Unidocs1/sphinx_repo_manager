@@ -12,8 +12,6 @@ import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
 from dotenv import load_dotenv
-from jinja2 import FileSystemLoader, Environment
-from sphinx.jinja2glue import SphinxFileSystemLoader
 
 # Load the .env file
 load_dotenv()
@@ -340,7 +338,13 @@ html_theme_options = {
             "name": "Discord",
             "url": "https://discord.gg/XsollaBackend",
             "icon": "fa-brands fa-discord",
-            "attributes": {"target": "_blank"},
+            "attributes": {"target": "_blank"},  # Blank target seems to be default
+        },
+        {
+            "name": "API Docs",
+            "url": "content/-/api/index.html",
+            "icon": "fa-solid fa-book-open",
+            "attributes": {"target": "_self"},
         },
     ],
     "article_header_end": [
