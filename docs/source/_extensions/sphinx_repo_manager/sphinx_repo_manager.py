@@ -64,6 +64,9 @@ class RepositoryManagementError(Exception):
 # RepoManager class to handle repository operations
 class SphinxRepoManager:
     def __init__(self, abs_manifest_path):
+        self.start_time = time.time()  # Track how long it takes to build all repos
+        self.end_time = None
+
         self.read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
         self.manifest_path = abs_manifest_path
         self.manifest = None
@@ -235,7 +238,7 @@ class SphinxRepoManager:
         selected_stage_checkout_branch_or_tag_name = selected_repo_stage_info['checkout']  # Defaults to 'master'
         selected_stage_checkout_type = selected_repo_stage_info['checkout_type']  # 'branch' or 'tag'
         has_tag = selected_stage_checkout_type == 'tag'
-        
+
         # Sanity check tag -- in XBE, we prefix with `v`
         if has_tag and not selected_stage_checkout_branch_or_tag_name.startswith('v'):
             print(f'{colorize_error(brighten("*[REALTIME]"))} tag \'{selected_stage_checkout_branch_or_tag_name}\' '
@@ -801,6 +804,14 @@ class SphinxRepoManager:
 
         return True  # enabled
 
+    def log_end_build_time(self):
+        """ Call when done building to set end_time and log calc from start_time. """
+        self.end_time = time.time()
+        elapsed_time = self.end_time - self.start_time
+        minutes, seconds = divmod(elapsed_time, 60)
+        time_str = f"{int(minutes)}m{int(seconds)}s"
+        logger.info(colorize_success(f'Build time: {brighten(time_str)}'))
+
     def main(self, app):
         """
         Handle the repository cloning and updating process when Sphinx initializes.
@@ -808,7 +819,6 @@ class SphinxRepoManager:
         - Initialize the directory tree skeleton
         - Manage the repositories (cloning, updating, and symlinking)
         """
-        start_time = time.time()  # Track how long it takes to build all repos
         try:
             manifest = self.get_normalized_manifest()
             enabled = self.check_is_enabled_ext(manifest)
@@ -816,18 +826,14 @@ class SphinxRepoManager:
                 return  # Skip this extension
 
             self.manage_repositories(manifest)
+            self.log_end_build_time()
+
             if self.debug_mode and not self.read_the_docs_build:
                 raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
         except Exception as e:
             self.shutdown_flag = True  # Signal shutdown to other threads
             raise RepositoryManagementError(f"\nsphinx_repo_manager failure: {e}")
         finally:
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            minutes, seconds = divmod(elapsed_time, 60)
-            time_str = f"{int(minutes)}m{int(seconds)}s"
-            logger.info(colorize_success(f'Build time: {brighten(time_str)}'))
-
             if self.shutdown_flag:
                 repo_name_hint = f" Find '{brighten(self.errored_repo_name)}' error logs above ^" \
                     if self.errored_repo_name else ""

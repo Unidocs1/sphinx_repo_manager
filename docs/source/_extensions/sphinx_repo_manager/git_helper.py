@@ -62,6 +62,9 @@ def redact_url_secret(url):
     except Exception:
         return url
 
+def clean_command_array(cmd_arr):
+    """ Filter out None or empty string values. """
+    cmd_arr[:] = [arg for arg in cmd_arr if arg]
 
 def run_subprocess_cmd(
         cmd_arr,
@@ -73,7 +76,7 @@ def run_subprocess_cmd(
     log_pretty_cli_cmd(redacted_cmd_arr, log_entries)
 
     try:
-        GitHelper.clean_command_array(cmd_arr)
+        clean_command_array(cmd_arr)
         result = subprocess.run(cmd_arr, capture_output=True, text=True)
 
         if result.returncode != 0:
@@ -130,11 +133,6 @@ class GitHelper:
                 return False
 
         return True
-
-    @staticmethod
-    def clean_command_array(cmd_arr):
-        """ Filter out None or empty string values. """
-        cmd_arr[:] = [arg for arg in cmd_arr if arg]
 
     @staticmethod
     def _get_gitlab_base_url(repo_url):
