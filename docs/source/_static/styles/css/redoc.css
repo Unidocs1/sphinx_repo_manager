@@ -85,8 +85,9 @@ p {
   font-family: var(--pst-font-family-base-system), sans-serif !important; }
 
 /* Body dropdowns: Fade out instead of overwhelming solid block color */
+.api-content div div div div div button[disabled],
 .api-content div div div div div button:has(> svg) {
-  background-image: linear-gradient(160deg, transparent 0%, #000e1e 50%) !important; }
+  background-image: linear-gradient(160deg, transparent 0%, var(--xsui-bluish-darker-black-color) 50%) !important; }
 
 /* Left bar */
 span[tabindex="0"][width="calc(100% - 38px)"] {
