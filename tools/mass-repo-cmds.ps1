@@ -15,7 +15,7 @@ $MASTER_MAIN_BRANCH_PROTECTION = $true  # Fail on master || main branch
 function Run-CustomCmds {
     # Add your custom commands here, for example:
     #git add .
-    #git commit -m "doc(fix): Foo" -m "[XBND-123]"
+    #git commit -m "docs(fix): Foo" -m "[XBND-123]"
     #git pull
     #git push
 }

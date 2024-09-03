@@ -17,11 +17,26 @@ from pathlib import Path  # Path manipulation/normalization; allows / slashes fo
 project = '%REPO_NAME_REPLACE_UNDERSCORE_WITH_DASH%'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
+release = '%RELEASE_GIT_TAG%'
+version = release  # Used by some extensions
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
 #   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
 # release = '%GIT_TAG%'
+
+# -- Path setup --------------------------------------------------------------
+
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+# documentation root, use os.path.abspath to make it absolute, like shown here.
+
+# The absolute path to the directory containing conf.py.
+documentation_root = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath(''))
+
+# Paths to local extensions
+# sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
 
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
@@ -40,28 +55,19 @@ current_branch = repo.active_branch.name
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
 
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-
-# The absolute path to the directory containing conf.py.
-documentation_root = os.path.abspath(os.path.dirname(__file__))
-
-sys.path.append(os.path.abspath('.'))
-
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+html_context = {}  # html_context.update({}) to pass data to extensions & themes
+
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
-    'myst_parser',  # recommonmark successor
-    'sphinx_tabs.tabs',
-    'sphinxcontrib.redoc',
+    'myst_parser',  # recommonmark successor, auto-parsing .md to .rst (skips READMEs)
+    'sphinx_tabs.tabs',  # Add tabs to code blocks | https://sphinx-tabs.readthedocs.io/en/latest
+    'sphinxcontrib.redoc',  # Converts OpenAPI spec json files into API docs
     'sphinx.ext.todo',  # Allows for todo:: directive 
+    # 'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -75,13 +81,13 @@ exclude_patterns = [
     '**/build',
     '**/_recycling_bin',  # Deprecated files organized together
     '**/.DS_Store',
-    '**/README.*',
+    '**/README*',
     '**/requirements.txt',
     '**/Thumbs.db',
     '**/venv',
 ]
 
-master_doc = 'index'  # Build entry point: The "home page"
+master_doc = 'content/index'  # Build entry point: The "home page"; generally `index` or `content/index`
 tocdepth = 1  # Default :maxdepth:
 
 # Tell sphinx what the primary language being documented is + code highlighting
@@ -95,9 +101,6 @@ highlight_language = "cpp"
 todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
 todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
 todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
-
-# Ensure we only use intersphinx when we use :ref: role | https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
-intersphinx_disabled_reftypes = ['*']
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

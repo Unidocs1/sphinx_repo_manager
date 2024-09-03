@@ -23,7 +23,7 @@ project = 'XBE Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = 'v2024.07.0'
-version = release
+version = release  # Used by some extensions
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -36,7 +36,16 @@ version = release
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+# The absolute path to the directory containing conf.py.
+documentation_root = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.abspath(''))
+
+# Paths to local extensions
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
 
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
@@ -46,17 +55,6 @@ fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
 
 rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
 rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
-
-# The absolute path to the directory containing conf.py.
-documentation_root = os.path.abspath(os.path.dirname(__file__))
-
-sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
-sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
-sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
-sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
-sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
-sys.path.append(os.path.abspath('.'))
-
 
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
@@ -85,12 +83,14 @@ base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
 repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
 # -- General configuration ---------------------------------------------------
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'myst_parser',  # recommonmark successor
+    'myst_parser',  # recommonmark successor, auto-parsing .md to .rst (skips READMEs)
     'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     'sphinx_tabs.tabs',  # Add tabs to code blocks | https://sphinx-tabs.readthedocs.io/en/latest
     'sphinx_algolia_crawler',  # Our own custom extension to crawl our build site for our AI-powered search indexing
@@ -118,7 +118,7 @@ exclude_patterns = [
     '**/build',
     '**/_recycling_bin',  # Deprecated files organized together
     '**/.DS_Store',
-    '**/README.*',
+    '**/README*',
     '**/requirements.txt',
     '**/Thumbs.db',
     '**/venv',
