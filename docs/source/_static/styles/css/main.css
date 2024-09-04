@@ -9,6 +9,7 @@
   /* blockquote border-left */
   --xsui-brand-blue-color: #0073f7;
   /* Table row hover */
+  --xsui-marine-green-light-action-color: #9bffd2;
   --xsui-marine-green-action-color: #00c77e;
   --xsui-marine-green-dark-action-color: #006E46;
   --xsui-crimson-red-color: #eb002f;
@@ -101,6 +102,20 @@ h4 {
 
 h5 {
   font-size: 110%; }
+
+/* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
+h3:has(a), h4:has(a), h5:has(a), h6:has(a) {
+  /* Keep these closer together, but indent like a list item, +using less intense fonts */
+  margin: 1.2rem 0 1.05rem 20px !important;
+  font-family: 'Graphik', sans-serif; }
+
+h3 a .doc, h3 a .std.std-ref, h4 a .doc, h4 a .std.std-ref, h5 a .doc, h5 a .std.std-ref, h6 a .doc, h6 a .std.std-ref {
+  color: var(--xsui-marine-green-light-action-color) !important;
+  /* Act as if it's a block quote */
+  background: linear-gradient(150deg, #000e1e 0%, transparent 50%);
+  border-left: 0.2em solid var(--xsui-brand-pink-color-dark);
+  border-right: none;
+  padding-left: 10px; }
 
 /* The # hashtag next to headers to copy url */
 .headerlink {
