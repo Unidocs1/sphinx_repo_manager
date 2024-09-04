@@ -51,7 +51,7 @@ def log_pretty_cli_cmd(cmd_arr, log_entries=None):
     if log_entries is not None:
         log_entries.append(message)
     else:
-        logger.info(message)
+        logger.info(f'*[REALTIME] {message}')
 
 
 def redact_url_secret(url):
@@ -62,9 +62,11 @@ def redact_url_secret(url):
     except Exception:
         return url
 
+
 def clean_command_array(cmd_arr):
     """ Filter out None or empty string values. """
     cmd_arr[:] = [arg for arg in cmd_arr if arg]
+
 
 def run_subprocess_cmd(
         cmd_arr,
@@ -80,7 +82,7 @@ def run_subprocess_cmd(
         result = subprocess.run(cmd_arr, capture_output=True, text=True)
 
         if result.returncode != 0:
-            error_message = result.stderr.strip()
+            error_message = result and result.stderr and result.stderr.strip()
             msg = f"Command failed:\n{brighten(error_message)}"
             if log_entries is not None:
                 log_entries.append(msg)
@@ -175,21 +177,21 @@ class GitHelper:
         - preserve_gitlab_group: If you have "https://gitlab.acceleratxr.com/Core/matchmaking_services",
           "Core" dir will be created
         """
-        group = GitHelper.get_gitlab_group(repo_url_dotgit)
-        repo_name = os.path.basename(repo_url_dotgit).replace('.git', '')
+        group_str = str(GitHelper.get_gitlab_group(repo_url_dotgit))
+        repo_name_str = str(os.path.basename(repo_url_dotgit).replace('.git', ''))
 
-        if preserve_gitlab_group and group:
-            rel_init_clone_path = os.path.join(rel_init_clone_path, str(group), str(repo_name))
+        if preserve_gitlab_group and group_str:
+            rel_init_clone_path = os.path.join(rel_init_clone_path, group_str, repo_name_str)
         else:
-            rel_init_clone_path = os.path.join(rel_init_clone_path, str(repo_name))
+            rel_init_clone_path = os.path.join(rel_init_clone_path, repo_name_str)
 
         if os.path.exists(rel_init_clone_path):
             raise Exception(f"Tried to clone to path, but dir already exists: '{rel_init_clone_path}'")
 
-        single_branch = '--single-branch' if branch_is_tag else None  # Nones cleaned @ rub_subprocess_cmd
+        single_branch_cmd = '--single-branch' if branch_is_tag else None  # Nones cleaned @ rub_subprocess_cmd
         git_clone_cmd_arr = [
             'git', 'clone',
-            '--branch', branch, single_branch,
+            '--branch', branch, single_branch_cmd,
             '-q',
             repo_url_dotgit, rel_init_clone_path,
         ]
@@ -260,11 +262,11 @@ class GitHelper:
         (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
         """
 
-        single_branch = '--single-branch' if branch_is_tag else None  # Nones cleaned @ rub_subprocess_cmd 
+        single_branch_cmd = '--single-branch' if branch_is_tag else None  # Nones cleaned @ rub_subprocess_cmd 
         git_clone_filter_nocheckout_cmd_arr = [
             'git', 'clone',
             '--filter=blob:none', '--no-checkout',
-            '--branch', branch, single_branch,
+            '--branch', branch, single_branch_cmd,
             '-q', repo_url_dotgit, clone_to_path
         ]
 
@@ -277,13 +279,19 @@ class GitHelper:
             'git', '-C', clone_to_path,
             'sparse-checkout', 'init', '--cone'
         ]
-        run_subprocess_cmd(sparse_checkout_init_cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
+        run_subprocess_cmd(
+            sparse_checkout_init_cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries)
 
         sparse_checkout_set_cmd_arr = [
             'git', '-C', clone_to_path,
             'sparse-checkout', 'set', repo_sparse_path
         ]
-        run_subprocess_cmd(sparse_checkout_set_cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
+        run_subprocess_cmd(
+            sparse_checkout_set_cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries)
 
         self.git_checkout(
             clone_to_path,
@@ -302,7 +310,7 @@ class GitHelper:
             GitHelper._throw_if_path_not_exists(repo_path)
             cmd_arr = ['git', '-C', repo_path, 'status', '--porcelain']
             output = run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
-            is_dirty = bool(output.strip())
+            is_dirty = bool(output and output.strip())
             return is_dirty
         except Exception as e:
             msg = f"Failed to check if the repository is dirty: {e}"
@@ -329,6 +337,9 @@ class GitHelper:
         -u == untracked
         -m == message
         """
+        if not os.path.exists(repo_path):
+            raise Exception(f"repo_path not found: {repo_path}")
+        
         GitHelper._throw_if_path_not_exists(repo_path)
         if stash_message is None:
             stash_message = f"repo_mgr_wip-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
@@ -387,7 +398,10 @@ class GitHelper:
         if has_tag_or_branch:
             cmd_arr += [tag_or_branch]
 
-        run_subprocess_cmd(cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries)
+        run_subprocess_cmd(
+            cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries)
 
     @staticmethod
     def git_add_to_exclude(rel_base_path, preserved_dirs, log_entries=None):
@@ -466,7 +480,7 @@ class GitHelper:
             else:
                 return None
         except subprocess.CalledProcessError as e:
-            return f"Error: {e.stderr.strip()}"
+            return f"Error: {e and e.stderr and e.stderr.strip()}"
 
     @staticmethod
     def _git_submodule_cmd(
