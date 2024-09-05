@@ -2,29 +2,51 @@
 /* (!) Redoc requires `important!` overrides for almost everything */
 /* TODO: Remove unused parts (currently mostly copied from main.css) */
 
-/* FONT FACES ----------------------------------------------------------------> */
+/* FONT-FACES (vars !allowed) ----------------------------------------------------> */
 
 @font-face {
     font-family: 'Sharp Grotesk';
     src: url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
-    font-weight: 400; /* Apply to multiple weights, but it will look the same */
+    font-weight: 300 600; // Weight~range
     font-style: normal;
 }
 
+/* Thin */
 @font-face {
     font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
-    font-weight: 300 600; /* Thin to Bold weights */
+    src: url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
+
+/* Regular (Normal) */
+@font-face {
+    font-family: 'Graphik';
+    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Medium */
+@font-face {
+    font-family: 'Graphik';
+    src: url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
+
+/* Bold */
+@font-face {
+    font-family: 'Graphik';
+    src: url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
+    font-weight: 600;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Source Code Pro' !important;
     src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2') !important;
-    font-weight: 400 !important; /* Normal weight */
+    font-weight: 400 !important;
     font-style: normal !important;
 }
 
@@ -58,10 +80,14 @@
     --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb) !important;
 
     --pst-font-family-base-system: 'Graphik', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
-
     --pst-font-family-base-heading: 'Sharp Grotesk', 'Graphik', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
-
     --pst-font-family-base-monospace: 'Source Code Pro', 'SFMono-Regular', 'Menlo', 'Consolas', 'Monaco', 'Liberation Mono', 'Lucida Console', monospace !important;
+
+    // (!) Don't apply these to @font-faces
+    --thin-font-weight: 300; // Special cases; don't use often
+    --regular-font-weight: 400; // ~p
+    --medium-font-weight: 500; // ~h2
+    --bold-font-weight: 600; // ~h1
 }
 
 /* THEME OVERRIDES ----------------------------------------------------------> */
@@ -115,11 +141,6 @@ p {
     ) !important;
 }
 
-/* Left bar */
-span[tabindex="0"][width="calc(100% - 38px)"] {
-    font-family: 'YourDesiredFont', sans-serif !important;
-}
-
 /* HTTP method labels */
 li[role="menuitem"] {
     font-family: var(--pst-font-family-base-system), sans-serif !important;
@@ -128,7 +149,7 @@ li[role="menuitem"] {
 /* Code blocks */
 code, pre {
     font-family: var(--pst-font-family-base-monospace), sans-serif !important;
-    font-weight: 400 !important;
+    font-weight: var(--regular-font-weight) !important;
     background-color: var(--xsui-bluish-darker-black-color) !important;
 }
 

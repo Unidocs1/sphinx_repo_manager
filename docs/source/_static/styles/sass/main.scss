@@ -1,5 +1,32 @@
 /* CSS autogen'd from SASS at sphinx-build time */
 
+/* FONT-FACES (vars !allowed) ----------------------------------------------------> */
+
+@font-face {
+    font-family: 'Sharp Grotesk';
+    src: url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
+    font-weight: 300 600; /* Apply to multiple weights, but it will look the same */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Graphik';
+    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
+    url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
+    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
+                    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
+    );
+    font-weight: 300 600; /* Thin to Bold weights */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
+    font-weight: 400; /* Normal weight */
+    font-style: normal;
+}
+
 :root {
     --xsui-brand-pink-color: #FF005B;
     --xsui-brand-pink-color-brighter: #ffdde9; /* Inline code markdown */
@@ -28,33 +55,12 @@
     --xsui-gradient-bright-sky: linear-gradient(90deg, var(--xsui-start-color-gradient-bright-sky), #00ffca); /* Admonition info bg */
     --xsui-gradient-coral-orange: linear-gradient(90deg, var(--xsui-start-color-gradient-coral-orange), #fcdd40); /* Admonition warning bg */
     --xsui-gradient-blue-violet: linear-gradient(90deg, var(--xsui-start-color-gradient-blue-violet), #37b9fb); /* Admonition attention bg */
-}
 
-/* FONT FACES ----------------------------------------------------------------> */
-
-@font-face {
-    font-family: 'Sharp Grotesk';
-    src: url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
-    font-weight: 300 600; /* Apply to multiple weights, but it will look the same */
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
-                    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
-    );
-    font-weight: 300 600; /* Thin to Bold weights */
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Source Code Pro';
-    src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
-    font-weight: 400; /* Normal weight */
-    font-style: normal;
+    // (!) Don't apply these to @font-faces
+    --thin-font-weight: 300; // Special cases; don't use often
+    --regular-font-weight: 400; // ~p
+    --medium-font-weight: 500; // ~h2
+    --bold-font-weight: 600; // ~h1
 }
 
 /* THEME OVERRIDES ----------------------------------------------------------> */
@@ -62,7 +68,7 @@
 html {
     scroll-behavior: smooth; /* Jolting fix when jumping navigations or anchors */
     font-family: 'Graphik', 'Open Sans', 'Lato', sans-serif;
-    font-weight: 400;
+    font-weight: var(--regular-font-weight);
 
     --pst-font-family-base-system: 'Graphik', -apple-system,
     'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue',
@@ -84,7 +90,7 @@ html {
 
 body {
     font-family: var(--pst-font-family-base), sans-serif;
-    font-weight: 400;
+    font-weight: var(--regular-font-weight);
 }
 
 /* Heading font */
@@ -169,7 +175,7 @@ h3, h4, h5, h6 {
 /* Code blocks */
 code, pre {
     font-family: var(--pst-font-family-base-monospace), monospace;
-    font-weight: 400;
+    font-weight: var(--regular-font-weight);
     background-color: var(--xsui-bluish-darker-black-color);
 }
 
@@ -201,7 +207,7 @@ span.linenos {
 
 /* Selected right-column navbar item */
 .toc-entry a.nav-link.active {
-    font-weight: 400;
+    font-weight: var(--regular-font-weight);
 }
 
 /* 
@@ -403,7 +409,7 @@ a:hover {
 .xsui-button {
     font-family: 'Graphik', -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, Helvetica, Arial;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: var(--bold-font-weight);
     letter-spacing: 1px;
     line-height: 24px;
     text-transform: uppercase;
