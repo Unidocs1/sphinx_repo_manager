@@ -141,6 +141,29 @@ p {
     ) !important;
 }
 
+/* Top-left search bar: Default weight is too high */
+input[placeholder="Search..."] {
+    font-weight: var(--normal-font-weight) !important;
+    font-size: 12px !important;
+}
+
+/* Left bar - parent captions and child category links */
+li[role="menuitem"] {
+    label {
+        color: var(--xsui-brand-pink-color) !important;
+        opacity: 1;
+
+        /* Child category links */
+        li[role="menuitem"] & {
+            font-family: 'Graphik', sans-serif !important;
+            font-weight: var(--medium-font-weight) !important;
+            color: white !important;
+            padding: 5px 20px !important; // Child categories less spaced out
+            margin-left: 3px !important;
+        }
+    }
+}
+
 /* HTTP method labels */
 li[role="menuitem"] {
     font-family: var(--pst-font-family-base-system), sans-serif !important;
