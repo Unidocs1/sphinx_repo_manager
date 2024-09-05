@@ -104,6 +104,7 @@ extensions = [
     'sphinxcontrib.sass',  # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass
     'sphinx.ext.todo',  # Allows for todo:: directive 
     'sphinxext.opengraph',  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
+    'sphinx_design',  # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html 
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -428,6 +429,10 @@ myst_enable_extensions = [
     "replacements",  # Enable replacements syntax
     "strikethrough",  # Enable strikethrough syntax
     "tasklist",  # Enable task list syntax
+    
+    # Recommended for use with sphinx_design. Doc | https://sphinx-design.readthedocs.io/en/latest/get_started.html
+    # Ext | https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
+    "colon_fence", 
 ]
 
 # -- Feature Flags -----------------------------------------------------------

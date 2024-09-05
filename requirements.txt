@@ -18,3 +18,4 @@ python-dotenv>=1.0.1       # load_dotenv() to load .env | https://pypi.org/proje
 orjson>=3.10.7             # To efficiently preprocess giant json files (like openapi) | https://pypi.org/project/orjson
 requests>=2.32.3           # Simple http lib, notably used to get the latest openapi docs | https://pypi.org/project/requests 
 sphinxcontrib-sass>=0.3.4  # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass
+sphinx_design>=0.6.1       # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html
