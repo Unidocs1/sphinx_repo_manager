@@ -116,7 +116,7 @@ h5 {
 /* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
 // TODO: h4 should have more +margin-right, etc+
 h3, h4, h5, h6 {
-    &:has(a) {
+    &:has(a.reference.internal) {
         /* Keep these closer together, but indent like a list item, +using less intense fonts */
         margin: 1.2rem 0 1.05rem 20px !important;
         font-family: 'Graphik', sans-serif;
@@ -131,12 +131,17 @@ h3, h4, h5, h6 {
         border-right: none;
         padding-left: 10px;
 
-        //::before {
-        //    content: "\2022";   // Unicode for bullet point
-        //    color: white;       // Or any color you'd prefer
-        //    font-size: 1em;
-        //    margin-right: 8px;
-        //}
+        /* Hover, visited color */
+        &a:visited:hover {
+            color: var(--pst-color-link-hover);
+        }
+        &a:active, a:visited {
+            color: var(--pst-color-link);
+        }
+        &a:hover {
+            color: var(--pst-color-link-hover);
+            text-decoration-skip-ink: none;
+        }
     }
 }
 
