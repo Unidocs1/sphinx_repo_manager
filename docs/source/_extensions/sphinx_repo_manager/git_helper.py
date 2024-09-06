@@ -78,7 +78,6 @@ def run_subprocess_cmd(
     log_pretty_cli_cmd(redacted_cmd_arr, log_entries)
 
     try:
-        logger.info(f"**{cmd_arr}")
         clean_command_array(cmd_arr)
         result = subprocess.run(cmd_arr, capture_output=True, text=True)
 

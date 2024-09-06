@@ -60,7 +60,7 @@ class SphinxOpenApi:
                   f"!= 'json'; skipping preprocessing...")
 
         print(f"[sphinx_openapi.py] Done:\n"
-              f"- Generated from: {self.openapi_file_path}'"
+              f"- Generated from: {self.openapi_file_path}'\n"
               f"- Built to: 'build/html/{self.openapi_generated_file_posix_path}.html'\n")
 
     @staticmethod
