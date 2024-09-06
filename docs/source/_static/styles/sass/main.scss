@@ -2,24 +2,30 @@
 
 /* FONT-FACES (vars !allowed) ----------------------------------------------------> */
 
+/* Headers */
 @font-face {
     font-family: 'Sharp Grotesk';
-    src: url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
-    font-weight: 300 600; /* Apply to multiple weights, but it will look the same */
+    src: /* 1st == default */
+        url('../../fonts/sharp-grotesk/SharpGroteskMedium16.otf') format('opentype'),
+        url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');;
+    font-weight: 400 500; /* Regular to medium hweights */
     font-style: normal;
 }
 
+/* Paragraph (or light headers) */
 @font-face {
     font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
-    url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
-                    url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
+    src: /* 1st == default */
+        url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
+        url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
+        url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
+        url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
     );
     font-weight: 300 600; /* Thin to Bold weights */
     font-style: normal;
 }
 
+/* Code */
 @font-face {
     font-family: 'Source Code Pro';
     src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');

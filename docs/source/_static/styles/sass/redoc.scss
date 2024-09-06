@@ -4,50 +4,35 @@
 
 /* FONT-FACES (vars !allowed) ----------------------------------------------------> */
 
+/* Headers */
 @font-face {
     font-family: 'Sharp Grotesk';
-    src: url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');
-    font-weight: 300 600; // Weight~range
+    src: /* 1st == default */
+        url('../../fonts/sharp-grotesk/SharpGroteskMedium16.otf') format('opentype'),
+        url('../../fonts/sharp-grotesk/SharpGroteskSmBold16.otf') format('opentype');;
+    font-weight: 400 500; /* Regular to medium hweights */
     font-style: normal;
 }
 
-/* Thin */
+/* Paragraph (or light headers) */
 @font-face {
     font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
-    font-weight: 300;
+    src: /* 1st == default */
+        url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
+        url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
+        url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
+        url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
+    );
+    font-weight: 300 600; /* Thin to Bold weights */
     font-style: normal;
 }
 
-/* Regular (Normal) */
+/* Code */
 @font-face {
-    font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
-    font-weight: 400;
+    font-family: 'Source Code Pro';
+    src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2');
+    font-weight: 400; /* Normal weight */
     font-style: normal;
-}
-
-/* Medium */
-@font-face {
-    font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-}
-
-/* Bold */
-@font-face {
-    font-family: 'Graphik';
-    src: url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Source Code Pro' !important;
-    src: url('../../fonts/source-code-pro/SourceCodePro-Regular.ttf.woff2') format('woff2') !important;
-    font-weight: 400 !important;
-    font-style: normal !important;
 }
 
 /* ROOT VARIABLES ----------------------------------------------------------> */
