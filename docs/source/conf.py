@@ -336,16 +336,16 @@ html_theme_options = {
     "use_issues_button": True,
     "icon_links": [  # TODO: Perhaps add something from https://shields.io ?
         {
-            "name": "Discord",
-            "url": "https://discord.gg/XsollaBackend",
-            "icon": "fa-brands fa-discord",
-            "attributes": {"target": "_blank"},  # Blank target seems to be default
-        },
-        {
             "name": "API Docs",
             "url": "content/-/api/index.html",
             "icon": "fa-solid fa-book-open",
             "attributes": {"target": "_self"},
+        },
+        {
+            "name": "Discord",
+            "url": "https://discord.gg/XsollaBackend",
+            "icon": "fa-brands fa-discord",
+            "attributes": {"target": "_blank"},  # Blank target seems to be default
         },
     ],
     "article_header_end": [
