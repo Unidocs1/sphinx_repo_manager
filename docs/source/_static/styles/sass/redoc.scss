@@ -102,8 +102,8 @@ body {
     background-color: #2E2E2E;
 }
 
-/* Headings */
-h1, h2, h3 {
+/* Top-level headings - font+color */
+h1, h2 {
     font-family: var(--pst-font-family-base-heading), sans-serif !important;
     color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important;
 }
@@ -124,6 +124,11 @@ h4, h5, h6, .small-text {
 /* Specific Pink Text */
 h2, .caption-text {
     color: #FF045A !important;
+}
+
+/* The text next to the right of body "AUTHORIZATIONS" and HTTP code dropdown RESPONSE SCHEMA */
+h5 span {
+    color: #A0ABB8 !important; // Default == Blackish
 }
 
 /* Paragraphs */
@@ -147,26 +152,31 @@ input[placeholder="Search..."] {
     font-size: 12px !important;
 }
 
-/* Left bar - parent captions and child category links */
+/* Left bar - http method labels, parent captions, and child category links */
 li[role="menuitem"] {
+    /* Rectangular, colored HTTP method labels and all header+text+dropdown+link labels */
+    font-family: var(--pst-font-family-base-system), sans-serif !important;
+    
     label {
+        /* Top-level readonly captions; eg: "ACCOUNTS" */
         color: var(--xsui-brand-pink-color) !important;
+        font-weight: var(--medium-font-weight) !important;
         opacity: 1;
 
-        /* Child category links */
+        /* Clickable parent dropdown categories */
         li[role="menuitem"] & {
             font-family: 'Graphik', sans-serif !important;
-            font-weight: var(--medium-font-weight) !important;
             color: white !important;
             padding: 5px 20px !important; // Child categories less spaced out
             margin-left: 3px !important;
         }
     }
-}
-
-/* HTTP method labels */
-li[role="menuitem"] {
-    font-family: var(--pst-font-family-base-system), sans-serif !important;
+    
+    /* Clickable inner child category links nested under parent dropdown categories */
+    ul li label span[tabindex="0"] {
+        color: white !important;
+        font-weight: var(--regular-font-weight) !important;
+    }
 }
 
 /* Code blocks */
