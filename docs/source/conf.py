@@ -319,6 +319,7 @@ html_theme_options = {
     # 'master_doc': 'index', # Set the master doc for the project
 
     # BOOK THEME >>
+    'default_mode': 'dark',  # Use OS light/dark theme prefs? https://pydata-sphinx-theme.readthedocs.io/en/latest/user_guide/light-dark.html
     'show_toc_level': 2,
     'home_page_in_toc': False,
     "path_to_docs": "docs/source/",
