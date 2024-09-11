@@ -10,6 +10,7 @@ from pathlib import Path
 
 GIT_SPARSE_PRESERVED_DIRS_FILES = [
     '.git',
+    '.gitignore'
     'RELEASE_NOTES.rst',
 ]
 
