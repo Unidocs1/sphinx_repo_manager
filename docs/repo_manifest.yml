@@ -23,6 +23,7 @@ enable_repo_manager: true
 
 # - If enable_repo_manager && false, will skip this extension locally
 # - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
+# - (!) If you are missing images/blobs, you probably want to set this to true
 # - Defaults to true, if omitted
 enable_repo_manager_local: true
 

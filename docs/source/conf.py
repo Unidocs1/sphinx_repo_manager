@@ -196,7 +196,7 @@ sass_targets = {
 sass_src_dir = "_static/styles/sass"
 sass_out_dir = "_static/styles/css"
 
-# -- Sphinx Extension: Image Minimizer -------------------------------------
+# -- Sphinx Extension: sphinx_image_min -----------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
 
 # Configuration for the image optimizer extension
