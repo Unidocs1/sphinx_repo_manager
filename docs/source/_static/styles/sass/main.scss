@@ -301,7 +301,8 @@ html[data-theme='dark'] {
     --pst-color-border: transparent;
 }
 
-blockquote {
+/* Block quotes and local body toc should show left bar with blue gradient fading to right */
+blockquote, nav#contents.local {
     background: linear-gradient(150deg, #000e1e 0%, transparent 50%);
     border-left: .20em solid var(--xsui-brand-pink-color-dark)
 }
