@@ -56,10 +56,12 @@ fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
 rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
 rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
 
+
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
     app.connect('build-finished', copy_open_graph_img_to_build)
+
 
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
@@ -254,7 +256,7 @@ redoc = [
             'lazy-rendering': True,  # Formerly called `lazy`; almost required for giant docs
             'required-props-first': True,  # Useful, (!) but slower
             'native-scrollbars': False,  # Improves perf on big specs when False
-            'expand-responses':  [],  # "200", "201",
+            'expand-responses': [],  # "200", "201",
             'suppress-warnings': False,
             'hide-hostname': False,
             'untrusted-spec': False,
@@ -319,7 +321,8 @@ html_theme_options = {
     # 'master_doc': 'index', # Set the master doc for the project
 
     # BOOK THEME >>
-    'default_mode': 'dark',  # Use OS light/dark theme prefs? https://pydata-sphinx-theme.readthedocs.io/en/latest/user_guide/light-dark.html
+    'default_mode': 'dark',
+    # Use OS light/dark theme prefs? https://pydata-sphinx-theme.readthedocs.io/en/latest/user_guide/light-dark.html
     'show_toc_level': 2,
     'home_page_in_toc': False,
     "path_to_docs": "docs/source/",
@@ -338,7 +341,11 @@ html_theme_options = {
     "icon_links": [  # TODO: Perhaps add something from https://shields.io ?
         {
             "name": "API Docs",
-            "url": "content/-/api/index.html",
+            "url": (
+                    "https://docs.xsolla.cloud/en/"
+                    + ("latest" if manifest_stage_is_production else "dev")
+                    + "/content/-/api/index.html"
+            ),
             "icon": "fa-solid fa-book-open",
             "attributes": {"target": "_self"},
         },
@@ -430,10 +437,10 @@ myst_enable_extensions = [
     "replacements",  # Enable replacements syntax
     "strikethrough",  # Enable strikethrough syntax
     "tasklist",  # Enable task list syntax
-    
+
     # Recommended for use with sphinx_design. Doc | https://sphinx-design.readthedocs.io/en/latest/get_started.html
     # Ext | https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
-    "colon_fence", 
+    "colon_fence",
 ]
 
 # -- Feature Flags -----------------------------------------------------------
