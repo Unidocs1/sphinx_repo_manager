@@ -12,18 +12,38 @@
     font-style: normal;
 }
 
-/* Paragraph (or light headers) */
+/* Thin (Light) */
 @font-face {
     font-family: 'Graphik';
-    src: /* 1st == default */
-        url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2'),
-        url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2'),
-        url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2',
-        url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2'),
-    );
-    font-weight: 300 600; /* Thin to Bold weights */
+    src: url('../../fonts/Graphik/Graphik-Thin-Web.woff2') format('woff2');
+    font-weight: 300; /* Thin */
     font-style: normal;
 }
+
+/* Regular */
+@font-face {
+    font-family: 'Graphik';
+    src: url('../../fonts/Graphik/Graphik-Regular-Web.woff2') format('woff2');
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+
+/* Medium (AND bold, currently) */
+@font-face {
+    font-family: 'Graphik';
+    src: url('../../fonts/Graphik/Graphik-Medium-Web.woff2') format('woff2');
+    font-weight: 500; /* Medium */
+    font-style: normal;
+}
+
+///* Black */
+//@font-face {
+//    font-family: 'Graphik';
+//    src: url('../../fonts/Graphik/Graphik-Bold-Web.woff2') format('woff2');
+//    font-weight: 700; /* Black */
+//    font-style: normal;
+//}
+
 
 /* Code */
 @font-face {
@@ -66,10 +86,16 @@
     --thin-font-weight: 300; // Special cases; don't use often
     --regular-font-weight: 400; // ~p
     --medium-font-weight: 500; // ~h2
-    --bold-font-weight: 600; // ~h1
+    --bold-font-weight: 500; // ~h1 (currently matching medium)
+    //--black-font-weight: 700; // Currently unused
 }
 
 /* THEME OVERRIDES ----------------------------------------------------------> */
+
+/* Force the default bold text to use font-weight 500 */
+strong, b {
+    font-weight: var(--medium-font-weight);
+}
 
 html {
     scroll-behavior: smooth; /* Jolting fix when jumping navigations or anchors */
@@ -125,7 +151,7 @@ h5 {
     font-size: 110%;
 }
 
-/* Pink Text */
+/* Left navbar pink header caption txt  */
 .caption-text {
     color: var(--xsui-brand-pink-color) !important;
 }
@@ -492,4 +518,3 @@ h3, h4, h5, h6 {
         scrollbar-width: auto; /* Ensure scrollbars remain visible in Firefox */
     }
 }
-

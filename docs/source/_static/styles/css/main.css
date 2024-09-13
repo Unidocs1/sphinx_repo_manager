@@ -8,12 +8,28 @@
   /* Regular to medium hweights */
   font-style: normal; }
 
-/* Paragraph (or light headers) */
+/* Thin (Light) */
 @font-face {
   font-family: 'Graphik';
-  src: url("../../fonts/Graphik/Graphik-Regular-Web.woff2") format("woff2"), url("../../fonts/Graphik/Graphik-Medium-Web.woff2") format("woff2"), url("../../fonts/Graphik/Graphik-Bold-Web.woff2") format("woff2", url("../../fonts/Graphik/Graphik-Thin-Web.woff2") format("woff2"));
-  font-weight: 300 600;
-  /* Thin to Bold weights */
+  src: url("../../fonts/Graphik/Graphik-Thin-Web.woff2") format("woff2");
+  font-weight: 300;
+  /* Thin */
+  font-style: normal; }
+
+/* Regular */
+@font-face {
+  font-family: 'Graphik';
+  src: url("../../fonts/Graphik/Graphik-Regular-Web.woff2") format("woff2");
+  font-weight: 400;
+  /* Regular */
+  font-style: normal; }
+
+/* Medium (AND bold, currently) */
+@font-face {
+  font-family: 'Graphik';
+  src: url("../../fonts/Graphik/Graphik-Medium-Web.woff2") format("woff2");
+  font-weight: 500;
+  /* Medium */
   font-style: normal; }
 
 /* Code */
@@ -64,9 +80,13 @@
   --thin-font-weight: 300;
   --regular-font-weight: 400;
   --medium-font-weight: 500;
-  --bold-font-weight: 600; }
+  --bold-font-weight: 500; }
 
 /* THEME OVERRIDES ----------------------------------------------------------> */
+/* Force the default bold text to use font-weight 500 */
+strong, b {
+  font-weight: var(--medium-font-weight); }
+
 html {
   scroll-behavior: smooth;
   /* Jolting fix when jumping navigations or anchors */
@@ -110,7 +130,7 @@ h4 {
 h5 {
   font-size: 110%; }
 
-/* Pink Text */
+/* Left navbar pink header caption txt  */
 .caption-text {
   color: var(--xsui-brand-pink-color) !important; }
 
