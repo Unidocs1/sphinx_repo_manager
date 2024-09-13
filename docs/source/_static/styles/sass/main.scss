@@ -125,44 +125,6 @@ h5 {
     font-size: 110%;
 }
 
-/* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
-// TODO: h4 should have more +margin-right, etc+
-h3, h4, h5, h6 {
-    &:has(a.reference.internal) {
-        /* Keep these closer together, but indent like a list item, +using less intense fonts */
-        margin: 1.2rem 0 1.05rem 20px !important;
-        font-family: 'Graphik', sans-serif;
-    }
-    
-    a .doc, a .std.std-ref {
-        color: var(--xsui-marine-green-light-action-color) !important;
-
-        /* Act as if it's a block quote */
-        background: linear-gradient(150deg, #000e1e 0%, transparent 50%);
-        //border-left: 0.2em solid var(--xsui-brand-pink-color-dark);
-        border-right: none;
-        padding-left: 10px;
-
-        /* Hover, visited color */
-        &a:visited:hover {
-            color: var(--pst-color-link-hover);
-        }
-        &a:active, a:visited {
-            color: var(--pst-color-link);
-        }
-        &a:hover {
-            color: var(--pst-color-link-hover);
-            text-decoration-skip-ink: none;
-        }
-    }
-}
-
-
-/* The # hashtag next to headers to copy url */
-.headerlink {
-    color: var(--xsui-brand-pink-color) !important;
-}
-
 /* Pink Text */
 .caption-text {
     color: var(--xsui-brand-pink-color) !important;
@@ -408,6 +370,62 @@ a:hover {
 
 .bd-main a:hover {
     text-decoration: none;
+}
+
+/* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
+// TODO: h4 should have more +margin-right, etc+
+h3, h4, h5, h6 {
+    &:has(a.reference.internal) {
+        /* Keep these closer together, but indent like a list item, +using less intense fonts */
+        margin: 1.2rem 0 1.05rem 20px !important;
+        font-family: 'Graphik', sans-serif;
+    }
+
+    a .doc, a .std.std-ref {
+        color: var(--xsui-marine-green-light-action-color) !important;
+
+        /* Act as if it's a block quote */
+        background: linear-gradient(150deg, #000e1e 0%, transparent 50%);
+        //border-left: 0.2em solid var(--xsui-brand-pink-color-dark);
+        border-right: none;
+        padding-left: 10px;
+
+        /* Hover, visited color */
+        &a:visited:hover {
+            color: var(--pst-color-link-hover);
+        }
+        &a:active, a:visited {
+            color: var(--pst-color-link);
+        }
+        &a:hover {
+            color: var(--pst-color-link-hover);
+            text-decoration-skip-ink: none;
+        }
+    }
+}
+
+/* External links in body should show icon */
+.bd-article.reference.external {
+    &:after {
+        font-family: "Font Awesome 6 Free", sans-serif;
+        font-weight: 900;
+        content: "\f35d";  // Unicode for 'up-right-from-square' icon
+        display: inline-block;
+        margin-left: 4px;
+    }
+}
+
+/* The # hashtag next to headers to copy url */
+.headerlink {
+    color: var(--xsui-brand-pink-color) !important;
+}
+
+/* Toctree external links within a body should show FontAwesome external icon */
+.bd-article .toctree-wrapper a.external::after {
+    font-family: "Font Awesome 6 Free", sans-serif;
+    content: "\f35d";  // Unicode for 'up-right-from-square' icon
+    display: inline-block;
+    margin-left: 4px;
 }
 
 /* XSOLLA UI -------------------------------------------------------------- */

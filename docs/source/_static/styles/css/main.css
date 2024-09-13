@@ -110,31 +110,6 @@ h4 {
 h5 {
   font-size: 110%; }
 
-/* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
-h3:has(a.reference.internal), h4:has(a.reference.internal), h5:has(a.reference.internal), h6:has(a.reference.internal) {
-  /* Keep these closer together, but indent like a list item, +using less intense fonts */
-  margin: 1.2rem 0 1.05rem 20px !important;
-  font-family: 'Graphik', sans-serif; }
-
-h3 a .doc, h3 a .std.std-ref, h4 a .doc, h4 a .std.std-ref, h5 a .doc, h5 a .std.std-ref, h6 a .doc, h6 a .std.std-ref {
-  color: var(--xsui-marine-green-light-action-color) !important;
-  /* Act as if it's a block quote */
-  background: linear-gradient(150deg, #000e1e 0%, transparent 50%);
-  border-right: none;
-  padding-left: 10px;
-  /* Hover, visited color */ }
-  h3 a .doca:visited:hover, h3 a .std.std-refa:visited:hover, h4 a .doca:visited:hover, h4 a .std.std-refa:visited:hover, h5 a .doca:visited:hover, h5 a .std.std-refa:visited:hover, h6 a .doca:visited:hover, h6 a .std.std-refa:visited:hover {
-    color: var(--pst-color-link-hover); }
-  h3 a .doca:active, h3 a .doc a:visited, h3 a .std.std-refa:active, h3 a .std.std-ref a:visited, h4 a .doca:active, h4 a .doc a:visited, h4 a .std.std-refa:active, h4 a .std.std-ref a:visited, h5 a .doca:active, h5 a .doc a:visited, h5 a .std.std-refa:active, h5 a .std.std-ref a:visited, h6 a .doca:active, h6 a .doc a:visited, h6 a .std.std-refa:active, h6 a .std.std-ref a:visited {
-    color: var(--pst-color-link); }
-  h3 a .doca:hover, h3 a .std.std-refa:hover, h4 a .doca:hover, h4 a .std.std-refa:hover, h5 a .doca:hover, h5 a .std.std-refa:hover, h6 a .doca:hover, h6 a .std.std-refa:hover {
-    color: var(--pst-color-link-hover);
-    text-decoration-skip-ink: none; }
-
-/* The # hashtag next to headers to copy url */
-.headerlink {
-  color: var(--xsui-brand-pink-color) !important; }
-
 /* Pink Text */
 .caption-text {
   color: var(--xsui-brand-pink-color) !important; }
@@ -348,6 +323,46 @@ a:hover {
 
 .bd-main a:hover {
   text-decoration: none; }
+
+/* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
+h3:has(a.reference.internal), h4:has(a.reference.internal), h5:has(a.reference.internal), h6:has(a.reference.internal) {
+  /* Keep these closer together, but indent like a list item, +using less intense fonts */
+  margin: 1.2rem 0 1.05rem 20px !important;
+  font-family: 'Graphik', sans-serif; }
+
+h3 a .doc, h3 a .std.std-ref, h4 a .doc, h4 a .std.std-ref, h5 a .doc, h5 a .std.std-ref, h6 a .doc, h6 a .std.std-ref {
+  color: var(--xsui-marine-green-light-action-color) !important;
+  /* Act as if it's a block quote */
+  background: linear-gradient(150deg, #000e1e 0%, transparent 50%);
+  border-right: none;
+  padding-left: 10px;
+  /* Hover, visited color */ }
+  h3 a .doca:visited:hover, h3 a .std.std-refa:visited:hover, h4 a .doca:visited:hover, h4 a .std.std-refa:visited:hover, h5 a .doca:visited:hover, h5 a .std.std-refa:visited:hover, h6 a .doca:visited:hover, h6 a .std.std-refa:visited:hover {
+    color: var(--pst-color-link-hover); }
+  h3 a .doca:active, h3 a .doc a:visited, h3 a .std.std-refa:active, h3 a .std.std-ref a:visited, h4 a .doca:active, h4 a .doc a:visited, h4 a .std.std-refa:active, h4 a .std.std-ref a:visited, h5 a .doca:active, h5 a .doc a:visited, h5 a .std.std-refa:active, h5 a .std.std-ref a:visited, h6 a .doca:active, h6 a .doc a:visited, h6 a .std.std-refa:active, h6 a .std.std-ref a:visited {
+    color: var(--pst-color-link); }
+  h3 a .doca:hover, h3 a .std.std-refa:hover, h4 a .doca:hover, h4 a .std.std-refa:hover, h5 a .doca:hover, h5 a .std.std-refa:hover, h6 a .doca:hover, h6 a .std.std-refa:hover {
+    color: var(--pst-color-link-hover);
+    text-decoration-skip-ink: none; }
+
+/* External links in body should show icon */
+.bd-article.reference.external:after {
+  font-family: "Font Awesome 6 Free", sans-serif;
+  font-weight: 900;
+  content: "\f35d";
+  display: inline-block;
+  margin-left: 4px; }
+
+/* The # hashtag next to headers to copy url */
+.headerlink {
+  color: var(--xsui-brand-pink-color) !important; }
+
+/* Toctree external links within a body should show FontAwesome external icon */
+.bd-article .toctree-wrapper a.external::after {
+  font-family: "Font Awesome 6 Free", sans-serif;
+  content: "\f35d";
+  display: inline-block;
+  margin-left: 4px; }
 
 /* XSOLLA UI -------------------------------------------------------------- */
 .xsui-button {
