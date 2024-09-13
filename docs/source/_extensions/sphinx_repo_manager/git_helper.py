@@ -12,6 +12,7 @@ GIT_SPARSE_PRESERVED_DIRS_FILES = [
     '.git',
     '.gitignore',
     '.gitlab',
+    'README.md'
     'RELEASE_NOTES.rst',
 ]
 
