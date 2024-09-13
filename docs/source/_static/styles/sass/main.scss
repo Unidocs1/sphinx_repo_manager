@@ -166,6 +166,11 @@ h5 {
     font-size: 103%;
 }
 
+/* Right subnav active color */
+.active a.reference.internal.nav-link {
+    color: var(--xsui-marine-green-action-color);
+}
+
 /* Code blocks */
 code, pre {
     font-family: var(--pst-font-family-base-monospace), monospace;
