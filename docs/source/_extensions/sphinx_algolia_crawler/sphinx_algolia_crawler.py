@@ -89,7 +89,7 @@ def setup(app):
 
     def on_build_finished(app, exception):
         if not app.config.algolia_crawler_enabled:
-            print(f"\n[sphinx_algolia_crawler] Crawler not enabled; skipping extension.\n")
+            print(f"\n[sphinx_algolia_crawler] Crawler not enabled in this env; skipping extension.\n")
             return
 
         algolia_crawler_user_id = os.getenv('ALGOLIA_CRAWLER_USER_ID')

@@ -2,4 +2,4 @@
 Architecture
 ============
 
-Coming Soon - Also see :doc:`performance tests <performance>`.
+Docs Coming Soon - Also see :doc:`performance tests <performance>`.

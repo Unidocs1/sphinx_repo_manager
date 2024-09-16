@@ -306,22 +306,13 @@ html_js_files = [
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
 
+html_context.update({
+    # SPHINX BOOK THEME (based on Sphinx PyData theme) >>
+    'default_mode': 'dark',  # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/light-dark.html#configure-default-theme-mode
+})
+
 # The theme to use for HTML and HTML Help pages
 html_theme_options = {
-    # # RTD THEME (DEPRECATED) >>
-    # 'nav_title': project,  # Appears in opengraph metadata, meta title & top breadcrumbs
-    # 'base_url': 'https://docs.xsolla.cloud/',
-    # 'color_primary': 'blue', 
-    # 'color_accent': 'light-blue',
-    # 'repo_url': 'https://gitlab.acceleratxr.com/Core/xbe_docs/',
-    # 'repo_name': 'xbe_docs',
-    # 'globaltoc_depth': 2,  # Visible levels of the global TOC; Default: 2
-    # 'globaltoc_collapse': False,  # Expand the global TOC by default
-    # 'globaltoc_includehidden': True,  # Show the TOC in the sidebar
-    # 'master_doc': 'index', # Set the master doc for the project
-
-    # BOOK THEME >>
-    'default_mode': 'dark',
     # Use OS light/dark theme prefs? https://pydata-sphinx-theme.readthedocs.io/en/latest/user_guide/light-dark.html
     'show_toc_level': 2,
     'home_page_in_toc': False,
