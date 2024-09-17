@@ -8,6 +8,6 @@ Foo Services
 .. toctree:: 
    :maxdepth: 2
 
-   Concepts <concepts/index>
+   Concepts <frameworks/index>
    Architecture <architecture>
    Performance <performance>

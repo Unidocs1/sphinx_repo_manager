@@ -56,7 +56,7 @@ Xsolla Backend [XBE] - Welcome
       Create Your Account <https://www.acceleratxr.com/pricing>
 
 .. toctree::
-   :caption: Concepts
+   :caption: Frameworks
    :hidden:
 
    Overview <content/-/concepts/overview>
