@@ -62,7 +62,7 @@ Xsolla Backend [XBE] - Welcome
    Overview <content/-/concepts/overview>
    Service Framework <content/-/concepts/service_framework/index>
    Plugins & SDK <content/-/concepts/sdks/index>
-   Feature Concepts <content/-/concepts/feature_concepts/index>
+   Components <content/-/concepts/components/index>
 
 .. toctree::
    :caption: How To

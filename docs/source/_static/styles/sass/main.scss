@@ -404,7 +404,7 @@ a:hover {
     text-decoration: none;
 }
 
-/* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
+/* When there are header links (rare), it's probably a hierarchy/list (like at components) */
 // TODO: h4 should have more +margin-right, etc+
 h3, h4, h5, h6 {
     &:has(a.reference.internal) {

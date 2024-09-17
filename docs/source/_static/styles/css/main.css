@@ -349,7 +349,7 @@ a:hover {
 .bd-main a:hover {
   text-decoration: none; }
 
-/* When there are header links (rare), it's probably a hierarchy/list (like at feature_concepts) */
+/* When there are header links (rare), it's probably a hierarchy/list (like at components) */
 h3:has(a.reference.internal), h4:has(a.reference.internal), h5:has(a.reference.internal), h6:has(a.reference.internal) {
   /* Keep these closer together, but indent like a list item, +using less intense fonts */
   margin: 1.2rem 0 1.05rem 20px !important;
