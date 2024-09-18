@@ -59,10 +59,9 @@ Xsolla Backend [XBE] - Welcome
    :caption: Frameworks
    :hidden:
 
+   Components <content/-/frameworks/components/index>
    Architecture <content/-/frameworks/components_architecture>
    Service Framework <content/-/frameworks/service_framework/index>
-   SDKs <content/-/frameworks/sdks/index
-   Components <content/-/frameworks/components/index>
 
 .. toctree::
    :caption: How To
@@ -76,12 +75,12 @@ Xsolla Backend [XBE] - Welcome
    API Docs <content/-/api/index>
 
 .. toctree::
-   :caption: SDKs
+   :caption: SDK
    :hidden:
 
-   SDKs Overview <content/-/sdks/overview>
-   SDKs Quickstart <content/-/sdks/quickstart>
-   SDKs API Reference <content/-/sdks/api_reference>
+   SDK Overview <content/-/sdk/index>
+   Unreal SDK <content/-/sdk/sdk_unreal_ref>
+   Unity SDK <content/-/sdk/sdk_unity_ref>
 
 .. toctree::
    :caption: Legal
