@@ -59,10 +59,10 @@ Xsolla Backend [XBE] - Welcome
    :caption: Frameworks
    :hidden:
 
-   Overview <content/-/concepts/overview>
-   Service Framework <content/-/concepts/service_framework/index>
-   Plugins & SDK <content/-/concepts/sdks/index>
-   Components <content/-/concepts/components/index>
+   Architecture <content/-/frameworks/components_architecture>
+   Service Framework <content/-/frameworks/service_framework/index>
+   Plugins & SDK <content/-/frameworks/sdks/index>
+   Components <content/-/frameworks/components/index>
 
 .. toctree::
    :caption: How To
