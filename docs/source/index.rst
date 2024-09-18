@@ -61,7 +61,7 @@ Xsolla Backend [XBE] - Welcome
 
    Architecture <content/-/frameworks/components_architecture>
    Service Framework <content/-/frameworks/service_framework/index>
-   Plugins & SDK <content/-/frameworks/sdks/index>
+   SDKs <content/-/frameworks/sdks/index
    Components <content/-/frameworks/components/index>
 
 .. toctree::
@@ -73,18 +73,15 @@ Xsolla Backend [XBE] - Welcome
    Tools <content/-/how_to/tools>
    Tutorials <content/-/how_to/tutorials/index>
    Full Game Samples <content/-/how_to/full_game_samples/index>
+   API Docs <content/-/api/index>
 
 .. toctree::
-   :caption: API Reference
-   :maxdepth: 2
+   :caption: SDKs
    :hidden:
 
-   API Docs <content/-/api/index>
-   C++ SDK <https://acceleratxr.io/projects/sdk-cpp/en/latest/api>
-   C# SDK <https://docs.xsolla.cloud/projects/sdk-csharp/en/latest>
-   NodeJS SDK <content/-/api/sdk_nodejs_ref>
-   Unity SDK <content/-/api/sdk_unity_ref>
-   Unreal SDK <content/-/api/sdk_unreal_ref>
+   SDKs Overview <content/-/sdks/overview>
+   SDKs Quickstart <content/-/sdks/quickstart>
+   SDKs API Reference <content/-/sdks/api_reference>
 
 .. toctree::
    :caption: Legal
