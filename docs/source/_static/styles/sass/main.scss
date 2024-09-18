@@ -442,7 +442,7 @@ h3, h4, h5, h6 {
 }
 
 /* External links in body should show icon */
-.bd-article.reference.external {
+.bd-article.reference.external, a.reference.external {
     &:after {
         font-family: "Font Awesome 6 Free", sans-serif;
         font-weight: 900;

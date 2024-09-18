@@ -375,7 +375,7 @@ h3 a .doc, h3 a .std.std-ref, h4 a .doc, h4 a .std.std-ref, h5 a .doc, h5 a .std
     text-decoration-skip-ink: none; }
 
 /* External links in body should show icon */
-.bd-article.reference.external:after {
+.bd-article.reference.external:after, a.reference.external:after {
   font-family: "Font Awesome 6 Free", sans-serif;
   font-weight: 900;
   content: "\f35d";
