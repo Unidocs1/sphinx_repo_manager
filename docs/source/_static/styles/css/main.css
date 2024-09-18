@@ -104,7 +104,7 @@ html {
     'Lucida Console', monospace;
   --pst-font-family-base: var(--pst-font-family-base-system);
   --pst-font-family-heading: var(--pst-font-family-base-heading);
-  --pst-font-family-base-monospace: var(--pst-font-family-base-monospace); }
+  --pst-font-family-monospace: var(--pst-font-family-base-monospace); }
 
 body {
   font-family: var(--pst-font-family-base), sans-serif;
@@ -147,6 +147,9 @@ h5 {
   color: var(--xsui-marine-green-action-color); }
 
 /* Code blocks */
+.sphinx-tabs-panel .highlight {
+  font-family: var(--pst-font-family-base-monospace), monospace; }
+
 code, pre {
   font-family: var(--pst-font-family-base-monospace), monospace;
   font-weight: var(--regular-font-weight);
@@ -155,7 +158,8 @@ code, pre {
 /* Give the code block linenos gutter some padding + dark gray border */
 span.linenos {
   margin-right: 1.2em;
-  border-right: 1px solid var(--xsui-bluish-darker-gray-secondary-text); }
+  border-right: 1px solid var(--xsui-bluish-darker-gray-secondary-text);
+  font-family: 'Source Code Pro', sans-serif; }
 
 /* Unselected code block tab */
 .sphinx-tabs-tab {
