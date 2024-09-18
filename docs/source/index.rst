@@ -56,20 +56,26 @@ Xsolla Backend [XBE] - Welcome
       Create Your Account <https://www.acceleratxr.com/pricing>
 
 .. toctree::
-   :caption: Frameworks
+   :caption: Components
    :hidden:
 
-   Components <content/-/frameworks/components/index>
-   Architecture <content/-/frameworks/components_architecture>
-   Service Framework <content/-/frameworks/service_framework/index>
+   Components Overview <content/-/frameworks/components/index>
+   Accounts <content/-/components/accounts/index>
+   Content <content/-/components/content/index>
+   Economy <content/-/components/economy/index>
+   Gameplay <content/-/components/gameplay/index>
+   Multiplayer <content/-/components/multiplayer/index>
+   Storefront <content/-/components/storefront/index>
+   System <content/-/components/system/index>
+   Monitoring <content/-/components/monitoring/index>
 
 .. toctree::
-   :caption: How To
+   :caption: Learning Essentials
    :hidden:
 
+   Framework Concepts <content/-/how_to/framework_concepts/index>
    Install <content/-/how_to/install/index>
    Administration <content/-/how_to/admin/index>
-   Tools <content/-/how_to/tools>
    Tutorials <content/-/how_to/tutorials/index>
    Full Game Samples <content/-/how_to/full_game_samples/index>
    API Docs <content/-/api/index>
@@ -83,15 +89,10 @@ Xsolla Backend [XBE] - Welcome
    Unity SDK <content/-/sdk/sdk_unity_ref>
 
 .. toctree::
-   :caption: Legal
+   :caption: Legal / Contact
    :hidden:
    
    EULA <content/-/legal/eula/index>
-
-.. toctree::
-   :caption: Need Help?
-   :hidden:
-   
    Chat With Us! <https://discord.gg/XsollaBackend>
 
 **Xsolla Backend** [XBE] is a powerful backend engine for building highly-scalable online games and entertainment

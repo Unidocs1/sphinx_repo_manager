@@ -2,4 +2,4 @@
 Performance
 ===========
 
-Docs Coming Soon - Also see :doc:`Architecture <architecture>`.
+Docs WIP - Also see :doc:`Architecture <architecture>`.
