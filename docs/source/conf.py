@@ -315,13 +315,15 @@ html_context.update({
 html_theme_options = {
     # Use OS light/dark theme prefs? https://pydata-sphinx-theme.readthedocs.io/en/latest/user_guide/light-dark.html
     'show_toc_level': 2,
+    'show_nav_level': 1,  # Collapsable toctree :caption:
+    "max_navbar_depth": 2,
+    "show_navbar_depth": 1,  # How deep should we initially auto-expand the left navbar?
+    "collapse_navbar": 1,  # 1 == collapse the initial homepage navbar, stopping the tree from being expanded
     'home_page_in_toc': False,
     "path_to_docs": "docs/source/",
     "repository_provider": "gitlab",
     "repository_url": "https://gitlab.acceleratxr.com/Core/xbe_docs",
     "repository_branch": "main",
-    "max_navbar_depth": 2,
-    "show_navbar_depth": 1,  # Gow deep should we initially auto-expand the left navbar?
     "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
     "pygments_light_style": "monokai",  # May get overwritten by pygments_style
     "use_fullscreen_button": False,  # Redundant in modern browsers
