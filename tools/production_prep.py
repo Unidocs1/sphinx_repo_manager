@@ -4,7 +4,7 @@ import os
 import yaml
 import logging
 import re
-from colorama import init, Fore
+from colorama import init, Fore, Style
 
 # -- CUSTOMIZE ENV --------------------------------------------------------------------------------------------
 
@@ -55,6 +55,7 @@ class ProductionPrep:
         self.manifest_is_dev_stage = self.manifest_stage == 'dev_stage'
         self.xbe_static_docs_repo = self.manifest_repos['xbe_static_docs']
         self.manifest_target_prod_ver = self.xbe_static_docs_repo['production_stage']['checkout']
+        self.production_prep_tool_show_prev_ver_diff = self.manifest.get('production_prep_tool_show_prev_ver_diff', True)
 
     # -- HELPERS --------------------------------------------------------------------------------------------- 
 
@@ -142,22 +143,33 @@ class ProductionPrep:
             # Determine the padding width based on the longest repo_name
             max_repo_name_length = max(len(repo_name) for repo_name in self.manifest_repos)
             repo_num = 0
-
+    
             for repo_name, repo in self.manifest_repos.items():
                 if not isinstance(repo, dict):
                     self.log_fail(f"Repo '{repo_name}' is not a dictionary as expected.")
-
+    
                 repo_num += 1
                 repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
                 repo_checkout = repo_stage_info.get('checkout', 'Unknown')
                 repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')
-
+    
+                # Determine the display_checkout with prev_ver if applicable
+                display_checkout = repo_checkout
+                prev_ver = repo_stage_info.get('prev_ver')
+                if (self.production_prep_tool_show_prev_ver_diff and
+                        prev_ver and prev_ver != repo_checkout):
+                    display_checkout = f"{prev_ver} -> {Style.BRIGHT}{repo_checkout}{Style.NORMAL}"
+    
                 # Format the message with fixed width padding
-                message = f"{repo_name:<{max_repo_name_length}} {repo_checkout} ({repo_checkout_type})"
+                if repo_checkout_type == 'branch':
+                    message = f"{repo_name:<{max_repo_name_length}} {display_checkout} ({repo_checkout_type})"
+                else:
+                    message = f"{repo_name:<{max_repo_name_length}} {display_checkout}"
+    
                 if self.manifest_is_dev_stage:
                     self.log_info(message)
                     continue
-
+    
                 # Production stage >> Additionally ensure that these are tagged with a version
                 is_version_tag = repo_checkout_type == 'tag'
                 if is_version_tag:
@@ -166,8 +178,9 @@ class ProductionPrep:
                     self.log_warn(message)
         except AssertionError as e:
             self.log_fail(e)
-
+    
         self.assert_complete()
+
 
     def assert_manifest_stage(self):
         self.log_test_name('assert_manifest_stage')

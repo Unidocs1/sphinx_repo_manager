@@ -79,6 +79,13 @@ init_clone_path: 'source/_repos-available'
 # - If kept default, you can access static content, like images, via `../_static/{repo_name}/images/`
 # - Defaults to '{repo_sparse_path}/source', if omitted
 init_clone_path_root_symlink_src: '{repo_sparse_path}/source/content'
+  
+# ------------------------------------------------------------------------------
+# tools/production_prep.py options
+
+# - If true, will show the diff between the current and previous version, if repo prev_prev (Default true)
+# - Relies upon repositories[i] arbitrary `prev_ver` string val
+production_prep_tool_show_prev_ver_diff: true
 
 # ------------------------------------------------------------------------------
 # (!) SEE MOCK REPO EXAMPLE @ BOTTOM, CONTAINING ALL [HEAVILY-COMMENTED] OPTIONS
@@ -95,125 +102,147 @@ repositories:
     #  checkout: 'feat/v2024.07.0'
     #  checkout_type: 'branch'
     production_stage:
-      # This particular repo should match the main doc macro version
-      # (!) This production checkout version below is important and used for tooling to check target ver 
+      prev_ver: 'v2024.07.0'
       checkout: 'v2024.07.0'
       checkout_type: 'tag'
   # Backend Services >>
   account_services:
     url: 'https://gitlab.acceleratxr.com/Core/account_services'
     production_stage:
+      prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
-      checkout_type: 'tag' 
+      checkout_type: 'tag'
   achievements_services:
     url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
     production_stage:
+      prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   asset_services:
     url: 'https://gitlab.acceleratxr.com/Core/asset_services'
     production_stage:
+      prev_ver: 'v3.0.0'
       checkout: 'v3.0.0'
       checkout_type: 'tag'
   backup_services:
     url: 'https://gitlab.acceleratxr.com/Core/backup_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   economy_services:
     url: 'https://gitlab.acceleratxr.com/Core/economy_services'
     production_stage:
+      prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   leaderboard_services:
     url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
     production_stage:
+      prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   matchmaking_services:
     url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   notification_services:
     url: 'https://gitlab.acceleratxr.com/Core/notification_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   persona_services:
     url: 'https://gitlab.acceleratxr.com/Core/persona_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   progression_services:
     url: 'https://gitlab.acceleratxr.com/Core/progression_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   purchasing_services:
     url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   quest_services:
     url: 'https://gitlab.acceleratxr.com/Core/quest_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   reporting_services:
     url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   scripting_services:
     url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   server_instance_services:
     url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   session_services:
     url: 'https://gitlab.acceleratxr.com/Core/session_services'
     production_stage:
+      prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   social_services:
     url: 'https://gitlab.acceleratxr.com/Core/social_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   telemetry_services:
     url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   world_services:
     url: 'https://gitlab.acceleratxr.com/Core/world_services'
     production_stage:
+      prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   # Sdks >>
   sdk_cpp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
     production_stage:
+      prev_ver: 'v4.0.0'
       checkout: 'v4.0.0'
       checkout_type: 'tag'
   sdk_csharp:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
     production_stage:
+      prev_ver: 'v3.0.0'
       checkout: 'v3.0.0'
       checkout_type: 'tag'
   sdk_nodejs:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
     production_stage:
+      prev_ver: 'v2.0.0'
       checkout: 'v2.0.0'
       checkout_type: 'tag'
   sdk_unity:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
     production_stage:
+      prev_ver: 'v3.0.0'
       checkout: 'v3.0.0'  # TODO: Tag found, but this will fail (!docs); needs update merged from dev
       checkout_type: 'tag'
     repo_sparse_path_override: 'Documentation~'
@@ -221,33 +250,39 @@ repositories:
   sdk_unreal:
     url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
     production_stage:
+      prev_ver: 'v4.0.0'
       checkout: 'v4.0.0'
       checkout_type: 'tag'
   # Other Products/Apps >>
   service_monitor:
     url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
     production_stage:
+      prev_ver: 'v3.2.0'
       checkout: 'v3.2.0'
       checkout_type: 'tag'
   launcher:
     url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
     production_stage:
+      prev_ver: 'v4.0.0'
       checkout: 'v4.0.0'
       checkout_type: 'tag'
   console:
     url: 'https://gitlab.acceleratxr.com/Core/apps/console'
     production_stage:
+      prev_ver: 'v6.0.1'
       checkout: 'v6.0.1'
       checkout_type: 'tag'
   # Demos >>
   unitychessgame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
     production_stage:
+      prev_ver: 'main'
       checkout: 'main'  # TODO: This will fail (!docs); needs update merged from dev; TODO: Mv branch to `master`?
       checkout_type: 'branch'  # TODO: Use tag
   lyrastartergame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
     production_stage:
+      prev_ver: 'master'
       checkout: 'master'  # TODO: This will fail (!docs); needs update merged from dev
       checkout_type: 'branch'  # TODO: Use tag
 
@@ -275,7 +310,11 @@ repositories:
 #
 ## Expects branch || tag (usually tag); if missing, falls back to {default_branch}
 #production_stage:
-#  checkout: 'v1.0.0'  # (!) Don't forget to prefix with 'v' to follow XBE standards
+#  
+#  # - [tools/production_prep.py] Arbitrary version to compare before->after, if listed and 
+#  #   production_prep_tool_show_prev_ver_diff == true   
+#  prev_ver: "v1.0.0"
+#  checkout: 'v1.0.1'  # (!) Don't forget to prefix with 'v' to follow XBE standards
 #  checkout_type: 'tag'
 #
 ## - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
