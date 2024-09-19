@@ -139,16 +139,19 @@ class ProductionPrep:
     # -- TESTS --------------------------------------------------------------------------------------------- 
 
     def assert_manifest_repo_versions_vs_latest_avail_git_tags(self):
+        """ (!) Even if dev_stage, we'll emulate this test as if we're production_stage. """
         self.log_test_name('assert_manifest_repo_versions_vs_latest_avail_git_tags')
 
         try:
             max_repo_name_length = max(len(repo_name) for repo_name in self.manifest_repos)
 
             for repo_name, repo in self.manifest_repos.items():
-                repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
+                # (!) DEPRECATED: Instead of per-stage, we want to simulate as if we're in production
+                #repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
+                repo_stage_info = repo.get('production_stage')
                 repo_checkout = repo_stage_info.get('checkout', 'Unknown')
                 repo_prev_ver = repo_stage_info.get('prev_ver', 'Unknown')
-                repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')
+                #repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')  # 'branch' or 'type'
 
                 repo_url = repo.get('url')
                 latest_tag = self.get_latest_git_tag(repo_url)
@@ -162,28 +165,28 @@ class ProductionPrep:
                 if repo_prev_ver == latest_tag:
                     emoji = '❓'
                     color = Fore.CYAN
-                    extra_info = f' {Style.BRIGHT}(No Upgrade){Style.NORMAL}'
                     display_checkout = f"{repo_checkout} →"
+                    extra_info = f' {Style.BRIGHT}(No Upgrade){Style.NORMAL}'
                 elif repo_checkout == latest_tag: 
                     emoji = '✅'
                     color = Fore.GREEN
-                    extra_info = ''
                     display_checkout = f"{Style.BRIGHT}{repo_checkout}{Style.NORMAL} →"
+                    extra_info = ''
                 elif '-rc.' in latest_tag or 'alpha' in latest_tag or 'beta' in latest_tag:
                     emoji = '⌛'
                     color = Fore.YELLOW
-                    extra_info = ''
                     display_checkout = f"{repo_checkout} → {latest_tag}"
+                    extra_info = ''
                 elif latest_tag > repo_checkout:
                     emoji = '🚀'  # ⬆️ doesn't display correctly
                     color = Fore.GREEN
-                    extra_info = ''
                     display_checkout = f"{repo_checkout} → {Style.BRIGHT}{latest_tag}{Style.NORMAL}"
+                    extra_info = ''
                 else:
                     emoji = '❌'
                     color = Fore.RED
-                    extra_info = ''
                     display_checkout = f"{repo_checkout} → {latest_tag}"
+                    extra_info = ''
 
                 # Output the result
                 print(f"  - {color}{emoji} {repo_name:<{max_repo_name_length}} "
@@ -221,7 +224,10 @@ class ProductionPrep:
         self.assert_complete()
 
     def assert_manifest_repo_versions_and_optional_diffs(self):
-        """ Compares manifest repo checkout ver vs repo `last_ver`, if available. """
+        """ 
+        Compares manifest repo checkout ver vs repo `last_ver`, if available.
+        (!) Even if dev_stage, we'll emulate this test as if we're production_stage.
+        """
         self.log_test_name('assert_manifest_repo_versions_and_optional_diffs')
 
         try:
@@ -234,9 +240,12 @@ class ProductionPrep:
                     self.log_fail(f"Repo '{repo_name}' is not a dictionary as expected.")
 
                 repo_num += 1
-                repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
+                
+                # DEPRECATED: Instead of per-stage, we want to simulate as if we're in production
+                #repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
+                repo_stage_info = repo.get('production_stage')
                 repo_checkout = repo_stage_info.get('checkout', 'Unknown')
-                repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')
+                repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')  # 'branch' or 'tag'
 
                 # Determine the display_checkout with prev_ver if applicable
                 display_checkout = repo_checkout
@@ -273,7 +282,8 @@ class ProductionPrep:
             manifest_stage = self.manifest['stage']
             expected = "manifest 'stage' == 'production_stage'"
             assert manifest_stage == "production_stage", \
-                f"Expected {expected} [got '{manifest_stage}']"
+                (f"Expected {expected} [got '{manifest_stage}']\n"
+                 f"    ⚠️ Tests will continue emulating as if 'production_stage'")
             self.log_success(expected)
         except AssertionError as e:
             self.log_fail(e)
