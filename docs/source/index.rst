@@ -59,7 +59,7 @@ Xsolla Backend [XBE] - Welcome
    :caption: Components
    :hidden:
 
-   Components Overview <content/-/frameworks/components/index>
+   Components Overview <content/-/components/index>
    Accounts <content/-/components/accounts/index>
    Content <content/-/components/content/index>
    Economy <content/-/components/economy/index>

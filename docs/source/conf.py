@@ -107,6 +107,7 @@ extensions = [
     'sphinx.ext.todo',  # Allows for todo:: directive 
     'sphinxext.opengraph',  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
     'sphinx_design',  # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html 
+    'sphinx_remove_toctrees',  # Remove specific toctrees | https://pypi.org/project/sphinx-remove-toctrees
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -186,6 +187,13 @@ def copy_open_graph_img_to_build(app, exception):
     shutil.copy(html_og_image, build_images_dir)
     print('Done.\n')
 
+
+# -- Sphinx Extension: sphinx-remove-toctrees ------------------------------
+# Remove specific toctrees from the sidebar; supports wildcards
+
+remove_from_toctrees = [
+    "content/-/welcome/release_notes/current/component_updates-partial.rst",
+]
 
 # -- Sphinx Extension: sphinxcontrib-sass ----------------------------------
 # SCSS->CSS; doc | https://pypi.org/project/sphinxcontrib-sass
@@ -308,7 +316,8 @@ html_favicon = '_static/images/_local/favicon.ico'
 
 html_context.update({
     # SPHINX BOOK THEME (based on Sphinx PyData theme) >>
-    'default_mode': 'dark',  # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/light-dark.html#configure-default-theme-mode
+    # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/light-dark.html#configure-default-theme-mode
+    'default_mode': 'dark',
 })
 
 # The theme to use for HTML and HTML Help pages
