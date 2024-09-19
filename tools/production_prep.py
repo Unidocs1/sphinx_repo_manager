@@ -159,12 +159,12 @@ class ProductionPrep:
                 latest_tag = latest_tag.replace('^{}', '')
 
                 # Determine the emoji and color for the status
-                if repo_prev_ver == latest_tag or repo_checkout_type == 'branch':
+                if repo_prev_ver == latest_tag:
                     emoji = '❓'
                     color = Fore.CYAN
                     extra_info = f' {Style.BRIGHT}(No Upgrade){Style.NORMAL}'
                     display_checkout = f"{repo_checkout} →"
-                elif repo_checkout == latest_tag:
+                elif repo_checkout == latest_tag: 
                     emoji = '✅'
                     color = Fore.GREEN
                     extra_info = ''
@@ -186,19 +186,8 @@ class ProductionPrep:
                     display_checkout = f"{repo_checkout} → {latest_tag}"
 
                 # Output the result
-                if self.manifest_is_dev_stage:
-                    self.log_info(
-                        f"  - {color}{repo_name:<{max_repo_name_length}} {emoji} {display_checkout} "
-                        f"(DEV){extra_info}{Fore.RESET}")
-                else:
-                    if repo_checkout_type == 'branch':
-                        self.log_info(
-                            f"  - {color}{repo_name:<{max_repo_name_length}} {emoji} Branch: {repo_checkout} "
-                            f"(Latest Tag: {latest_tag}){extra_info}{Fore.RESET}")
-                    else:
-                        print(
-                            f"  - {color}{emoji} {repo_name:<{max_repo_name_length}} "
-                            f"{display_checkout}{extra_info}{Fore.RESET}")
+                print(f"  - {color}{emoji} {repo_name:<{max_repo_name_length}} "
+                      f"{display_checkout}{extra_info}{Fore.RESET}")
 
         except AssertionError as e:
             self.log_fail(e)
