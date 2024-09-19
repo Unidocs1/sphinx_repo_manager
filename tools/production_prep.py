@@ -163,36 +163,42 @@ class ProductionPrep:
                     emoji = '❓'
                     color = Fore.CYAN
                     extra_info = f' {Style.BRIGHT}(No Upgrade){Style.NORMAL}'
-                    display_checkout = f"{repo_checkout} ->"
+                    display_checkout = f"{repo_checkout} →"
                 elif repo_checkout == latest_tag:
                     emoji = '✅'
                     color = Fore.GREEN
                     extra_info = ''
-                    display_checkout = f"{repo_checkout} ->"
-                elif '-rc.' in latest_tag:
+                    display_checkout = f"{Style.BRIGHT}{repo_checkout}{Style.NORMAL} →"
+                elif '-rc.' in latest_tag or 'alpha' in latest_tag or 'beta' in latest_tag:
                     emoji = '⌛'
                     color = Fore.YELLOW
                     extra_info = ''
-                    display_checkout = f"{repo_checkout} -> {latest_tag}"
+                    display_checkout = f"{repo_checkout} → {latest_tag}"
                 elif latest_tag > repo_checkout:
-                    emoji = '🆙'
-                    color = Fore.LIGHTGREEN_EX
+                    emoji = '🚀'  # ⬆️ doesn't display correctly
+                    color = Fore.GREEN
                     extra_info = ''
-                    display_checkout = f"{repo_checkout} -> {latest_tag}"
+                    display_checkout = f"{repo_checkout} → {Style.BRIGHT}{latest_tag}{Style.NORMAL}"
                 else:
                     emoji = '❌'
                     color = Fore.RED
                     extra_info = ''
-                    display_checkout = f"{repo_checkout} -> {latest_tag}"
+                    display_checkout = f"{repo_checkout} → {latest_tag}"
 
                 # Output the result
                 if self.manifest_is_dev_stage:
-                    self.log_info(f"{color}{repo_name:<{max_repo_name_length}} {emoji} {display_checkout} (DEV){extra_info}{Fore.RESET}")
+                    self.log_info(
+                        f"  - {color}{repo_name:<{max_repo_name_length}} {emoji} {display_checkout} "
+                        f"(DEV){extra_info}{Fore.RESET}")
                 else:
                     if repo_checkout_type == 'branch':
-                        self.log_info(f"{color}{repo_name:<{max_repo_name_length}} {emoji} Branch: {repo_checkout} (Latest Tag: {latest_tag}){extra_info}{Fore.RESET}")
+                        self.log_info(
+                            f"  - {color}{repo_name:<{max_repo_name_length}} {emoji} Branch: {repo_checkout} "
+                            f"(Latest Tag: {latest_tag}){extra_info}{Fore.RESET}")
                     else:
-                        print(f"{color}{emoji} {repo_name:<{max_repo_name_length}} {display_checkout}{extra_info}{Fore.RESET}")
+                        print(
+                            f"  - {color}{emoji} {repo_name:<{max_repo_name_length}} "
+                            f"{display_checkout}{extra_info}{Fore.RESET}")
 
         except AssertionError as e:
             self.log_fail(e)
@@ -200,7 +206,6 @@ class ProductionPrep:
             self.log_fail(f"Failed to compare repo versions: {e}")
 
         self.assert_complete()
-
 
     def assert_conf_dot_py(self):
         self.log_test_name('assert_conf_dot_py')
@@ -226,8 +231,6 @@ class ProductionPrep:
             self.log_fail(f"Failed to analyze conf.py: {e}")
         self.assert_complete()
 
-
-
     def assert_manifest_repo_versions_and_optional_diffs(self):
         """ Compares manifest repo checkout ver vs repo `last_ver`, if available. """
         self.log_test_name('assert_manifest_repo_versions_and_optional_diffs')
@@ -251,7 +254,7 @@ class ProductionPrep:
                 prev_ver = repo_stage_info.get('prev_ver')
                 if (self.production_prep_tool_show_prev_ver_diff and
                         prev_ver and prev_ver != repo_checkout):
-                    display_checkout = f"{prev_ver} -> {Style.BRIGHT}{repo_checkout}{Style.NORMAL}"
+                    display_checkout = f"{prev_ver} → {Style.BRIGHT}{repo_checkout}{Style.NORMAL}"
 
                 # Format the message with fixed width padding
                 if repo_checkout_type == 'branch':
