@@ -276,15 +276,15 @@ repositories:
   unitychessgame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
     production_stage:
-      prev_ver: 'main'
-      checkout: 'main'  # TODO: This will fail (!docs); needs update merged from dev; TODO: Mv branch to `master`?
-      checkout_type: 'branch'  # TODO: Use tag
+      prev_ver: 'v1.0.0-Unity2022_3_11'
+      checkout: 'v1.0.0-Unity2022_3_11'  # TODO: Mv branch to `master`?
+      checkout_type: 'tag'
   lyrastartergame:
     url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
     production_stage:
-      prev_ver: 'master'
-      checkout: 'master'  # TODO: This will fail (!docs); needs update merged from dev
-      checkout_type: 'branch'  # TODO: Use tag
+      prev_ver: 'v2.0.0-Unreal5_4_3'
+      checkout: 'v2.0.0-Unreal5_4_3'
+      checkout_type: 'tag'
 
 ############################################
 # EXAMPLE REPO WITH ALL OPTIONS -- COMMENTED
