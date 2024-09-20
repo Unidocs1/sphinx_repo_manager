@@ -62,7 +62,7 @@ Welcome to Xsolla Backend
    :caption: Components
    :hidden:
 
-   Components Overview <content/-/components/index>
+   Overview <content/-/components/index>
    Accounts <content/-/components/accounts/index>
    Content <content/-/components/content/index>
    Economy <content/-/components/economy/index>
