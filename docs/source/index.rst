@@ -1,13 +1,16 @@
+:og:title: Welcome to Xsolla Backend
+:og:description: Xsolla Backend is a powerful backend engine for building highly-scalable online games and entertainment products - pay only 5% for unlimited support and enterprise features.
+:og:image: /_static/images/_local/xbe-banner-og-1200x630.min.png
+
 .. meta::
-   :description: Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and
-                 entertainment products covering a robust set of features.
+   :description: Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment products covering a robust set of features - pay only 5% for unlimited support and enterprise features
    :keywords: xbe, xsolla backend, axr, acceleratxr, backend, backend as a service, gbaas, doc, docs, api docs, api, openapi, xbe docs, xsolla docs, xsolla backend docs
 
-==============================
-Xsolla Backend [XBE] - Welcome
-==============================
+=========================
+Welcome to Xsolla Backend
+=========================
 
-.. image:: /_static/images/_local/xbe-banner-1200x478.min.png
+.. image:: /_static/images/_local/xbe-banner-og-1200x478.min-smLogoNoTxt.png
    :alt: XBE Docs
    :width: 720px
 
@@ -34,7 +37,7 @@ Xsolla Backend [XBE] - Welcome
       :caption: Welcome
       :hidden:
       
-      What Is Xsolla Backend? <content/-/welcome/what_is_xbe>
+      About XBE <content/-/welcome/what_is_xbe>
       Features <content/-/welcome/features>
       Quickstart <content/-/welcome/quickstart>
       Demo <content/-/welcome/demo_env>
@@ -48,7 +51,7 @@ Xsolla Backend [XBE] - Welcome
       :caption: Welcome
       :hidden:
       
-      What Is Xsolla Backend? <content/-/welcome/what_is_xbe>
+      About XBE <content/-/welcome/what_is_xbe>
       Features <content/-/welcome/features>
       Quickstart <content/-/welcome/quickstart>
       Demo <content/-/welcome/demo_env>
@@ -98,7 +101,7 @@ Xsolla Backend [XBE] - Welcome
 .. include:: component_cards-partial.rst
    :start-after: start-marker
 
-**Xsolla Backend** [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
+Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
 products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
 matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
 
