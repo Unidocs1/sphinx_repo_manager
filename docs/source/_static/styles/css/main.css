@@ -41,6 +41,7 @@
   font-style: normal; }
 
 :root {
+  --font-awesome: 'Font Awesome 6 Free';
   --xsui-brand-pink-color: #FF005B;
   --xsui-brand-pink-color-brighter: #ffdde9;
   /* Inline code markdown */
@@ -224,7 +225,8 @@ div.admonition > .admonition-title::after {
   color: var(--xsui-bluish-lighter-pearl-gray-table-cell) !important; }
 
 /* note:: directive (admonition) top banner */
-.admonition.note > .admonition-title, div.admonition.note > .admonition-title {
+.admonition.note > .admonition-title,
+div.admonition.note > .admonition-title {
   background: var(--xsui-gradient-bright-sky); }
 
 /* warning:: directive (admonition) left vert line color */
@@ -232,7 +234,8 @@ div.admonition > .admonition-title::after {
   border-color: var(--xsui-start-color-gradient-bright-sky); }
 
 /* warning:: directive (admonition) top banner */
-.admonition.warning > .admonition-title, div.admonition.warning > .admonition-title {
+.admonition.warning > .admonition-title,
+div.admonition.warning > .admonition-title {
   background: var(--xsui-gradient-coral-orange); }
 
 /* warning:: directive (admonition) left vert line color */
@@ -240,12 +243,34 @@ div.admonition > .admonition-title::after {
   border-color: var(--xsui-start-color-gradient-coral-orange); }
 
 /* attention:: directive (admonition) top banner */
-.admonition.attention > .admonition-title, div.admonition.attention > .admonition-title {
+.admonition.attention > .admonition-title,
+div.admonition.attention > .admonition-title {
   background: var(--xsui-gradient-blue-violet); }
 
 /* attention:: directive (admonition) left vert line color */
 .admonition.attention, div.admonition.attention {
   border-color: var(--xsui-start-color-gradient-blue-violet); }
+
+.admonition-grid-wrapper {
+  margin: 0 0 10px;
+  /* Remove margins for elements following the admonition-title */
+  /* Style the admonition block border */
+  /* Hide both the title and the icon for specific admonitions (e.g., Quick Links) */ }
+  .admonition-grid-wrapper .admonition-title ~ * {
+    margin-left: 0 !important;
+    margin-right: 0 !important; }
+  .admonition-grid-wrapper .admonition {
+    border-color: var(--xsui-start-color-gradient-bright-sky);
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #000e1e 75%, transparent 100%); }
+  .admonition-grid-wrapper .admonition-quick-links > .admonition-title {
+    display: none !important;
+    /* Hides both the title and its icon */ }
+  .admonition-grid-wrapper .sd-card-body {
+    border-color: transparent !important;
+    padding: 0;
+    border: none; }
 
 /* MAIN COLOR THEME -------------------------------------------------------- */
 html[data-theme='dark'] {
@@ -380,7 +405,7 @@ h3 a .doc, h3 a .std.std-ref, h4 a .doc, h4 a .std.std-ref, h5 a .doc, h5 a .std
 
 /* External links in body should show icon */
 .bd-article.reference.external:after, a.reference.external:after {
-  font-family: "Font Awesome 6 Free", sans-serif;
+  font-family: var(--font-awesome), sans-serif;
   font-weight: 900;
   content: "\f35d";
   display: inline-block;
@@ -392,10 +417,23 @@ h3 a .doc, h3 a .std.std-ref, h4 a .doc, h4 a .std.std-ref, h5 a .doc, h5 a .std
 
 /* Toctree external links within a body should show FontAwesome external icon */
 .bd-article .toctree-wrapper a.external::after {
-  font-family: "Font Awesome 6 Free", sans-serif;
+  font-family: var(--font-awesome), sans-serif;
   content: "\f35d";
   display: inline-block;
   margin-left: 4px; }
+
+/* Grids ----------------------------------------------------------------- */
+/* There's too much vertical space - we could optionally limit this later to just home page */
+div.sd-card-body.docutils {
+  margin-bottom: -2.5em; }
+
+/* BADGES ----------------------------------------------------------------- */
+/* The default is overwhelmingly bold and too spacious */
+.sd-sphinx-override.sd-badge.sd-outline-info.sd-text-info {
+  font-weight: normal;
+  line-height: 0.9;
+  font-size: 0.7em;
+  letter-spacing: -0.8px; }
 
 /* XSOLLA UI -------------------------------------------------------------- */
 .xsui-button {
@@ -420,15 +458,32 @@ h3 a .doc, h3 a .std.std-ref, h4 a .doc, h4 a .std.std-ref, h5 a .doc, h5 a .std
   background-color: var(--xsui-marine-green-action-color) !important;
   border-color: var(--xsui-marine-green-action-color) !important;
   box-shadow: 0 4px 16px rgba(0, 199, 126, 0.32); }
+  .xsui-button--appearance-primary:hover {
+    background-color: #01b170 !important;
+    border-color: #01b170 !important;
+    box-shadow: 0 8px 16px rgba(0, 199, 126, 0.32); }
 
-.xsui-button--appearance-primary:hover {
-  background-color: #01b170 !important;
-  border-color: #01b170 !important;
-  box-shadow: 0 8px 16px rgba(0, 199, 126, 0.32); }
+.xsui-button--appearance-secondary {
+  background-color: var(--xsui-brand-blue-color) !important;
+  border-color: var(--xsui-brand-blue-color) !important;
+  box-shadow: 0 4px 16px rgba(0, 70, 199, 0.32); }
+  .xsui-button--appearance-secondary:hover {
+    background-color: #0064d6 !important;
+    border-color: #0064d6 !important;
+    box-shadow: 0 8px 16px 0 rgba(0, 115, 247, 0.32); }
+
+.xsui-button--size-sm {
+  min-width: 108px;
+  padding: 5px 24px; }
 
 .xsui-button--size-md {
   min-width: 140px;
   padding: 9px 32px; }
+
+.xsui-button--size-lg {
+  min-width: 172px;
+  padding: 13px 44px;
+  font-size: 14px; }
 
 .xsui-button__wrapper {
   position: relative; }

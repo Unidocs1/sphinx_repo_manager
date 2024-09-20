@@ -473,5 +473,9 @@ feature_flags = {
     'new-xbe-openapi-doc': True,
 }
 
-# -- Append rst_epilog to the bottom of *every* doc file ---------------------
-# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
+# -- Globally declare replacement items at the top of *every* doc file -------------
+# (!) These do not work in toctrees
+
+rst_prolog = """
+.. |docs-wip| replace:: :bdg-info-line:`Docs WIP`
+"""
