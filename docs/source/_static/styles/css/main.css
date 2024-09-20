@@ -155,6 +155,10 @@ code, pre {
   font-weight: var(--regular-font-weight);
   background-color: var(--xsui-bluish-darker-black-color); }
 
+/* `Literals` - dark blue bg (same bg as code blocks) */
+.docutils.literal.notranslate {
+  background-color: var(--xsui-bluish-darker-black-color); }
+
 /* Give the code block linenos gutter some padding + dark gray border */
 span.linenos {
   margin-right: 1.2em;
