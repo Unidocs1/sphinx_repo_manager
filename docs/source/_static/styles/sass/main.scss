@@ -55,7 +55,7 @@
 
 :root {
     --font-awesome: 'Font Awesome 6 Free';
-    
+
     --xsui-brand-pink-color: #FF005B;
     --xsui-brand-pink-color-brighter: #ffdde9; /* Inline code markdown */
     --xsui-brand-pink-color-bright: #FCAECA; /* Inline code markdown */
@@ -265,7 +265,7 @@ div.admonition > .admonition-title::after {
 }
 
 /* note:: directive (admonition) top banner */
-.admonition.note > .admonition-title, 
+.admonition.note > .admonition-title,
 div.admonition.note > .admonition-title {
     background: var(--xsui-gradient-bright-sky);
 }
@@ -276,7 +276,7 @@ div.admonition.note > .admonition-title {
 }
 
 /* warning:: directive (admonition) top banner */
-.admonition.warning > .admonition-title, 
+.admonition.warning > .admonition-title,
 div.admonition.warning > .admonition-title {
     background: var(--xsui-gradient-coral-orange);
 }
@@ -287,7 +287,7 @@ div.admonition.warning > .admonition-title {
 }
 
 /* attention:: directive (admonition) top banner */
-.admonition.attention > .admonition-title, 
+.admonition.attention > .admonition-title,
 div.admonition.attention > .admonition-title {
     background: var(--xsui-gradient-blue-violet);
 }
@@ -320,7 +320,7 @@ div.admonition.attention > .admonition-title {
     .admonition-quick-links > .admonition-title {
         display: none !important; /* Hides both the title and its icon */
     }
-    
+
     .sd-card-body {
         border-color: transparent !important;
         padding: 0;
@@ -577,7 +577,8 @@ div.sd-card-body.docutils {
 
 .xsui-button--size-sm {
     min-width: 108px;
-    padding: 5px 24px
+    max-width: 372px;
+    padding: 5px 24px;
 }
 
 .xsui-button--size-md {

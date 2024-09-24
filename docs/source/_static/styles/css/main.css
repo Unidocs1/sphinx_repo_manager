@@ -474,6 +474,7 @@ div.sd-card-body.docutils {
 
 .xsui-button--size-sm {
   min-width: 108px;
+  max-width: 372px;
   padding: 5px 24px; }
 
 .xsui-button--size-md {

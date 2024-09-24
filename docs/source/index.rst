@@ -101,20 +101,27 @@ Welcome to Xsolla Backend
 .. include:: component_cards-partial.rst
    :start-after: start-marker
 
-Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
-products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
-matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
+.. grid:: 1
 
-* **Pay only 5%** of gross sales paid
-* **Free** Hosting
-* **Source** Available
-* **Unlimited** Support
-* **Enterprise** Features
+   .. grid:: 1 1 2 2
+      :gutter: 2
+   
+      .. grid-item::
+         Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
+         products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
+         matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
 
-.. raw:: html
+         .. raw:: html
 
-   <a class="xsui-button xsui-button--appearance-secondary xsui-button--size-sm" href="content/-/welcome/what_is_xbe.html">
-      <div class="xsui-button__wrapper">
-         <div class="xsui-button__content">Learn More</div>
-      </div>
-   </a>
+            <a class="xsui-button xsui-button--appearance-secondary xsui-button--size-sm" href="content/-/welcome/what_is_xbe.html">
+               <div class="xsui-button__wrapper">
+                  <div class="xsui-button__content">Learn More</div>
+               </div>
+            </a>
+         
+      .. grid-item::
+         * **Pay only 5%** of gross sales paid
+         * **Free** Hosting
+         * **Source** Available
+         * **Unlimited** Support
+         * **Enterprise** Features

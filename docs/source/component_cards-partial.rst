@@ -14,7 +14,7 @@ Component Cards - Partial
 
    .. admonition:: Quick Links
    
-      .. grid:: 3
+      .. grid:: 1 1 3 3
          :gutter: 2
       
          .. grid-item::
