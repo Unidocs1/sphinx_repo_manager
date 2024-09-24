@@ -110,140 +110,140 @@ repositories:
     url: 'https://source.goxbe.io/Core/account_services'
     production_stage:
       prev_ver: 'v3.0.1'
-      checkout: 'v3.0.1'
+      checkout: 'v3.1.0'
       checkout_type: 'tag'
   achievements_services:
     url: 'https://source.goxbe.io/Core/achievements_services'
     production_stage:
       prev_ver: 'v3.0.1'
-      checkout: 'v3.0.1'
+      checkout: 'v3.1.0'
       checkout_type: 'tag'
   asset_services:
     url: 'https://source.goxbe.io/Core/asset_services'
     production_stage:
       prev_ver: 'v3.0.0'
-      checkout: 'v3.0.0'
+      checkout: 'v3.1.0'
       checkout_type: 'tag'
   backup_services:
     url: 'https://source.goxbe.io/Core/backup_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   economy_services:
     url: 'https://source.goxbe.io/Core/economy_services'
     production_stage:
       prev_ver: 'v3.0.1'
-      checkout: 'v3.0.1'
+      checkout: 'v3.1.0'
       checkout_type: 'tag'
   leaderboard_services:
     url: 'https://source.goxbe.io/Core/leaderboard_services'
     production_stage:
       prev_ver: 'v3.0.1'
-      checkout: 'v3.0.1'
+      checkout: 'v3.1.0'
       checkout_type: 'tag'
   matchmaking_services:
     url: 'https://source.goxbe.io/Core/matchmaking_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   notification_services:
     url: 'https://source.goxbe.io/Core/notification_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   persona_services:
     url: 'https://source.goxbe.io/Core/persona_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   progression_services:
     url: 'https://source.goxbe.io/Core/progression_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   purchasing_services:
     url: 'https://source.goxbe.io/Core/purchasing_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   quest_services:
     url: 'https://source.goxbe.io/Core/quest_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   reporting_services:
     url: 'https://source.goxbe.io/Core/reporting_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   scripting_services:
     url: 'https://source.goxbe.io/Core/scripting_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   server_instance_services:
     url: 'https://source.goxbe.io/Core/server_instance_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   session_services:
     url: 'https://source.goxbe.io/Core/session_services'
     production_stage:
       prev_ver: 'v3.0.1'
-      checkout: 'v3.0.1'
+      checkout: 'v3.1.0'
       checkout_type: 'tag'
   social_services:
     url: 'https://source.goxbe.io/Core/social_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   telemetry_services:
     url: 'https://source.goxbe.io/Core/telemetry_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   world_services:
     url: 'https://source.goxbe.io/Core/world_services'
     production_stage:
       prev_ver: 'v2.0.1'
-      checkout: 'v2.0.1'
+      checkout: 'v2.1.0'
       checkout_type: 'tag'
   # Sdks >>
   sdk_cpp:
     url: 'https://source.goxbe.io/Core/sdk/sdk_cpp'
     production_stage:
       prev_ver: 'v4.0.0'
-      checkout: 'v4.0.0'
+      checkout: 'v4.0.1'
       checkout_type: 'tag'
   sdk_csharp:
     url: 'https://source.goxbe.io/Core/sdk/sdk_csharp'
     production_stage:
       prev_ver: 'v3.0.0'
-      checkout: 'v3.0.0'
+      checkout: 'v4.0.0'
       checkout_type: 'tag'
   sdk_nodejs:
     url: 'https://source.goxbe.io/Core/sdk/sdk_nodejs'
     production_stage:
       prev_ver: 'v2.0.0'
-      checkout: 'v2.0.0'
+      checkout: 'v2.2.0'
       checkout_type: 'tag'
   sdk_unity:
     url: 'https://source.goxbe.io/Core/sdk/sdk_unity'
     production_stage:
       prev_ver: 'v3.0.0'
-      checkout: 'v3.0.0'  # TODO: Tag found, but this will fail (!docs); needs update merged from dev
+      checkout: 'v4.0.0'  # TODO: Tag found, but this will fail (!docs); needs update merged from dev
       checkout_type: 'tag'
     repo_sparse_path_override: 'Documentation~'
     init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
@@ -251,7 +251,7 @@ repositories:
     url: 'https://source.goxbe.io/Core/sdk/sdk_unreal'
     production_stage:
       prev_ver: 'v4.0.0'
-      checkout: 'v4.0.0'
+      checkout: 'v4.0.1'
       checkout_type: 'tag'
   # Tools >>
   vscode-scripts-scm:
