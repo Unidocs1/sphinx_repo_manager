@@ -147,7 +147,7 @@ html_context.update({
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
-    'gitlab_host': 'gitlab.acceleratxr.com',
+    'gitlab_host': 'source.goxbe.io',
     'gitlab_user': 'Core',  # Group
     'gitlab_repo': 'xbe_docs',  # Repo name
     'gitlab_version': current_branch,  # Repo branch

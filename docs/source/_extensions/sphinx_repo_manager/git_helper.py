@@ -177,7 +177,7 @@ class GitHelper:
     ):
         """
         Clone the repo+branch from the provided URL to the specified path.
-        - preserve_gitlab_group: If you have "https://gitlab.acceleratxr.com/Core/matchmaking_services",
+        - preserve_gitlab_group: If you have "https://source.goxbe.io/Core/matchmaking_services",
           "Core" dir will be created
         """
         group_str = str(GitHelper.get_gitlab_group(repo_url_dotgit))

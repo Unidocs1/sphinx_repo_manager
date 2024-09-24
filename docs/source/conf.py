@@ -331,7 +331,7 @@ html_theme_options = {
     'home_page_in_toc': False,
     "path_to_docs": "docs/source/",
     "repository_provider": "gitlab",
-    "repository_url": "https://gitlab.acceleratxr.com/Core/xbe_docs",
+    "repository_url": "https://source.goxbe.io/Core/xbe_docs",
     "repository_branch": "main",
     "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
     "pygments_light_style": "monokai",  # May get overwritten by pygments_style
@@ -379,7 +379,7 @@ html_sidebars = {
 html_context.update({
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
-    'gitlab_host': 'gitlab.acceleratxr.com',
+    'gitlab_host': 'source.goxbe.io',
     'gitlab_user': 'Core',  # Group
     'gitlab_repo': 'xbe_docs',  # Repo name
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)

@@ -193,7 +193,7 @@ class SphinxRepoManager:
         """ (!) Global manifest changes should be +1 up; not here (where it's an individual repo). """
         if '_meta' not in repo_info:
             repo_info['_meta'] = {
-                'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
+                'url_dotgit': '',  # eg: "https://source.goxbe.io/core/account_services.git"
                 'repo_name': '',  # eg: "account_services"
                 'has_tag': False,
                 'selected_repo_stage_info': {},  # { checkout, checkout_type }

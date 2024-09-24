@@ -96,7 +96,7 @@ production_prep_tool_show_prev_ver_diff: true
 repositories:
   # Static docs containing most !repo content >>
   xbe_static_docs:
-    url: 'https://gitlab.acceleratxr.com/Core/xbe_static_docs'
+    url: 'https://source.goxbe.io/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
     #dev_stage:
     #  checkout: 'feat/v2024.07.0'
@@ -107,140 +107,140 @@ repositories:
       checkout_type: 'tag'
   # Components (formerly called Services) >>
   account_services:
-    url: 'https://gitlab.acceleratxr.com/Core/account_services'
+    url: 'https://source.goxbe.io/Core/account_services'
     production_stage:
       prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   achievements_services:
-    url: 'https://gitlab.acceleratxr.com/Core/achievements_services'
+    url: 'https://source.goxbe.io/Core/achievements_services'
     production_stage:
       prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   asset_services:
-    url: 'https://gitlab.acceleratxr.com/Core/asset_services'
+    url: 'https://source.goxbe.io/Core/asset_services'
     production_stage:
       prev_ver: 'v3.0.0'
       checkout: 'v3.0.0'
       checkout_type: 'tag'
   backup_services:
-    url: 'https://gitlab.acceleratxr.com/Core/backup_services'
+    url: 'https://source.goxbe.io/Core/backup_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   economy_services:
-    url: 'https://gitlab.acceleratxr.com/Core/economy_services'
+    url: 'https://source.goxbe.io/Core/economy_services'
     production_stage:
       prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   leaderboard_services:
-    url: 'https://gitlab.acceleratxr.com/Core/leaderboard_services'
+    url: 'https://source.goxbe.io/Core/leaderboard_services'
     production_stage:
       prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   matchmaking_services:
-    url: 'https://gitlab.acceleratxr.com/Core/matchmaking_services'
+    url: 'https://source.goxbe.io/Core/matchmaking_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   notification_services:
-    url: 'https://gitlab.acceleratxr.com/Core/notification_services'
+    url: 'https://source.goxbe.io/Core/notification_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   persona_services:
-    url: 'https://gitlab.acceleratxr.com/Core/persona_services'
+    url: 'https://source.goxbe.io/Core/persona_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   progression_services:
-    url: 'https://gitlab.acceleratxr.com/Core/progression_services'
+    url: 'https://source.goxbe.io/Core/progression_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   purchasing_services:
-    url: 'https://gitlab.acceleratxr.com/Core/purchasing_services'
+    url: 'https://source.goxbe.io/Core/purchasing_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   quest_services:
-    url: 'https://gitlab.acceleratxr.com/Core/quest_services'
+    url: 'https://source.goxbe.io/Core/quest_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   reporting_services:
-    url: 'https://gitlab.acceleratxr.com/Core/reporting_services'
+    url: 'https://source.goxbe.io/Core/reporting_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   scripting_services:
-    url: 'https://gitlab.acceleratxr.com/Core/scripting_services'
+    url: 'https://source.goxbe.io/Core/scripting_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   server_instance_services:
-    url: 'https://gitlab.acceleratxr.com/Core/server_instance_services'
+    url: 'https://source.goxbe.io/Core/server_instance_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   session_services:
-    url: 'https://gitlab.acceleratxr.com/Core/session_services'
+    url: 'https://source.goxbe.io/Core/session_services'
     production_stage:
       prev_ver: 'v3.0.1'
       checkout: 'v3.0.1'
       checkout_type: 'tag'
   social_services:
-    url: 'https://gitlab.acceleratxr.com/Core/social_services'
+    url: 'https://source.goxbe.io/Core/social_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   telemetry_services:
-    url: 'https://gitlab.acceleratxr.com/Core/telemetry_services'
+    url: 'https://source.goxbe.io/Core/telemetry_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   world_services:
-    url: 'https://gitlab.acceleratxr.com/Core/world_services'
+    url: 'https://source.goxbe.io/Core/world_services'
     production_stage:
       prev_ver: 'v2.0.1'
       checkout: 'v2.0.1'
       checkout_type: 'tag'
   # Sdks >>
   sdk_cpp:
-    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_cpp'
+    url: 'https://source.goxbe.io/Core/sdk/sdk_cpp'
     production_stage:
       prev_ver: 'v4.0.0'
       checkout: 'v4.0.0'
       checkout_type: 'tag'
   sdk_csharp:
-    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_csharp'
+    url: 'https://source.goxbe.io/Core/sdk/sdk_csharp'
     production_stage:
       prev_ver: 'v3.0.0'
       checkout: 'v3.0.0'
       checkout_type: 'tag'
   sdk_nodejs:
-    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_nodejs'
+    url: 'https://source.goxbe.io/Core/sdk/sdk_nodejs'
     production_stage:
       prev_ver: 'v2.0.0'
       checkout: 'v2.0.0'
       checkout_type: 'tag'
   sdk_unity:
-    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unity'
+    url: 'https://source.goxbe.io/Core/sdk/sdk_unity'
     production_stage:
       prev_ver: 'v3.0.0'
       checkout: 'v3.0.0'  # TODO: Tag found, but this will fail (!docs); needs update merged from dev
@@ -248,46 +248,46 @@ repositories:
     repo_sparse_path_override: 'Documentation~'
     init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
   sdk_unreal:
-    url: 'https://gitlab.acceleratxr.com/Core/sdk/sdk_unreal'
+    url: 'https://source.goxbe.io/Core/sdk/sdk_unreal'
     production_stage:
       prev_ver: 'v4.0.0'
       checkout: 'v4.0.0'
       checkout_type: 'tag'
   # Tools >>
   vscode-scripts-scm:
-    url: 'https://gitlab.acceleratxr.com/Core/tools/vscode-scripts-scm/'
+    url: 'https://source.goxbe.io/Core/tools/vscode-scripts-scm/'
     production_stage:
       prev_ver: 'v2.2.2'
       checkout: 'v2.2.2'
       checkout_type: 'tag'
   # Other Products/Apps >>
   service_monitor:
-    url: 'https://gitlab.acceleratxr.com/Core/service_monitor'
+    url: 'https://source.goxbe.io/Core/service_monitor'
     production_stage:
       prev_ver: 'v3.2.0'
       checkout: 'v3.2.0'
       checkout_type: 'tag'
   launcher:
-    url: 'https://gitlab.acceleratxr.com/Core/apps/launcher'
+    url: 'https://source.goxbe.io/Core/apps/launcher'
     production_stage:
       prev_ver: 'v4.0.0'
       checkout: 'v4.0.0'
       checkout_type: 'tag'
   console:
-    url: 'https://gitlab.acceleratxr.com/Core/apps/console'
+    url: 'https://source.goxbe.io/Core/apps/console'
     production_stage:
       prev_ver: 'v6.0.1'
       checkout: 'v6.0.1'
       checkout_type: 'tag'
   # Demos >>
   unitychessgame:
-    url: 'https://gitlab.acceleratxr.com/Core/samples/unitychessgame'
+    url: 'https://source.goxbe.io/Core/samples/unitychessgame'
     production_stage:
       prev_ver: 'v1.0.0-Unity2022_3_11'
       checkout: 'v1.0.0-Unity2022_3_11'  # TODO: Mv branch to `master`?
       checkout_type: 'tag'
   lyrastartergame:
-    url: 'https://gitlab.acceleratxr.com/Core/samples/lyrastartergame'
+    url: 'https://source.goxbe.io/Core/samples/lyrastartergame'
     production_stage:
       prev_ver: 'v2.0.0-Unreal5_4_3'
       checkout: 'v2.0.0-Unreal5_4_3'
@@ -301,7 +301,7 @@ repositories:
 ## - .git suffix == optional;
 ## - HTTPS only (until we add cert support in RTD)
 ## - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
-#url: 'https://gitlab.acceleratxr.com/Core/foo_services'
+#url: 'https://source.goxbe.io/Core/foo_services'
 #
 ## - Normally named your_repo_name, but static docs is special
 ## - Relative to baseClonePath
