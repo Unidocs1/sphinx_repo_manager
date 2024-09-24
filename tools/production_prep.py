@@ -114,27 +114,37 @@ class ProductionPrep:
             return yaml.safe_load(file)
 
     def get_latest_git_tag(self, repo_url):
-        """ Fetch the latest git tag from the given repo URL using git commands, cross-platform compatible. """
+        """ Fetch the latest git tag, prioritizing stable versions over pre-releases and ignoring dereferenced tags. """
         try:
-            # Run the git command to list remote tags
-            cmd = ['git', 'ls-remote', '--tags', repo_url]
+            # Run the git command to list remote tags with sorting by semantic versioning
+            cmd = ['git', 'ls-remote', '--tags', '--refs', '--sort=version:refname', repo_url]
             result = subprocess.run(cmd, capture_output=True, text=True)
-
+    
             if result.returncode != 0:
                 raise Exception(f"Failed to get tags from {repo_url}: {result.stderr}")
-
-            # Parse the tags and strip out the '^{}/' part from annotated tags
-            tags = [line.split('/')[-1].replace('^{}', '') for line in result.stdout.splitlines()]
-
+    
+            # Parse the tags from the Git command output and remove dereferenced annotated tags (those with ^{})
+            tags = [line.split('/')[-1] for line in result.stdout.splitlines() if not line.endswith('^{}')]
+    
             if not tags:
                 return 'Unknown'
-
-            # Sort and return the latest tag
-            latest_tag = sorted(tags)[-1]
-            return latest_tag
+    
+            # Filter out pre-release versions (e.g., -alpha, -beta, -rc)
+            stable_tags = [tag for tag in tags if not re.search(r'-(alpha|beta|rc)', tag)]
+    
+            # If there are stable tags, return the latest one (Git's sorting ensures the correct order)
+            if stable_tags:
+                return stable_tags[-1]
+    
+            # If no stable tags are found, return the latest pre-release tag
+            return tags[-1] if tags else 'Unknown'
+    
         except Exception as e:
             self.log_fail(f"Failed to get latest tag for {repo_url}: {e}")
             return 'Unknown'
+
+
+
 
     # -- TESTS --------------------------------------------------------------------------------------------- 
 
@@ -289,6 +299,48 @@ class ProductionPrep:
             self.log_fail(e)
         self.assert_complete()
 
+    # -- PRODUCTION SETTERS--------------------------------------------------------------------------------
+
+    def set_repo_manifest_production_stage_to_latest_git_tags(self):
+        """ Updates repo_manifest.yml, setting the latest stable git tag for each repo's production_stage. """
+        try:
+            # Load the repo manifest YAML file
+            with open(self.repo_manifest_path, 'r') as file:
+                manifest = yaml.safe_load(file)
+    
+            repositories = manifest.get('repositories', {})
+    
+            # Loop through all repositories and update the production_stage fields
+            for repo_name, repo_data in repositories.items():
+                production_stage = repo_data.get('production_stage')
+                if production_stage:
+                    prev_ver = production_stage.get('checkout')
+    
+                    # Fetch the latest stable tag for the repository
+                    latest_tag = self.get_latest_git_tag(repo_data.get('url'))
+    
+                    if prev_ver == latest_tag:
+                        # Add a TODO if the version is already the latest
+                        production_stage['checkout'] = prev_ver  # Keep current version
+                        production_stage['prev_ver'] = prev_ver
+                        production_stage['checkout_type'] = 'tag'
+                        production_stage['note'] = '# TODO: Stable ver'
+                    else:
+                        # Set the latest version
+                        production_stage['prev_ver'] = prev_ver
+                        production_stage['checkout'] = latest_tag
+                        production_stage['checkout_type'] = 'tag'
+    
+            # Write the updated manifest back to the file
+            with open(manifest_path, 'w') as file:
+                yaml.dump(manifest, file)
+    
+            print("Manifest updated successfully.")
+    
+        except Exception as e:
+            print(f"Error updating manifest: {e}")
+    
+    
     # -- INIT --------------------------------------------------------------------------------------------- 
 
     # READONLY TESTER STARTS HERE >>
