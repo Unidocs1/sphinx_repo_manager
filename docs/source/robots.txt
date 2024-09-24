@@ -7,4 +7,4 @@ Allow: /sitemap.xml
 
 Disallow: /
 
-Sitemap: https://docs.xsolla.cloud/sitemap.xml
+Sitemap: https://docs.goxbe.io/sitemap.xml

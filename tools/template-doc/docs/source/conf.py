@@ -118,13 +118,13 @@ pygments_style = "sphinx"
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
-html_logo = 'https://docs.xsolla.cloud/en/latest/_static/logo.png'
-html_favicon = 'https://docs.xsolla.cloud/en/latest/_static/favicon.ico'
+html_logo = 'https://docs.goxbe.io/en/latest/_static/logo.png'
+html_favicon = 'https://docs.goxbe.io/en/latest/_static/favicon.ico'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme_options = {
-    'canonical_url': 'https://docs.xsolla.cloud',
+    'canonical_url': 'https://docs.goxbe.io',
     'analytics_id': 'UA-136672390-2',  # Provided by Google in your dashboard
     'logo_only': True,
     'display_version': True,

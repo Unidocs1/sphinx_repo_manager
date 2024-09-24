@@ -1,4 +1,4 @@
-# xbe_docs (docs.xsolla.cloud)
+# xbe_docs (docs.goxbe.io)
 
 Master doc to create help docs from other repos with `make html` (`sphinx-build`). 
 

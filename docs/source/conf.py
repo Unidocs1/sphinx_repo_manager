@@ -144,12 +144,12 @@ highlight_language = "cpp"
 # For embed preview info, such as when link is dropped into Discord/FB.
 # https://github.com/wpilibsuite/sphinxext-opengraph?tab=readme-ov-file#options
 
-ogp_site_url = "https://docs.xsolla.cloud/"  # Full https:// url with lingering slash/
+ogp_site_url = "https://docs.goxbe.io/"  # Full https:// url with lingering slash/
 ogp_use_first_image = False  # We want to always use our consistent banner; we can potentially per-page override this
 ogp_title = project  # "XBE Docs"
 
 # EXTERNAL og:banner @ 1200x630 (minimized) url; TODO: Change this to /latest next patch
-ogp_image = 'https://docs.xsolla.cloud/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png'
+ogp_image = 'https://docs.goxbe.io/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png'
 
 ogp_custom_meta_tags = [
     # Image
@@ -159,7 +159,7 @@ ogp_custom_meta_tags = [
     # '<meta name="description" content="The most complete online gaming platform">',
 
     # FB
-    '<meta property="og:url" content="https://docs.xsolla.cloud/">'
+    '<meta property="og:url" content="https://docs.goxbe.io/">'
     '<meta property="og:type" content="website">',
     # f'<meta property="og:title" content="{project}">',
     # f'<meta property="og:description" content={ogp_description}>',
@@ -167,8 +167,8 @@ ogp_custom_meta_tags = [
 
     # Twitter / X
     '<meta name="twitter:card" content="summary_large_image">',
-    '<meta property="twitter:domain" content="docs.xsolla.cloud">',
-    '<meta property="twitter:url" content="https://docs.xsolla.cloud/">',
+    '<meta property="twitter:domain" content="docs.goxbe.io">',
+    '<meta property="twitter:url" content="https://docs.goxbe.io/">',
     # '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
     # '<meta name="twitter:description" content="The most complete online gaming platform">',
     # '<meta name="twitter:image" content="https://external/link.png">',
@@ -344,7 +344,7 @@ html_theme_options = {
         {
             "name": "API Docs",
             "url": (
-                    "https://docs.xsolla.cloud/en/"
+                    "https://docs.goxbe.io/en/"
                     + ("latest" if manifest_stage_is_production else "dev")
                     + "/content/-/api/index.html"
             ),
