@@ -1,6 +1,5 @@
 :og:title: Welcome to Xsolla Backend
 :og:description: Xsolla Backend is a powerful backend engine for building highly-scalable online games and entertainment products - pay only 5% for unlimited support and enterprise features.
-:og:image: /_static/images/_local/xbe-banner-og-1200x630.min.png
 
 .. meta::
    :description: Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment products covering a robust set of features - pay only 5% for unlimited support and enterprise features

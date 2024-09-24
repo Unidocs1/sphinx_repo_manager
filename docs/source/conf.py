@@ -22,7 +22,7 @@ load_dotenv()
 project = 'XBE Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = 'v2024.07.0'
+release = 'v2024.08.0'
 version = release  # Used by some extensions
 
 # This should likely match your branch name:
