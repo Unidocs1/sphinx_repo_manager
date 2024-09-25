@@ -255,10 +255,10 @@ repositories:
       checkout_type: 'tag'
   # Tools >>
   vscode-scripts-scm:
-    url: 'https://source.goxbe.io/Core/tools/vscode-scripts-scm/'
+    url: 'https://source.goxbe.io/Core/tools/vscode-scripts-scm'
     production_stage:
       prev_ver: 'v2.2.2'
-      checkout: 'v2.2.2'
+      checkout: 'v3.0.1'
       checkout_type: 'tag'
   # Other Products/Apps >>
   service_monitor:
