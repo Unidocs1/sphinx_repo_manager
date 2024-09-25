@@ -99,11 +99,11 @@ repositories:
     url: 'https://source.goxbe.io/Core/xbe_static_docs'
     symlink_path: '-'  # Shortened to prevent bloaty url slugs for static, unversioned content
     #dev_stage:
-    #  checkout: 'feat/v2024.07.0'
+    #  checkout: 'feat/v2024.08.0'
     #  checkout_type: 'branch'
     production_stage:
       prev_ver: 'v2024.07.0'
-      checkout: 'v2024.07.0'
+      checkout: 'v2024.08.0'
       checkout_type: 'tag'
   # Components (formerly called Services) >>
   account_services:
