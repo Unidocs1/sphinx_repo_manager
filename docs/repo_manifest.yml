@@ -243,7 +243,7 @@ repositories:
     url: 'https://source.goxbe.io/Core/sdk/sdk_unity'
     production_stage:
       prev_ver: 'v3.0.0'
-      checkout: 'v4.0.0'  # TODO: Tag found, but this will fail (!docs); needs update merged from dev
+      checkout: 'v4.0.0'
       checkout_type: 'tag'
     repo_sparse_path_override: 'Documentation~'
     init_clone_path_root_symlink_src_override: '{repo_sparse_path}/source/content'
@@ -284,13 +284,13 @@ repositories:
     url: 'https://source.goxbe.io/Core/samples/unitychessgame'
     production_stage:
       prev_ver: 'v1.0.0-Unity2022_3_11'
-      checkout: 'v1.0.0-Unity2022_3_11'  # TODO: Mv branch to `master`?
+      checkout: 'v1.0.1-Unity2022_3_11'
       checkout_type: 'tag'
   lyrastartergame:
     url: 'https://source.goxbe.io/Core/samples/lyrastartergame'
     production_stage:
       prev_ver: 'v2.0.0-Unreal5_4_3'
-      checkout: 'v2.0.0-Unreal5_4_3'
+      checkout: 'v2.1.0-Unreal5_4_3'
       checkout_type: 'tag'
 
 ############################################

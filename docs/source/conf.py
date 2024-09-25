@@ -192,7 +192,7 @@ def copy_open_graph_img_to_build(app, exception):
 # Remove specific toctrees from the sidebar; supports wildcards
 
 remove_from_toctrees = [
-    "content/-/welcome/release_notes/current/component_updates-partial.rst",
+    # "content/-/welcome/release_notes/current/service_updates-partial.rst",
 ]
 
 # -- Sphinx Extension: sphinxcontrib-sass ----------------------------------
