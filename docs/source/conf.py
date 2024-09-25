@@ -24,6 +24,7 @@ copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
 release = 'v2024.08.0'
 version = release  # Used by some extensions
+html_context = {}  # html_context.update({}) to pass data to extensions & themes
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -51,10 +52,15 @@ sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_craw
 
 # Check if we're running on Read the Docs' servers
 is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
+
 fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
 
 rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
 rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
+
+# Set canonical URL from the Read the Docs Domain
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+html_context["READTHEDOCS"] = is_read_the_docs_build
 
 
 # -- Inline extensions -------------------------------------------------------
@@ -86,8 +92,6 @@ repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
-html_context = {}  # html_context.update({}) to pass data to extensions & themes
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
