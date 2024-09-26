@@ -11,6 +11,10 @@ import os
 import shutil  # Path utils like copy
 import sys
 from pathlib import Path  # Path manipulation/normalization; allows / slashes for path
+from dotenv import load_dotenv
+
+# Load the .env file
+load_dotenv()
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -18,7 +22,9 @@ from pathlib import Path  # Path manipulation/normalization; allows / slashes fo
 project = 'XBE Docs'
 copyright = 'Xsolla (USA), Inc. All rights reserved'
 author = 'Xsolla'
-release = 'v2024.07.0'
+release = 'v2024.08.0'
+version = release  # Used by some extensions
+html_context = {}  # html_context.update({}) to pass data to extensions & themes
 
 # This should likely match your branch name:
 # - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
@@ -31,28 +37,35 @@ release = 'v2024.07.0'
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-sys.path.insert(0, os.path.abspath(''))
-
-# -- ReadTheDocs (RTD) Config ------------------------------------------------
-
-# Check if we're running on Read the Docs' servers
-read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
-fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
-
 # The absolute path to the directory containing conf.py.
 documentation_root = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath(''))
 
+# Paths to local extensions
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_repo_manager')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_feature_flags')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
-sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
+
+# -- ReadTheDocs (RTD) Config ------------------------------------------------
+
+# Check if we're running on Read the Docs' servers
+is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
+
+fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
+
+rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
+rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
+
+# Set canonical URL from the Read the Docs Domain
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+html_context["READTHEDOCS"] = is_read_the_docs_build
 
 
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
-    app.add_css_file(os.path.normpath('styles/main.css'))  # Allow for custom styling
     app.connect('build-finished', copy_open_graph_img_to_build)
 
 
@@ -68,21 +81,25 @@ repo_manager = SphinxRepoManager(manifest_path)
 manifest = repo_manager.read_normalize_manifest()
 
 # Extract common props
-repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
-print(f'[conf.py::repo_manifest.yml] Num repos found: {len(repos)}')
+manifest_stage = manifest['stage']  # 'dev_stage' or 'prod_stage'
+manifest_stage_is_production = manifest_stage == 'prod_stage'
+manifest_repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
+print(f'[conf.py::repo_manifest.yml] Num repos found: {len(manifest_repos)}')
 
 # TODO: Use these below for dynamic info pulled from repo_manifest.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
 repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
 
 # -- General configuration ---------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-
-html_context = {}  # html_context.update({}) to pass data to extensions & themes
 extensions = [
-    'myst_parser',  # recommonmark successor
-    'sphinx_tabs.tabs',
+    'myst_parser',  # recommonmark successor, auto-parsing .md to .rst (skips READMEs)
+    'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
+    'sphinx_tabs.tabs',  # Add tabs to code blocks | https://sphinx-tabs.readthedocs.io/en/latest
+    'sphinx_algolia_crawler',  # Our own custom extension to crawl our build site for our AI-powered search indexing
     'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
     'sphinx_image_min',  # Our own custom extension to minimizer images after build from build/ dir (set to CI only)
@@ -90,8 +107,11 @@ extensions = [
     'sphinx_new_tab_link',  # https://pypi.org/project/sphinx-new-tab-link
     'sphinx_copybutton',  # https://pypi.org/project/sphinx-copybutton
     'sphinxcontrib.redoc',  # Converts OpenAPI spec json files into API docs
+    'sphinxcontrib.sass',  # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass
     'sphinx.ext.todo',  # Allows for todo:: directive 
     'sphinxext.opengraph',  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
+    'sphinx_design',  # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html 
+    'sphinx_remove_toctrees',  # Remove specific toctrees | https://pypi.org/project/sphinx-remove-toctrees
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -106,7 +126,7 @@ exclude_patterns = [
     '**/build',
     '**/_recycling_bin',  # Deprecated files organized together
     '**/.DS_Store',
-    '**/README.*',
+    '**/README*',
     '**/requirements.txt',
     '**/Thumbs.db',
     '**/venv',
@@ -128,12 +148,12 @@ highlight_language = "cpp"
 # For embed preview info, such as when link is dropped into Discord/FB.
 # https://github.com/wpilibsuite/sphinxext-opengraph?tab=readme-ov-file#options
 
-ogp_site_url = "https://docs.xsolla.cloud/"  # Full https:// url with lingering slash/
+ogp_site_url = "https://docs.goxbe.io/"  # Full https:// url with lingering slash/
 ogp_use_first_image = False  # We want to always use our consistent banner; we can potentially per-page override this
 ogp_title = project  # "XBE Docs"
 
 # EXTERNAL og:banner @ 1200x630 (minimized) url; TODO: Change this to /latest next patch
-ogp_image = 'https://docs.xsolla.cloud/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png'
+ogp_image = 'https://docs.goxbe.io/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png'
 
 ogp_custom_meta_tags = [
     # Image
@@ -143,7 +163,7 @@ ogp_custom_meta_tags = [
     # '<meta name="description" content="The most complete online gaming platform">',
 
     # FB
-    '<meta property="og:url" content="https://docs.xsolla.cloud/">'
+    '<meta property="og:url" content="https://docs.goxbe.io/">'
     '<meta property="og:type" content="website">',
     # f'<meta property="og:title" content="{project}">',
     # f'<meta property="og:description" content={ogp_description}>',
@@ -151,8 +171,8 @@ ogp_custom_meta_tags = [
 
     # Twitter / X
     '<meta name="twitter:card" content="summary_large_image">',
-    '<meta property="twitter:domain" content="docs.xsolla.cloud">',
-    '<meta property="twitter:url" content="https://docs.xsolla.cloud/">',
+    '<meta property="twitter:domain" content="docs.goxbe.io">',
+    '<meta property="twitter:url" content="https://docs.goxbe.io/">',
     # '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
     # '<meta name="twitter:description" content="The most complete online gaming platform">',
     # '<meta name="twitter:image" content="https://external/link.png">',
@@ -172,25 +192,50 @@ def copy_open_graph_img_to_build(app, exception):
     print('Done.\n')
 
 
-# -- Sphinx Extension: Image Minimizer --------------------------------
+# -- Sphinx Extension: sphinx-remove-toctrees ------------------------------
+# Remove specific toctrees from the sidebar; supports wildcards
+
+remove_from_toctrees = [
+    # "content/-/welcome/release_notes/current/service_updates-partial.rst",
+]
+
+# -- Sphinx Extension: sphinxcontrib-sass ----------------------------------
+# SCSS->CSS; doc | https://pypi.org/project/sphinxcontrib-sass
+
+sass_targets = {
+    "main.scss": "main.css",
+    "redoc.scss": "redoc.css",
+    "algolia.scss": "algolia.css",
+}
+sass_src_dir = "_static/styles/sass"
+sass_out_dir = "_static/styles/css"
+
+# -- Sphinx Extension: sphinx_image_min -----------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
 
 # Configuration for the image optimizer extension
-img_optimization_enabled = bool(read_the_docs_build)
+img_optimization_enabled = bool(is_read_the_docs_build)
 img_optimization_max_width = 1920
+
+# -- OpenAPI Shared: Used in multiple extensions --------------------------
+
+openapi_dir_path = os.path.abspath(os.path.join('_static', 'specs'))  # Downloads json|yaml files to here
+
+# Link here from rst with explicit ".html" ext (!) but NOT from a doctree
+openapi_generated_file_posix_path = Path(os.path.join(
+    'content', '-', 'api', 'index')).as_posix()  # Parses to forward/slashes/
 
 # -- Extension: sphinx_openapi (OpenAPI Local Download/Updater) -----------
 # Used in combination with the sphinxcontrib.redoc extension
 # Use OpenAPI ext to download/update -> redoc ext to generate
 
 # Define the target json|yaml + path to save the downloaded OpenAPI spec
-openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'
-openapi_dir_path = os.path.abspath(os.path.join('_specs'))  # Downloads json|yaml files to here
-openapi_file_type = 'json'  # 'json' or 'yaml' (we'll download them both, but generate from only 1)
+openapi_spec_url_noext = 'https://api.demo.goxbe.cloud/v1/openapi'
+sys.path.append(openapi_dir_path)  # TODO: Is this redundant?
 
-# Link here from rst with explicit ".html" ext (!) but NOT from a doctree
-openapi_generated_file_posix_path = Path(os.path.join(
-    'content', '-', 'api', 'index')).as_posix()  # Parses to forward/slashes/
+# 'json' or 'yaml' (we'll download them both, but generate from only 1)
+# (!) Currently, only json is fully functional and, additionally, supports preprocessing in the ext
+openapi_file_type = 'json'
 
 # Set the config values for the extension
 html_context.update({
@@ -200,36 +245,30 @@ html_context.update({
     'openapi_file_type': openapi_file_type,
 })
 
-# -- Extension: sphinx.ext.todo ------------------------------------------
-# Support for `todo` directive, passing it during sphinx builds
-# https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
-
-todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
-todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
-todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
-
 # -- Extension: sphinxcontrib.redoc --------------------------------------
 # OpenAPI Docgen: Similar to sphinxcontrib-openapi, but +1 column for example responses
 # (!) Prereq: OpenAPI Local Download (above)
 # Doc | https://sphinxcontrib-redoc.readthedocs.io/en/stable
 # Demo | https://sphinxcontrib-redoc.readthedocs.io/en/stable/api/github/
 
-# Intentional forward/slashes/ for html; eg: "_specs/openapi.json"
+# (!) Works around a critical bug that default grabs old 1.x ver (that !supports OpenAPI 3+)
+redoc_uri = 'https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'
+
+# Intentional forward/slashes/ for html; eg: "_static/specs/openapi.json"
 xbe_spec = openapi_dir_path + '/openapi.json'
-github_demo_spec = openapi_dir_path + '/github-demo.yml'
 
 redoc = [
     {
         'name': 'Xsolla Backend API',
         'page': openapi_generated_file_posix_path,  # content/-/api/index
-        # 'spec': '_specs/openapi.json',  # (!) Ours Currently won't build due to errs: `/components/schemas/ACLRecordMongo". Token "ACLRecordMongo" does not exist`
-        'spec': github_demo_spec,  # DELETE ME AFTER DONE WITH TESTS!
+        'spec': '_static/specs/openapi.json',
         'embed': True,  # Local file only (!) but embed is less powerful
+        'template': '_templates/redoc.j2',
         'opts': {
             'lazy-rendering': True,  # Formerly called `lazy`; almost required for giant docs
             'required-props-first': True,  # Useful, (!) but slower
             'native-scrollbars': False,  # Improves perf on big specs when False
-            'expand-responses': ["200", "201"],
+            'expand-responses': [],  # "200", "201",
             'suppress-warnings': False,
             'hide-hostname': False,
             'untrusted-spec': False,
@@ -237,9 +276,17 @@ redoc = [
     },
 ]
 
-print(f'[conf.py::sphinxcontrib.redoc] redoc[0].page: {redoc[0]["page"]}')
-print(f'[conf.py::sphinxcontrib.redoc] redoc[0].spec: {redoc[0]["spec"]}')
+print(f'[conf.py::sphinxcontrib.redoc] Build from redoc[0].spec: {redoc[0]["spec"]}')
+print(f'[conf.py::sphinxcontrib.redoc] Displaying at redoc[0].page: {redoc[0]["page"]}')
 print('')
+
+# -- Extension: sphinx.ext.todo ------------------------------------------
+# Support for `todo` directive, passing it during sphinx builds
+# https://www.sphinx-doc.org/en/master/usage/extensions/todo.html
+
+todo_include_todos = False  # If this is True, todo and todolist produce output, else they produce nothing. The default is False.
+todo_emit_warnings = False  # If this is True, todo emits a warning for each TODO entries. The default is False.
+todo_link_only = False  # If this is True, todolist produce output without file path and line, The default is False.
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -257,32 +304,39 @@ pygments_style = "monokai"
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
 html_static_path = ['_static']
 
+html_css_files = [
+    'styles/css/main.css',
+    # 'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
+    'styles/css/algolia.css',
+]
+
+html_js_files = [
+    # 'https://cdn.jsdelivr.net/npm/@docsearch/js@3',
+    ('js/algolia.js', {'defer': 'defer'}),
+]
+
 html_logo = '_static/images/_local/logo.png'
 html_favicon = '_static/images/_local/favicon.ico'
 
+html_context.update({
+    # SPHINX BOOK THEME (based on Sphinx PyData theme) >>
+    # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/light-dark.html#configure-default-theme-mode
+    'default_mode': 'dark',
+})
+
 # The theme to use for HTML and HTML Help pages
 html_theme_options = {
-    # # RTD THEME (DEPRECATED) >>
-    # 'nav_title': project,  # Appears in opengraph metadata, meta title & top breadcrumbs
-    # 'base_url': 'https://docs.xsolla.cloud/',
-    # 'color_primary': 'blue', 
-    # 'color_accent': 'light-blue',
-    # 'repo_url': 'https://gitlab.acceleratxr.com/Core/acceleratxr.io/',
-    # 'repo_name': 'acceleratxr.io',
-    # 'globaltoc_depth': 2,  # Visible levels of the global TOC; Default: 2
-    # 'globaltoc_collapse': False,  # Expand the global TOC by default
-    # 'globaltoc_includehidden': True,  # Show the TOC in the sidebar
-    # 'master_doc': 'index', # Set the master doc for the project
-
-    # BOOK THEME >>
+    # Use OS light/dark theme prefs? https://pydata-sphinx-theme.readthedocs.io/en/latest/user_guide/light-dark.html
     'show_toc_level': 2,
+    'show_nav_level': 1,  # Collapsable toctree :caption:
+    "max_navbar_depth": 2,
+    "show_navbar_depth": 1,  # How deep should we initially auto-expand the left navbar?
+    "collapse_navbar": 1,  # 1 == collapse the initial homepage navbar, stopping the tree from being expanded
     'home_page_in_toc': False,
     "path_to_docs": "docs/source/",
     "repository_provider": "gitlab",
-    "repository_url": "https://gitlab.acceleratxr.com/Core/acceleratxr.io",
+    "repository_url": "https://source.goxbe.io/Core/xbe_docs",
     "repository_branch": "main",
-    "max_navbar_depth": 2,
-    "show_navbar_depth": 1,  # Gow deep should we initially auto-expand the left navbar?
     "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
     "pygments_light_style": "monokai",  # May get overwritten by pygments_style
     "use_fullscreen_button": False,  # Redundant in modern browsers
@@ -292,22 +346,26 @@ html_theme_options = {
     "use_issues_button": True,
     "icon_links": [  # TODO: Perhaps add something from https://shields.io ?
         {
+            "name": "API Docs",
+            "url": (
+                    "https://docs.goxbe.io/en/"
+                    + ("latest" if manifest_stage_is_production else "dev")
+                    + "/content/-/api/index.html"
+            ),
+            "icon": "fa-solid fa-book-open",
+            "attributes": {"target": "_self"},
+        },
+        {
             "name": "Discord",
             "url": "https://discord.gg/XsollaBackend",
             "icon": "fa-brands fa-discord",
-            "attributes": {"target": "_blank"},
+            "attributes": {"target": "_blank"},  # Blank target seems to be default
         },
     ],
     "article_header_end": [
         "navbar-icon-links",
         "article-header-buttons",
     ],
-
-    # TODO: Awaiting API keys (submitted; reqs manual approval)
-    # "algolia": {  # book
-    #     "api_key": "your_algolia_api_key",
-    #     "index_name": "your_index_name",
-    # },
 }
 
 html_sidebars = {
@@ -325,15 +383,51 @@ html_sidebars = {
 html_context.update({
     # Edit on GitLab >>
     'display_gitlab': True,  # Integrate Gitlab
-    'gitlab_host': 'gitlab.acceleratxr.com',
+    'gitlab_host': 'source.goxbe.io',
     'gitlab_user': 'Core',  # Group
-    'gitlab_repo': 'acceleratxr.io',  # Repo name
+    'gitlab_repo': 'xbe_docs',  # Repo name
     'conf_py_path': '/docs/source/',  # /path/to/docs/source (containing conf.py)
     'gitlab_version': 'master',  # Version
     'doc_path': 'docs/source',
 })
 
 source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
+
+# -- Sphinx Extension: Algolia Crawler ----------------------------------------------------------------------------
+# Crawling is *slow* and temporarily takes search offline while reindexing: Only trigger @ RTD /latest prod build
+# (!) /dev builds can be manually triggered: Use `sphinx_algolia_crawler.py` standalone or see root proj .env.template
+
+algolia_crawler_enabled = rtd_version_is_latest
+
+# -- Sphinx Extension: sphinxext_docsearch ------------------------------------------------------------------------
+# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
+
+algolia_docsearch_app_id_dev = "DBTSGB2DXO"
+algolia_docsearch_app_id_prod = "CKS2O35GXS"
+
+docsearch_app_id = algolia_docsearch_app_id_prod if manifest_stage_is_production \
+    else algolia_docsearch_app_id_dev
+
+# Which index to select? 'dev_stage' or 'production_stage' (None skips extension)
+docsearch_index_name = "xsolla"  # From Algolia dash "Data Sources" -> "Indices"
+
+# Public read key
+docsearch_api_key_dev = "a98b6eb7635b38887be38212d12318fa"
+docsearch_api_key_prod = "4ebb45dbcdd78f224f1b24c28ba7fd9e"
+docsearch_api_key = docsearch_api_key_prod if manifest_stage_is_production \
+    else docsearch_api_key_dev
+
+# docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
+docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
+
+docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
+                                 f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}")
+
+html_context.update({
+    "docsearch_app_id": docsearch_app_id,
+    "docsearch_api_key": docsearch_api_key,
+    "docsearch_index_name": docsearch_index_name,
+})
 
 # -- MyST configuration ------------------------------------------------------
 # Recommonmark successor to auto-parse .md to .rst
@@ -349,6 +443,10 @@ myst_enable_extensions = [
     "replacements",  # Enable replacements syntax
     "strikethrough",  # Enable strikethrough syntax
     "tasklist",  # Enable task list syntax
+
+    # Recommended for use with sphinx_design. Doc | https://sphinx-design.readthedocs.io/en/latest/get_started.html
+    # Ext | https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
+    "colon_fence",
 ]
 
 # -- Feature Flags -----------------------------------------------------------
@@ -366,7 +464,7 @@ myst_enable_extensions = [
 
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'production-stage': read_the_docs_build or fallback_to_production_stage_if_not_rtd,
+    'production-stage': is_read_the_docs_build or fallback_to_production_stage_if_not_rtd,
 
     # True: [Navbar, Docs] Create Acct -> AXR pricing si te
     # False: New login page @ https://xsolla.cloud 
@@ -376,8 +474,12 @@ feature_flags = {
     'welcome-release_notes-products_web_apps-libs': False,
 
     # True: Show new openapi docs & hide old ones - False: Hide new openapi docs, show placeholders
-    'new-xbe-openapi-doc': False,
+    'new-xbe-openapi-doc': True,
 }
 
-# -- Append rst_epilog to the bottom of *every* doc file ---------------------
-# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
+# -- Globally declare replacement items at the top of *every* doc file -------------
+# (!) These do not work in toctrees
+
+rst_prolog = """
+.. |docs-wip| replace:: :bdg-info-line:`Docs WIP`
+"""

@@ -1,6 +1,6 @@
 # %REPO_NAME%/docs (Single Doc)
 
-Single doc - a content fragment of [the master doc](https://gitlab.acceleratxr.com/Core/acceleratxr.io) - is used to create help docs with `make html` (`sphinx-build`). 
+Single doc - a content fragment of [the master doc](https://source.goxbe.io/Core/xbe_docs) - is used to create help docs with `make html` (`sphinx-build`). 
 
 The master doc will pull this repo's root `docs/` dir and use this as part of the content into a single doc.
 

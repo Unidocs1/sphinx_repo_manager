@@ -6,3 +6,4 @@
 esbonio
 lsp_devtools
 rstcheck
+pytest  # For tools/production_prep

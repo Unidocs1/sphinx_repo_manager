@@ -22,7 +22,7 @@ extensions = ['sphinx_openapi', 'sphinxcontrib.redoc']
 # Use OpenAPI ext to download/update -> redoc ext to generate
 
 # Define the target json|yaml + path to save the downloaded OpenAPI spec
-openapi_spec_url_noext = 'https://api.dev.xbe.xsolla.cloud/v1/openapi'
+openapi_spec_url_noext = 'https://api.demo.goxbe.cloud/v1/openapi'
 openapi_dir_path = '_specs'  # Downloads json|yaml files to here
 openapi_file_type = 'json'  # 'json' or 'yaml' (we'll download them both, but generate from only 1)
 
@@ -44,7 +44,7 @@ html_context.update({
 # Doc | https://sphinxcontrib-redoc.readthedocs.io/en/stable
 # Demo | https://sphinxcontrib-redoc.readthedocs.io/en/stable/api/github/
 
-# Intentional forward/slashes/ for html; eg: "_specs/openapi.json"
+# Intentional forward/slashes/ for html; eg: "_static/specs/openapi.json"
 xbe_spec = openapi_dir_path + '/openapi.json'
 github_demo_spec = openapi_dir_path + '/github-demo.yml'
 
@@ -52,7 +52,7 @@ redoc = [
     {
         'name': 'Xsolla Backend API',
         'page': openapi_generated_file_posix_path,  # content/-/api/index
-        # 'spec': '_specs/openapi.json',  # (!) Ours Currently won't build due to errs: `/components/schemas/ACLRecordMongo". Token "ACLRecordMongo" does not exist`
+        # 'spec': '_static/specs/openapi.json',  # (!) Ours Currently won't build due to errs: `/components/schemas/ACLRecordMongo". Token "ACLRecordMongo" does not exist`
         'spec': github_demo_spec,  # DELETE ME AFTER DONE WITH TESTS!
         'embed': True,  # Local file only (!) but embed is less powerful
         'opts': {

@@ -1,4 +1,4 @@
-# acceleratxr.io (Master Doc)
+# xbe_docs (docs.goxbe.io)
 
 Master doc to create help docs from other repos with `make html` (`sphinx-build`). 
 
@@ -9,7 +9,7 @@ This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubun
 1. Configure `docs/repo_manifest.yaml` (ok to leave defaults)
 2. Copy `.env.template` -> to `.env` and set `GITLAB_ACCESS_TOKEN`
 3. Run `start-docker.ps1` (or `make html` at `docs/`)
-4. Upon success, your browser will launch with `index.html` and stop the Docker instance.
+4. Upon success, your browser will launch with `index.html` and~~~~ stop the Docker instance.
 
 ## Prerequisites
 

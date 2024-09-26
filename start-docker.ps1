@@ -3,19 +3,26 @@
 # 2. Launches index.html (comment this out if you !want)
 # 3. Stops Docker
 # --------------------------------
-# (!) As an alternative to Docker:
-# 1. Run tools/requirements-install.ps1
-# 2. Run docs/make.bat
+# (!) Legacy alternative to Docker:
+# 1. Install Python 3.10
+# 2. Run tools/requirements-install.ps1
+# 3. Run docs/make.bat
 #############################################################
-docker compose -f ./docker/docker-compose.yaml up --build
-docker compose -f ./docker/docker-compose.yaml down
 
-$index = "./docs/build/html/index.html"
-Write-Output "Launching '${index}'"
-Start-Process $index
+# --abort-on-container-exit is for 1-shot Docker builds like our purpose of sphinx-building
+docker compose -f ./docker/docker-compose.yaml build
+$dockerExitCode = docker compose -f ./docker/docker-compose-preview.yaml up --build; $LASTEXITCODE
 
-Write-Output "Stopping Docker..."
-docker compose -f ./docker/docker-compose.yaml down
+if ($dockerExitCode -eq 0) {
+    $index = "./docs/build/html/index.html"
+    Write-Output "Launching '${index}'"
+    Start-Process $index
+} else {
+    Write-Output "Docker encountered an error, not launching index.html"
+}
+
+#Write-Output "Stopping Docker and cleaning up (comment this out for speedier iterations at the cost of storage)..."
+#docker compose -f ./docker/docker-compose.yaml down
 
 Write-Host "Press any key to quit (when done reviewing logs)"
 [void][System.Console]::ReadKey($true)

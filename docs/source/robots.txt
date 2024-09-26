@@ -1,6 +1,10 @@
-User-agent: *
+User-agent: Algolia Crawler
+Allow: /
 
+User-agent: *
 Allow: /en/latest/
+Allow: /sitemap.xml
+
 Disallow: /
 
-Sitemap: https://docs.xsolla.cloud/sitemap.xml
+Sitemap: https://docs.goxbe.io/sitemap.xml

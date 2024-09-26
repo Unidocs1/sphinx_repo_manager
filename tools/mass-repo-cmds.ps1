@@ -15,7 +15,7 @@ $MASTER_MAIN_BRANCH_PROTECTION = $true  # Fail on master || main branch
 function Run-CustomCmds {
     # Add your custom commands here, for example:
     #git add .
-    #git commit -m "doc(fix): Foo" -m "[XBND-123]"
+    #git commit -m "docs(fix): Foo" -m "[XBND-123]"
     #git pull
     #git push
 }
@@ -63,8 +63,7 @@ function Main {
         # Resolve the full path of the repos directory
         $resolvedReposDir = Resolve-Path $REPOS_AVAIL_DIR
         Set-Location $resolvedReposDir
-        Write-Output "BASE DIR:"
-        pwd
+        Write-Output "BASE DIR: $(pwd)"
 
         # Find all git repositories recursively
         $gitRepositories = Find-GitRepos -rootDir $resolvedReposDir

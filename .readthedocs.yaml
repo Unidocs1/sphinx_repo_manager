@@ -15,11 +15,11 @@ build:
         if [ -z "$GITLAB_ACCESS_TOKEN" ]; then
           echo "[GITLAB_ACCESS_TOKEN] Not set. Skipping access token injection."
         else
-          echo "[GITLAB_ACCESS_TOKEN] Injecting GitLab access token into the repository URL..."
-          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.acceleratxr.com/".insteadOf "https://gitlab.acceleratxr.com/"
-          echo "Verifying the URL swap..."
-          # Verify by using git to clone a small repo or fetch info
-          git ls-remote https://gitlab.acceleratxr.com/Core/acceleratxr.io.git || { echo "GITLAB_ACCESS_TOKEN_ URL swap verification failed: Bad perms? Expired?"; exit 1; }
+          echo "[GITLAB_ACCESS_TOKEN] Injecting GitLab access token into the repository URLs..."
+          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@source.goxbe.io/".insteadOf "https://source.goxbe.io/"
+
+          echo "Verifying the URL swaps (for source.goxbe.io)..."
+          git ls-remote https://source.goxbe.io/Core/xbe_docs.git || { echo "GITLAB_ACCESS_TOKEN_ new URL swap verification failed: Bad perms? Expired?"; exit 1; }
         fi
     post_build:
       - |

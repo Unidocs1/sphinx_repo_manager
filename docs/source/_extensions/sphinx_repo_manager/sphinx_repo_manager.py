@@ -64,6 +64,9 @@ class RepositoryManagementError(Exception):
 # RepoManager class to handle repository operations
 class SphinxRepoManager:
     def __init__(self, abs_manifest_path):
+        self.start_time = time.time()  # Track how long it takes to build all repos
+        self.end_time = None
+
         self.read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
         self.manifest_path = abs_manifest_path
         self.manifest = None
@@ -190,7 +193,7 @@ class SphinxRepoManager:
         """ (!) Global manifest changes should be +1 up; not here (where it's an individual repo). """
         if '_meta' not in repo_info:
             repo_info['_meta'] = {
-                'url_dotgit': '',  # eg: "https://gitlab.acceleratxr.com/core/account_services.git"
+                'url_dotgit': '',  # eg: "https://source.goxbe.io/core/account_services.git"
                 'repo_name': '',  # eg: "account_services"
                 'has_tag': False,
                 'selected_repo_stage_info': {},  # { checkout, checkout_type }
@@ -235,7 +238,7 @@ class SphinxRepoManager:
         selected_stage_checkout_branch_or_tag_name = selected_repo_stage_info['checkout']  # Defaults to 'master'
         selected_stage_checkout_type = selected_repo_stage_info['checkout_type']  # 'branch' or 'tag'
         has_tag = selected_stage_checkout_type == 'tag'
-        
+
         # Sanity check tag -- in XBE, we prefix with `v`
         if has_tag and not selected_stage_checkout_branch_or_tag_name.startswith('v'):
             print(f'{colorize_error(brighten("*[REALTIME]"))} tag \'{selected_stage_checkout_branch_or_tag_name}\' '
@@ -801,6 +804,14 @@ class SphinxRepoManager:
 
         return True  # enabled
 
+    def log_end_build_time(self):
+        """ Call when done building to set end_time and log calc from start_time. """
+        self.end_time = time.time()
+        elapsed_time = self.end_time - self.start_time
+        minutes, seconds = divmod(elapsed_time, 60)
+        time_str = f"{int(minutes)}m{int(seconds)}s"
+        logger.info(colorize_success(f'Build time: {brighten(time_str)}'))
+
     def main(self, app):
         """
         Handle the repository cloning and updating process when Sphinx initializes.
@@ -808,7 +819,6 @@ class SphinxRepoManager:
         - Initialize the directory tree skeleton
         - Manage the repositories (cloning, updating, and symlinking)
         """
-        start_time = time.time()  # Track how long it takes to build all repos
         try:
             manifest = self.get_normalized_manifest()
             enabled = self.check_is_enabled_ext(manifest)
@@ -816,18 +826,14 @@ class SphinxRepoManager:
                 return  # Skip this extension
 
             self.manage_repositories(manifest)
+            self.log_end_build_time()
+
             if self.debug_mode and not self.read_the_docs_build:
                 raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
         except Exception as e:
             self.shutdown_flag = True  # Signal shutdown to other threads
             raise RepositoryManagementError(f"\nsphinx_repo_manager failure: {e}")
         finally:
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            minutes, seconds = divmod(elapsed_time, 60)
-            time_str = f"{int(minutes)}m{int(seconds)}s"
-            logger.info(colorize_success(f'Build time: {brighten(time_str)}'))
-
             if self.shutdown_flag:
                 repo_name_hint = f" Find '{brighten(self.errored_repo_name)}' error logs above ^" \
                     if self.errored_repo_name else ""
@@ -915,7 +921,7 @@ class SphinxRepoManager:
         else:
             log_entries.append(colorize_warning(f"  - (2) No RELEASE_NOTES.rst found in source repo."))
 
-    def repo_add_symlink3_static_dir(
+    def repo_add_symlink3_static_images_dir(
             self,
             tag_versioned_clone_src_repo_name,
             abs_clone_src_nested_path,
@@ -925,7 +931,7 @@ class SphinxRepoManager:
             rel_selected_repo_sparse_path,
             log_entries,
     ):
-        # (3) Symlink _static/{repo_name} -> to main doc _static/
+        # (3) Symlink _static/images/{repo_name} -> to main doc
         action_str = colorize_action(f"Symlinking '_static/images/{repo_name}'...")
         log_entries.append(f"🔗 [{tag_versioned_clone_src_repo_name}] {action_str}")
 
@@ -951,7 +957,63 @@ class SphinxRepoManager:
 
         # source/_static/{repo_name}; eg: "source/_static/images/account_services"
         target_symlinked_static_dir_path = os.path.join(ABS_SOURCE_STATIC_DIR, 'images', repo_name)
+        log_entries.append(colorize_path(f"  - To symlink path: "
+                                         f"'{brighten(target_symlinked_static_dir_path)}'"))
 
+        try:
+            self.create_symlink(
+                abs_repo_static_dir_path,
+                target_symlinked_static_dir_path,
+                log_entries,
+            )
+
+            if not Path(rel_symlinked_repo_path).is_symlink():
+                raise Exception("File is not detected as a symlink")
+        except Exception as e:
+            logger.error(f"Error creating symlink:\n- {str(e)}")
+
+    def repo_add_symlink4_static_blobs_dir(
+            self,
+            tag_versioned_clone_src_repo_name,
+            abs_clone_src_nested_path,
+            rel_symlinked_repo_path,
+            repo_name,
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            log_entries,
+    ):
+        """ Src dir may not exist (unlike images/ that will 100% exist) """
+        abs_repo_static_dir_path = Path(
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            'source',
+            '_static',
+            'blobs',
+            repo_name,
+        ).resolve()
+
+        # If dir !exists, return
+        if not abs_repo_static_dir_path.exists():
+            # log_entries.append(colorize_warning(f"  - (4) No blobs found in source repo."))
+            return
+        
+        # (4) Symlink _static/blobs/{repo_name} -> to main doc
+        action_str = colorize_action(f"Symlinking '_static/blobs/{repo_name}'...")
+        log_entries.append(f"🔗 [{tag_versioned_clone_src_repo_name}] {action_str}")
+
+        # Log + Validate clone src path to _static/{repo_name}
+        log_entries.append(colorize_path(f"  - (4) From from {repo_name} src path: "
+                                         f"'{brighten(abs_repo_static_dir_path)}'"))
+
+        if not abs_repo_static_dir_path.exists():
+            err_msg = f"Error creating symlink (3):\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found"
+            if THROW_ON_REPO_ERROR:
+                raise Exception(err_msg)  # TODO: Use this instead, once the architecture is setup
+            else:
+                log_entries.append(colorize_warning(err_msg))
+
+        # source/_static/{repo_name}; eg: "source/_static/blobs/account_services"
+        target_symlinked_static_dir_path = os.path.join(ABS_SOURCE_STATIC_DIR, 'blobs', repo_name)
         log_entries.append(colorize_path(f"  - To symlink path: "
                                          f"'{brighten(target_symlinked_static_dir_path)}'"))
 
@@ -1000,7 +1062,17 @@ class SphinxRepoManager:
             log_entries,
         )
 
-        self.repo_add_symlink3_static_dir(
+        self.repo_add_symlink3_static_images_dir(
+            tag_versioned_clone_src_repo_name,
+            abs_clone_src_nested_path,
+            rel_symlinked_repo_path,
+            repo_name,
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            log_entries,
+        )
+
+        self.repo_add_symlink4_static_blobs_dir(
             tag_versioned_clone_src_repo_name,
             abs_clone_src_nested_path,
             rel_symlinked_repo_path,
