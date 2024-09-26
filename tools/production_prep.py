@@ -1,4 +1,8 @@
 """ Preps the project for production_stage, optionally with a dry run to dump useful info. """
+from ruamel.yaml import YAML
+from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
+from rich.live import Live
 import argparse
 import os
 import yaml
@@ -7,6 +11,8 @@ import re
 import subprocess
 from colorama import init, Fore, Style
 from typing import List
+
+console = Console()
 
 # -- CUSTOMIZE ENV --------------------------------------------------------------------------------------------
 
@@ -308,50 +314,74 @@ class ProductionPrep:
     # -- PRODUCTION SETTERS--------------------------------------------------------------------------------
 
     def set_repo_manifest_production_stage_to_latest_git_tags(self):
-        """ Updates repo_manifest.yml, setting the latest stable git tag for each repo's production_stage. """
+        """ 
+        Surgically update repo_manifest.yml, setting the latest stable git tag for each repo's production_stage.
+        """
         try:
-            # Load the repo manifest YAML file
+            yaml = YAML()
+            yaml.preserve_quotes = True  # Preserve YAML quotes for consistency
+
             with open(self.repo_manifest_path, 'r') as file:
-                manifest = yaml.safe_load(file)
+                manifest = yaml.load(file)
 
             repositories = manifest.get('repositories', {})
+            updated_count = 0  # Track the number of updated repos
 
-            # Loop through all repositories and update the production_stage fields
-            for repo_name, repo_data in repositories.items():
-                production_stage = repo_data.get('production_stage')
-                if production_stage:
-                    prev_ver = production_stage.get('checkout')
+            # Static message at the top
+            console.print(f"[0] Setting files for production using '{self.repo_manifest_path}' ...")
 
-                    # Fetch the latest stable tag for the repository
-                    latest_tag = self.get_latest_git_tag(repo_data.get('url'))
+            progress = Progress(
+                SpinnerColumn(),
+                "[progress.description]{task.description}",
+                BarColumn(),
+                "[progress.percentage]{task.percentage:>3.0f}%",
+                "•",
+                TextColumn("[{task.completed}/{task.total}] Repos Processed"),
+                TimeElapsedColumn()
+            )
 
-                    if prev_ver == latest_tag:
-                        # Add a TODO if the version is already the latest
-                        production_stage['checkout'] = prev_ver  # Keep current version
-                        production_stage['prev_ver'] = prev_ver
-                        production_stage['checkout_type'] = 'tag'
-                        production_stage['note'] = '# TODO: Stable ver'
-                    else:
-                        # Set the latest version
-                        production_stage['prev_ver'] = prev_ver
-                        production_stage['checkout'] = latest_tag
-                        production_stage['checkout_type'] = 'tag'
+            with Live(progress, console=console, refresh_per_second=10):
+                task = progress.add_task("Setting repo_manifest.yml versions...", total=len(repositories))
 
-            # Write the updated manifest back to the file
+                for repo_name, repo_data in repositories.items():
+                    production_stage = repo_data.get('production_stage')
+                    if production_stage:
+                        prev_ver = production_stage.get('prev_ver')
+                        checkout = production_stage.get('checkout')
+
+                        # Simulate fetching the latest tag (replace with actual logic)
+                        latest_tag = self.get_latest_git_tag(repo_data.get('url'))
+
+                        # Update only if the version has changed
+                        if checkout != latest_tag:
+                            production_stage['prev_ver'] = checkout  # Update prev_ver with the old checkout
+                            production_stage['checkout'] = latest_tag  # Update checkout with the new latest tag
+                            updated_count += 1
+                            progress.update(
+                                task,
+                                advance=1,
+                                description=f"{repo_name} Updated to {latest_tag}"),
+                        else:
+                            progress.update(
+                                task,
+                                advance=1,
+                                description=f"{repo_name} {self.arrow} No version update ({latest_tag})"),
+
+            # Write back the updated YAML, preserving comments and formatting
             with open(self.repo_manifest_path, 'w') as file:
                 yaml.dump(manifest, file)
 
-            print("Manifest updated successfully.")
+            console.print(f"✅ Updated {updated_count} repo versions.\n")
 
         except Exception as e:
-            print(f"Error updating manifest: {e}")
+            console.print(f"[red]Error updating manifest: {e}")
 
     # -- INIT --------------------------------------------------------------------------------------------- 
 
     # READONLY TESTER STARTS HERE >>
     def validate_files(self):
         """ Read-only checks to prep for production. """
-        logging.info(f"{FYI_COLOR}Validating production stage ({self.manifest_target_prod_ver})...{Fore.RESET}")
+        logging.info(f"{FYI_COLOR}Validating production stage ({self.manifest_target_prod_ver}) ...{Fore.RESET}")
 
         self.assert_manifest_stage()
         self.assert_manifest_repo_versions_and_optional_diffs()
@@ -361,7 +391,7 @@ class ProductionPrep:
     # WRITE TESTER STARTS HERE >>
     def set_production(self):
         """ (!) Changes files to set for production. """
-        logging.info(f"Setting files for production using {self.repo_manifest_path}...")
+        self.set_repo_manifest_production_stage_to_latest_git_tags()
 
     def run(self, dry_run, set_production):
         if dry_run:
@@ -369,7 +399,7 @@ class ProductionPrep:
         elif set_production:
             self.set_production()
         else:
-            logging.warning(WARN_COLOR + "Specify either --dry-run or --set-production")
+            logging.warning(WARN_COLOR + "Specify either --dry-run or --set-production (if you have a backup)")
 
 
 def main():

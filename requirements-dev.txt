@@ -7,3 +7,5 @@ esbonio
 lsp_devtools
 rstcheck
 pytest  # For tools/production_prep
+rich  # Fancy logging
+ruamel.yaml  # Allows surgical changes to yaml without breaking formatting
