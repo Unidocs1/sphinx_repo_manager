@@ -180,12 +180,13 @@ class ProductionPrep:
                     emoji = '❓'
                     color = Fore.CYAN
                     display_checkout = f"{repo_checkout} {self.arrow}"
-                    extra_info = f' ({Style.BRIGHT}No Upgrade{Style.NORMAL})'
+                    extra_info = f' ({Style.BRIGHT}No Upgrade{Style.NORMAL})' if repo_checkout == repo_prev_ver \
+                        else f" ({Style.BRIGHT}Awaiting new git tag '{repo_checkout}'{Style.NORMAL})"
                 elif repo_checkout == latest_tag:
                     emoji = '✅'
                     color = Fore.GREEN
                     display_checkout = (f"{Style.BRIGHT}{repo_checkout}{Style.NORMAL} {self.arrow} "
-                                        f"{Style.BRIGHT}(No Upgrade){Style.NORMAL}")
+                                        f"{Style.BRIGHT}(Latest Stable Git Tag){Style.NORMAL}")
                     extra_info = ''
                 elif '-rc.' in latest_tag or 'alpha' in latest_tag or 'beta' in latest_tag:
                     emoji = '⌛'
