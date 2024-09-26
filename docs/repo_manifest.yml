@@ -81,7 +81,7 @@ init_clone_path: "source/_repos-available"
 init_clone_path_root_symlink_src: "{repo_sparse_path}/source/content"
   
 # ------------------------------------------------------------------------------
-# tools/production_prep.py options
+# Optional tooling prefs >>
 
 # - If true, will show the diff between the current and previous version, if repo prev_prev (Default true)
 # - Relies upon repositories[i] arbitrary `prev_ver` string val

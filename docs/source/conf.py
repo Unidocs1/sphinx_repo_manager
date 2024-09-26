@@ -16,21 +16,6 @@ from dotenv import load_dotenv
 # Load the .env file
 load_dotenv()
 
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
-project = 'XBE Docs'
-copyright = 'Xsolla (USA), Inc. All rights reserved'
-author = 'Xsolla'
-release = 'v2024.08.0'
-version = release  # Used by some extensions
-html_context = {}  # html_context.update({}) to pass data to extensions & themes
-
-# This should likely match your branch name:
-# - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
-#   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
-# release = '%GIT_TAG%'
-
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -48,27 +33,6 @@ sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_openapi')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_image_min')))
 sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_crawler')))
 
-# -- ReadTheDocs (RTD) Config ------------------------------------------------
-
-# Check if we're running on Read the Docs' servers
-is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
-
-fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
-
-rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
-rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
-
-# Set canonical URL from the Read the Docs Domain
-html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
-html_context["READTHEDOCS"] = is_read_the_docs_build
-
-
-# -- Inline extensions -------------------------------------------------------
-# Instead of making an extension for small things, we can just embed inline
-def setup(app):
-    app.connect('build-finished', copy_open_graph_img_to_build)
-
-
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
@@ -84,11 +48,51 @@ manifest = repo_manager.read_normalize_manifest()
 manifest_stage = manifest['stage']  # 'dev_stage' or 'prod_stage'
 manifest_stage_is_production = manifest_stage == 'prod_stage'
 manifest_repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
-print(f'[conf.py::repo_manifest.yml] Num repos found: {len(manifest_repos)}')
+xbe_static_docs_repo = manifest_repos['xbe_static_docs']
+macro_ver = xbe_static_docs_repo['production_stage']['checkout']  # eg: "v2024.07.0"
+print('')
+print(f"[conf.py::repo_manifest.yml] Manifest num repos found: {len(manifest_repos)}")
+print(f"[conf.py::repo_manifest.yml] Manifest stage: '{manifest_stage}'")
+print(f"[conf.py::repo_manifest.yml] Manifest macro ver: '{macro_ver}'")
+print('')
 
 # TODO: Use these below for dynamic info pulled from repo_manifest.yaml
 base_symlink_path = manifest['base_symlink_path']  # eg: "source/content"
 repo_sparse_path = manifest['repo_sparse_path']  # eg: "docs"
+
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
+project = 'XBE Docs'
+copyright = 'Xsolla (USA), Inc. All rights reserved'
+author = 'Xsolla'
+release = macro_ver  # eg: "v2024.08.0"
+version = release  # Used by some extensions
+html_context = {}  # html_context.update({}) to pass data to extensions & themes
+
+# This should likely match your branch name:
+# - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
+#   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
+# release = '%GIT_TAG%'
+
+# -- ReadTheDocs (RTD) Config ------------------------------------------------
+
+# Check if we're running on Read the Docs' servers
+is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'  # AKA is_production
+
+rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
+rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
+
+# Set canonical URL from the Read the Docs Domain
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+html_context["READTHEDOCS"] = is_read_the_docs_build
+
+
+# -- Inline extensions -------------------------------------------------------
+# Instead of making an extension for small things, we can just embed inline
+def setup(app):
+    app.connect('build-finished', copy_open_graph_img_to_build)
+
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
