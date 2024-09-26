@@ -14,7 +14,7 @@
 # - Determines which repo info to use for git checkout
 # - Choices: 'dev_stage', 'production_stage'
 # - Defaults to 'dev_stage', if omitted
-stage: 'dev_stage'
+stage: 'production_stage'
 
 # - (!) DANGEROUS: If false, will skip this extension both locally + on ReadTheDocs (RTD)
 # - Useful if you 100% know all repos are up-to-date for faster iterations
@@ -25,7 +25,7 @@ enable_repo_manager: true
 # - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
 # - (!) If you are missing images/blobs, you probably want to set this to true
 # - Defaults to true, if omitted
-enable_repo_manager_local: false
+enable_repo_manager_local: true
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers. 
