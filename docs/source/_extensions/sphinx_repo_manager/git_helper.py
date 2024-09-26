@@ -12,7 +12,7 @@ GIT_SPARSE_PRESERVED_DIRS_FILES = [
     '.git',
     '.gitignore',
     '.gitlab',
-    'README.md'
+    'README.md',
     'RELEASE_NOTES.rst',
 ]
 
@@ -342,7 +342,7 @@ class GitHelper:
         """
         if not os.path.exists(repo_path):
             raise Exception(f"repo_path not found: {repo_path}")
-        
+
         GitHelper._throw_if_path_not_exists(repo_path)
         if stash_message is None:
             stash_message = f"repo_mgr_wip-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
