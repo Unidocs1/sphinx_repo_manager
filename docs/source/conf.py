@@ -464,7 +464,7 @@ myst_enable_extensions = [
 
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'production-stage': is_read_the_docs_build or fallback_to_production_stage_if_not_rtd,
+    'dev-debug-mode': False,
 
     # True: [Navbar, Docs] Create Acct -> AXR pricing si te
     # False: New login page @ https://xsolla.cloud 

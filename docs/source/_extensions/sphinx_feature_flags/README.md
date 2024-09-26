@@ -25,11 +25,11 @@ using the `:fallback:` option).
 In any `.rst` file, wrap the `feature-flag` directive around any block:
 
     ```rst
-    .. feature-flag:: production-stage
+    .. feature-flag:: dev-debug-mode
     
        This only shows if production-stage = True; it can be an entire toctree, too!
     
-    .. feature-flag:: production-stage
+    .. feature-flag:: dev-debug-mode
        :fallback:
     
        This only shows if production-stage = False.
