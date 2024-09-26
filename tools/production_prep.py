@@ -313,10 +313,12 @@ class ProductionPrep:
 
     # -- PRODUCTION SETTERS--------------------------------------------------------------------------------
 
-    def set_repo_manifest_production_stage_to_latest_git_tags(self):
+    def set_repo_manifest_production_stage_to_latest_git_tags(self, i):
         """ 
         Surgically update repo_manifest.yml, setting the latest stable git tag for each repo's production_stage.
         """
+        console.log(f"[{i}] 📝 [bold]Setting files for production using '{self.repo_manifest_path}' ...")
+
         try:
             yaml = YAML()
             yaml.preserve_quotes = True  # Preserve YAML quotes for consistency
@@ -326,9 +328,6 @@ class ProductionPrep:
 
             repositories = manifest.get('repositories', {})
             updated_count = 0  # Track the number of updated repos
-
-            # Static message at the top
-            console.print(f"[0] Setting files for production using '{self.repo_manifest_path}' ...")
 
             progress = Progress(
                 SpinnerColumn(),
@@ -374,7 +373,67 @@ class ProductionPrep:
             console.print(f"✅ Updated {updated_count} repo versions.\n")
 
         except Exception as e:
+            print(f"Error updating manifest: {e}")
             console.print(f"[red]Error updating manifest: {e}")
+
+    def set_service_updates_partial_dot_rst(self, i):
+        """ Update versions in the RST file based on the manifest's production_stage versions. """
+        # Load the RST file path
+        rst_file_path = os.path.abspath(os.path.join(
+            self.launch_path,
+            '../docs/source/content/-/welcome/release_notes/current/service_updates-partial.rst'))
+
+        # Load the repositories from the manifest
+        repositories = self.manifest_repos
+
+        # Load the RST file content
+        with open(rst_file_path, 'r') as file:
+            rst_content = file.read()
+
+        # Initialize a flag to track if any changes are made
+        num_changes = 0
+
+        # Function to replace the version in the RST content
+        def replace_versions(match):
+            nonlocal num_changes
+            repo_name = match.group(1)
+            current_version = match.group(2)
+
+            # Find the latest version from the manifest
+            if repo_name in repositories:
+                latest_version = repositories[repo_name]['production_stage']['checkout']
+
+                # Replace only the version, if it differs
+                if latest_version != current_version:
+                    num_changes += 1
+                    console.print(f"- 🔄 {repo_name} updated: [cyan]{current_version}[/cyan] → "
+                                  f"[green]{latest_version}[/green]")
+                    # Change only the version part, preserving everything else
+                    return match.group(0).replace(current_version, latest_version)
+
+            return match.group(0)
+
+        # General regex pattern that captures any version string without assuming a specific format
+        pattern = r"^\d+\. (\w+) \| :doc:`(.+?) "  # Capturing repo name and any version string
+        version_pattern = re.compile(pattern, re.IGNORECASE | re.MULTILINE)
+
+        # Perform the replacement using the manifest data
+        updated_content = version_pattern.sub(replace_versions, rst_content)
+
+        # Write the updated content back to the RST file if changes were made
+        if num_changes > 0:
+            with open(rst_file_path, 'w') as file:
+                file.write(updated_content)
+            console.print(f"- ✅ {num_changes} service version(s) updated based on the manifest.\n")
+        else:
+            console.print("- ℹ️ No updates (all service versions already match the manifest).\n")
+
+        i += 1
+
+    def set_rst_files(self, i):
+        """ Update .rst files directly, such as setting service versions in release notes. """
+        console.print(f"[{i}] 📝 [bold]Updating .rst files[/bold] ...")
+        self.set_service_updates_partial_dot_rst(i)
 
     # -- INIT --------------------------------------------------------------------------------------------- 
 
@@ -391,7 +450,9 @@ class ProductionPrep:
     # WRITE TESTER STARTS HERE >>
     def set_production(self):
         """ (!) Changes files to set for production. """
-        self.set_repo_manifest_production_stage_to_latest_git_tags()
+        i = 0
+        self.set_repo_manifest_production_stage_to_latest_git_tags(i)
+        self.set_rst_files(i)
 
     def run(self, dry_run, set_production):
         if dry_run:
