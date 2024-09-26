@@ -6,6 +6,7 @@ import logging
 import re
 import subprocess
 from colorama import init, Fore, Style
+from typing import List
 
 # -- CUSTOMIZE ENV --------------------------------------------------------------------------------------------
 
@@ -14,7 +15,6 @@ target_new_ver = 'v2024.08.0'  # TODO: Perhaps this should be a CLI arg later, f
 
 # -- CLASS & LOG PREP ----------------------------------------------------------------------------------------- 
 
-# Configure logging
 class CustomFormatter(logging.Formatter):
     def format(self, record):
         if record.levelno == logging.INFO:
@@ -26,7 +26,6 @@ class CustomFormatter(logging.Formatter):
         return super().format(record)
 
 
-# Configure logging
 formatter = CustomFormatter('%(levelname)s%(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
@@ -42,7 +41,8 @@ FYI_COLOR = Fore.CYAN
 
 class ProductionPrep:
     def __init__(self):
-        init(autoreset=True)  # Initialize colorama
+        init(autoreset=True)
+        self.arrow = '→'
         self.launch_path = os.getcwd()
         self.test_index = 0
 
@@ -57,8 +57,8 @@ class ProductionPrep:
         self.manifest_is_dev_stage = self.manifest_stage == 'dev_stage'
         self.xbe_static_docs_repo = self.manifest_repos['xbe_static_docs']
         self.manifest_target_prod_ver = self.xbe_static_docs_repo['production_stage']['checkout']
-        self.production_prep_tool_show_prev_ver_diff = self.manifest.get('production_prep_tool_show_prev_ver_diff',
-                                                                         True)
+        self.production_prep_tool_show_prev_ver_diff = self.manifest.get(
+            'production_prep_tool_show_prev_ver_diff', True)
 
     # -- HELPERS --------------------------------------------------------------------------------------------- 
 
@@ -115,36 +115,40 @@ class ProductionPrep:
 
     def get_latest_git_tag(self, repo_url):
         """ Fetch the latest git tag, prioritizing stable versions over pre-releases and ignoring dereferenced tags. """
+        # Type hints
+        tags: List[str] = []
+        stable_tags: List[str] = []
+
         try:
             # Run the git command to list remote tags with sorting by semantic versioning
             cmd = ['git', 'ls-remote', '--tags', '--refs', '--sort=version:refname', repo_url]
             result = subprocess.run(cmd, capture_output=True, text=True)
-    
+
             if result.returncode != 0:
                 raise Exception(f"Failed to get tags from {repo_url}: {result.stderr}")
-    
+
             # Parse the tags from the Git command output and remove dereferenced annotated tags (those with ^{})
             tags = [line.split('/')[-1] for line in result.stdout.splitlines() if not line.endswith('^{}')]
-    
+
             if not tags:
                 return 'Unknown'
-    
-            # Filter out pre-release versions (e.g., -alpha, -beta, -rc)
-            stable_tags = [tag for tag in tags if not re.search(r'-(alpha|beta|rc)', tag)]
-    
-            # If there are stable tags, return the latest one (Git's sorting ensures the correct order)
-            if stable_tags:
+
+            # Ensure all items in tags are strings, and filter out pre-release versions
+            stable_tags = [tag for tag in tags if isinstance(tag, str) and not re.search(r'-(alpha|beta|rc)', tag)]
+
+            # Ensure stable_tags is a list and not empty before slicing
+            if isinstance(stable_tags, list) and stable_tags:
                 return stable_tags[-1]
-    
-            # If no stable tags are found, return the latest pre-release tag
-            return tags[-1] if tags else 'Unknown'
-    
+
+            # Ensure tags is a list and not empty before slicing
+            if isinstance(tags, list) and tags:
+                return tags[-1]
+
+            return 'Unknown'
+
         except Exception as e:
             self.log_fail(f"Failed to get latest tag for {repo_url}: {e}")
             return 'Unknown'
-
-
-
 
     # -- TESTS --------------------------------------------------------------------------------------------- 
 
@@ -157,11 +161,11 @@ class ProductionPrep:
 
             for repo_name, repo in self.manifest_repos.items():
                 # (!) DEPRECATED: Instead of per-stage, we want to simulate as if we're in production
-                #repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
+                # repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
                 repo_stage_info = repo.get('production_stage')
                 repo_checkout = repo_stage_info.get('checkout', 'Unknown')
                 repo_prev_ver = repo_stage_info.get('prev_ver', 'Unknown')
-                #repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')  # 'branch' or 'type'
+                # repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')  # 'branch' or 'type'
 
                 repo_url = repo.get('url')
                 latest_tag = self.get_latest_git_tag(repo_url)
@@ -175,27 +179,28 @@ class ProductionPrep:
                 if repo_prev_ver == latest_tag:
                     emoji = '❓'
                     color = Fore.CYAN
-                    display_checkout = f"{repo_checkout} →"
-                    extra_info = f' {Style.BRIGHT}(No Upgrade){Style.NORMAL}'
-                elif repo_checkout == latest_tag: 
+                    display_checkout = f"{repo_checkout} {self.arrow}"
+                    extra_info = f' ({Style.BRIGHT}No Upgrade{Style.NORMAL})'
+                elif repo_checkout == latest_tag:
                     emoji = '✅'
                     color = Fore.GREEN
-                    display_checkout = f"{Style.BRIGHT}{repo_checkout}{Style.NORMAL} →"
+                    display_checkout = (f"{Style.BRIGHT}{repo_checkout}{Style.NORMAL} {self.arrow} "
+                                        f"{Style.BRIGHT}(No Upgrade){Style.NORMAL}")
                     extra_info = ''
                 elif '-rc.' in latest_tag or 'alpha' in latest_tag or 'beta' in latest_tag:
                     emoji = '⌛'
                     color = Fore.YELLOW
-                    display_checkout = f"{repo_checkout} → {latest_tag}"
+                    display_checkout = f"{repo_checkout} {self.arrow} {latest_tag}"
                     extra_info = ''
                 elif latest_tag > repo_checkout:
                     emoji = '🚀'  # ⬆️ doesn't display correctly
                     color = Fore.GREEN
-                    display_checkout = f"{repo_checkout} → {Style.BRIGHT}{latest_tag}{Style.NORMAL}"
+                    display_checkout = f"{repo_checkout} {self.arrow} {Style.BRIGHT}{latest_tag}{Style.NORMAL}"
                     extra_info = ''
                 else:
                     emoji = '❌'
                     color = Fore.RED
-                    display_checkout = f"{repo_checkout} → {latest_tag}"
+                    display_checkout = f"{repo_checkout} {self.arrow} {latest_tag}"
                     extra_info = ''
 
                 # Output the result
@@ -250,9 +255,9 @@ class ProductionPrep:
                     self.log_fail(f"Repo '{repo_name}' is not a dictionary as expected.")
 
                 repo_num += 1
-                
+
                 # DEPRECATED: Instead of per-stage, we want to simulate as if we're in production
-                #repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
+                # repo_stage_info = repo.get(self.manifest_stage) or self.get_fallback_stage_info()
                 repo_stage_info = repo.get('production_stage')
                 repo_checkout = repo_stage_info.get('checkout', 'Unknown')
                 repo_checkout_type = repo_stage_info.get('checkout_type', 'Unknown')  # 'branch' or 'tag'
@@ -262,7 +267,7 @@ class ProductionPrep:
                 prev_ver = repo_stage_info.get('prev_ver')
                 if (self.production_prep_tool_show_prev_ver_diff and
                         prev_ver and prev_ver != repo_checkout):
-                    display_checkout = f"{prev_ver} → {Style.BRIGHT}{repo_checkout}{Style.NORMAL}"
+                    display_checkout = f"{prev_ver} {self.arrow} {Style.BRIGHT}{repo_checkout}{Style.NORMAL}"
 
                 # Format the message with fixed width padding
                 if repo_checkout_type == 'branch':
@@ -307,18 +312,18 @@ class ProductionPrep:
             # Load the repo manifest YAML file
             with open(self.repo_manifest_path, 'r') as file:
                 manifest = yaml.safe_load(file)
-    
+
             repositories = manifest.get('repositories', {})
-    
+
             # Loop through all repositories and update the production_stage fields
             for repo_name, repo_data in repositories.items():
                 production_stage = repo_data.get('production_stage')
                 if production_stage:
                     prev_ver = production_stage.get('checkout')
-    
+
                     # Fetch the latest stable tag for the repository
                     latest_tag = self.get_latest_git_tag(repo_data.get('url'))
-    
+
                     if prev_ver == latest_tag:
                         # Add a TODO if the version is already the latest
                         production_stage['checkout'] = prev_ver  # Keep current version
@@ -330,17 +335,16 @@ class ProductionPrep:
                         production_stage['prev_ver'] = prev_ver
                         production_stage['checkout'] = latest_tag
                         production_stage['checkout_type'] = 'tag'
-    
+
             # Write the updated manifest back to the file
-            with open(manifest_path, 'w') as file:
+            with open(self.repo_manifest_path, 'w') as file:
                 yaml.dump(manifest, file)
-    
+
             print("Manifest updated successfully.")
-    
+
         except Exception as e:
             print(f"Error updating manifest: {e}")
-    
-    
+
     # -- INIT --------------------------------------------------------------------------------------------- 
 
     # READONLY TESTER STARTS HERE >>
