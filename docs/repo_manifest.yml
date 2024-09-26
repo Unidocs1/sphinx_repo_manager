@@ -258,39 +258,39 @@ repositories:
     url: 'https://source.goxbe.io/Core/tools/vscode-scripts-scm'
     production_stage:
       prev_ver: 'v2.2.2'
-      checkout: 'v3.0.1'
+      checkout: 'v3.0.2'
       checkout_type: 'tag'
   # Other Products/Apps >>
   service_monitor:
     url: 'https://source.goxbe.io/Core/service_monitor'
     production_stage:
       prev_ver: 'v3.2.0'
-      checkout: 'v3.2.0'
+      checkout: 'v3.3.0'
       checkout_type: 'tag'
   launcher:
     url: 'https://source.goxbe.io/Core/apps/launcher'
     production_stage:
       prev_ver: 'v4.0.0'
-      checkout: 'v4.0.0'
+      checkout: 'v4.3.6'
       checkout_type: 'tag'
   console:
     url: 'https://source.goxbe.io/Core/apps/console'
     production_stage:
       prev_ver: 'v6.0.1'
-      checkout: 'v6.0.1'
+      checkout: 'v6.4.0'
       checkout_type: 'tag'
   # Demos >>
   unitychessgame:
     url: 'https://source.goxbe.io/Core/samples/unitychessgame'
     production_stage:
       prev_ver: 'v1.0.0-Unity2022_3_11'
-      checkout: 'v1.0.1-Unity2022_3_11'
+      checkout: 'v1.0.1-Unity2022.3.21f1'
       checkout_type: 'tag'
   lyrastartergame:
     url: 'https://source.goxbe.io/Core/samples/lyrastartergame'
     production_stage:
       prev_ver: 'v2.0.0-Unreal5_4_3'
-      checkout: 'v2.1.0-Unreal5_4_3'
+      checkout: 'v2.0.1-Unreal5_4_3'
       checkout_type: 'tag'
 
 ############################################
