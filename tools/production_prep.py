@@ -448,17 +448,37 @@ class ProductionPrep:
         self.assert_conf_dot_py()
 
     # WRITE TESTER STARTS HERE >>
+    def confirm_set_production(self):
+        """ 
+        Warn the user about what will be done in production and ask for confirmation.
+        This method outlines the steps and prompts for confirmation.
+        """
+        console.print(
+            "\n[bold red]WARNING:[/bold red] You are about to set files for production. The following steps will be performed:\n")
+
+        console.print("1. [cyan]Update repo manifest production stage to latest git tags[/cyan]")
+        console.print("2. [cyan]Update .rst files[/cyan]")
+        console.print("   a. [cyan]Update service updates partial RST file[/cyan]\n")
+
+        # Prompt user for confirmation
+        user_input = console.input("[bold yellow]Proceed with these changes? (y/n): [/bold yellow]")
+
+        if user_input.lower() == 'y':
+            self.set_production()
+        else:
+            console.print("[bold red]Aborting production setup.[/bold red]")
+
     def set_production(self):
         """ (!) Changes files to set for production. """
         i = 0
         self.set_repo_manifest_production_stage_to_latest_git_tags(i)
         self.set_rst_files(i)
 
-    def run(self, dry_run, set_production):
+    def run(self, dry_run, confirm_set_production):
         if dry_run:
             self.validate_files()
-        elif set_production:
-            self.set_production()
+        elif confirm_set_production:
+            self.confirm_set_production()
         else:
             logging.warning(WARN_COLOR + "Specify either --dry-run or --set-production (if you have a backup)")
 
@@ -471,7 +491,7 @@ def main():
     args = parser.parse_args()
 
     prep = ProductionPrep()
-    prep.run(args.dry_run, args.set_production)
+    prep.run(args.dry_run, args.confirm_set_production)
 
 
 if __name__ == "__main__":
