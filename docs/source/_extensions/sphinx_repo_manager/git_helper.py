@@ -77,11 +77,11 @@ def run_subprocess_cmd(
         log_entries=None,
 ):
     """ Run a subprocess command and handle errors. """
+    clean_command_array(cmd_arr)
     redacted_cmd_arr = [redact_url_secret(part) for part in cmd_arr]
     log_pretty_cli_cmd(redacted_cmd_arr, log_entries)
 
     try:
-        clean_command_array(cmd_arr)
         result = subprocess.run(cmd_arr, capture_output=True, text=True)
 
         if result.returncode != 0:
