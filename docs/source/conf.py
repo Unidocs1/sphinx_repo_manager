@@ -104,7 +104,6 @@ extensions = [
     'sphinx_docsearch',  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     'sphinx_tabs.tabs',  # Add tabs to code blocks | https://sphinx-tabs.readthedocs.io/en/latest
     'sphinx_algolia_crawler',  # Our own custom extension to crawl our build site for our AI-powered search indexing
-    'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
     'sphinx_feature_flags',  # Our own custom extension to add a feature-flag:: directive
     'sphinx_image_min',  # Our own custom extension to minimizer images after build from build/ dir (set to CI only)
     'sphinx_repo_manager',  # Our own custom extension to manage repos via repo_manifest.yml
@@ -116,6 +115,7 @@ extensions = [
     'sphinxext.opengraph',  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
     'sphinx_design',  # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html 
     'sphinx_remove_toctrees',  # Remove specific toctrees | https://pypi.org/project/sphinx-remove-toctrees
+    'sphinx_openapi',  # Our own custom extension to download and build OpenAPI docs
 ]
 
 # Add any paths that contain templates here, relative to this directory.
