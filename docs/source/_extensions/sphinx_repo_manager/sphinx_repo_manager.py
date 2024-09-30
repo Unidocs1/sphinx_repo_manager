@@ -18,6 +18,8 @@ import signal  # For CTRL+C detection
 
 # Yaml and logging >>
 import yaml  # YAML file parsing
+from dotenv import load_dotenv
+
 from log_styles import *  # Custom logging styles
 from git_helper import GitHelper  # Helper functions for git operations
 from sphinx.util import logging  # Sphinx logging utility
@@ -42,6 +44,7 @@ DEFAULT_REPO_SPARSE_PATH = 'docs'
 DEFAULT_DEFAULT_BRANCH = 'dev'  # Since we'll be working with tags, 'master' wouldn't make sense as a fallback
 DEFAULT_PRESERVE_GITLAB_GROUP = True
 DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
+DEFAULT_DOTENV_REPO_AUTH_URL_PREFIX = ''
 DEFAULT_REPOSITORIES = {}
 DEFAULT_SKIP_REPO_UPDATES = False
 
@@ -64,6 +67,10 @@ class RepositoryManagementError(Exception):
 # RepoManager class to handle repository operations
 class SphinxRepoManager:
     def __init__(self, abs_manifest_path):
+        load_dotenv()
+        self.default_repo_auth_prefix = None
+        self.has_default_repo_auth_prefix = False
+        
         self.start_time = time.time()  # Track how long it takes to build all repos
         self.end_time = None
 
@@ -149,6 +156,7 @@ class SphinxRepoManager:
         manifest.setdefault('base_symlink_path', DEFAULT_BASE_SYMLINK_PATH)
         manifest.setdefault('repo_sparse_path', DEFAULT_REPO_SPARSE_PATH)
         manifest.setdefault('repositories', DEFAULT_REPOSITORIES)
+        manifest.setdefault('dotenv_repo_auth_url_prefix', DEFAULT_DOTENV_REPO_AUTH_URL_PREFIX)
 
         # Set dynamic root defaults
         repo_sparse_path = manifest['repo_sparse_path']
@@ -163,6 +171,14 @@ class SphinxRepoManager:
         if not manifest['repositories']:
             logger.warning("[sphinx_repo_manager] No repositories found in manifest - skipping extension!")
             sys.exit(0)
+
+        # Set gitlab access token from .env using the key defined in the manifest
+        dotenv_repo_auth_prefix = manifest['dotenv_repo_auth_prefix']
+        if dotenv_repo_auth_prefix:
+            self.default_repo_auth_prefix = os.getenv(dotenv_repo_auth_prefix)
+            self.has_default_repo_auth_prefix = True
+        if not self.default_repo_auth_prefix:
+            logger.warning(f"WARNING: Missing or empty '{dotenv_repo_auth_prefix}' in .env file")
 
         manifest['repo_sparse_path'] = repo_sparse_path.replace('\\', '/')  # Normalize to forward/slashes
         init_clone_path = os.path.normpath(manifest['init_clone_path'])
@@ -277,6 +293,9 @@ class SphinxRepoManager:
         _meta['has_tag'] = has_tag
         _meta['url_dotgit'] = f"{url}.git"
         _meta['repo_name'] = repo_name
+
+        dotenv_repo_auth_url_prefix = repo_info.get('dotenv_repo_auth_url_prefix', None)
+        _meta['dotenv_repo_auth_url_prefix'] = dotenv_repo_auth_url_prefix
 
         # If tag, append "-{tag} to clone src repo name
         # If !tag, append "--{branch} to clone src repo name
@@ -640,10 +659,15 @@ class SphinxRepoManager:
 
             git_helper = GitHelper()  # TODO: Place this instance @ top?
 
+            if self.has_default_repo_auth_prefix:
+                formatted_repo_url = repo_url_dotgit.replace("https://", f"https://{self.default_repo_auth_prefix}@")
+            else:
+                formatted_repo_url = repo_url_dotgit
+
             try:
                 git_helper.git_sparse_clone(
                     rel_tag_versioned_clone_src_path,
-                    repo_url_dotgit,
+                    formatted_repo_url,
                     checkout_branch_or_tag_name,
                     has_tag,
                     rel_selected_repo_sparse_path,

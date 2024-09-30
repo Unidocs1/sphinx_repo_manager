@@ -4,28 +4,6 @@ build:
   os: ubuntu-lts-latest
   tools:
     python: '3.10'
-  jobs:
-    post_create_environment:
-      - |
-        echo "--------------"
-        echo "[post_create_environment] Running post_create_environment setup..."
-        pwd
-        set -e
-        # This is only useful for private repos on a free test account
-        if [ -z "$GITLAB_ACCESS_TOKEN" ]; then
-          echo "[GITLAB_ACCESS_TOKEN] Not set. Skipping access token injection."
-        else
-          echo "[GITLAB_ACCESS_TOKEN] Injecting GitLab access token into the repository URLs..."
-          git config --global url."https://oauth2:$GITLAB_ACCESS_TOKEN@source.goxbe.io/".insteadOf "https://source.goxbe.io/"
-
-          echo "Verifying the URL swaps (for source.goxbe.io)..."
-          git ls-remote https://source.goxbe.io/Core/xbe_docs.git || { echo "GITLAB_ACCESS_TOKEN_ new URL swap verification failed: Bad perms? Expired?"; exit 1; }
-        fi
-    post_build:
-      - |
-        echo "--------------"
-        echo "[post_build] Finding account_services (as example)..."
-        find . -type d -name "account_services" -print
 
 python:
   install:
@@ -34,4 +12,4 @@ python:
 sphinx:
   builder: html
   configuration: docs/source/conf.py
-  fail_on_warning: false  # TODO: Set this to true after fixing all warnings
+  fail_on_warning: false

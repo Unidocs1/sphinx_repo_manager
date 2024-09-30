@@ -7,7 +7,9 @@ This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubun
 ## Quickstart
 
 1. Configure `docs/repo_manifest.yaml` (ok to leave defaults)
-2. Copy `.env.template` -> to `.env` and set `GITLAB_ACCESS_TOKEN`
+2. Set env `REPO_AUTH_PREFIX` env var:
+   * Local: Copy `.env.template` -> to `.env` and set
+   * RTD: Set in RTD dashboard
 3. Run `start-docker.ps1` (or `make html` at `docs/`)
 4. Upon success, your browser will launch with `index.html` and~~~~ stop the Docker instance.
 
