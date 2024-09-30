@@ -154,13 +154,25 @@ using Sphinx. **Overview:**
 
 ### Known Issues
 
-`sphinx_rtd_theme` versions `2.0.0` and `2.1.0rc1` has known issues, confirmed by switching themes that do not
-seem to have these issues:
-
-1. 1/4 second visual glitch on navbar (toctree) click when changing to *new* doc pages
-2. Bottom-right background color change for desktop resolutions
+-`sphinx_book_theme` and `pydata_sphinx_theme` has a right-column smooth scroll navigation issue where a click will 
+sometimes scroll 1 above or below your target list item.
 
 ### Legacy Additional Troubleshooting
+
+### sphinx-build `Error 2` 
+
+If you see this error:
+
+```bash
+process_begin: CreateProcess(NULL, sphinx-build -M clean source build, ...) failed.
+make (e=2): The system cannot find the file specified.
+make: *** [Makefile:20: clean] Error 2
+```
+
+This simply means `sphinx-build` command doesn't exist:
+
+- If using venv/conda, did you activate your correct env (env setup beyond the scope of this README)?
+- If manually installing reqs, did you forget to `pip install -r requirements.txt`?
 
 #### Clearing Cache
 
