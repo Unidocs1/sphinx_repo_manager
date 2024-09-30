@@ -18,7 +18,6 @@ Welcome to Xsolla Backend
 .. This is possible due to repo_manifest.yml `init_clone_path_root_symlink_src_override: 'docs/source/content'`
 
 .. feature-flag:: dev-debug-mode
-   :fallback:
 
    .. toctree:: 
       :caption: (!) Dev
