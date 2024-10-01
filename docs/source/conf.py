@@ -93,11 +93,6 @@ html_context["READTHEDOCS"] = is_read_the_docs_build
 def setup(app):
     app.connect("build-finished", copy_open_graph_img_to_build)
 
-# -- Inline extensions -------------------------------------------------------
-# Instead of making an extension for small things, we can just embed inline
-def setup(app):
-    app.connect('build-finished', copy_open_graph_img_to_build)
-
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
