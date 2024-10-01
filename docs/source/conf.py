@@ -30,31 +30,22 @@ from sphinx_repo_manager import SphinxRepoManager
 
 # Initialize the RepoManager instance with the manifest path
 repo_manager_manifest = Path("..", "repo_manifest.yml").resolve()
-
-# GitLab credentials for private repos
-repo_auth_prefix = os.environ.get("REPO_AUTH_PREFIX", None)
-if repo_auth_prefix:
-    repo_auth_parts = repo_auth_prefix.split(":")
-    repo_manager_auth_user = repo_auth_parts[0]
-    repo_manager_auth_pass = repo_auth_parts[1]
-else:
-    repo_manager_auth_user = "oauth2"  # Fallback
-    repo_manager_auth_pass = None
-
 repo_manager = SphinxRepoManager()
 manifest = repo_manager.get_normalized_manifest(repo_manager_manifest)
 
 # Extract common props
-manifest_stage = manifest['stage']  # 'dev_stage' or 'prod_stage'
-manifest_stage_is_production = manifest_stage == 'prod_stage'
-manifest_repos = manifest['repositories']  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
-xbe_static_docs_repo = manifest_repos['xbe_static_docs']
-macro_ver = xbe_static_docs_repo['production_stage']['checkout']  # eg: "v2024.07.0"
-print('')
+manifest_stage = manifest["stage"]  # 'dev_stage' or 'prod_stage'
+manifest_stage_is_production = manifest_stage == "prod_stage"
+manifest_repos = manifest[
+    "repositories"
+]  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
+xbe_static_docs_repo = manifest_repos["xbe_static_docs"]
+macro_ver = xbe_static_docs_repo["production_stage"]["checkout"]  # eg: "v2024.07.0"
+print("")
 print(f"[conf.py::repo_manifest.yml] Manifest num repos found: {len(manifest_repos)}")
 print(f"[conf.py::repo_manifest.yml] Manifest stage: '{manifest_stage}'")
 print(f"[conf.py::repo_manifest.yml] Manifest macro ver: '{macro_ver}'")
-print('')
+print("")
 
 # TODO: Use these below for dynamic info pulled from repo_manifest.yaml
 base_symlink_path = manifest["base_symlink_path"]  # eg: "source/content"
@@ -63,34 +54,133 @@ repo_sparse_path = manifest["repo_sparse_path"]  # eg: "docs"
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'XBE Docs'
-copyright = 'Xsolla (USA), Inc. All rights reserved'
-author = 'Xsolla'
+project = "XBE Docs"
+copyright = "Xsolla (USA), Inc. All rights reserved"
+author = "Xsolla"
 release = macro_ver  # eg: "v2024.08.0"
 version = release  # Used by some extensions
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 
-# This should likely match your branch name:
-# - EXCEPTION: If a "latest" tracked branch (master/lts/main/some ver tester)
-#   - If exception, consider using "latest" or "v{ver_about_to_be_released}-doc"
-# release = '%GIT_TAG%'
+# Set the project URL and branch from the environment variables
+project_url = os.environ.get("PROJECT_URL", None)
+current_branch = os.environ.get("PROJECT_BRANCH", None)
+project_name = os.environ.get("PROJECT_NAME", "xbe_example")
+
+
+# If not set, try to get the project URL and branch from the git repo
+if not project_url or not current_branch:
+    try:
+        project_name = "xbe_example"
+        repo = git.Repo(search_parent_directories=True)
+        current_branch = repo.active_branch.name
+        project_url = repo.remotes.origin.url
+    except Exception as e:
+        print(
+            "Please set the `PROJECT_URL` and `PROJECT_BRANCH` environment variables."
+        )
+
+project_brief = "XBE Doxygen Template"
+project_group = "Xsolla"
+project_repo = f"{project_name}"
+api_src_input = "src"
+
 
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
-is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == 'True'
+is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == "True"
 
-rtd_version = is_read_the_docs_build and os.environ.get('READTHEDOCS_VERSION')  # Get the version being built
-rtd_version_is_latest = is_read_the_docs_build and rtd_version == 'latest'  # Typically the 'master' branch
+rtd_version = is_read_the_docs_build and os.environ.get(
+    "READTHEDOCS_VERSION"
+)  # Get the version being built
+rtd_version_is_latest = (
+    is_read_the_docs_build and rtd_version == "latest"
+)  # Typically the 'master' branch
 
 # Set canonical URL from the Read the Docs Domain
 html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
 html_context["READTHEDOCS"] = is_read_the_docs_build
 
+# --- Breathe configuration ---
+
+breathe_projects = {}
+doxygen_root = "_doxygen"
+
+
+def configure_doxygen_breathe(app):
+    base_dir = Path(app.srcdir, doxygen_root)
+    print(f"\n[conf.py::breathe] Configuring Breathe projects from {base_dir}...")
+    for project_name in os.listdir(base_dir):
+        path = base_dir.joinpath(project_name)
+        if os.path.isdir(path):
+            print(
+                f"[conf.py::breathe] Registering Breathe project: '{project_name}': '{path}'"
+            )
+            breathe_projects[project_name] = path
+    print("Done.\n")
+
+
+# --- End of Breathe configuration ---
+
+# --- C# domain configuration ---
+sphinx_csharp_test_links = False
+sphinx_csharp_multi_language = True
+sphinx_csharp_ignore_xref = [
+    "xbe.sdk.Source.Interfaces.IUidHandler",
+    "xbe.sdk.IAPIClient",
+    "T",
+    "Task",
+    "Guid",
+    "KeyCollection",
+    "KeyValuePair",
+    "PropertyInfo",
+    "FieldInfo",
+    "DeleteMemberBinder",
+    "GetMemberBinder",
+    "SetMemberBinder",
+    "DateTime",
+    "IDynamicMetaObjectProvider",
+    "HttpClientHandler",
+    "IEquatable",
+    "Callback",
+    "JsonReader",
+    "xbe.sdk.Network.IConnection",
+    "JsonWriter",
+    "HttpResponseMessage",
+    "IAPIClient",
+    "StreamingContext",
+    "HttpMethod",
+    "xbe.sdk.ILogger",
+    "HttpStatusCode",
+    "CancellationToken",
+    "Uri",
+    "JsonConverter",
+    "ClientWebSocket",
+    "Attribute",
+    "DynamicObject",
+    "OnUnknownMessage",
+    "Exception",
+    "SerializationInfo",
+    "ILogger",
+    "Encoding",
+    "HttpClient",
+    "JsonSerializer",
+    "CancellationTokenSource",
+    "ValidationParameters",
+    "OnSocketMessage",
+    "PushMessage",
+    "Vector2",
+    "Vector3",
+    ">",
+    
+]
+# --- End of C# Domain ----
+
 
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
+    app.connect("builder-inited", configure_doxygen_breathe)
     app.connect("build-finished", copy_open_graph_img_to_build)
 
 
@@ -117,6 +207,13 @@ extensions = [
     "sphinx_remove_toctrees",  # Remove specific toctrees | https://pypi.org/project/sphinx-remove-toctrees
     "sphinx_openapi",  # Our own custom extension to download and build OpenAPI docs
 ]
+
+if is_read_the_docs_build:
+    print("[conf.py::extensions] Adding breathe + sphinx_csharp extensions since is_read_the_docs_build (+7m build time)")
+    extensions.append("breathe")  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
+    extensions.append("sphinx_csharp")  # C# extension for breathe | https://github.com/rogerbarton/sphinx-csharp
+else:
+    print("[conf.py::extensions] WARNING: [ breathe, sphinx_csharp ] skipped since not is_read_the_docs_build (saves 7m build time)")
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -184,7 +281,13 @@ ogp_custom_meta_tags = [
 # [post-build::low priority] If we don't use the open graph image directly (we use a smaller variant in the root index),
 # We need to manually mv it to the build images dir
 def copy_open_graph_img_to_build(app, exception):
-    html_og_image = Path(app.srcdir) / "_static" / "images" / "_local" / "xbe-banner-og-1200x630.min.png"
+    html_og_image = (
+        Path(app.srcdir)
+        / "_static"
+        / "images"
+        / "_local"
+        / "xbe-banner-og-1200x630.min.png"
+    )
     build_images_dir = Path(app.outdir) / "_images"
 
     print(
@@ -214,6 +317,7 @@ sass_targets = {
 }
 sass_src_dir = "_sass"
 sass_out_dir = "_static/styles/css"
+# -- End of sphinxcontrib-sass configuration -------------------------------
 
 # -- Sphinx Extension: sphinx_image_min -----------------------------------
 # Optimizes ../build/_images/ if RTD CI using Pillow
@@ -359,9 +463,9 @@ html_theme_options = {
         {
             "name": "API Docs",
             "url": (
-                    "https://docs.goxbe.io/en/"
-                    + ("latest" if manifest_stage_is_production else "dev")
-                    + "/content/-/api/index.html"
+                "https://docs.goxbe.io/en/"
+                + ("latest" if manifest_stage_is_production else "dev")
+                + "/content/-/api/index.html"
             ),
             "icon": "fa-solid fa-book-open",
             "attributes": {"target": "_self"},
@@ -484,8 +588,7 @@ myst_enable_extensions = [
 
 feature_flags = {
     # True: Nothing - False: Show dev toctree
-    'dev-debug-mode': False,
-    
+    "dev-debug-mode": False,
     # True: [Navbar, Docs] Create Acct -> AXR pricing si te
     # False: New login page @ https://xsolla.cloud
     "use-new-price-page-url": False,

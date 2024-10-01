@@ -9,11 +9,11 @@ from pathlib import Path
 from .log_styles import *
 
 GIT_SPARSE_PRESERVED_DIRS_FILES = [
-    '.git',
-    '.gitignore',
-    '.gitlab',
-    'README.md',
-    'RELEASE_NOTES.rst',
+    ".git",
+    ".gitignore",
+    ".gitlab",
+    "README.md",
+    "RELEASE_NOTES.rst",
 ]
 
 
@@ -76,7 +76,7 @@ def run_subprocess_cmd(
     check_throw_on_cli_err=True,
     log_entries=None,
 ):
-    """ Run a subprocess command and handle errors. """
+    """Run a subprocess command and handle errors."""
     clean_command_array(cmd_arr)
     redacted_cmd_arr = [redact_url_secret(part) for part in cmd_arr]
     log_pretty_cli_cmd(redacted_cmd_arr, log_entries)

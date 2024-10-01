@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classexample_1_1Calculator" kind="class" language="C++" prot="public">
+    <compoundname>example::Calculator</compoundname>
+    <basecompoundref refid="classexample_1_1IArithmetic" prot="public" virt="non-virtual">example::IArithmetic</basecompoundref>
+    <includes refid="example_8h" local="no">example.h</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classexample_1_1Calculator_1aac837cbe5cb3fa00f466d8245a4d397c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>example::Calculator::Calculator</definition>
+        <argsstring>()</argsstring>
+        <name>Calculator</name>
+        <qualifiedname>example::Calculator::Calculator</qualifiedname>
+        <briefdescription>
+<para>Constructor for <ref refid="classexample_1_1Calculator" kindref="compound">Calculator</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="75" column="9" bodyfile="cpp/example.cpp" bodystart="17" bodyend="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classexample_1_1Calculator_1a2022936af1928a0d31e564220e9d5c93" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>int</type>
+        <definition>int example::Calculator::add</definition>
+        <argsstring>(int a, int b) override</argsstring>
+        <name>add</name>
+        <qualifiedname>example::Calculator::add</qualifiedname>
+        <reimplements refid="classexample_1_1IArithmetic_1a7e780e1a784de41d929046f020b75a90">add</reimplements>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>Adds two integers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method takes two integers as input and returns their sum.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First integer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second integer. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Sum of the two integers. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="86" column="13" bodyfile="cpp/example.cpp" bodystart="28" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classexample_1_1Calculator_1a3ee26c063152848367ef3e0f70a3cd63" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>int</type>
+        <definition>int example::Calculator::multiply</definition>
+        <argsstring>(int a, int b) override</argsstring>
+        <name>multiply</name>
+        <qualifiedname>example::Calculator::multiply</qualifiedname>
+        <reimplements refid="classexample_1_1IArithmetic_1a2d83ace5dd2372e70b8ee4e5c50ffe14">multiply</reimplements>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>Multiplies two integers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method takes two integers as input and returns their product.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First integer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second integer. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Product of the two integers. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="97" column="13" bodyfile="cpp/example.cpp" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classexample_1_1Calculator_1ae692a5eeea8161b90078e94ca0910c5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int example::Calculator::performOperation</definition>
+        <argsstring>(int a, int b, Operation op)</argsstring>
+        <name>performOperation</name>
+        <qualifiedname>example::Calculator::performOperation</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type><ref refid="example_8h_1aa75163107b3f96994fc36c622845d4f8" kindref="member">Operation</ref></type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+<para>Performs an arithmetic operation. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method takes two integers and an operation type as input and returns the result of the operation.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First integer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second integer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>op</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Operation type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of the arithmetic operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="110" column="13" bodyfile="cpp/example.cpp" bodystart="58" bodyend="81"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>A simple calculator class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class provides basic arithmetic operations. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>example::Calculator</label>
+        <link refid="classexample_1_1Calculator"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>example::IArithmetic</label>
+        <link refid="classexample_1_1IArithmetic"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>example::Calculator</label>
+        <link refid="classexample_1_1Calculator"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>example::IArithmetic</label>
+        <link refid="classexample_1_1IArithmetic"/>
+      </node>
+    </collaborationgraph>
+    <location file="cpp/example.h" line="69" column="5" bodyfile="cpp/example.h" bodystart="70" bodyend="111"/>
+    <listofallmembers>
+      <member refid="classexample_1_1Calculator_1a2022936af1928a0d31e564220e9d5c93" prot="public" virt="virtual"><scope>example::Calculator</scope><name>add</name></member>
+      <member refid="classexample_1_1Calculator_1aac837cbe5cb3fa00f466d8245a4d397c" prot="public" virt="non-virtual"><scope>example::Calculator</scope><name>Calculator</name></member>
+      <member refid="classexample_1_1Calculator_1a3ee26c063152848367ef3e0f70a3cd63" prot="public" virt="virtual"><scope>example::Calculator</scope><name>multiply</name></member>
+      <member refid="classexample_1_1Calculator_1ae692a5eeea8161b90078e94ca0910c5a" prot="public" virt="non-virtual"><scope>example::Calculator</scope><name>performOperation</name></member>
+      <member refid="classexample_1_1IArithmetic_1a42de4b13501045c3ab62df362cf36e72" prot="public" virt="virtual"><scope>example::Calculator</scope><name>~IArithmetic</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

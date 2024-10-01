@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="namespaceexample" kind="namespace" language="C++">
+    <compoundname>example</compoundname>
+    <innerclass refid="classexample_1_1Calculator" prot="public">example::Calculator</innerclass>
+    <innerclass refid="classexample_1_1IArithmetic" prot="public">example::IArithmetic</innerclass>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="example_8h_1aa75163107b3f96994fc36c622845d4f8" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>Operation</name>
+        <qualifiedname>example::Operation</qualifiedname>
+        <enumvalue id="example_8h_1aa75163107b3f96994fc36c622845d4f8a9eeb52badb613229884838847294b90d" prot="public">
+          <name>ADD</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Addition operation </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="example_8h_1aa75163107b3f96994fc36c622845d4f8a080aaf8d817ada96fca7096b7b55bd30" prot="public">
+          <name>MULTIPLY</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Multiplication operation </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="example_8h_1aa75163107b3f96994fc36c622845d4f8a23ebcc4776b613af25dfbe7c8ce4813e" prot="public">
+          <name>SUBTRACT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Subtraction operation </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="example_8h_1aa75163107b3f96994fc36c622845d4f8a210c66d794cec40488f3f8f634d6c33b" prot="public">
+          <name>DIVIDE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Division operation </para>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Arithmetic operations enumeration. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This enum defines basic arithmetic operations. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="19" column="5" bodyfile="cpp/example.h" bodystart="20" bodyend="25"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="program_8cpp_1a4a030da07d0f47837b255139c03198fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int example::main</definition>
+        <argsstring>()</argsstring>
+        <name>main</name>
+        <qualifiedname>example::main</qualifiedname>
+        <briefdescription>
+<para>Main function to demonstrate <ref refid="classexample_1_1Calculator" kindref="compound">Calculator</ref> operations. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function creates an instance of the <ref refid="classexample_1_1Calculator" kindref="compound">Calculator</ref> class and performs various arithmetic operations (addition, multiplication, subtraction, and division) on two integers. The results of these operations are printed to the standard output.</para>
+<para><simplesect kind="return"><para>int Returns 0 upon successful execution. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/program.cpp" line="24" column="9" declfile="cpp/program.cpp" declline="24" declcolumn="9"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="cpp/example.cpp" line="12" column="1"/>
+  </compounddef>
+</doxygen>

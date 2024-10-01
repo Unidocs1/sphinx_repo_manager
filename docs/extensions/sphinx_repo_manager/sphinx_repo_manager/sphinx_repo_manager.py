@@ -379,6 +379,11 @@ class SphinxRepoManager:
                 f"   - source_static_path: '{brighten(self.source_static_path)}'"
             )
         )
+        logger.info(
+            colorize_path(
+                f"   - source_doxygen_path: '{brighten(self.source_doxygen_path)}'"
+            )
+        )
 
         self.setup_directory_skeleton(
             abs_init_clone_path
@@ -399,6 +404,7 @@ class SphinxRepoManager:
         self.manifest_path = Path(path).absolute()
         self.manifest_base_path = self.manifest_path.parent
         self.source_static_path = Path(self.manifest_base_path, "source", "_static")
+        self.source_doxygen_path = Path(self.manifest_base_path, "source", "_doxygen")
 
         # Ensure working dir is always from manifest working dir for consistency
         # (!) This particularly fixes a RTD bug that adds an extra source/ dir, breaking paths
@@ -1279,6 +1285,72 @@ class SphinxRepoManager:
         except Exception as e:
             logger.error(f"Error creating symlink (3):\n- {str(e)}")
 
+    def repo_add_symlink5_doxygen_dir(
+        self,
+        tag_versioned_clone_src_repo_name,
+        abs_clone_src_nested_path,
+        rel_symlinked_repo_path,
+        repo_name,
+        rel_tag_versioned_clone_src_path,
+        rel_selected_repo_sparse_path,
+        log_entries,
+    ):
+        """Src dir may not exist"""
+        abs_repo_doxygen_dir_path = Path(
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            "source",
+            "_doxygen",
+            repo_name,
+        ).resolve()
+
+        # If dir !exists, return
+        if not abs_repo_doxygen_dir_path.exists():
+            # log_entries.append(colorize_warning(f"  - (4) No blobs found in source repo."))
+            return
+
+        # (5) Symlink _doxygen/{repo_name} -> to main doc
+        action_str = colorize_action(f"Symlinking '_doxygen/{repo_name}'...")
+        log_entries.append(f"🔗 [{tag_versioned_clone_src_repo_name}] {action_str}")
+
+        # Log + Validate clone src path to _static/{repo_name}
+        log_entries.append(
+            colorize_path(
+                f"  - (5) From from {repo_name} src path: "
+                f"'{brighten(abs_repo_doxygen_dir_path)}'"
+            )
+        )
+
+        if not abs_repo_doxygen_dir_path.exists():
+            err_msg = f"Error creating symlink (3):\n- {abs_clone_src_nested_path}\n- abs_clone_src_nested_path !found"
+            if THROW_ON_REPO_ERROR:
+                raise Exception(
+                    err_msg
+                )  # TODO: Use this instead, once the architecture is setup
+            else:
+                log_entries.append(colorize_warning(err_msg))
+
+        # source/_static/{repo_name}; eg: "source/_static/blobs/account_services"
+        target_symlinked_doxygen_dir_path = self.source_doxygen_path.joinpath(repo_name)
+        log_entries.append(
+            colorize_path(
+                f"  - To symlink path: "
+                f"'{brighten(target_symlinked_doxygen_dir_path)}'"
+            )
+        )
+
+        try:
+            self.create_symlink(
+                abs_repo_doxygen_dir_path,
+                target_symlinked_doxygen_dir_path,
+                log_entries,
+            )
+
+            if not Path(rel_symlinked_repo_path).is_symlink():
+                raise Exception("File is not detected as a symlink")
+        except Exception as e:
+            logger.error(f"Error creating symlink:\n- {str(e)}")
+
     def repo_add_symlinks(
         self,
         repo_name,
@@ -1325,6 +1397,16 @@ class SphinxRepoManager:
         )
 
         self.repo_add_symlink4_static_blobs_dir(
+            tag_versioned_clone_src_repo_name,
+            abs_clone_src_nested_path,
+            rel_symlinked_repo_path,
+            repo_name,
+            rel_tag_versioned_clone_src_path,
+            rel_selected_repo_sparse_path,
+            log_entries,
+        )
+
+        self.repo_add_symlink5_doxygen_dir(
             tag_versioned_clone_src_repo_name,
             abs_clone_src_nested_path,
             rel_symlinked_repo_path,

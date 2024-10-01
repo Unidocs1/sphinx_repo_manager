@@ -36,8 +36,10 @@ The following environment variables can be set in runtime enviromnet, or in the 
 ### Build Base Images with  [`docker/docker-compose.base.yaml`](docker-compose.base.yaml)
 
 - Generates the following images
-  - xbe/docs/base
-  - xbe/docs/sphinx
+  - `xbe/docs/base` | The base image with ubuntu and python 3.10, extensions folder added.
+  - `xbe/docs/sphinx` | Based on `base` image. The `docs` folder is added to `/app/docs` and requirements installed.
+  - `xbe/docs/doxygen` | Based on `base` image. The `tools/template-doxygen` folder is added to `/app` and doxygen is installed.
+  - `xbe/docs/doxygen-sphinx` | Based on `doxygen` image. The `docs` folder is added to `/app/docs` and requirements installed.
 
 ```bash
 docker compose -f docker/docker-compose.base.yaml build

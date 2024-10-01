@@ -11,4 +11,4 @@
 .build_docs_main:
     extends: .build_docs_base
     script:
-        - docker run --rm -e GITLAB_ACCESS_TOKEN=$GITLAB_ACCESS_TOKEN -v ${CI_PROJECT_DIR}/docs/build:/app/build xbe/docs/sphinx html
+        - docker run --rm -e REPO_AUTH_PREFIX=gitlab-ci-token:${CI_JOB_TOKEN} -v ${CI_PROJECT_DIR}/docs/build:/app/build xbe/docs/sphinx html

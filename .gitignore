@@ -73,7 +73,9 @@ docs/source/content
 
 # Ignore all expected _static symlinks at docs/source/_static/ (except _local)
 docs/source/_static/images/*
+docs/source/_doxygen/*
 docs/source/_static/styles/css/*
 !docs/source/_static/styles/css/README*
+!docs/source/_doxygen/README.txt
 !docs/source/_static/images/_local
 !docs/source/_static/images/_local/*

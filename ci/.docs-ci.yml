@@ -1,0 +1,75 @@
+.on_merge_request: &on_merge_request
+    rules:
+        - if: 'CI_MERGE_REQUEST_ID && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "dev")'
+          when: on_success
+        - if: "$CI_MERGE_REQUEST_EVENT_TYPE == null"
+          when: manual
+          allow_failure: true
+
+.before_docs: &before_docs
+    before_script:
+        - |
+            git remote remove origin
+            git remote add origin https://gitlab-ci-token:${XBE_PROJECT_TOKEN}@${CI_SERVER_URL#https://}/${CI_PROJECT_PATH}.git
+            git config user.email "xbe@xsolla.com"
+            git config user.name "XBE Automated"
+            export GIT_TERMINAL_PROMPT=0
+
+.after_docs: &after_docs
+    script:
+        - |
+            if [ -n "$(git status --porcelain)" ]; then
+                echo "Pushing changes..."
+                git commit -m "docs: commit changes [skip ci]"
+                git push origin HEAD:${CI_COMMIT_REF_NAME}
+            else
+                echo "No changes detected."
+            fi
+
+.build_docs_job:
+    rules: *on_merge_request
+    before_script: *before_docs
+    after_script: *after_docs
+
+.build_docs_doxygen:
+    extends: .build_docs_job
+    stage: build
+    image: docker:latest
+    services:
+        - docker:dind
+    script:
+        - echo "Rebuilding doxygen output..."
+        - |
+            docker compose -f docs/docker/docker-compose.yml run --rm 
+            docker run --rm \
+                -e PROJECT_URL="$CI_PROJECT_URL" \
+                -e PROJECT_BRANCH="$CI_COMMIT_REF_NAME" \
+                -e PROJECT_NAME="$CI_PROJECT_NAME" \
+                -v "${CI_PROJECT_DIR}:/app" \
+                xbe-docs/base \
+                doxygen
+            # If changed, run make dummy with EXHALE=True
+            if [ -n "$(git status --porcelain)" ]; then
+                echo "Changes detected after docs build, running Exhale..."
+                docker run --rm \
+                    -e PROJECT_URL="$CI_PROJECT_URL" \
+                    -e PROJECT_BRANCH="$CI_COMMIT_REF_NAME" \
+                    -e PROJECT_NAME="$CI_PROJECT_NAME" \
+                    -v "${CI_PROJECT_DIR}:/app" \
+                    xbe-docs/base \
+                    dummy EXHALE=True
+                git add docs
+            else
+                echo "No doxygen changes, skipping API doc rebuild."
+            fi
+
+.test_push_token:
+    extends: .build_docs_job
+    stage: build
+    image: docker:latest
+    services:
+        - docker:dind
+    script:
+        - echo "Creating file change..."
+        - echo "Test file change at $(date)" > test.txt
+        - git add test.txt
