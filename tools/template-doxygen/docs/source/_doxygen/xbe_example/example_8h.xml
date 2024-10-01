@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="example_8h" kind="file" language="C++">
+    <compoundname>example.h</compoundname>
+    <includedby refid="example_8cpp" local="yes">cpp/example.cpp</includedby>
+    <includedby refid="program_8cpp" local="yes">cpp/program.cpp</includedby>
+    <invincdepgraph>
+      <node id="2">
+        <label>cpp/example.cpp</label>
+        <link refid="example_8cpp"/>
+      </node>
+      <node id="1">
+        <label>cpp/example.h</label>
+        <link refid="example_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>cpp/program.cpp</label>
+        <link refid="program_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classexample_1_1IArithmetic" prot="public">example::IArithmetic</innerclass>
+    <innerclass refid="classexample_1_1Calculator" prot="public">example::Calculator</innerclass>
+    <innernamespace refid="namespaceexample">example</innernamespace>
+    <briefdescription>
+<para><ref refid="namespaceExample" kindref="compound">Example</ref> header file to demonstrate Doxygen comments. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This file contains example functions, classes, interfaces, and enums to demonstrate how to use Doxygen for generating documentation. </para>
+    </detaileddescription>
+    <location file="cpp/example.h"/>
+  </compounddef>
+</doxygen>

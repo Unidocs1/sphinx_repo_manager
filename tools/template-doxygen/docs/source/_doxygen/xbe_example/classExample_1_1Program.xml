@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classExample_1_1Program" kind="class" language="C#" prot="public">
+    <compoundname>Example::Program</compoundname>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classExample_1_1Program_1ad4a08deed54909b51acc4d2273ae830f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void Example.Program.Main</definition>
+        <argsstring>(string[] args)</argsstring>
+        <name>Main</name>
+        <qualifiedname>Example.Program.Main</qualifiedname>
+        <param>
+          <type>string[]</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>Main method to demonstrate the usage of <ref refid="classExample_1_1Calculator" kindref="compound">Calculator</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Command-line arguments.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="csharp/program.cs" line="20" column="28" bodyfile="csharp/program.cs" bodystart="20" bodyend="30"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Main class to demonstrate the usage of <ref refid="classExample_1_1Calculator" kindref="compound">Calculator</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="csharp/program.cs" line="14" column="11" bodyfile="csharp/program.cs" bodystart="15" bodyend="31"/>
+    <listofallmembers>
+      <member refid="classExample_1_1Program_1ad4a08deed54909b51acc4d2273ae830f" prot="public" virt="non-virtual"><scope>Example::Program</scope><name>Main</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

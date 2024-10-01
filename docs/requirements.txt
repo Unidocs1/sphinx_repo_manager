@@ -24,3 +24,8 @@ git+https://source.goxbe.io/Core/docs/sphinx_feature_flags.git#egg=sphinx_featur
 git+https://source.goxbe.io/Core/docs/sphinx_openapi.git#egg=sphinx_openapi  # OpenAPI Docgen
 git+https://source.goxbe.io/Core/docs/sphinx_image_min.git#egg=sphinx_image_min  # Minimize build dir images
 git+https://source.goxbe.io/Core/docs/sphinx_algolia_crawler.git#egg=sphinx_algolia_crawler  # Algolia DocSearch Crawler
+
+# Doxygen and Breathe requirements
+# Assists breath extension in parsing C# code in doxygen directives
+exhale>=0.3.0               # Breathe extension for Doxygen | https://pypi.org/project/exhale
+git+https://github.com/rogerbarton/sphinx-csharp.git # C# Domain for Sphinx

@@ -20,19 +20,5 @@ def setup(app):
         [str, Path, WindowsPath, PosixPath],
     )
 
-    # Git credentials
-    app.add_config_value(
-        "repo_manager_auth_user",
-        "oauth2",
-        "env",
-        [str],
-    )
-    app.add_config_value(
-        "repo_manager_auth_pass",
-        None,
-        "env",
-        [str],
-    )
-
     repo_manager = SphinxRepoManager()
     app.connect("builder-inited", repo_manager.main)

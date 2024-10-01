@@ -1,5 +1,5 @@
 # Conda env
-name: sphinx-env
+name: xbe-docs
 channels:
   - defaults
 dependencies:

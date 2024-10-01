@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.12.0" xml:lang="en-US">
+  <compound refid="classExample_1_1Calculator" kind="class"><name>Example::Calculator</name>
+    <member refid="classExample_1_1Calculator_1a72ae96b1bfa0b1ebb4eb48025513d09e" kind="function"><name>Calculator</name></member>
+    <member refid="classExample_1_1Calculator_1a9119fc919af4ca910b39396f79e5d7a2" kind="function"><name>Add</name></member>
+    <member refid="classExample_1_1Calculator_1aad8bcd24ad400f7fa1741623f24b7293" kind="function"><name>Multiply</name></member>
+    <member refid="classExample_1_1Calculator_1a9b2716a7243c6c841b29c0bb32396aab" kind="function"><name>PerformOperation</name></member>
+  </compound>
+  <compound refid="classexample_1_1Calculator" kind="class"><name>example::Calculator</name>
+    <member refid="classexample_1_1Calculator_1aac837cbe5cb3fa00f466d8245a4d397c" kind="function"><name>Calculator</name></member>
+    <member refid="classexample_1_1Calculator_1a2022936af1928a0d31e564220e9d5c93" kind="function"><name>add</name></member>
+    <member refid="classexample_1_1Calculator_1a3ee26c063152848367ef3e0f70a3cd63" kind="function"><name>multiply</name></member>
+    <member refid="classexample_1_1Calculator_1ae692a5eeea8161b90078e94ca0910c5a" kind="function"><name>performOperation</name></member>
+  </compound>
+  <compound refid="interfaceExample_1_1IArithmetic" kind="interface"><name>Example::IArithmetic</name>
+    <member refid="interfaceExample_1_1IArithmetic_1a58d02bd7979509df7a853219de3224c4" kind="function"><name>Add</name></member>
+    <member refid="interfaceExample_1_1IArithmetic_1a00f190c64fe347706c20248c10fa7478" kind="function"><name>Multiply</name></member>
+  </compound>
+  <compound refid="classexample_1_1IArithmetic" kind="class"><name>example::IArithmetic</name>
+    <member refid="classexample_1_1IArithmetic_1a42de4b13501045c3ab62df362cf36e72" kind="function"><name>~IArithmetic</name></member>
+    <member refid="classexample_1_1IArithmetic_1a7e780e1a784de41d929046f020b75a90" kind="function"><name>add</name></member>
+    <member refid="classexample_1_1IArithmetic_1a2d83ace5dd2372e70b8ee4e5c50ffe14" kind="function"><name>multiply</name></member>
+  </compound>
+  <compound refid="classExample_1_1Program" kind="class"><name>Example::Program</name>
+    <member refid="classExample_1_1Program_1ad4a08deed54909b51acc4d2273ae830f" kind="function"><name>Main</name></member>
+  </compound>
+  <compound refid="namespaceExample" kind="namespace"><name>Example</name>
+    <member refid="namespaceExample_1a526d0d90bc6feb4628b80e1356b8951d" kind="enum"><name>Operation</name></member>
+    <member refid="namespaceExample_1a526d0d90bc6feb4628b80e1356b8951da9eeb52badb613229884838847294b90d" kind="enumvalue"><name>ADD</name></member>
+    <member refid="namespaceExample_1a526d0d90bc6feb4628b80e1356b8951da080aaf8d817ada96fca7096b7b55bd30" kind="enumvalue"><name>MULTIPLY</name></member>
+    <member refid="namespaceExample_1a526d0d90bc6feb4628b80e1356b8951da23ebcc4776b613af25dfbe7c8ce4813e" kind="enumvalue"><name>SUBTRACT</name></member>
+    <member refid="namespaceExample_1a526d0d90bc6feb4628b80e1356b8951da210c66d794cec40488f3f8f634d6c33b" kind="enumvalue"><name>DIVIDE</name></member>
+  </compound>
+  <compound refid="namespaceexample" kind="namespace"><name>example</name>
+    <member refid="example_8h_1aa75163107b3f96994fc36c622845d4f8" kind="enum"><name>Operation</name></member>
+    <member refid="example_8h_1aa75163107b3f96994fc36c622845d4f8a9eeb52badb613229884838847294b90d" kind="enumvalue"><name>ADD</name></member>
+    <member refid="example_8h_1aa75163107b3f96994fc36c622845d4f8a080aaf8d817ada96fca7096b7b55bd30" kind="enumvalue"><name>MULTIPLY</name></member>
+    <member refid="example_8h_1aa75163107b3f96994fc36c622845d4f8a23ebcc4776b613af25dfbe7c8ce4813e" kind="enumvalue"><name>SUBTRACT</name></member>
+    <member refid="example_8h_1aa75163107b3f96994fc36c622845d4f8a210c66d794cec40488f3f8f634d6c33b" kind="enumvalue"><name>DIVIDE</name></member>
+    <member refid="program_8cpp_1a4a030da07d0f47837b255139c03198fc" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="namespaceSystem" kind="namespace"><name>System</name>
+  </compound>
+  <compound refid="example_8cpp" kind="file"><name>example.cpp</name>
+  </compound>
+  <compound refid="example_8h" kind="file"><name>example.h</name>
+  </compound>
+  <compound refid="program_8cpp" kind="file"><name>program.cpp</name>
+    <member refid="program_8cpp_1ae66f6b31b5ad750f1fe042a706a4e3d4" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="example_8cs" kind="file"><name>example.cs</name>
+  </compound>
+  <compound refid="program_8cs" kind="file"><name>program.cs</name>
+  </compound>
+  <compound refid="dir_df511e5bd85cec96854b39d5e1c27aa8" kind="dir"><name>cpp</name>
+  </compound>
+  <compound refid="dir_ed952e9a8b7a5695e7666baeeb1d988b" kind="dir"><name>csharp</name>
+  </compound>
+</doxygenindex>

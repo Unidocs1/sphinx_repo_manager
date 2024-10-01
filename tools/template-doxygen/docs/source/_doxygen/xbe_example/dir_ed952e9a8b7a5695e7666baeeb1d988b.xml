@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="dir_ed952e9a8b7a5695e7666baeeb1d988b" kind="dir">
+    <compoundname>csharp</compoundname>
+    <innerfile refid="example_8cs">example.cs</innerfile>
+    <innerfile refid="program_8cs">program.cs</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="csharp/"/>
+  </compounddef>
+</doxygen>

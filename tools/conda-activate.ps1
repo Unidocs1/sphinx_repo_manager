@@ -29,7 +29,7 @@ Write-Host "Conda environment: $envName"
 Write-Host "Python version: $pythonVersion"
 
 function CreateEnv($name) {
-    conda create --name $envName python=$pythonVersion -y
+    conda env create --name $envName --file environment.yml -y
     Write-Host "Conda environment '$envName' created with Python $pythonVersion."
 }
 

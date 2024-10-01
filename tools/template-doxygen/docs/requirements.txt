@@ -1,0 +1,9 @@
+# For all doc repos, including the main multi-repo doc, to be copied to other repo `requirements.txt`:
+sphinx==7.3.7               # TODO: Test 8.x when bottlenecks (sphinx-book-theme, sphinx-docsearch) catch up
+gitpython>=3.1.43           # Aids "Edit with GitLab" btn | https://pypi.org/project/GitPython
+python-dotenv>=1.0.1        # load_dotenv() to load .env | https://pypi.org/project/python-dotenv
+
+# Doxygen and Breathe requirements
+# Assists breath extension in parsing C# code in doxygen directives
+exhale>=0.3.0               # Breathe extension for Doxygen | https://pypi.org/project/exhale
+git+https://github.com/rogerbarton/sphinx-csharp.git # C# Domain for Sphinx
