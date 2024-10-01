@@ -16,9 +16,11 @@ sphinxcontrib-sass>=0.3.4   # SASS/SCSS -> CSS | https://pypi.org/project/sphinx
 sphinx-design>=0.6.1        # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html
 sphinx-remove-toctrees>=1.0.0  # Remove specific toctrees at conf.py; can use wildcards | https://pypi.org/project/sphinx-remove-toctrees
 
-# Local extensions (with mode to be editable without reinstalling)
+# Local extensions (with mode to be editable without reinstalling) | TODO: Import this from xbe_static_docs later
 ./docs/extensions/sphinx_repo_manager    # Automates multi-repo doc management
-./docs/extensions/sphinx_feature_flags   # `feature-flag` directive to hide/show content
-./docs/extensions/sphinx_openapi         # OpenAPI Docgen
-./docs/extensions/sphinx_image_min       # Minimize build dir images
-./docs/extensions/sphinx_algolia_crawler # Algolia DocSearch Crawler
+
+# Git extensions | TODO: Port to PyPI
+git+https://source.goxbe.io/Core/docs/sphinx_algolia_crawler.git#egg=sphinx_algolia_crawler  # `feature-flag` directive to hide/show content
+git+https://source.goxbe.io/Core/docs/sphinx_openapi.git#egg=sphinx_openapi  # OpenAPI Docgen
+git+https://source.goxbe.io/Core/docs/sphinx_image_min.git#egg=sphinx_image_min  # Minimize build dir images
+git+https://source.goxbe.io/Core/docs/sphinx_algolia_crawler.git#egg=sphinx_algolia_crawler  # Algolia DocSearch Crawler
