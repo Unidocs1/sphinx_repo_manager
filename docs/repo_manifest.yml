@@ -14,7 +14,7 @@
 # - Determines which repo info to use for git checkout
 # - Choices: 'dev_stage', 'production_stage'
 # - Defaults to 'dev_stage', if omitted
-stage: 'dev_stage'
+stage: 'production_stage'
 
 # - (!) DANGEROUS: If false, will skip this extension both locally + on ReadTheDocs (RTD)
 # - Useful if you 100% know all repos are up-to-date for faster iterations
