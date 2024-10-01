@@ -28,9 +28,9 @@ enable_repo_manager: true
 enable_repo_manager_local: true
 
 # - Max workers for local sphinx_repo_manager for multi-threading
-# - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers. 
-#   - Eg; if 3 workers, the 1st 3 log results may be something like: Repo2{a,b,c}, Repo3{a,b,c}, Repo1{a,b,c}  
-#   - TODO: Explicitly track the repo# logged and await the correct chronological repo to show 
+# - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers.
+#   - Eg; if 3 workers, the 1st 3 log results may be something like: Repo2{a,b,c}, Repo3{a,b,c}, Repo1{a,b,c}
+#   - TODO: Explicitly track the repo# logged and await the correct chronological repo to show
 # - Recommended just 1 if needing *chronological* debugging
 # - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
 max_workers_local: 5
@@ -40,7 +40,7 @@ max_workers_local: 5
 # - Defaults to 2, if omitted
 max_workers_rtd: 1
 
-# - More-verbose logging or debugging 
+# - More-verbose logging or debugging
 # - Throws arbitrary err on done with sphinx_repo_manager if local (prevents warning spam)
 # - Defaults to false, if omitted
 debug_mode: false
@@ -73,14 +73,14 @@ repo_sparse_path: "docs"
 # - Defaults to source/_repos-available, if omitted
 init_clone_path: "source/_repos-available"
 
-# - Supports {repo_sparse_path} template 
+# - Supports {repo_sparse_path} template
 # - When we symlink from init_clone_path, we may want to set the src deeper
 # - Nested than what we cloned; normalizes "os/path/slashes"
 # - If kept default, you can access static content, like images, via `../_static/{repo_name}/images/`
 # - Defaults to "{repo_sparse_path}/source", if omitted
 init_clone_path_root_symlink_src: "{repo_sparse_path}/source/content"
 
-# Declared .env name containing `MyGitLabUsernameHere:MyAccessTokenHere`
+# Declared .env name containing `user:access_token`
 # TODO: Add optional, per-repo `dotenv_repo_auth_prefix_override`
 dotenv_repo_auth_prefix: "REPO_AUTH_PREFIX"
   
@@ -321,9 +321,9 @@ repositories:
 #
 ## Expects branch || tag (usually tag); if missing, falls back to {default_branch}
 #production_stage:
-#  
-#  # - [tools/production_prep.py] Arbitrary version to compare before->after, if listed and 
-#  #   production_prep_tool_show_prev_ver_diff == true   
+#
+#  # - [tools/production_prep.py] Arbitrary version to compare before->after, if listed and
+#  #   production_prep_tool_show_prev_ver_diff == true
 #  prev_ver: "v1.0.0"
 #  checkout: "v1.0.1"  # (!) Don"t forget to prefix with "v" to follow XBE standards
 #  checkout_type: "tag"
@@ -342,6 +342,8 @@ repositories:
 #
 ## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
 #active: true  
+## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+#active: true
 #
 ## - Useful for testing multi-repo WIP without having it be stashed away or require a commit
 ## - Still pulls from `_static/images/{repo_name}/`

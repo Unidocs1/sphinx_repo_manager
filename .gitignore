@@ -69,8 +69,11 @@ docs/source/content
 
 # Env var handling for when RTD has no access to private repos
 .env
+!docker/.env
 
 # Ignore all expected _static symlinks at docs/source/_static/ (except _local)
 docs/source/_static/images/*
+docs/source/_static/styles/css/*
+!docs/source/_static/styles/css/README*
 !docs/source/_static/images/_local
 !docs/source/_static/images/_local/*

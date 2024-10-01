@@ -1,52 +1,146 @@
 # xbe_docs (docs.goxbe.io)
 
-Master doc to create help docs from other repos with `make html` (`sphinx-build`). 
+Master doc to create help docs from other repos with `make html` (`sphinx-build`).
 
-This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubuntu, etc).
+This guide focuses on Windows 11 docker desktop instructions, but supports other OS (bash, Ubuntu, etc).
+
+## Contents
+
+[TOC]
 
 ## Quickstart
 
-1. Configure `docs/repo_manifest.yaml` (ok to leave defaults)
-2. Set env `REPO_AUTH_PREFIX` env var:
-   * Local: Copy `.env.template` -> to `.env` and set
-   * RTD: Set in RTD dashboard
-3. Run `start-docker.ps1` (or `make html` at `docs/`)
-4. Upon success, your browser will launch with `index.html` and~~~~ stop the Docker instance.
+1. Copy [`.env.template`](.env.template) -> to `.env` and set `REPO_AUTH_PREFIX`.
+  * If deploying to RTD, you should also set this env var in their web dashboard.
+2. Configure [`docs/repo_manifest.yml`](docs/repo_manifest.yml) (ok to leave defaults).
+3. Run [`tools/docker-start.ps1`](tools/docker-start.ps1) at the root of the project.
+4. Upon success, your browser will launch with `index.html`.
 
-## Prerequisites
+You may either run via [Docker (beta)](#docker-setup) or [Locally (recommended)](#local-setup).
 
-1. Prepare your gitlab access key.
+## Docker Setup
 
-You may either run via Docker (recommended) or locally (legacy):
+### Docker Requirements
 
-### Docker Prereqs (Recommended)
+- Minimum `Docker Engine` version: 20.10.0
+  - Install [Docker Desktop](https://www.docker.com/products/tools/docker-desktop/)
+      or [Docker Engine](https://docs.docker.com/engine/install/)
 
-2. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+### Docker Scripts
 
-### Local Prereqs (Legacy)
+- [`tools/docker-start.ps1`](tools/docker-start.ps1)
+  - Start a preview container and launch the docs in your browser.
+  - Exit the process to kill the container, it will clean itself up.
+  - If there is no html build output (`docs/build/html`), this will run `tools/docker-build.ps1` first - but only if
+      there is no existing output. To rebuild docs, run `tools/docker-build.ps1` manually before running this.
 
-2. [Chocolatey](https://chocolatey.org/) CLI tool
-	- Once you have Choco, install `make` in an **ADMIN** terminal:
-	  ```powershell
-      choco install make --yes
-      ```
+- [`tools/docker-build.ps1`](tools/docker-build.ps1)
+  - Clear and rebuild the local html build folder (`docs/build/html`).
+  - This will also build the required `base` and `sphinx` builder images if necessary.
+  - If you've run `tools/docker-start.ps1` ensure the preview container is stopped before running this, or it will
+      fail.
 
-3. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
-	- See a recommended path to installing Python [below](#python-install-path)
+- [`tools/docker-destroy.ps1`](tools/clean-cache.ps1)
+  - Destroy all containers and local images matching the `NAME` configured in `docker/.env`.
+  - Also runs `tools/clean-cache.ps1` to clear the local filesystem.
 
-4. Run `tools/requirements-install.ps1`
-		
-## Setup
+- [`tools/clean-build.ps1`](tools/clean-build.ps1)
+  - Clear all unversioned local files from `docs/build`.
 
-1. Configure `docs/repo_manifest.yml` to configure repos/prefs: Defaults are ok, but note the top-level `stage`
-* **For local testing:** Setup `.env` prop `GITLAB_ACCESS_KEY` (for local testing only)
-* **For ReadTheDocs (RTD) Deployment:**
-  1. [create a RTD account](https://about.readthedocs.com/?ref=readthedocs.org)
-  2. At RTD web dashboard, create a new env var named `GITLAB_ACCESS_TOKEN`
-  3. (⚠️ Be aware this _may_ log your access token on bad configurations; this will be fixed later)
-  4. [Deprecated step] Update the `.readthedocs.yaml` -> `$READTHEDOCS_PROJECT` name
+- [`tools/clean-cache.ps1`](tools/clean-cache.ps1)
+  - Clear all unversioned local files from `docs/build` and `docs/source`.
 
-## Build
+## Local Setup
+
+### Local Requirements
+
+1. Build Tool: `make`
+
+   | OS      | Package Manager | Command                 |
+   |---------|-----------------|-------------------------|
+   | Windows | Chocolatey      | `choco install make -y` |
+   | macOS   | Homebrew        | `brew install make`     |
+   | Ubuntu  | APT             | `apt-get install make`  |
+
+2. `Python v3.10` (or `conda`)
+
+   | OS      | Package Manager | Command                                      |
+   |---------|-----------------|----------------------------------------------|
+   | Windows | Chocolatey      | `choco install python3 -y`                   |
+   | macOS   | Homebrew        | `brew install python@3.10`                   |
+   | Ubuntu  | APT             | `sudo apt-get install python3.10`            |
+
+### Activate Python Environment
+
+Activate the build environment, creating a new one if necessary.
+
+- With `venv` ([`tools/venv-activate.ps1`](tools/venv-activate.ps1))
+
+    ```powershell
+    ./tools/venv-activate.ps1
+    ```
+
+- With `conda` ([`tools/conda-activate.ps1`](tools/conda-activate.ps1))
+
+    ```powershell
+    ./tools/conda-activate.ps1
+    ```
+
+### Installing Dependencies
+
+Local extensions located in the `docs/extensions` directory are referenced by `docs/requirements.txt` by relative path from the project root to mimick the runtime layout on ReadTheDocs servers.
+
+- Installing `docs/requirements.txt` manually should be done from the project root like so:
+
+    ```powershell
+    pip install -r docs/requirements.txt
+    ```
+
+- Running the `make install` command from the `docs` directory does this automatically:
+
+    ```powershell
+    cd docs
+    make install
+    ```
+
+- Or you can run the [`tools/requirements-install.ps1`](tools/requirements-install.ps1) script from any directory:
+
+    ```powershell
+    ./tools/requirements-install.ps1
+    ```
+
+### Building the Documentation
+
+- The `make` command is a wrapper for `sphinx-build` that simplifies the build process. It reads the `Makefile` in the
+  `docs` directory and executes the commands specified in it. The `html` target builds the HTML documentation:
+
+    ```powershell
+    make html
+    ```
+
+- ...while the `clean` target removes the build directory:
+
+    ```powershell
+    make clean
+    ```
+
+### Teardown Python Environment
+
+Destroy the environment and dependencies, if desired.
+
+- With `venv` ([`tools/venv-destroy.ps1`](tools/venv-destroy.ps1))
+
+    ```powershell
+    ./tools/conda-activate.ps1
+    ```
+
+- with `conda`([`tools/conda-destroy.ps1`](tools/conda-destroy.ps1))
+
+    ```powershell
+    ./tools/conda-activate.ps1
+    ```
+
+## Build Notes & Tips
 
 ❗If you recently updated your `repo_manifest.yml` file, you may want to 1st wipe these `source/` dirs
 to ensure a clean build:
@@ -54,26 +148,18 @@ to ensure a clean build:
 1. `_repos-available`
 2. `content`
 
-### Docker (Recommended)
-
-1. Run `start-docker.ps1`
-
-### Local Build (Legacy)
-
-1. Run `tools/requirements-install.ps1`
-2. Run `docs/start.ps1`
-
 ### Speedy Rebuild
 
 If you _just_ updated and want to build without going through `sphinx_repo_manager`, set either
-`repo_manifest.yml` field: 
+`repo_manifest.yml` field:
 
 1. `enable_repo_manager` to `false` to disable for all repos
 2. OR set individual repo `active` to false (notably useful for actively updating the `xbe_static_docs` repo).
 
 ### Debugging a Build
 
-1. Slow down the logs and ensure chronological stability: Set the `max_workers_local` of `repo_manifest.yml` to `1` (default `5`).
+1. Slow down the logs and ensure chronological stability: Set the `max_workers_local` of `repo_manifest.yml` to `1` (
+   default `5`).
 2. Set `debug_mode` of `repo_manifest` to `true` (default `false`).
 3. Comment out all repositories in your `repo_manifest` except 1 or 2.
 
@@ -87,15 +173,15 @@ Open the built index via `build/html/index.html`
 
 ### Single Doc
 
-Source repo docs/  layout tree should be structured as follows, with example content:
+Source repo docs/ layout tree should be structured as follows, with example content:
 
-```
+```text
 - .git
 - RELEASE_NOTES.rst
 - <repo root>/docs/
    - source/
       - _extensions/
-	    - sphinx_repo_manager/
+     - sphinx_repo_manager/
       - _static/
          - images/
             - foo.png
@@ -106,51 +192,71 @@ Source repo docs/  layout tree should be structured as follows, with example con
          - foo.rst (pointed to from index.rst)
       - RELEASE_NOTES.rst (symlink to root)
       - conf.py (entry point setup)
-	  - index.rst (entry point)
+   - index.rst (entry point)
 ```
 
 ## Apps & Extensions
 
 To describe what is installed, including extensions:
 
-The `requirements.txt` file includes dependencies necessary for building and managing the documentation of our project
-using Sphinx. **Overview:**
+The `docs/requirements.txt` file includes dependencies necessary for building and managing the documentation of our project
+using Sphinx. __Overview:__
 
 ### Sphinx
 
-- **Purpose**: [`sphinx`] Powerful doc generator that converts reStructuredText (.rst) files into HTML websites and other formats. It is highly customizable and supports numerous extensions.
-- **Documentation**: [Sphinx Documentation](https://www.sphinx-doc.org/en/master/)
+- __Purpose__: [`sphinx`] Powerful doc generator that converts reStructuredText (.rst) files into HTML websites and
+  other formats. It is highly customizable and supports numerous extensions.
+- __Documentation__: [Sphinx Documentation](https://www.sphinx-doc.org/en/master/)
 
 ### Sphinx Read The Docs Theme
 
-- **Purpose**: [`sphinx_rtd_theme`] Popular theme for Sphinx provided by Read the Docs. It offers a clean, mobile-friendly, and well-structured layout for documentation.
-- **Documentation**: [sphinx_rtd_theme on GitHub](https://github.com/readthedocs/sphinx_rtd_theme)
+- __Purpose__: [`sphinx_rtd_theme`] Popular theme for Sphinx provided by Read the Docs. It offers a clean,
+  mobile-friendly, and well-structured layout for documentation.
+- __Documentation__: [sphinx_rtd_theme on GitHub](https://github.com/readthedocs/sphinx_rtd_theme)
 
 ### MyST-Parser
 
-- **Purpose**: [`myst_parser`] Spiritual successor to recommonmark: Extended Markdown parser for Sphinx, allowing the use of Markdown with Sphinx documentation. It supports all Markdown features and provides additional syntax for roles and directives typically available in reStructuredText, making it a robust choice for Sphinx-based documentation projects that prefer Markdown.
-- **Installation**: 
-- **Documentation**: [MyST-Parser on GitHub](https://github.com/executablebooks/MyST-Parser)
+- __Purpose__: [`myst_parser`] Spiritual successor to recommonmark: Extended Markdown parser for Sphinx, allowing the
+  use of Markdown with Sphinx documentation. It supports all Markdown features and provides additional syntax for roles
+  and directives typically available in reStructuredText, making it a robust choice for Sphinx-based documentation
+  projects that prefer Markdown.
+- __Installation__:
+- __Documentation__: [MyST-Parser on GitHub](https://github.com/executablebooks/MyST-Parser)
 
 ### Sphinx Tabs
 
-- **Purpose**: [`sphinx_tabs`] Sphinx extension that enables tabbed content in your documentation. This can be useful for separating content into different context-specific tabs on the same page without clutter.
-- **Documentation**: [sphinx_tabs on GitHub](https://github.com/djungelorm/sphinx-tabs)
+- __Purpose__: [`sphinx_tabs`] Sphinx extension that enables tabbed content in your documentation. This can be useful
+  for separating content into different context-specific tabs on the same page without clutter.
+- __Documentation__: [sphinx_tabs on GitHub](https://github.com/djungelorm/sphinx-tabs)
 
 ### PyYAML
 
-- **Purpose**: [`PyYAML`] YAML parser and emitter for Python. It is used to handle YAML-formatted files within your documentation project, which can be useful for configuration files or other data-driven content.
-- **Documentation**: [PyYAML on PyPI](https://pypi.org/project/PyYAML/)
+- __Purpose__: [`PyYAML`] YAML parser and emitter for Python. It is used to handle YAML-formatted files within your
+  documentation project, which can be useful for configuration files or other data-driven content.
+- __Documentation__: [PyYAML on PyPI](https://pypi.org/project/PyYAML/)
 
 ### sphinx-copybutton
 
-- **Purpose**: [`sphinx-copybutton`] Sphinx extension that adds a copy button to code blocks in your documentation. This allows users to easily copy code snippets to their clipboard with a single click.
-- **Documentation**: [sphinx-copybutton on PyPI](https://pypi.org/project/sphinx-copybutton)
+- __Purpose__: [`sphinx-copybutton`] Sphinx extension that adds a copy button to code blocks in your documentation. This
+  allows users to easily copy code snippets to their clipboard with a single click.
+- __Documentation__: [sphinx-copybutton on PyPI](https://pypi.org/project/sphinx-copybutton)
 
 ### sphinx-new-tab-lnk
 
-- **Purpose**: [`sphinx-new-tab-lnk`] Sphinx extension that adds a target="_blank" attribute to external links in your documentation. This ensures that external links open in a new tab by default, preventing users from navigating away from your site.
-- **Documentation**: [sphinx-new-tab-lnk on PyPI](https://pypi.org/project/sphinx-new-tab-lnk)
+- __Purpose__: [`sphinx-new-tab-lnk`] Sphinx extension that adds a target="_blank" attribute to external links in your
+  documentation. This ensures that external links open in a new tab by default, preventing users from navigating away
+  from your site.
+- __Documentation__: [sphinx-new-tab-lnk on PyPI](https://pypi.org/project/sphinx-new-tab-lnk)
+
+### Local Extensions
+
+Local extensions are located in the `docs/extensions` directory:
+
+- [docs/extensions/sphinx_algolia_crawler/README.md](docs/extensions/sphinx_algolia_crawler/README.md)
+- [docs/extensions/sphinx_feature_flags/README.md](docs/extensions/sphinx_feature_flags/README.md)
+- [docs/extensions/sphinx_image_min/README.md](docs/extensions/sphinx_image_min/README.md)
+- [docs/extensions/sphinx_openapi/README.md](docs/extensions/sphinx_openapi/README.md)
+- [docs/extensions/sphinx_repo_manager/README.md](docs/extensions/sphinx_repo_manager/README.md)
 
 ## Troubleshooting
 
@@ -191,49 +297,52 @@ As this can easily get error-prone, especially for new Python users, see below t
 
 1. Open PowerShell in ADMIN
 2. Install from:
-	- Choco:
-		- Should work, but not covered in this guide
-		- ⚠️ Does not auto-alias `python` to `python3`
-		- ⚠️ May handle PATHs differently
-		- **TODO:** Update this part, if someone finds a good way
-		
-	- Windows Store - Either:
-		- Install via the [Microsoft Store GUI]([Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5))
-		- Install via `winget` CLI:
-		```powershell
-		winget install "Python 3.10" --accept-package-agreements
-		```
-	
+    - Choco:
+    - Should work, but not covered in this guide
+    - ⚠️ Does not auto-alias `python` to `python3`
+    - ⚠️ May handle PATHs differently
+    - __TODO:__ Update this part, if someone finds a good way
+    - Windows Store - Either:
+    - Install via the [Microsoft Store GUI]([Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5))
+    - Install via `winget` CLI:
+
+        ```powershell
+        winget install "Python 3.10" --accept-package-agreements
+        ```
+
 3. Verify installation:
-	```powershell
-	python --version
-	pip --version
-	```
-	
+
+    ```powershell
+    python --version
+    pip --version
+    ```
+
 4. Add Python `/Scripts` to env PATH (`pip` installs tools here)
-	```powershell
-	# Get the installation path of Python 3.10
-	$pythonPath = (Get-Command python.exe).Source
 
-	# Set the PYTHON_SCRIPTS_HOME environment variable
-	$env:PYTHON_SCRIPTS_HOME = Join-Path $pythonPath "Scripts"
+    ```powershell
+    # Get the installation path of Python 3.10
+    $pythonPath = (Get-Command python.exe).Source
 
-	# Add the Scripts directory to the user's PATH
-	$env:Path += ";$env:PYTHON_SCRIPTS_HOME"
+    # Set the PYTHON_SCRIPTS_HOME environment variable
+    $env:PYTHON_SCRIPTS_HOME = Join-Path $pythonPath "Scripts"
 
-	# Display a message
-	Write-Host "PYTHON_SCRIPTS_HOME set to: $env:PYTHON_SCRIPTS_HOME"
-	Write-Host "Scripts directory added to PATH."
-	```
+    # Add the Scripts directory to the user's PATH
+    $env:Path += ";$env:PYTHON_SCRIPTS_HOME"
+
+    # Display a message
+    Write-Host "PYTHON_SCRIPTS_HOME set to: $env:PYTHON_SCRIPTS_HOME"
+    Write-Host "Scripts directory added to PATH."
+    ```
 
 ## Tools
 
 ### Template Doc
 
-See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
+See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually)
+at:
 
-* docs/README.md
-* docs/source/conf.py
+- docs/README.md
+- docs/source/conf.py
 
 ### More Tools
 
