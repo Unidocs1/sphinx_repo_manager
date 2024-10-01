@@ -19,9 +19,6 @@ sphinx-remove-toctrees>=1.0.0  # Remove specific toctrees at conf.py; can use wi
 # Local extensions (with mode to be editable without reinstalling) | TODO: Import this from xbe_static_docs later
 ./docs/extensions/sphinx_repo_manager    # Automates multi-repo doc management
 
-# Local extensions | TODO: Mv to public repo 
-
-
 # Git extensions | TODO: Port to PyPI
 git+https://source.goxbe.io/Core/docs/sphinx_feature_flags.git#egg=sphinx_feature_flags  # `feature-flag` directive to hide/show content
 git+https://source.goxbe.io/Core/docs/sphinx_openapi.git#egg=sphinx_openapi  # OpenAPI Docgen
