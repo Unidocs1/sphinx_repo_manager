@@ -1,0 +1,21 @@
+services:
+    base:
+        extends:
+            file: docker-compose.base.yaml
+            service: base
+
+    sphinx:
+        extends:
+            file: docker-compose.base.yaml
+            service: sphinx
+
+    main:
+        image: ${NAME}/sphinx:${TAG}
+        depends_on:
+            - sphinx
+        volumes:
+            - ..:/app
+        env_file:
+            - ../.env
+        entrypoint: ["make"]
+        command: "html"

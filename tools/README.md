@@ -1,29 +1,49 @@
 # xbe_docs/tools
 
-From "perfect doc" templates to scripts to get things done:
+## Contents
 
-## requirements-install.ps1
+[TOC]
 
-The equivalent of installing ../requirements.txt yourself, but friendlier (and creates a symlink to repo_manager for tooling).
+## Scripts
 
-## template-doc/ dir
+| Docker Helpers | |
+|--------|-------------|
+| [`docker-build.ps1`](docker-build.ps1) | Build Docker images for the project. |
+| [`docker-start.ps1`](docker-start.ps1) | Start Docker containers for the project. |
+| [`docker-destroy.ps1`](docker-destroy.ps1) | Destroy Docker containers and clean up resources. |
 
-Paste this to new repos for a `docs/` template. Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
+| Python VENV Helpers | |
+|--------|-------------|
+| [`venv-activate.ps1`](venv-activate.ps1) | Activate a new or existing virtual environment called `venv`. |
+| [`venv-destroy.ps1`](venv-destroy.ps1) | Destroy the virtual environment called `venv`. |
 
-* docs/README.md
-* docs/source/conf.py
+| Python Conda Helpers| |
+|--------|-------------|
+| [`conda-activate.ps1`](conda-activate.ps1) | Activate a new or existing conda environment called `xbe-docs` at Python 3.10. |
+| [`conda-destroy.ps1`](conda-destroy.ps1) | Destroy the conda environment called `xbe-docs`. |
 
-## tool_template.py
+| Python Requirements Install  | |
+|--------|-------------|
+| [`requirements-install.ps1`](requirements-install.ps1) | Install requirements into the active environment. Equivalent to `cd docs && make install`. |
 
-Start here for tooling -- a minimal template to read the manifest file, then leave you to it.
+| Cleanup | |
+|--------|-------------|
+| [`clean-build.ps1`](clean-build.ps1) | Clean the build directory to ensure a fresh build environment. |
+| [`clean-cache.ps1`](clean-cache.ps1) | Clear the cache to resolve potential issues with stale data. |
 
-## mass-repo-cmds.ps1
+| Miscellaneous | |
+|--------|-------------|
+| [`mass-repo-cmds.ps1`](mass-repo-cmds.ps1) | Execute mass commands across multiple repositories for maintenance tasks. |
 
-The successor of `repo_cleaner.py` for more-minimal actions for already-normalized doc repos. Eg: Mass add an entry to `.gitignore` -> commit the change:
+## Python Scripts
 
-1. Copy the script where you your repos are -> set the `$REPOS_AVAIL_DIR` path.
-2. Edit between `>> Custom Cmds >>` section at `Start-RepoCmds` func.
+| Script | |
+|--------|-------------|
+| [`production_prep.py`](production_prep.py) | Prepare the project for production deployment. |
+| [`tool_template.py`](tool_template.py) | Start here for tooling -- a minimal template to read the manifest file, then leave you to it. |
 
-## License
+## Templates
 
-TODO
+| Template | |
+|----------|-------------|
+| [`template-doc/`](template-doc/) | Paste this to new repos for a `docs/` template. <br>Replace the `%PLACEHOLDERS%` in: `docs/README.md` and `docs/source/conf.py` |

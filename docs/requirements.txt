@@ -1,0 +1,24 @@
+# For all doc repos, including the main multi-repo doc, to be copied to other repo `requirements.txt`:
+sphinx==7.3.7               # TODO: Test 8.x when bottlenecks (sphinx-book-theme, sphinx-docsearch) catch up
+gitpython>=3.1.43           # Aids "Edit with GitLab" btn | https://pypi.org/project/GitPython
+python-dotenv>=1.0.1        # load_dotenv() to load .env | https://pypi.org/project/python-dotenv
+
+# Sphinx html requirements
+sphinx-book-theme>=1.1.3    # Replacing sphinx_rtd_theme==2.0.0 | https://pypi.org/project/sphinx-tabs/
+myst-parser>=4.0.0          # `recommonmark` successor
+sphinx-tabs>=3.4.5          # https://pypi.org/project/sphinx-tabs
+sphinx-copybutton>=0.5.2    # https://pypi.org/project/sphinx-copybutton
+sphinx-new-tab-link>=0.5.2  # Opens all external links in new tab | https://pypi.org/project/sphinx-new-tab-link
+sphinxcontrib-redoc>=1.6.0  # OpenAPI Docgen | https://sphinxcontrib-redoc.readthedocs.io/en/stable
+sphinxext-opengraph>=0.9.1  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
+sphinx-docsearch>=0.0.7     # AI-powered DocSearch | https://pypi.org/project/sphinx-docsearch
+sphinxcontrib-sass>=0.3.4   # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass
+sphinx-design>=0.6.1        # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html
+sphinx-remove-toctrees>=1.0.0  # Remove specific toctrees at conf.py; can use wildcards | https://pypi.org/project/sphinx-remove-toctrees
+
+# Local extensions (with mode to be editable without reinstalling)
+./docs/extensions/sphinx_repo_manager    # Automates multi-repo doc management
+./docs/extensions/sphinx_feature_flags   # `feature-flag` directive to hide/show content
+./docs/extensions/sphinx_openapi         # OpenAPI Docgen
+./docs/extensions/sphinx_image_min       # Minimize build dir images
+./docs/extensions/sphinx_algolia_crawler # Algolia DocSearch Crawler

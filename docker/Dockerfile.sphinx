@@ -1,0 +1,11 @@
+ARG FROM_IMAGE=base
+FROM ${FROM_IMAGE}
+
+ARG WORKDIR=/app
+WORKDIR ${WORKDIR}/docs
+
+ARG BASE_DIR=.
+ADD ${BASE_DIR}/docs .
+
+RUN make install
+ENTRYPOINT [ "make" ]
