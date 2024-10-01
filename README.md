@@ -10,6 +10,10 @@ This guide focuses on Windows 11 docker desktop instructions, but supports other
 
 ## Quickstart
 
+> **Warning:**
+> Docker quickstart is currently experiencing write-issues for some; see legacy setup if affected.
+> This will be addressed soon.
+
 1. Copy [`.env.template`](.env.template) -> to `.env` and set `REPO_AUTH_PREFIX`.
     - If deploying to RTD, you should also set this env var in their web dashboard.
 2. Configure [`docs/repo_manifest.yml`](docs/repo_manifest.yml) (ok to leave defaults).
