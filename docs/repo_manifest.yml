@@ -25,7 +25,7 @@ enable_repo_manager: true
 # - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
 # - (!) If you are missing images/blobs, you probably want to set this to true
 # - Defaults to true, if omitted
-enable_repo_manager_local: true
+enable_repo_manager_local: false
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers.
@@ -100,7 +100,7 @@ production_prep_tool_show_prev_ver_diff: true
 repositories:
   # Static docs containing most !repo content >>
   xbe_static_docs:
-    url: "https://source.goxbe.io/Core/xbe_static_docs"
+    url: "https://source.goxbe.io/Core/docs/xbe_static_docs"
     symlink_path: "-"  # Shortened to prevent bloaty url slugs for static, unversioned content
     #dev_stage:
     #  checkout: "feat/v2024.08.0"

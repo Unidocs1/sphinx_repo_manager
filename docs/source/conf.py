@@ -450,7 +450,7 @@ html_theme_options = {
     "home_page_in_toc": False,
     "path_to_docs": "docs/source/",
     "repository_provider": "gitlab",
-    "repository_url": "https://source.goxbe.io/Core/xbe_docs",
+    "repository_url": "https://source.goxbe.io/Core/docs/sphinx_repo_manager",
     "repository_branch": "main",
     "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
     "pygments_light_style": "monokai",  # May get overwritten by pygments_style

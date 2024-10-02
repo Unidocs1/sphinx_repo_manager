@@ -29,7 +29,7 @@ sys.path.append(os.path.abspath(os.path.join('_extensions', 'sphinx_algolia_craw
 extensions = [ 'sphinx_algolia_crawler' ]
 
 # While this example merely turns it on, you probably want to check if RTD /latest production
-# See `xbe_docs` `conf.py` for examples of how we checked for this
+# See `sphinx_repo_manager` `conf.py` for examples of how we checked for this
 algolia_crawler_enabled = True
 ```
 

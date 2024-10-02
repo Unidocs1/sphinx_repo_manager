@@ -4,6 +4,8 @@ Master doc to create help docs from other repos with `make html` (`sphinx-build`
 
 This guide focuses on Windows 11 docker desktop instructions, but supports other OS (bash, Ubuntu, etc).
 
+This currently combines content, but is slowly being transitioned to a generalized, official plugin.
+
 ## Contents
 
 [TOC]
