@@ -12,35 +12,26 @@ import subprocess
 import sys
 import git
 import shutil
-from dotenv import load_dotenv
-
-# Load the .env file
-load_dotenv()
+from pathlib import Path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
-project_title = "XBE Docs"
 author = "Xsolla"
 copyright = "Xsolla (USA), Inc. All rights reserved"
 
 # Set the project URL and branch from the environment variables
 project_url = os.environ.get("PROJECT_URL", None)
 current_branch = os.environ.get("PROJECT_BRANCH", None)
-project_name = os.environ.get("PROJECT_NAME", "xbe_example")
+project_name = os.environ.get("PROJECT_NAME", None)
 
 
 # If not set, try to get the project URL and branch from the git repo
 if not project_url or not current_branch:
-    try:
-        project_name = "xbe_example"
-        repo = git.Repo(search_parent_directories=True)
-        current_branch = repo.active_branch.name
-        project_url = repo.remotes.origin.url
-    except Exception as e:
-        print(
-            "Please set the `PROJECT_URL` and `PROJECT_BRANCH` environment variables."
-        )
+    repo = git.Repo(search_parent_directories=True)
+    current_branch = repo.active_branch.name
+    project_url = repo.remotes.origin.url
+    project_name = "xbe_example"
+
 
 project_brief = "XBE Doxygen Template"
 project_group = "Xsolla"
@@ -52,36 +43,30 @@ version = release  # Used by some extensions
 
 # -- Path setup --------------------------------------------------------------
 # The absolute path to the directory containing conf.py.
-documentation_root = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.abspath(""))
+documentation_root = Path(os.path.dirname(__file__)).absolute().as_posix()
+sys.path.insert(0, documentation_root)
+
 
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 # Check if we're running on Read the Docs' servers
-is_read_the_docs_build = (
-    os.environ.get("READTHEDOCS", None) == "True"
-)  # AKA is_production
-fallback_to_production_stage_if_not_rtd = True  # Affects feature flags
-
-rtd_version = is_read_the_docs_build and os.environ.get(
-    "READTHEDOCS_VERSION"
-)  # Get the version being built
-rtd_version_is_latest = (
-    is_read_the_docs_build and rtd_version == "latest"
-)  # Typically the 'master' branch
+is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == "True"
+fallback_to_production_stage_if_not_rtd = True
+rtd_version = is_read_the_docs_build and os.environ.get("READTHEDOCS_VERSION")
+rtd_version_is_latest = is_read_the_docs_build and rtd_version == "latest"
 
 # -- General configuration ---------------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    # "myst_parser",
-    # "sphinx_tabs.tabs",
-    # "sphinx_new_tab_link",
-    # "sphinx_copybutton",
-    # "sphinxcontrib.sass",
-    # "sphinx.ext.todo",
-    # "sphinxext.opengraph",
-    # "sphinx_design",
+    "myst_parser",
+    "sphinx_tabs.tabs",
+    "sphinx_new_tab_link",
+    "sphinx_copybutton",
+    "sphinxcontrib.sass",
+    "sphinx.ext.todo",
+    "sphinxext.opengraph",
+    "sphinx_design",
     "breathe",
     "sphinx_csharp",
 ]
@@ -116,7 +101,7 @@ highlight_language = "cpp"
 
 # --- Breathe configuration ---
 breathe_default_project = project_name
-breathe_projects[project_name] = f"_doxygen/{project_name}"
+breathe_projects[project_name] = Path(documentation_root, "_doxygen", project_name).as_posix()
 # --- End of Breathe configuration ---
 
 # -- Doxygen configuration ---------------------------------------------------
@@ -139,20 +124,19 @@ if run_exhale:
     extensions.append("exhale")
 
     # Remove the existing api rst files
-    api_rst_output = "./source/content/api"
+    api_rst_output = "./content/api"
     shutil.rmtree(api_rst_output, ignore_errors=True)
 
     # Setup the exhale extension
     exhale_args = {
         # These arguments are required
-        "containmentFolder": api_rst_output,
+        "containmentFolder": Path(api_rst_output).as_posix(),
         "rootFileName": "index.rst",
         "rootFileTitle": f"{project_brief} - API Reference",
         "afterTitleDescription": "",
         "createTreeView": True,
         "fullToctreeMaxDepth": 1,
-        "doxygenStripFromPath": f"../{api_src_input}",
-        "unabridgedOrphanKinds": {"typedef", "function", "file"},
+        "doxygenStripFromPath": Path(".").absolute().as_posix(),
     }
 # --- End of Exhale configuration ---
 
@@ -232,14 +216,6 @@ html_static_path = ["_static"]
 
 html_css_files = [
     "styles/css/main.css",
-    "styles/css/algolia.css",
-    # "styles/css/redoc.css",
-    # 'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
-]
-
-html_js_files = [
-    # 'https://cdn.jsdelivr.net/npm/@docsearch/js@3',
-    ("js/algolia.js", {"defer": "defer"}),
 ]
 
 html_logo = "_static/images/_local/logo.png"
@@ -247,8 +223,7 @@ html_favicon = "_static/images/_local/favicon.ico"
 
 html_context.update(
     {
-        # SPHINX BOOK THEME (based on Sphinx PyData theme) >>
-        "default_mode": "dark",  # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/light-dark.html#configure-default-theme-mode
+        "default_mode": "dark",
     }
 )
 
@@ -270,28 +245,11 @@ html_theme_options = {
     "use_repository_button": True,
     "use_edit_page_button": False,
     "use_issues_button": True,
-    "icon_links": [  # TODO: Perhaps add something from https://shields.io ?
-        {
-            "name": "API Docs",
-            "url": (
-                "https://docs.xsolla.cloud/en/"
-                + ("latest" if manifest_stage_is_production else "dev")
-                + "/content/-/api/index.html"
-            ),
-            "icon": "fa-solid fa-book-open",
-            "attributes": {"target": "_self"},
-        },
-        {
-            "name": "Discord",
-            "url": "https://discord.gg/XsollaBackend",
-            "icon": "fa-brands fa-discord",
-            "attributes": {"target": "_blank"},  # Blank target seems to be default
-        },
-    ],
     "article_header_end": [
         "navbar-icon-links",
         "article-header-buttons",
     ],
+    "navbar_end": ["navbar-icon-links"],
 }
 
 html_sidebars = {
@@ -321,50 +279,6 @@ html_context.update(
 
 source_suffix = [".rst", ".md"]  # Use MyST to auto-convert .md
 
-# -- Sphinx Extension: Algolia Crawler ----------------------------------------------------------------------------
-# Crawling is *slow* and temporarily takes search offline while reindexing: Only trigger @ RTD /latest prod build
-# (!) /dev builds can be manually triggered: Use `sphinx_algolia_crawler.py` standalone or see root proj .env.template
-
-algolia_crawler_enabled = rtd_version_is_latest
-
-# -- Sphinx Extension: sphinxext_docsearch ------------------------------------------------------------------------
-# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html
-
-algolia_docsearch_app_id_dev = "DBTSGB2DXO"
-algolia_docsearch_app_id_prod = "CKS2O35GXS"
-
-docsearch_app_id = (
-    algolia_docsearch_app_id_prod
-    if manifest_stage_is_production
-    else algolia_docsearch_app_id_dev
-)
-
-# Which index to select? 'dev_stage' or 'production_stage' (None skips extension)
-docsearch_index_name = "xsolla"  # From Algolia dash "Data Sources" -> "Indices"
-
-# Public read key
-docsearch_api_key_dev = "a98b6eb7635b38887be38212d12318fa"
-docsearch_api_key_prod = "4ebb45dbcdd78f224f1b24c28ba7fd9e"
-docsearch_api_key = (
-    docsearch_api_key_prod if manifest_stage_is_production else docsearch_api_key_dev
-)
-
-# docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
-docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
-
-docsearch_missing_results_url = (
-    f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
-    f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}"
-)
-
-html_context.update(
-    {
-        "docsearch_app_id": docsearch_app_id,
-        "docsearch_api_key": docsearch_api_key,
-        "docsearch_index_name": docsearch_index_name,
-    }
-)
-
 # -- MyST configuration ------------------------------------------------------
 # Recommonmark successor to auto-parse .md to .rst
 
@@ -379,36 +293,4 @@ myst_enable_extensions = [
     "replacements",  # Enable replacements syntax
     "strikethrough",  # Enable strikethrough syntax
     "tasklist",  # Enable task list syntax
-    # Recommended for use with sphinx_design. Doc | https://sphinx-design.readthedocs.io/en/latest/get_started.html
-    # Ext | https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
-    "colon_fence",
 ]
-
-# -- Feature Flags -----------------------------------------------------------
-# Turn any block of docs on/off - with optional fallbacks. EXAMPLE USE:
-"""
-.. feature-flag:: dev_toctree
-
-   This will show if True
-
-.. feature-flag:: dev_toctree
-   :fallback:
-
-   This will show if False
-"""
-
-feature_flags = {
-    # True: Nothing - False: Show dev toctree
-    "production-stage": is_read_the_docs_build
-    or fallback_to_production_stage_if_not_rtd,
-    # True: [Navbar, Docs] Create Acct -> AXR pricing si te
-    # False: New login page @ https://xsolla.cloud
-    "use-new-price-page-url": False,
-    # True: Show web app libs (xbeapp, react, etc) - False: Hide
-    "welcome-release_notes-products_web_apps-libs": False,
-    # True: Show new openapi docs & hide old ones - False: Hide new openapi docs, show placeholders
-    "new-xbe-openapi-doc": True,
-}
-
-# -- Append rst_epilog to the bottom of *every* doc file ---------------------
-# rst_epilog = ".. |theme| replace:: ``{0}``".format(html_theme)
