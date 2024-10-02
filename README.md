@@ -1,4 +1,4 @@
-# xbe_docs (docs.goxbe.io)
+# sphinx_repo_manager (docs.goxbe.io)
 
 Master doc to create help docs from other repos with `make html` (`sphinx-build`).
 

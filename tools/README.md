@@ -1,4 +1,4 @@
-# xbe_docs/tools
+# sphinx_repo_manager/tools
 
 ## Contents
 

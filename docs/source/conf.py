@@ -501,7 +501,7 @@ html_context.update(
         "display_gitlab": True,  # Integrate Gitlab
         "gitlab_host": "source.goxbe.io",
         "gitlab_user": "Core",  # Group
-        "gitlab_repo": "xbe_docs",  # Repo name
+        "gitlab_repo": "sphinx_repo_manager",  # Repo name
         "conf_py_path": "/docs/source/",  # /path/to/docs/source (containing conf.py)
         "gitlab_version": "master",  # Version
         "doc_path": "docs/source",
