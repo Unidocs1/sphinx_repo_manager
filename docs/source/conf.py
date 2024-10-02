@@ -270,8 +270,7 @@ ogp_custom_meta_tags = [
     # '<meta property="og:image" content="https://external/link.png">',
     # Twitter / X
     '<meta name="twitter:card" content="summary_large_image">',
-    '<meta property="twitter:domain" content="docs.goxbe.io">',
-    '<meta property="twitter:url" content="https://docs.goxbe.io/">',
+    '<meta name="twitter:domain" content="docs.goxbe.io">',
     # '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
     # '<meta name="twitter:description" content="The most complete online gaming platform">',
     # '<meta name="twitter:image" content="https://external/link.png">',
