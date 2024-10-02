@@ -50,9 +50,8 @@ debug_mode: false
 stash_and_continue_if_wip: true
 
 # - Default base path for cloning repos relative to this file 
-# - (!) On RTD, "source/" prefix will be removed to resolve RTD bug
 # - Normalizes "os/path/slashes"
-# - Defaults to "source/content", if omitted
+# - Defaults to "content", if omitted
 base_symlink_path: "content"
 
 # - If repository omits "branch", this will be the fallback 
@@ -69,7 +68,6 @@ default_branch: "dev"
 repo_sparse_path: "docs"
 
 # - Default base for cloning; normalizes "os/path/slashes"
-# - (!) On RTD, "source/" prefix will be removed to resolve RTD bug 
 # - Defaults to source/_repos-available, if omitted
 init_clone_path: "_repos-available"
 
