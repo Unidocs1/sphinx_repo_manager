@@ -20,8 +20,7 @@ load_dotenv()
 # -- Path setup --------------------------------------------------------------
 # The absolute path to the directory containing conf.py.
 documentation_root = Path(os.path.dirname(__file__)).absolute()
-sys.path.insert(0, os.path.abspath(""))
-
+sys.path.insert(0, os.path.abspath('.'))
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
