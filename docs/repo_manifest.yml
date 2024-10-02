@@ -53,7 +53,7 @@ stash_and_continue_if_wip: true
 # - (!) On RTD, "source/" prefix will be removed to resolve RTD bug
 # - Normalizes "os/path/slashes"
 # - Defaults to "source/content", if omitted
-base_symlink_path: "source/content"
+base_symlink_path: "content"
 
 # - If repository omits "branch", this will be the fallback 
 # - Defaults to "dev", if omitted
@@ -71,7 +71,7 @@ repo_sparse_path: "docs"
 # - Default base for cloning; normalizes "os/path/slashes"
 # - (!) On RTD, "source/" prefix will be removed to resolve RTD bug 
 # - Defaults to source/_repos-available, if omitted
-init_clone_path: "source/_repos-available"
+init_clone_path: "_repos-available"
 
 # - Supports {repo_sparse_path} template
 # - When we symlink from init_clone_path, we may want to set the src deeper
