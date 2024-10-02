@@ -179,9 +179,43 @@ sphinx_csharp_ignore_xref = [
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
+    print("\n[conf.py::setup] Adding custom directive: 'include' with :relative: option (ignore warning below)")
+    app.add_directive("include", RelativeInclude)
     app.connect("builder-inited", configure_doxygen_breathe)
     app.connect("build-finished", copy_open_graph_img_to_build)
+    print("")
 
+
+# -- Inline extension: RelativeInclude ----------------------------------------
+# Allow :relative: prop under `include` directive to use paths to the target doc
+# TODO: Mv to standalone extension
+
+from docutils.parsers.rst import directives
+from sphinx.directives.other import Include
+
+class RelativeInclude(Include):
+    """
+    Extends the standard `include` directive to support :relative: option,
+    which calculates paths relative to the *included* document perspective (flipped).
+    """
+    option_spec = Include.option_spec.copy()
+    option_spec['relative'] = directives.flag  # Add support for :relative:
+
+    def run(self):
+        # Get the current source file's directory (the file doing the including)
+        including_doc_dir = os.path.dirname(self.state.document.current_source)
+
+        # Check if :relative: option is used
+        if 'relative' in self.options:
+            target_doc = self.arguments[0]
+
+            # Calculate the absolute path relative to the target document
+            target_doc_absolute = os.path.normpath(os.path.join(including_doc_dir, target_doc))
+
+            # Update the path to be relative to the included document's directory
+            self.arguments[0] = target_doc_absolute
+
+        return super().run()
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
