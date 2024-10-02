@@ -395,34 +395,30 @@ source_suffix = ['.rst', '.md']  # Use MyST to auto-convert .md
 
 # -- Sphinx Extension: Algolia Crawler ----------------------------------------------------------------------------
 # Crawling is *slow* and temporarily takes search offline while reindexing: Only trigger @ RTD /latest prod build
-# (!) /dev builds can be manually triggered: Use `sphinx_algolia_crawler.py` standalone or see root proj .env.template
+# (!) /dev builds can be manually triggered: 
+# - Use `sphinx_algolia_crawler.py` standalone 
+# - Or use POSTman | POST `https://crawler.algolia.com/api/1/crawlers/{{crawler_id}}/reindex`
 
+# (!) To trigger the Algolia server-side *crawler* (reindexer), set the 3 .env keys setup in RTD and/or .env:
+#    1. ALGOLIA_CRAWLER_USER_ID
+#    2. ALGOLIA_CRAWLER_API_KEY
+#    3. ALGOLIA_CRAWLER_ID
 algolia_crawler_enabled = rtd_version_is_latest
 
 # -- Sphinx Extension: sphinxext_docsearch ------------------------------------------------------------------------
-# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html 
-
-algolia_docsearch_app_id_dev = "DBTSGB2DXO"
-algolia_docsearch_app_id_prod = "CKS2O35GXS"
-
-docsearch_app_id = algolia_docsearch_app_id_prod if manifest_stage_is_production \
-    else algolia_docsearch_app_id_dev
-
-# Which index to select? 'dev_stage' or 'production_stage' (None skips extension)
-docsearch_index_name = "xsolla"  # From Algolia dash "Data Sources" -> "Indices"
-
-# Public read key
-docsearch_api_key_dev = "a98b6eb7635b38887be38212d12318fa"
-docsearch_api_key_prod = "4ebb45dbcdd78f224f1b24c28ba7fd9e"
-docsearch_api_key = docsearch_api_key_prod if manifest_stage_is_production \
-    else docsearch_api_key_dev
+# Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html
 
 # docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
 docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
+docsearch_missing_results_url = (
+    f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
+    f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}"
+)
 
-docsearch_missing_results_url = (f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
-                                 f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}")
-
+# (!) To use client-side Algolia *docsearch* (using a crawled index^),set the 3 .env keys setup in RTD and/or .env:
+docsearch_app_id = os.environ.get("ALGOLIA_DOCSEARCH_APP_ID", None) # From Algolia dash API Keys
+docsearch_index_name = os.environ.get("ALGOLIA_DOCSEARCH_INDEX_NAME", None) # From Algolia dash data sources -> indices
+docsearch_api_key = os.environ.get("ALGOLIA_DOCSEARCH_API_KEY", None) # From Algolia dash data sources -> indices
 html_context.update({
     "docsearch_app_id": docsearch_app_id,
     "docsearch_api_key": docsearch_api_key,
