@@ -8,17 +8,76 @@
 # ---------------------------------------------------------------------
 $REPOS_AVAIL_DIR = "../docs/source/_repos-available"
 $STARTING_DIR = Get-Location
+$DRY_RUN_ON_1ST_AVAIL_REPO = $false  # Test this script on the 1st alphabetically-available repo
 $FAIL_ON_1ST_ERR = $true
 $MASTER_MAIN_BRANCH_PROTECTION = $true  # Fail on master || main branch
 
 # RUN YOUR CUSTOM COMMANDS HERE (or leave empty for dry run) >>
 function Run-CustomCmds {
-    # Add your custom commands here, for example:
-    #git add .
-    #git commit -m "docs(fix): Foo" -m "[XBND-123]"
+	## TEMPLATE EXAMPLES >>
+	#Copy-FileToRepo
+	#Append-Readme
+	#Run-GitAddCommitPullPush
+}
+
+## TEMPLATE EXAMPLES ############################################################
+function Run-GitAddCommitPullPush {
+	#git add .
+    #git commit -m "docs(legal): Add LICENSE.md EULA" -m "[XBND-1214]"
     #git pull
     #git push
 }
+
+function Copy-FileToRepo {
+    $fileName = "LICENSE.md"
+    $srcFilePath = Join-Path $PSScriptRoot $fileName
+    
+    # Check if the file does not exist, stop the script if missing
+    if (-not (Test-Path $srcFilePath)) {
+        Throw "$fileName not found at: $srcFilePath. Stopping script."
+    }
+
+    # Destination path in the current repository
+    $destinationPath = Join-Path (Get-Location) $fileName
+    
+    # Copy file to the repo root
+    Copy-Item -Path $srcFilePath -Destination $destinationPath -Force        
+    Write-Output "$fileName copied to: $destinationPath"
+}
+
+function Append-Readme {
+    $appendedText = "#License\n\nThis software is licensed under a custom [XBE EULA](LICENSE.md). By using it, you agree to the terms."
+    
+    # Define the README file path in the current repository
+	$fileName = "README.md"
+    $filePath = Join-Path (Get-Location) $fileName
+    
+    # Check if README.md exists
+    if (Test-Path $filePath) {
+        # Read the current content of README.md
+        $currentContent = Get-Content -Path $filePath -Raw
+
+        # Check if the notice is already present
+        if ($currentContent -notlike "*$appendedText*") {
+            # Ensure there is one line break before appending the text
+            if ($currentContent -notlike "*`n") {
+                $currentContent += "`n"
+            }
+
+            # Append the notice to the README.md
+            Add-Content -Path $filePath -Value "`n$appendedText"
+            Write-Output "Appended text to: $filePath"
+        }
+        else {
+            Write-Output "appendedText already present in: $filePath"
+        }
+    }
+    else {
+        Write-Output "$fileName not found in: $(Get-Location)"
+    }
+}
+
+## /TEMPLATE EXAMPLES ###########################################################
 
 function Get-CurrentBranch {
     # Gets the current branch name
