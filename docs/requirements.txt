@@ -20,10 +20,11 @@ sphinx-remove-toctrees>=1.0.0  # Remove specific toctrees at conf.py; can use wi
 ./docs/extensions/sphinx_repo_manager    # Automates multi-repo doc management
 
 # Git extensions | TODO: Port to PyPI
-git+https://source.goxbe.io/Core/docs/sphinx_feature_flags.git#egg=sphinx_feature_flags  # `feature-flag` directive to hide/show content
-git+https://source.goxbe.io/Core/docs/sphinx_openapi.git#egg=sphinx_openapi  # OpenAPI Docgen
-git+https://source.goxbe.io/Core/docs/sphinx_image_min.git#egg=sphinx_image_min  # Minimize build dir images
-git+https://source.goxbe.io/Core/docs/sphinx_algolia_crawler.git#egg=sphinx_algolia_crawler  # Algolia DocSearch Crawler
+git+https://source.goxbe.io/Core/docs/sphinx_feature_flags.git#egg=sphinx_feature_flags  # Our own `feature-flag` directive to hide/show content
+git+https://source.goxbe.io/Core/docs/sphinx_openapi.git#egg=sphinx_openapi  # Our own OpenAPI Docgen
+git+https://source.goxbe.io/Core/docs/sphinx_image_min.git#egg=sphinx_image_min  # Our own custom minimizer for build dir images
+git+https://source.goxbe.io/Core/docs/sphinx_algolia_crawler.git#egg=sphinx_algolia_crawler  # Our own custom Algolia DocSearch Crawler
+git+https://source.goxbe.io/Core/docs/sphinx_relative_include.git#egg=sphinx_relative_include  # Our own custom extension to add :relative: prop to `include` directive
 
 # Doxygen and Breathe requirements
 # Assists breath extension in parsing C# code in doxygen directives
