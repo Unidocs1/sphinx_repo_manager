@@ -1,6 +1,7 @@
 """
 Xsolla Sphinx Extension: sphinx_repo_manager
 - See README for more info
+- If you edit this, be sure to re-run `pip -r requirements.txt` from proj root since it's an embedded pkg
 """
 
 # Core, pathing, ops >>
@@ -37,7 +38,8 @@ DEFAULT_REPO_SPARSE_PATH = "docs"
 DEFAULT_DEFAULT_BRANCH = "dev"  # Since we'll be working with tags, 'master' wouldn't make sense as a fallback
 DEFAULT_PRESERVE_GITLAB_GROUP = True
 DEFAULT_GITLAB_GROUP_TO_LOWERCASE = True
-DEFAULT_DOTENV_REPO_AUTH_URL_PREFIX = ''
+DEFAULT_DOTENV_REPO_AUTH_USER = 'oauth2'  # Default user when using an access token / 2FA
+DEFAULT_DOTENV_REPO_AUTH_TOKEN = ''
 DEFAULT_REPOSITORIES = {}
 DEFAULT_SKIP_REPO_UPDATES = False
 
@@ -61,8 +63,9 @@ class RepositoryManagementError(Exception):
 class SphinxRepoManager:
     def __init__(self):
         load_dotenv()
-        self.default_repo_auth_prefix = None
-        self.has_default_repo_auth_prefix = False
+        self.default_repo_auth_user = None
+        self.default_repo_auth_token = None
+        self.has_default_repo_auth_token = False
         
         self.start_time = time.time()  # Track how long it takes to build all repos
         self.end_time = None
@@ -158,7 +161,8 @@ class SphinxRepoManager:
         manifest.setdefault('base_symlink_path', DEFAULT_BASE_SYMLINK_PATH)
         manifest.setdefault('repo_sparse_path', DEFAULT_REPO_SPARSE_PATH)
         manifest.setdefault('repositories', DEFAULT_REPOSITORIES)
-        manifest.setdefault('dotenv_repo_auth_url_prefix', DEFAULT_DOTENV_REPO_AUTH_URL_PREFIX)
+        manifest.setdefault('dotenv_repo_auth_user', DEFAULT_DOTENV_REPO_AUTH_USER)
+        manifest.setdefault('dotenv_repo_auth_token', DEFAULT_DOTENV_REPO_AUTH_TOKEN)
 
         # Set dynamic root defaults
         repo_sparse_path = manifest["repo_sparse_path"]
@@ -180,13 +184,20 @@ class SphinxRepoManager:
             )
             sys.exit(0)
 
-        # Set gitlab access token from .env using the key defined in the manifest
-        dotenv_repo_auth_prefix = manifest['dotenv_repo_auth_prefix']
-        if dotenv_repo_auth_prefix:
-            self.default_repo_auth_prefix = os.getenv(dotenv_repo_auth_prefix)
-            self.has_default_repo_auth_prefix = True
-        if not self.default_repo_auth_prefix:
-            logger.warning(f"WARNING: Missing or empty '{dotenv_repo_auth_prefix}' in .env file")
+        # Get the repo .env auth key *names* (not the key val) from the manifest
+        dotenv_repo_auth_user_key_name = manifest['dotenv_repo_auth_user_key_name']
+        dotenv_repo_auth_token_key_name = manifest['dotenv_repo_auth_token_key_name']
+
+        # Get the .env key *values* from the .env using the key name from the manifest
+        # (This allows for potentially multiple, overridable auth credentials)
+        if dotenv_repo_auth_user_key_name:
+            self.default_repo_auth_user = os.getenv(dotenv_repo_auth_user_key_name)
+        if dotenv_repo_auth_token_key_name:
+            self.default_repo_auth_token = os.getenv(dotenv_repo_auth_token_key_name)
+            self.has_default_repo_auth_token = True
+            
+        if not self.default_repo_auth_token:
+            logger.warning(f"WARNING: Missing or empty '{dotenv_repo_auth_token_key_name}' key in .env file")
 
         manifest['repo_sparse_path'] = repo_sparse_path.replace('\\', '/')  # Normalize to forward/slashes
         init_clone_path = os.path.normpath(manifest['init_clone_path'])
@@ -308,8 +319,11 @@ class SphinxRepoManager:
         _meta["url_dotgit"] = f"{url}.git"
         _meta["repo_name"] = repo_name
 
-        dotenv_repo_auth_url_prefix = repo_info.get('dotenv_repo_auth_url_prefix', None)
-        _meta['dotenv_repo_auth_url_prefix'] = dotenv_repo_auth_url_prefix
+        # Repo auth
+        dotenv_repo_auth_user = repo_info.get('dotenv_repo_auth_user', None)
+        dotenv_repo_auth_token = repo_info.get('dotenv_repo_auth_token', None)
+        _meta['dotenv_repo_auth_user'] = dotenv_repo_auth_user
+        _meta['dotenv_repo_auth_token'] = dotenv_repo_auth_token
 
         # If tag, append "-{tag} to clone src repo name
         # If !tag, append "--{branch} to clone src repo name
@@ -785,8 +799,10 @@ class SphinxRepoManager:
 
             git_helper = GitHelper()  # TODO: Place this instance @ top?
 
-            if self.has_default_repo_auth_prefix:
-                formatted_repo_url = repo_url_dotgit.replace("://", f"://{self.default_repo_auth_prefix}@")
+            if self.has_default_repo_auth_token:
+                formatted_repo_url = repo_url_dotgit.replace(
+                    "://", 
+                    f"://{self.default_repo_auth_user}:{self.default_repo_auth_token}@")
             else:
                 formatted_repo_url = repo_url_dotgit
 
