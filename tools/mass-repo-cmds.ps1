@@ -15,6 +15,7 @@ $MASTER_MAIN_BRANCH_PROTECTION = $true  # Fail on master || main branch
 # RUN YOUR CUSTOM COMMANDS HERE (or leave empty for dry run) >>
 function Run-CustomCmds {
 	## TEMPLATE EXAMPLES >>
+	#git pull
 	#Copy-FileToRepo
 	#Append-Readme
 	#Run-GitAddCommitPullPush
@@ -22,10 +23,10 @@ function Run-CustomCmds {
 
 ## TEMPLATE EXAMPLES ############################################################
 function Run-GitAddCommitPullPush {
-	#git add .
-    #git commit -m "docs(legal): Add LICENSE.md EULA" -m "[XBND-1214]"
-    #git pull
-    #git push
+	git add .
+    git commit -m "docs(chore): Foo" -m "[XBND-1234]"
+    git pull
+    git push
 }
 
 function Copy-FileToRepo {
