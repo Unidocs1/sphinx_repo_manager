@@ -14,13 +14,13 @@ import git
 from pathlib import Path
 from dotenv import load_dotenv
 
-sys.path.insert(0, os.path.abspath('.'))
+# Load the .env file
 load_dotenv()
 
 # -- Path setup --------------------------------------------------------------
 # The absolute path to the directory containing conf.py.
-documentation_root = Path(__file__).parent.resolve()
-
+documentation_root = Path(os.path.dirname(__file__)).absolute()
+sys.path.insert(0, os.path.abspath('.'))
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
@@ -47,7 +47,7 @@ print(f"[conf.py::repo_manifest.yml] Manifest macro ver: '{macro_ver}'")
 print("")
 
 # TODO: Use these below for dynamic info pulled from repo_manifest.yaml
-base_symlink_path = documentation_root / manifest["base_symlink_path"]  # eg: "source/content"
+base_symlink_path = manifest["base_symlink_path"]  # eg: "source/content"
 repo_sparse_path = manifest["repo_sparse_path"]  # eg: "docs"
 
 # -- Project information -----------------------------------------------------
@@ -210,13 +210,15 @@ extensions = [
 
 if is_read_the_docs_build:
     print("[conf.py::extensions] Adding breathe + sphinx_csharp extensions since is_read_the_docs_build (+7m build time)")
-    extensions.append("breathe")  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
-    extensions.append("sphinx_csharp")  # C# extension for breathe | https://github.com/rogerbarton/sphinx-csharp
+    extensions.append([
+        "breathe",  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
+        "sphinx_csharp",  # C# extension for breathe | https://github.com/rogerbarton/sphinx-csharp
+    ])
 else:
     print("[conf.py::extensions] WARNING: [ breathe, sphinx_csharp ] skipped since not is_read_the_docs_build (saves 7m build time)")
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = [str(documentation_root / "_templates")]
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -413,7 +415,7 @@ pygments_style = "monokai"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
-html_static_path = [str(documentation_root / "_static")]
+html_static_path = ["_static"]
 
 html_css_files = [
     "styles/css/main.css",

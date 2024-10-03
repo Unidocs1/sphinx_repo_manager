@@ -14,5 +14,5 @@ python:
         - requirements: docs/requirements.txt
 
 sphinx:
-    builder: html
-    fail_on_warning: false
+  builder: html
+  fail_on_warning: false
