@@ -210,10 +210,10 @@ extensions = [
 
 if is_read_the_docs_build:
     print("[conf.py::extensions] Adding breathe + sphinx_csharp extensions since is_read_the_docs_build (+7m build time)")
-    extensions.append({
+    extensions.append([
         "breathe",  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
         "sphinx_csharp",  # C# extension for breathe | https://github.com/rogerbarton/sphinx-csharp
-    })
+    ])
 else:
     print("[conf.py::extensions] WARNING: [ breathe, sphinx_csharp ] skipped since not is_read_the_docs_build (saves 7m build time)")
 
