@@ -11,6 +11,7 @@ sphinx-copybutton>=0.5.2    # https://pypi.org/project/sphinx-copybutton
 sphinx-new-tab-link>=0.5.2  # Opens all external links in new tab | https://pypi.org/project/sphinx-new-tab-link
 sphinxcontrib-redoc>=1.6.0  # OpenAPI Docgen | https://sphinxcontrib-redoc.readthedocs.io/en/stable
 sphinxext-opengraph>=0.9.1  # Adds OpenGraph meta tags | https://pypi.org/project/sphinxext-opengraph
+matplotlib>=3.9.2           # Adds social card generation to sphinxext-opengraph | https://pypi.org/project/matplotlib 
 sphinx-docsearch>=0.0.7     # AI-powered DocSearch | https://pypi.org/project/sphinx-docsearch
 sphinxcontrib-sass>=0.3.4   # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass
 sphinx-design>=0.6.1        # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html
