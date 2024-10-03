@@ -10,6 +10,10 @@ This currently combines content, but is slowly being transitioned to a generaliz
 
 [TOC]
 
+## Prerequisites
+
+* Ensure to have already [unlocked max file paths](#unlock-max-char-paths)
+
 ## Quickstart
 
 > **Warning:**
@@ -277,8 +281,33 @@ Local extensions are located in the `docs/extensions` directory:
 
 ### Known Issues
 
--`sphinx_book_theme` and `pydata_sphinx_theme` has a right-column smooth scroll navigation issue where a click will
+#### Smooth-Scroll Navigation Issue
+
+`sphinx_book_theme` and `pydata_sphinx_theme` has a right-column smooth scroll navigation issue where a click will
 sometimes scroll 1 above or below your target list item.
+
+#### Unlock Max Char Paths
+
+> **Note:**
+> As a repo manager, there may be deeply-nested directories and may need to unlock the 256-char limit in some envs
+
+With **elevated** privileges:
+
+#### Git
+
+```bash
+git config --system core.longpaths true
+```
+
+#### Windows
+
+```powershell
+New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+    -Name "LongPathsEnabled" `
+    -Value 1 `
+    -PropertyType DWORD `
+    -Force
+```
 
 ### Legacy Additional Troubleshooting
 
