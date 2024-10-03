@@ -127,6 +127,34 @@ function Main {
         # Find all git repositories recursively
         $gitRepositories = Find-GitRepos -rootDir $resolvedReposDir
 
+        if ($gitRepositories.Count -eq 0) {
+            Write-Output "No repositories found."
+            return
+        }
+
+        # If Dry Run is enabled, process only the first repo
+        if ($DRY_RUN_ON_1ST_AVAIL_REPO) {
+            $repo = $gitRepositories[0]
+            try {
+                Write-Output "Running Dry Run on the first repo: $($repo.FullName)"
+                Start-RepoCmds -dirPath $repo.FullName
+                Write-Output "Dry Run complete: Opening $($repo.Name) in Explorer ..."
+                
+                # Open the repository folder in Explorer
+                Start-Process explorer.exe $repo.FullName
+
+                # Exit after opening the folder
+                return
+            }
+            catch {
+                Write-Error "Error processing repository '$($repo.FullName)': $_"
+                if ($FAIL_ON_1ST_ERR) {
+                    throw
+                }
+            }
+        }
+
+        # Process all repositories if Dry Run is not enabled
         foreach ($repo in $gitRepositories) {
             try {
                 Start-RepoCmds -dirPath $repo.FullName
@@ -146,6 +174,7 @@ function Main {
         }
     }
 }
+
 
 # Execute the main function with error handling
 try {
