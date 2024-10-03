@@ -31,8 +31,8 @@ DEFAULT_MAX_WORKERS_LOCAL = 5
 DEFAULT_MAX_WORKERS_RTD = 1  # Max 1 for free tiers; 2 for premium
 DEFAULT_DEBUG_MODE = False
 DEFAULT_STASH_AND_CONTINUE_IF_WIP = True
-DEFAULT_INIT_CLONE_PATH = "source/_repos-available"
-DEFAULT_BASE_SYMLINK_PATH = "source/content"
+DEFAULT_INIT_CLONE_PATH = "_repos-available"
+DEFAULT_BASE_SYMLINK_PATH = "content"
 DEFAULT_REPO_SPARSE_PATH = "docs"
 DEFAULT_DEFAULT_BRANCH = "dev"  # Since we'll be working with tags, 'master' wouldn't make sense as a fallback
 DEFAULT_PRESERVE_GITLAB_GROUP = True
@@ -407,12 +407,6 @@ class SphinxRepoManager:
         self.source_doxygen_path = Path(self.manifest_base_path, "source", "_doxygen")
 
         # Ensure working dir is always from manifest working dir for consistency
-        # (!) This particularly fixes a RTD bug that adds an extra source/ dir, breaking paths
-        # os.chdir(self.manifest_base_path)
-        # working_dir_msg = (
-        #     f"   - From working_dir (manifest_base_path): '{brighten(os.getcwd())}'"
-        # )
-        # logger.info(colorize_path(working_dir_msg))
         manifest = self.read_normalize_manifest()
         self.debug_mode = manifest["debug_mode"]
         return manifest

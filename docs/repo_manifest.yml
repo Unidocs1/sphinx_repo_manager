@@ -25,7 +25,7 @@ enable_repo_manager: true
 # - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
 # - (!) If you are missing images/blobs, you probably want to set this to true
 # - Defaults to true, if omitted
-enable_repo_manager_local: true
+enable_repo_manager_local: false
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers.
@@ -50,10 +50,9 @@ debug_mode: false
 stash_and_continue_if_wip: true
 
 # - Default base path for cloning repos relative to this file 
-# - (!) On RTD, "source/" prefix will be removed to resolve RTD bug
 # - Normalizes "os/path/slashes"
-# - Defaults to "source/content", if omitted
-base_symlink_path: "source/content"
+# - Defaults to "content", if omitted
+base_symlink_path: "content"
 
 # - If repository omits "branch", this will be the fallback 
 # - Defaults to "dev", if omitted
@@ -69,9 +68,8 @@ default_branch: "dev"
 repo_sparse_path: "docs"
 
 # - Default base for cloning; normalizes "os/path/slashes"
-# - (!) On RTD, "source/" prefix will be removed to resolve RTD bug 
 # - Defaults to source/_repos-available, if omitted
-init_clone_path: "source/_repos-available"
+init_clone_path: "_repos-available"
 
 # - Supports {repo_sparse_path} template
 # - When we symlink from init_clone_path, we may want to set the src deeper
@@ -100,7 +98,7 @@ production_prep_tool_show_prev_ver_diff: true
 repositories:
   # Static docs containing most !repo content >>
   xbe_static_docs:
-    url: "https://source.goxbe.io/Core/xbe_static_docs"
+    url: "https://source.goxbe.io/Core/docs/xbe_static_docs"
     symlink_path: "-"  # Shortened to prevent bloaty url slugs for static, unversioned content
     #dev_stage:
     #  checkout: "feat/v2024.08.0"
@@ -109,243 +107,243 @@ repositories:
       prev_ver: "v2024.07.0"
       checkout: "v2024.08.0"
       checkout_type: "tag"
-  # Components (formerly called Services) >>
-  account_services:
-    url: "https://source.goxbe.io/Core/account_services"
-    production_stage:
-      prev_ver: "v3.0.1"
-      checkout: "v3.1.0"
-      checkout_type: "tag"
-  achievements_services:
-    url: "https://source.goxbe.io/Core/achievements_services"
-    production_stage:
-      prev_ver: "v3.0.1"
-      checkout: "v3.1.0"
-      checkout_type: "tag"
-  asset_services:
-    url: "https://source.goxbe.io/Core/asset_services"
-    production_stage:
-      prev_ver: "v3.0.0"
-      checkout: "v3.1.0"
-      checkout_type: "tag"
-  backup_services:
-    url: "https://source.goxbe.io/Core/backup_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  economy_services:
-    url: "https://source.goxbe.io/Core/economy_services"
-    production_stage:
-      prev_ver: "v3.0.1"
-      checkout: "v3.1.0"
-      checkout_type: "tag"
-  leaderboard_services:
-    url: "https://source.goxbe.io/Core/leaderboard_services"
-    production_stage:
-      prev_ver: "v3.0.1"
-      checkout: "v3.1.0"
-      checkout_type: "tag"
-  matchmaking_services:
-    url: "https://source.goxbe.io/Core/matchmaking_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  notification_services:
-    url: "https://source.goxbe.io/Core/notification_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  persona_services:
-    url: "https://source.goxbe.io/Core/persona_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  progression_services:
-    url: "https://source.goxbe.io/Core/progression_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  purchasing_services:
-    url: "https://source.goxbe.io/Core/purchasing_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  quest_services:
-    url: "https://source.goxbe.io/Core/quest_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  reporting_services:
-    url: "https://source.goxbe.io/Core/reporting_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  scripting_services:
-    url: "https://source.goxbe.io/Core/scripting_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  server_instance_services:
-    url: "https://source.goxbe.io/Core/server_instance_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  session_services:
-    url: "https://source.goxbe.io/Core/session_services"
-    production_stage:
-      prev_ver: "v3.0.1"
-      checkout: "v3.1.0"
-      checkout_type: "tag"
-  social_services:
-    url: "https://source.goxbe.io/Core/social_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  telemetry_services:
-    url: "https://source.goxbe.io/Core/telemetry_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  world_services:
-    url: "https://source.goxbe.io/Core/world_services"
-    production_stage:
-      prev_ver: "v2.0.1"
-      checkout: "v2.1.0"
-      checkout_type: "tag"
-  # Sdks >>
-  sdk_cpp:
-    url: "https://source.goxbe.io/Core/sdk/sdk_cpp"
-    production_stage:
-      prev_ver: "v4.0.0"
-      checkout: "v4.0.1"
-      checkout_type: "tag"
-  sdk_csharp:
-    url: "https://source.goxbe.io/Core/sdk/sdk_csharp"
-    production_stage:
-      prev_ver: "v3.0.0"
-      checkout: "v4.0.0"
-      checkout_type: "tag"
-  sdk_nodejs:
-    url: "https://source.goxbe.io/Core/sdk/sdk_nodejs"
-    production_stage:
-      prev_ver: "v2.0.0"
-      checkout: "v2.2.0"
-      checkout_type: "tag"
-  sdk_unity:
-    url: "https://source.goxbe.io/Core/sdk/sdk_unity"
-    production_stage:
-      prev_ver: "v3.0.0"
-      checkout: "v4.0.0"
-      checkout_type: "tag"
-    repo_sparse_path_override: "Documentation~"
-    init_clone_path_root_symlink_src_override: "{repo_sparse_path}/source/content"
-  sdk_unreal:
-    url: "https://source.goxbe.io/Core/sdk/sdk_unreal"
-    production_stage:
-      prev_ver: "v4.0.0"
-      checkout: "v4.0.1"
-      checkout_type: "tag"
-  # Tools >>
-  vscode-scripts-scm:
-    url: "https://source.goxbe.io/Core/tools/vscode-scripts-scm"
-    production_stage:
-      prev_ver: "v2.2.2"
-      checkout: "v3.0.2"
-      checkout_type: "tag"
-  # Other Products/Apps >>
-  service_monitor:
-    url: "https://source.goxbe.io/Core/service_monitor"
-    production_stage:
-      prev_ver: "v3.2.0"
-      checkout: "v3.3.0"
-      checkout_type: "tag"
-  launcher:
-    url: "https://source.goxbe.io/Core/apps/launcher"
-    production_stage:
-      prev_ver: "v4.0.0"
-      checkout: "v4.3.6"
-      checkout_type: "tag"
-  console:
-    url: "https://source.goxbe.io/Core/apps/console"
-    production_stage:
-      prev_ver: "v6.0.1"
-      checkout: "v6.4.0"
-      checkout_type: "tag"
-  # Demos >>
-  unitychessgame:
-    url: "https://source.goxbe.io/Core/samples/unitychessgame"
-    production_stage:
-      prev_ver: "v1.0.0-Unity2022_3_11"
-      checkout: "v1.0.1-Unity2022.3.21f1"
-      checkout_type: "tag"
-  lyrastartergame:
-    url: "https://source.goxbe.io/Core/samples/lyrastartergame"
-    production_stage:
-      prev_ver: "v2.0.0-Unreal5_4_3"
-      checkout: "v2.0.1-Unreal5_4_3"
-      checkout_type: "tag"
-
-############################################
-# EXAMPLE REPO WITH ALL OPTIONS -- COMMENTED
-############################################
-
-#mock_repo_example:
-## - .git suffix == optional;
-## - HTTPS only (until we add cert support in RTD)
-## - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
-#url: "https://source.goxbe.io/Core/foo_services"
+#  # Components (formerly called Services) >>
+#  account_services:
+#    url: "https://source.goxbe.io/Core/account_services"
+#    production_stage:
+#      prev_ver: "v3.0.1"
+#      checkout: "v3.1.0"
+#      checkout_type: "tag"
+#  achievements_services:
+#    url: "https://source.goxbe.io/Core/achievements_services"
+#    production_stage:
+#      prev_ver: "v3.0.1"
+#      checkout: "v3.1.0"
+#      checkout_type: "tag"
+#  asset_services:
+#    url: "https://source.goxbe.io/Core/asset_services"
+#    production_stage:
+#      prev_ver: "v3.0.0"
+#      checkout: "v3.1.0"
+#      checkout_type: "tag"
+#  backup_services:
+#    url: "https://source.goxbe.io/Core/backup_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  economy_services:
+#    url: "https://source.goxbe.io/Core/economy_services"
+#    production_stage:
+#      prev_ver: "v3.0.1"
+#      checkout: "v3.1.0"
+#      checkout_type: "tag"
+#  leaderboard_services:
+#    url: "https://source.goxbe.io/Core/leaderboard_services"
+#    production_stage:
+#      prev_ver: "v3.0.1"
+#      checkout: "v3.1.0"
+#      checkout_type: "tag"
+#  matchmaking_services:
+#    url: "https://source.goxbe.io/Core/matchmaking_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  notification_services:
+#    url: "https://source.goxbe.io/Core/notification_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  persona_services:
+#    url: "https://source.goxbe.io/Core/persona_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  progression_services:
+#    url: "https://source.goxbe.io/Core/progression_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  purchasing_services:
+#    url: "https://source.goxbe.io/Core/purchasing_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  quest_services:
+#    url: "https://source.goxbe.io/Core/quest_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  reporting_services:
+#    url: "https://source.goxbe.io/Core/reporting_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  scripting_services:
+#    url: "https://source.goxbe.io/Core/scripting_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  server_instance_services:
+#    url: "https://source.goxbe.io/Core/server_instance_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  session_services:
+#    url: "https://source.goxbe.io/Core/session_services"
+#    production_stage:
+#      prev_ver: "v3.0.1"
+#      checkout: "v3.1.0"
+#      checkout_type: "tag"
+#  social_services:
+#    url: "https://source.goxbe.io/Core/social_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  telemetry_services:
+#    url: "https://source.goxbe.io/Core/telemetry_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  world_services:
+#    url: "https://source.goxbe.io/Core/world_services"
+#    production_stage:
+#      prev_ver: "v2.0.1"
+#      checkout: "v2.1.0"
+#      checkout_type: "tag"
+#  # Sdks >>
+#  sdk_cpp:
+#    url: "https://source.goxbe.io/Core/sdk/sdk_cpp"
+#    production_stage:
+#      prev_ver: "v4.0.0"
+#      checkout: "v4.0.1"
+#      checkout_type: "tag"
+#  sdk_csharp:
+#    url: "https://source.goxbe.io/Core/sdk/sdk_csharp"
+#    production_stage:
+#      prev_ver: "v3.0.0"
+#      checkout: "v4.0.0"
+#      checkout_type: "tag"
+#  sdk_nodejs:
+#    url: "https://source.goxbe.io/Core/sdk/sdk_nodejs"
+#    production_stage:
+#      prev_ver: "v2.0.0"
+#      checkout: "v2.2.0"
+#      checkout_type: "tag"
+#  sdk_unity:
+#    url: "https://source.goxbe.io/Core/sdk/sdk_unity"
+#    production_stage:
+#      prev_ver: "v3.0.0"
+#      checkout: "v4.0.0"
+#      checkout_type: "tag"
+#    repo_sparse_path_override: "Documentation~"
+#    init_clone_path_root_symlink_src_override: "{repo_sparse_path}/source/content"
+#  sdk_unreal:
+#    url: "https://source.goxbe.io/Core/sdk/sdk_unreal"
+#    production_stage:
+#      prev_ver: "v4.0.0"
+#      checkout: "v4.0.1"
+#      checkout_type: "tag"
+#  # Tools >>
+#  vscode-scripts-scm:
+#    url: "https://source.goxbe.io/Core/tools/vscode-scripts-scm"
+#    production_stage:
+#      prev_ver: "v2.2.2"
+#      checkout: "v3.0.2"
+#      checkout_type: "tag"
+#  # Other Products/Apps >>
+#  service_monitor:
+#    url: "https://source.goxbe.io/Core/service_monitor"
+#    production_stage:
+#      prev_ver: "v3.2.0"
+#      checkout: "v3.3.0"
+#      checkout_type: "tag"
+#  launcher:
+#    url: "https://source.goxbe.io/Core/apps/launcher"
+#    production_stage:
+#      prev_ver: "v4.0.0"
+#      checkout: "v4.3.6"
+#      checkout_type: "tag"
+#  console:
+#    url: "https://source.goxbe.io/Core/apps/console"
+#    production_stage:
+#      prev_ver: "v6.0.1"
+#      checkout: "v6.4.0"
+#      checkout_type: "tag"
+#  # Demos >>
+#  unitychessgame:
+#    url: "https://source.goxbe.io/Core/samples/unitychessgame"
+#    production_stage:
+#      prev_ver: "v1.0.0-Unity2022_3_11"
+#      checkout: "v1.0.1-Unity2022.3.21f1"
+#      checkout_type: "tag"
+#  lyrastartergame:
+#    url: "https://source.goxbe.io/Core/samples/lyrastartergame"
+#    production_stage:
+#      prev_ver: "v2.0.0-Unreal5_4_3"
+#      checkout: "v2.0.1-Unreal5_4_3"
+#      checkout_type: "tag"
 #
-## - Normally named your_repo_name, but static docs is special
-## - Relative to baseClonePath
-## - Normalizes os/path/slashes
-## - Default "{repo_name}-{tag}"
-#symlink_path: "foo_services"
+#############################################
+## EXAMPLE REPO WITH ALL OPTIONS -- COMMENTED
+#############################################
 #
-## Expects branch || tag (usually branch); if missing, falls back to {default_branch}
-## This can optionally be be omitted since {default_branch} is "dev", if using the default
-#dev_stage:
-#  checkout: "dev"  # Normalizes os/path/slashes
-#  checkout_type: "branch"  # Expects branch or tag; assumes "branch" if missing
-#
-## Expects branch || tag (usually tag); if missing, falls back to {default_branch}
-#production_stage:
-#
-#  # - [tools/production_prep.py] Arbitrary version to compare before->after, if listed and
-#  #   production_prep_tool_show_prev_ver_diff == true
-#  prev_ver: "v1.0.0"
-#  checkout: "v1.0.1"  # (!) Don"t forget to prefix with "v" to follow XBE standards
-#  checkout_type: "tag"
-#
-## - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
-## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
-## - Normalizes "explicit/forward/slashes"
-## - The parent dirs outside this will be 99% empty
-## - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
-#repo_sparse_path_override: "docs"
-#
-## - Supports {repo_sparse_path} template - will take override ver if present
-## - If true, overrides init_clone_path_root_symlink_src
-## - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
-#init_clone_path_root_symlink_src_override: "docs"
-#
-## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
-#active: true  
-## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
-#active: true
-#
-## - Useful for testing multi-repo WIP without having it be stashed away or require a commit
-## - Still pulls from `_static/images/{repo_name}/`
-## - Default false, if omitted
-#skip_repo_updates: false
+##mock_repo_example:
+### - .git suffix == optional;
+### - HTTPS only (until we add cert support in RTD)
+### - If .readthedocs project name + GITLAB_ACCESS_TOKEN is set in RTD web dash, this can be a private repo
+##url: "https://source.goxbe.io/Core/foo_services"
+##
+### - Normally named your_repo_name, but static docs is special
+### - Relative to baseClonePath
+### - Normalizes os/path/slashes
+### - Default "{repo_name}-{tag}"
+##symlink_path: "foo_services"
+##
+### Expects branch || tag (usually branch); if missing, falls back to {default_branch}
+### This can optionally be be omitted since {default_branch} is "dev", if using the default
+##dev_stage:
+##  checkout: "dev"  # Normalizes os/path/slashes
+##  checkout_type: "branch"  # Expects branch or tag; assumes "branch" if missing
+##
+### Expects branch || tag (usually tag); if missing, falls back to {default_branch}
+##production_stage:
+##
+##  # - [tools/production_prep.py] Arbitrary version to compare before->after, if listed and
+##  #   production_prep_tool_show_prev_ver_diff == true
+##  prev_ver: "v1.0.0"
+##  checkout: "v1.0.1"  # (!) Don"t forget to prefix with "v" to follow XBE standards
+##  checkout_type: "tag"
+##
+### - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
+### - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
+### - Normalizes "explicit/forward/slashes"
+### - The parent dirs outside this will be 99% empty
+### - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
+##repo_sparse_path_override: "docs"
+##
+### - Supports {repo_sparse_path} template - will take override ver if present
+### - If true, overrides init_clone_path_root_symlink_src
+### - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
+##init_clone_path_root_symlink_src_override: "docs"
+##
+### False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+##active: true  
+### False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+##active: true
+##
+### - Useful for testing multi-repo WIP without having it be stashed away or require a commit
+### - Still pulls from `_static/images/{repo_name}/`
+### - Default false, if omitted
+##skip_repo_updates: false

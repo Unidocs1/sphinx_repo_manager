@@ -20,8 +20,7 @@ load_dotenv()
 # -- Path setup --------------------------------------------------------------
 # The absolute path to the directory containing conf.py.
 documentation_root = Path(os.path.dirname(__file__)).absolute()
-sys.path.insert(0, os.path.abspath(""))
-
+sys.path.insert(0, os.path.abspath('.'))
 # -- Read normalized repo_manifest.yml ---------------------------------------
 # This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
 # This allows us to build documentation for multiple versions of the same service.
@@ -180,9 +179,43 @@ sphinx_csharp_ignore_xref = [
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def setup(app):
+    print("\n[conf.py::setup] Adding custom directive: 'include' with :relative: option (ignore warning below)")
+    app.add_directive("include", RelativeInclude)
     app.connect("builder-inited", configure_doxygen_breathe)
     app.connect("build-finished", copy_open_graph_img_to_build)
+    print("")
 
+
+# -- Inline extension: RelativeInclude ----------------------------------------
+# Allow :relative: prop under `include` directive to use paths to the target doc
+# TODO: Mv to standalone extension
+
+from docutils.parsers.rst import directives
+from sphinx.directives.other import Include
+
+class RelativeInclude(Include):
+    """
+    Extends the standard `include` directive to support :relative: option,
+    which calculates paths relative to the *included* document perspective (flipped).
+    """
+    option_spec = Include.option_spec.copy()
+    option_spec['relative'] = directives.flag  # Add support for :relative:
+
+    def run(self):
+        # Get the current source file's directory (the file doing the including)
+        including_doc_dir = os.path.dirname(self.state.document.current_source)
+
+        # Check if :relative: option is used
+        if 'relative' in self.options:
+            target_doc = self.arguments[0]
+
+            # Calculate the absolute path relative to the target document
+            target_doc_absolute = os.path.normpath(os.path.join(including_doc_dir, target_doc))
+
+            # Update the path to be relative to the included document's directory
+            self.arguments[0] = target_doc_absolute
+
+        return super().run()
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -270,8 +303,7 @@ ogp_custom_meta_tags = [
     # '<meta property="og:image" content="https://external/link.png">',
     # Twitter / X
     '<meta name="twitter:card" content="summary_large_image">',
-    '<meta property="twitter:domain" content="docs.goxbe.io">',
-    '<meta property="twitter:url" content="https://docs.goxbe.io/">',
+    '<meta name="twitter:domain" content="docs.goxbe.io">',
     # '<meta name="twitter:title" content="Xsolla Backend [XBE] Docs">',
     # '<meta name="twitter:description" content="The most complete online gaming platform">',
     # '<meta name="twitter:image" content="https://external/link.png">',
@@ -450,7 +482,7 @@ html_theme_options = {
     "home_page_in_toc": False,
     "path_to_docs": "docs/source/",
     "repository_provider": "gitlab",
-    "repository_url": "https://source.goxbe.io/Core/xbe_docs",
+    "repository_url": "https://source.goxbe.io/Core/docs/sphinx_repo_manager",
     "repository_branch": "main",
     "pygments_dark_style": "monokai",  # May get overwritten by pygments_style
     "pygments_light_style": "monokai",  # May get overwritten by pygments_style
@@ -501,7 +533,7 @@ html_context.update(
         "display_gitlab": True,  # Integrate Gitlab
         "gitlab_host": "source.goxbe.io",
         "gitlab_user": "Core",  # Group
-        "gitlab_repo": "xbe_docs",  # Repo name
+        "gitlab_repo": "sphinx_repo_manager",  # Repo name
         "conf_py_path": "/docs/source/",  # /path/to/docs/source (containing conf.py)
         "gitlab_version": "master",  # Version
         "doc_path": "docs/source",
@@ -512,47 +544,35 @@ source_suffix = [".rst", ".md"]  # Use MyST to auto-convert .md
 
 # -- Sphinx Extension: Algolia Crawler ----------------------------------------------------------------------------
 # Crawling is *slow* and temporarily takes search offline while reindexing: Only trigger @ RTD /latest prod build
-# (!) /dev builds can be manually triggered: Use `sphinx_algolia_crawler.py` standalone or see root proj .env.template
+# (!) /dev builds can be manually triggered: 
+# - Use `sphinx_algolia_crawler.py` standalone 
+# - Or use POSTman | POST `https://crawler.algolia.com/api/1/crawlers/{{crawler_id}}/reindex`
 
+# (!) To trigger the Algolia server-side *crawler* (reindexer), set the 3 .env keys setup in RTD and/or .env:
+#    1. ALGOLIA_CRAWLER_USER_ID
+#    2. ALGOLIA_CRAWLER_API_KEY
+#    3. ALGOLIA_CRAWLER_ID
 algolia_crawler_enabled = rtd_version_is_latest
 
 # -- Sphinx Extension: sphinxext_docsearch ------------------------------------------------------------------------
 # Algolia DocSearch support | https://sphinx-docsearch.readthedocs.io/configuration.html
 
-algolia_docsearch_app_id_dev = "DBTSGB2DXO"
-algolia_docsearch_app_id_prod = "CKS2O35GXS"
-
-docsearch_app_id = (
-    algolia_docsearch_app_id_prod
-    if manifest_stage_is_production
-    else algolia_docsearch_app_id_dev
-)
-
-# Which index to select? 'dev_stage' or 'production_stage' (None skips extension)
-docsearch_index_name = "xsolla"  # From Algolia dash "Data Sources" -> "Indices"
-
-# Public read key
-docsearch_api_key_dev = "a98b6eb7635b38887be38212d12318fa"
-docsearch_api_key_prod = "4ebb45dbcdd78f224f1b24c28ba7fd9e"
-docsearch_api_key = (
-    docsearch_api_key_prod if manifest_stage_is_production else docsearch_api_key_dev
-)
-
 # docsearch_container = ".sidebar-primary-item"  # We want to use our own search bar
 docsearch_container = "#search-input"  # Arbitrary - we just want it to spawn "somewhere" since we use our own search bar
-
 docsearch_missing_results_url = (
     f"https://{html_context['gitlab_host']}/{html_context['gitlab_user']}/"
     f"{html_context['gitlab_repo']}/-/issues/new?issue[title]=${{query}}"
 )
 
-html_context.update(
-    {
-        "docsearch_app_id": docsearch_app_id,
-        "docsearch_api_key": docsearch_api_key,
-        "docsearch_index_name": docsearch_index_name,
-    }
-)
+# (!) To use client-side Algolia *docsearch* (using a crawled index^),set the 3 .env keys setup in RTD and/or .env:
+docsearch_app_id = os.environ.get("ALGOLIA_DOCSEARCH_APP_ID", None) # From Algolia dash API Keys
+docsearch_index_name = os.environ.get("ALGOLIA_DOCSEARCH_INDEX_NAME", None) # From Algolia dash data sources -> indices
+docsearch_api_key = os.environ.get("ALGOLIA_DOCSEARCH_API_KEY", None) # From Algolia dash data sources -> indices
+html_context.update({
+    "docsearch_app_id": docsearch_app_id,
+    "docsearch_api_key": docsearch_api_key,
+    "docsearch_index_name": docsearch_index_name,
+})
 
 # -- MyST configuration ------------------------------------------------------
 # Recommonmark successor to auto-parse .md to .rst

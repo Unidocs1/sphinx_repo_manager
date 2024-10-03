@@ -9,11 +9,15 @@ proceeds.
 
 ## How it Works
 
-1. The extension reads a manifest file (`repo_manifest.yml`) that lists repositories with their respective clone URLs and tags.
+1. The extension reads a manifest file (`repo_manifest.yml`) that lists repositories with their respective clone \
+   URLs and tags.
 2. It checks if each repository is already cloned at the specified location.
-3. If a repository is not found, it clones the repository from the provided URL to an initial clone path (else, it pulls updates).
-4. Symlinks are created from the clone path to the base symlink path specified in the YAML (along with other symlinks, such as RELEASE_NOTES).
-5. All repos in the manifest will be organized in a monolithic doc, with [`xbe_static_docs`](https://source.goxbe.io/Core/xbe_static_docs) being the core repo for static docs.
+3. If a repository is not found, it clones the repository from the provided URL to an initial clone path 
+   (else, it pulls updates).
+4. Symlinks are created from the clone path to the base symlink path specified in the YAML 
+   (along with other symlinks, such as RELEASE_NOTES).
+5. All repos in the manifest will be organized in a monolithic doc, with
+   [`xbe_static_docs`](https://source.goxbe.io/Core/docs/xbe_static_docs) being the core repo for static docs.
 
 ## Usage
 
