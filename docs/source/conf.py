@@ -13,42 +13,74 @@ import sys
 import git
 from pathlib import Path
 from dotenv import load_dotenv
+from sphinx_repo_manager import SphinxRepoManagerConfig
 
-# Load the .env file
+sys.path.insert(0, os.path.abspath('.'))
 load_dotenv()
 
 # -- Path setup --------------------------------------------------------------
 # The absolute path to the directory containing conf.py.
-documentation_root = Path(os.path.dirname(__file__)).absolute()
-sys.path.insert(0, os.path.abspath('.'))
-# -- Read normalized repo_manifest.yml ---------------------------------------
-# This in-house extension clones repos from repo_manifest.yml and symlinks them into the content directory.
-# This allows us to build documentation for multiple versions of the same service.
+confdir = Path(__file__).parent.resolve()
 
-from sphinx_repo_manager import SphinxRepoManager
 
-# Initialize the RepoManager instance with the manifest path
-repo_manager_manifest = Path("..", "repo_manifest.yml").resolve()
-repo_manager = SphinxRepoManager()
-manifest = repo_manager.get_normalized_manifest(repo_manager_manifest)
+# -- Inline extensions -------------------------------------------------------
+# Instead of making an extension for small things, we can just embed inline
+def init_sphinx_repo_mgr_config(app):
+    repo_manager_manifest_path = Path(confdir / ".." / "repo_manifest.yml").resolve()
+    print("[conf.py::setup] Setting repo_manager_manifest_path==" + str(repo_manager_manifest_path))
+    app.add_config_value("repo_manager_manifest_path", repo_manager_manifest_path, 'env')
 
-# Extract common props
-manifest_stage = manifest["stage"]  # 'dev_stage' or 'prod_stage'
-manifest_stage_is_production = manifest_stage == "prod_stage"
-manifest_repos = manifest[
-    "repositories"
-]  # repos[repo_name] = { url, tag, symlink_path, branch, active, ... }
-xbe_static_docs_repo = manifest_repos["xbe_static_docs"]
-macro_ver = xbe_static_docs_repo["production_stage"]["checkout"]  # eg: "v2024.07.0"
-print("")
-print(f"[conf.py::repo_manifest.yml] Manifest num repos found: {len(manifest_repos)}")
-print(f"[conf.py::repo_manifest.yml] Manifest stage: '{manifest_stage}'")
-print(f"[conf.py::repo_manifest.yml] Manifest macro ver: '{macro_ver}'")
-print("")
 
-# TODO: Use these below for dynamic info pulled from repo_manifest.yaml
-base_symlink_path = manifest["base_symlink_path"]  # eg: "source/content"
-repo_sparse_path = manifest["repo_sparse_path"]  # eg: "docs"
+def process_sphinx_repo_manifest_result(app):
+    global release
+    repo_mgr: SphinxRepoManagerConfig = app.config.sphinx_repo_manager
+
+    if repo_mgr:
+        print(f"[conf.py::setup=>process_sphinx_repo_manifest_result] Setting up ... ")
+    else:
+        print(f"[conf.py::setup=>process_sphinx_repo_manifest_result] !SphinxRepoManagerConfig; skipping.")
+        return
+
+    manifest = repo_mgr["manifest"]
+    manifest_stage = manifest["stage"]  # 'dev_stage' or 'prod_stage'
+    # manifest_stage_is_production = manifest_stage == "prod_stage"
+    manifest_repos = manifest[
+        "repositories"
+    ]
+
+    # { url, tag, symlink_path, branch, active, ... }
+    xbe_static_docs_repo = manifest_repos["xbe_static_docs"]
+    macro_ver = xbe_static_docs_repo["production_stage"]["checkout"]  # eg: "v2024.07.0"
+    print("")
+    print(f"[conf.py::repo_manifest.yml] Manifest num repos found: {len(manifest_repos)}")
+    print(f"[conf.py::repo_manifest.yml] Manifest stage: '{manifest_stage}'")
+    print(f"[conf.py::repo_manifest.yml] Manifest macro ver: '{macro_ver}'")
+    print("")
+
+    # Dynamically set proj vals
+    release = macro_ver
+
+
+def setup(app):
+    """ 
+    ORDER OF OPS:
+    1. This def: Set config here via app.add_config_value() to pass data to extensions
+    2. This def: Prepare app.connect() events that will be triggered *after* official extensions
+    3. Extensions run "builder-inited"
+    4. This def: Any remaining declared "builder-inited" will run
+    5. Extensions run "build-finished"
+    6. This def: Any remaining declared "build-finished" will run 
+    """
+
+    # Config 1st >> Set `app.add_config_value(name, val, 'env')`
+    init_sphinx_repo_mgr_config(app)
+
+    # Non-config extensions & tools >> Set `app.connect()` for "builder-inited" or "build-finished"
+    app.connect("builder-inited", process_sphinx_repo_manifest_result)
+    app.connect("builder-inited", configure_doxygen_breathe)
+    app.connect("build-finished", copy_open_graph_img_to_build)
+    print("")
+
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -56,7 +88,7 @@ repo_sparse_path = manifest["repo_sparse_path"]  # eg: "docs"
 project = "XBE Docs"
 copyright = "Xsolla (USA), Inc. All rights reserved"
 author = "Xsolla"
-release = macro_ver  # eg: "v2024.08.0"
+release = "0.0.0.0"  # eg: "v2024.08.0"; this will be set @ process_sphinx_repo_manifest_result()
 version = release  # Used by some extensions
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 
@@ -64,7 +96,6 @@ html_context = {}  # html_context.update({}) to pass data to extensions & themes
 project_url = os.environ.get("PROJECT_URL", None)
 current_branch = os.environ.get("PROJECT_BRANCH", None)
 project_name = os.environ.get("PROJECT_NAME", "xbe_example")
-
 
 # If not set, try to get the project URL and branch from the git repo
 if not project_url or not current_branch:
@@ -83,18 +114,14 @@ project_group = "Xsolla"
 project_repo = f"{project_name}"
 api_src_input = "src"
 
-
 # -- ReadTheDocs (RTD) Config ------------------------------------------------
 
 # Check if we're running on Read the Docs' servers
 is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == "True"
+rtd_version = is_read_the_docs_build and os.environ.get("READTHEDOCS_VERSION")
 
-rtd_version = is_read_the_docs_build and os.environ.get(
-    "READTHEDOCS_VERSION"
-)  # Get the version being built
-rtd_version_is_latest = (
-    is_read_the_docs_build and rtd_version == "latest"
-)  # Typically the 'master' branch
+# Get the version being built
+rtd_version_is_latest = is_read_the_docs_build and rtd_version == "latest"  # Typically the 'master' branch
 
 # Set canonical URL from the Read the Docs Domain
 html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
@@ -109,13 +136,13 @@ doxygen_root = "_doxygen"
 def configure_doxygen_breathe(app):
     base_dir = Path(app.srcdir, doxygen_root)
     print(f"\n[conf.py::breathe] Configuring Breathe projects from {base_dir}...")
-    for project_name in os.listdir(base_dir):
-        path = base_dir.joinpath(project_name)
+    for proj_name in os.listdir(base_dir):
+        path = base_dir.joinpath(proj_name)
         if os.path.isdir(path):
             print(
-                f"[conf.py::breathe] Registering Breathe project: '{project_name}': '{path}'"
+                f"[conf.py::breathe] Registering Breathe project: '{proj_name}': '{path}'"
             )
-            breathe_projects[project_name] = path
+            breathe_projects[proj_name] = path
     print("Done.\n")
 
 
@@ -175,21 +202,13 @@ sphinx_csharp_ignore_xref = [
 # --- End of C# Domain ----
 
 
-# -- Inline extensions -------------------------------------------------------
-# Instead of making an extension for small things, we can just embed inline
-def setup(app):
-    app.connect("builder-inited", configure_doxygen_breathe)
-    app.connect("build-finished", copy_open_graph_img_to_build)
-    print("")
-    
-
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    "sphinx_relative_include",  # Our own custom extension to add :relative: prop to `include` directive 
+    #"sphinx_relative_include",  # Our own custom extension to add :relative: prop to `include` directive 
     "myst_parser",  # recommonmark successor, auto-parsing .md to .rst (skips READMEs)
     "sphinx_docsearch",  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     "sphinx_tabs.tabs",  # Add tabs to code blocks | https://sphinx-tabs.readthedocs.io/en/latest
@@ -209,14 +228,17 @@ extensions = [
 ]
 
 if is_read_the_docs_build:
-    print("[conf.py::extensions] Adding breathe + sphinx_csharp extensions since is_read_the_docs_build (+7m build time)")
-    extensions.append("breathe")  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
+    print(
+        "[conf.py::extensions] Adding breathe + sphinx_csharp extensions since is_read_the_docs_build (+7m build time)")
+    extensions.append(
+        "breathe")  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
     extensions.append("sphinx_csharp")  # C# extension for breathe | https://github.com/rogerbarton/sphinx-csharp
 else:
-    print("[conf.py::extensions] WARNING: [ breathe, sphinx_csharp ] skipped since not is_read_the_docs_build (saves 7m build time)")
+    print(
+        "[conf.py::extensions] WARNING: [ breathe, sphinx_csharp ] skipped since not is_read_the_docs_build (saves 7m build time)")
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
+templates_path = [str(confdir / "_templates")]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -238,7 +260,6 @@ html_extra_path = [
     "sitemap.xml",  # Show latest ver -> release notes -> feats -> api docs
 ]
 
-master_doc = "index"  # Build entry point: The "home page"
 tocdepth = 1  # Default :maxdepth:
 
 # Tell sphinx what the primary language being documented is + code highlighting
@@ -248,13 +269,12 @@ highlight_language = "cpp"
 # -- Sphinx Extension: sphinxext-opengraph ----------------------------
 # For embed preview info, such as when link is dropped into Discord/FB.
 # https://github.com/wpilibsuite/sphinxext-opengraph?tab=readme-ov-file#options
-
 ogp_site_url = "https://docs.goxbe.io/"  # Full https:// url with lingering slash/
 ogp_use_first_image = False  # We want to always use our consistent banner; we can potentially per-page override this
 ogp_title = project  # "XBE Docs"
 
-# EXTERNAL og:banner @ 1200x630 (minimized) url; TODO: Change this to /latest next patch
-ogp_image = "https://docs.goxbe.io/en/v2024.07.0/_images/xbe-banner-og-1200x630.min.png"
+# EXTERNAL og:banner @ 1200x630 (minimized) url
+ogp_image = "https://docs.goxbe.io/en/latest/_images/xbe-banner-og-1200x630.min.png"
 
 ogp_custom_meta_tags = [
     # Image
@@ -281,11 +301,11 @@ ogp_custom_meta_tags = [
 # We need to manually mv it to the build images dir
 def copy_open_graph_img_to_build(app, exception):
     html_og_image = (
-        Path(app.srcdir)
-        / "_static"
-        / "images"
-        / "_local"
-        / "xbe-banner-og-1200x630.min.png"
+            Path(app.srcdir)
+            / "_static"
+            / "images"
+            / "_local"
+            / "xbe-banner-og-1200x630.min.png"
     )
     build_images_dir = Path(app.outdir) / "_images"
 
@@ -413,7 +433,7 @@ pygments_style = "monokai"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
-html_static_path = ["_static"]
+html_static_path = [str(confdir / "_static")]
 
 html_css_files = [
     "styles/css/main.css",
@@ -439,6 +459,7 @@ html_context.update(
 )
 
 # The theme to use for HTML and HTML Help pages
+icon_link_stage_stage = 'latest' if rtd_version_is_latest else 'dev'
 html_theme_options = {
     # Use OS light/dark theme prefs? https://pydata-sphinx-theme.readthedocs.io/en/latest/user_guide/light-dark.html
     "show_toc_level": 2,
@@ -462,9 +483,9 @@ html_theme_options = {
         {
             "name": "API Docs",
             "url": (
-                "https://docs.goxbe.io/en/"
-                + ("latest" if manifest_stage_is_production else "dev")
-                + "/content/-/api/index.html"
+                    "https://docs.goxbe.io/en/"
+                    + icon_link_stage_stage
+                    + "/content/-/api/index.html"
             ),
             "icon": "fa-solid fa-book-open",
             "attributes": {"target": "_self"},
@@ -532,9 +553,9 @@ docsearch_missing_results_url = (
 )
 
 # (!) To use client-side Algolia *docsearch* (using a crawled index^),set the 3 .env keys setup in RTD and/or .env:
-docsearch_app_id = os.environ.get("ALGOLIA_DOCSEARCH_APP_ID", None) # From Algolia dash API Keys
-docsearch_index_name = os.environ.get("ALGOLIA_DOCSEARCH_INDEX_NAME", None) # From Algolia dash data sources -> indices
-docsearch_api_key = os.environ.get("ALGOLIA_DOCSEARCH_API_KEY", None) # From Algolia dash data sources -> indices
+docsearch_app_id = os.environ.get("ALGOLIA_DOCSEARCH_APP_ID", None)  # From Algolia dash API Keys
+docsearch_index_name = os.environ.get("ALGOLIA_DOCSEARCH_INDEX_NAME", None)  # From Algolia dash data sources -> indices
+docsearch_api_key = os.environ.get("ALGOLIA_DOCSEARCH_API_KEY", None)  # From Algolia dash data sources -> indices
 html_context.update({
     "docsearch_app_id": docsearch_app_id,
     "docsearch_api_key": docsearch_api_key,

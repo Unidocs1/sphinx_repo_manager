@@ -1,15 +1,22 @@
 %YAML 1.2
 ---
-##########################################################################################################
-# This YAML file configures repository settings for the Sphinx documentation system.               
-# - Specifies base path for cloning and details for each version-controlled set of docs.           
-# - See repo[0] for a commented-out demo obj with all optional/override field example-use         
-# - Most all properties are OPTIONAL; see comment for fallback vals.                               
-# - Most path/slashes/are/normalized for you to prevent confusion; use whichever.                  
-# - init_clone_path will clone as "{repo_name}-{tag}" or "{repo_name}--{branch}"                   
-# - [Unversioned] Double dashes replace path/to/slashes. Eg: "{repo_name}--{path--to--branch}"     
-# - It *is safe* (and encouraged) to periodically wipe your source/ _repos-available + content dirs
-##########################################################################################################
+###################################################################################################
+# This YAML file configures repository settings for the Sphinx documentation system.        
+# - (!) PATHS ARE RELATIVE TO YOUR `conf.py`
+# - Specifies base path for cloning and details for each version-controlled set of docs           
+# - See the bottom of the file for a fully-commented repo example
+# - Most all properties are OPTIONAL; see comment for fallback vals                   
+# - Most path/slashes/are/normalized for you to prevent confusion; use any style here            
+# - base_clone_path will clone as "{repo_name}-{tag}" or "{repo_name}--{branch}"
+#   - The actual /content you'll refer to will just simply be {repo_name} 
+#     - Can further be overridden via repo['repo_symlink_path']. 
+#     - Eg: "xbe_static_docs" content is named "-"
+# - It *is safe* (and encouraged) to periodically wipe your auto-gen'd dirs:
+#   - _repos-available/
+#   - _static/{anything not _local}/
+#   - _blobs/{anything not _local}/
+#   - content/
+###################################################################################################
 
 # - Determines which repo info to use for git checkout
 # - Choices: "dev_stage", "production_stage"
@@ -29,8 +36,9 @@ enable_repo_manager_local: true
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers.
-#   - Eg; if 3 workers, the 1st 3 log results may be something like: Repo2{a,b,c}, Repo3{a,b,c}, Repo1{a,b,c}
-#   - TODO: Explicitly track the repo# logged and await the correct chronological repo to show
+#   - Eg; if 3 workers, the 1st 3 log results may be something like: 
+  #   Repo2{a,b,c}, Repo3{a,b,c}, Repo1{a,b,c}
+#   - TODO: Log revamp to better accommodate async multi-threading
 # - Recommended just 1 if needing *chronological* debugging
 # - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
 max_workers_local: 5
@@ -54,6 +62,10 @@ stash_and_continue_if_wip: true
 # - Defaults to "content", if omitted
 base_symlink_path: "content"
 
+# - Default base for cloning; normalizes "os/path/slashes"
+# - Defaults to source/_repos-available, if omitted
+base_clone_path: "_repos-available"
+
 # - If repository omits "branch", this will be the fallback 
 # - Defaults to "dev", if omitted
 # - Tag will be prioritized over branch, if set
@@ -67,16 +79,13 @@ default_branch: "dev"
 # - Default to "docs", if omitted
 repo_sparse_path: "docs"
 
-# - Default base for cloning; normalizes "os/path/slashes"
-# - Defaults to source/_repos-available, if omitted
-init_clone_path: "_repos-available"
-
 # - Supports {repo_sparse_path} template
-# - When we symlink from init_clone_path, we may want to set the src deeper
+# - When we symlink from base_clone_path, we may want to set the src deeper
 # - Nested than what we cloned; normalizes "os/path/slashes"
 # - If kept default, you can access static content, like images, via `../_static/{repo_name}/images/`
-# - Defaults to "{repo_sparse_path}/source", if omitted
-init_clone_path_root_symlink_src: "{repo_sparse_path}/source/content"
+# - Defaults to "docs/source/content", if omitted
+# - TODO: Support {repo_sparse_path} replacement; if repo_sparse_path isn't "docs", this will fail
+base_clone_path_root_symlink_src: "{repo_sparse_path}/source/content"
 
 # Default repo auth, declared in .env
 # TODO: Add optional, per-repo `dotenv_repo_auth_[user|token]` overrides
@@ -249,7 +258,7 @@ repositories:
       checkout: "v4.0.0"
       checkout_type: "tag"
     repo_sparse_path_override: "Documentation~"
-    init_clone_path_root_symlink_src_override: "{repo_sparse_path}/source/content"
+    base_clone_path_root_symlink_src_override: "{repo_sparse_path}/source/content"
   sdk_unreal:
     url: "https://source.goxbe.io/Core/sdk/sdk_unreal"
     production_stage:
@@ -327,7 +336,7 @@ repositories:
 #  checkout: "v1.0.1"  # (!) Don"t forget to prefix with "v" to follow XBE standards
 #  checkout_type: "tag"
 #
-## - Overrides parent `repo_sparse_path` (if true, requires init_clone_path_root_symlink_src_override)
+## - Overrides parent `repo_sparse_path` (if true, requires base_clone_path_root_symlink_src_override)
 ## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
 ## - Normalizes "explicit/forward/slashes"
 ## - The parent dirs outside this will be 99% empty
@@ -335,9 +344,9 @@ repositories:
 #repo_sparse_path_override: "docs"
 #
 ## - Supports {repo_sparse_path} template - will take override ver if present
-## - If true, overrides init_clone_path_root_symlink_src
-## - Defaults to {init_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
-#init_clone_path_root_symlink_src_override: "docs"
+## - If true, overrides base_clone_path_root_symlink_src
+## - Defaults to {base_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
+#base_clone_path_root_symlink_src_override: "docs"
 #
 ## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
 #active: true  

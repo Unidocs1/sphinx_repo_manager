@@ -23,7 +23,7 @@ proceeds.
 
 1. Place the `repo_manifest.yml` file two levels up from this script, typically at the project root.
 2. Ensure each repository listed in the manifest includes a `url` and a `tag`.
-3. Optionally, specify `init_clone_path` and `base_symlink_path` in the manifest to manage where repositories are cloned and how they are accessed.
+3. Optionally, specify `base_clone_path` and `base_symlink_path` in the manifest to manage where repositories are cloned and how they are accessed.
 4. Include this extension in your Sphinx `conf.py` file by adding the extension's path to `sys.path` and including `'repo_manager'` in the `extensions` list.
 
 ## Requirements

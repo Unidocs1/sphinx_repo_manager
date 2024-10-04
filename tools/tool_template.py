@@ -84,8 +84,8 @@ def main():
     manifest = manager.read_manifest()
 
     # TODO: Template starts here!
-    init_clone_path = manifest['init_clone_path']
-    logger.info(f"init_clone_path: '{init_clone_path}'")
+    base_clone_path = manifest['base_clone_path']
+    logger.info(f"base_clone_path: '{base_clone_path}'")
 
 
 # ENTRY POINT
