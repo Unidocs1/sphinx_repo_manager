@@ -49,8 +49,17 @@ logger.propagate = False
 
 def log_pretty_cli_cmd(cmd_arr, log_entries=None):
     """Log a pretty CLI command to logs."""
+
+    # Ensure all elements in cmd_arr are strings
+    cmd_arr = [str(arg) for arg in cmd_arr]
+
+    # Join the command array into a pretty command string
     pretty_cmd = shlex.join(cmd_arr)
+
+    # Prepare the message to log
     message = colorize_cli_cmd(f"  - CLI: `{brighten(pretty_cmd)}`")
+
+    # Log the message either to the log entries or directly to the logger
     if log_entries is not None:
         log_entries.append(message)
     else:
@@ -72,9 +81,9 @@ def clean_command_array(cmd_arr):
 
 
 def run_subprocess_cmd(
-    cmd_arr,
-    check_throw_on_cli_err=True,
-    log_entries=None,
+        cmd_arr,
+        check_throw_on_cli_err=True,
+        log_entries=None,
 ):
     """Run a subprocess command and handle errors."""
     clean_command_array(cmd_arr)
@@ -172,12 +181,12 @@ class GitHelper:
 
     @staticmethod
     def git_clone(
-        rel_init_clone_path,
-        repo_url_dotgit,
-        branch,
-        branch_is_tag,
-        preserve_gitlab_group,
-        log_entries=None,
+            rel_base_clone_path,
+            repo_url_dotgit,
+            branch,
+            branch_is_tag,
+            preserve_gitlab_group,
+            log_entries=None,
     ):
         """
         Clone the repo+branch from the provided URL to the specified path.
@@ -188,15 +197,15 @@ class GitHelper:
         repo_name_str = str(os.path.basename(repo_url_dotgit).replace(".git", ""))
 
         if preserve_gitlab_group and group_str:
-            rel_init_clone_path = os.path.join(
-                rel_init_clone_path, group_str, repo_name_str
+            rel_base_clone_path = os.path.join(
+                rel_base_clone_path, group_str, repo_name_str
             )
         else:
-            rel_init_clone_path = os.path.join(rel_init_clone_path, repo_name_str)
+            rel_base_clone_path = os.path.join(rel_base_clone_path, repo_name_str)
 
-        if os.path.exists(rel_init_clone_path):
+        if os.path.exists(rel_base_clone_path):
             raise Exception(
-                f"Tried to clone to path, but dir already exists: '{rel_init_clone_path}'"
+                f"Tried to clone to path, but dir already exists: '{rel_base_clone_path}'"
             )
 
         single_branch_cmd = (
@@ -210,7 +219,7 @@ class GitHelper:
             single_branch_cmd,
             "-q",
             repo_url_dotgit,
-            rel_init_clone_path,
+            rel_base_clone_path,
         ]
 
         run_subprocess_cmd(
@@ -272,14 +281,14 @@ class GitHelper:
         )
 
     def git_sparse_clone(
-        self,
-        clone_to_path,
-        repo_url_dotgit,
-        branch,
-        branch_is_tag,
-        repo_sparse_path,
-        stash_and_continue_if_wip,
-        log_entries=None,
+            self,
+            clone_to_path,
+            repo_url_dotgit,
+            branch,
+            branch_is_tag,
+            repo_sparse_path,
+            stash_and_continue_if_wip,
+            log_entries=None,
     ):
         """
         Clone the repo with sparse checkout, only fetching the specified directories.
@@ -428,7 +437,7 @@ class GitHelper:
 
     @staticmethod
     def git_checkout(
-        repo_path, tag_or_branch, stash_and_continue_if_wip, log_entries=None
+            repo_path, tag_or_branch, stash_and_continue_if_wip, log_entries=None
     ):
         """Checkout the specified tag/branch in the repository, considering `stash_and_continue_if_wip`."""
         if GitHelper.git_dir_exists(repo_path):
@@ -499,7 +508,7 @@ class GitHelper:
 
     @staticmethod
     def git_get_latest_tag_ver(
-        working_dir_repo_path, version_regex_pattern=None, quiet=False, log_entries=None
+            working_dir_repo_path, version_regex_pattern=None, quiet=False, log_entries=None
     ):
         """
         Retrieves the latest tag version from the specified Git repository, optionally ignoring
@@ -550,7 +559,7 @@ class GitHelper:
 
     @staticmethod
     def _git_submodule_cmd(
-        cmd, working_dir_repo_path, quiet, check_throw_on_cli_err=True, log_entries=None
+            cmd, working_dir_repo_path, quiet, check_throw_on_cli_err=True, log_entries=None
     ):
         """
         Run a git command in the specified sub-repo path, ensuring it's run from that working dir.
