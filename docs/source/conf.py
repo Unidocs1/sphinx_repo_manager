@@ -91,7 +91,7 @@ def setup(app):
 project = "XBE Docs"
 copyright = "Xsolla (USA), Inc. All rights reserved"
 author = "Xsolla"
-release = manifest_macro_ver  # eg: "v2024.08.0"; this will be set @ process_sphinx_repo_manifest_result()
+release = manifest_macro_ver  # eg: "v2024.08.0"
 version = release  # Used by some extensions
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 
