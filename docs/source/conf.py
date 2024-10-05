@@ -13,6 +13,7 @@ import sys
 import git
 from pathlib import Path
 from dotenv import load_dotenv
+import yaml
 from sphinx_repo_manager import SphinxRepoManagerConfig
 
 sys.path.insert(0, os.path.abspath('.'))
@@ -23,42 +24,43 @@ load_dotenv()
 confdir = Path(__file__).parent.resolve()
 
 
+# -- Read ../repo_manifest.yml early -----------------------------------------
+
+repo_manager_manifest_path = Path(confdir / ".." / "repo_manifest.yml").resolve()
+with open(repo_manager_manifest_path, 'r') as file:
+    manifest = yaml.safe_load(file)
+
+manifest_stage = manifest.get("stage")  # 'dev_stage' or 'production_stage'
+manifest_repos = manifest.get("repositories", {})
+
+# { url, tag, symlink_path, branch, active, ... }
+xbe_static_docs_repo = manifest_repos.get("xbe_static_docs", {})
+manifest_macro_ver = xbe_static_docs_repo.get("production_stage", {}).get("checkout", "v0.0.0")
+
+# Summary
+print("")
+print(f"[conf.py::repo_manifest] Manifest num repos found: {len(manifest_repos)}")
+print(f"[conf.py::repo_manifest] Manifest stage: '{manifest_stage}'")
+print(f"[conf.py::repo_manifest] Manifest macro ver: '{manifest_macro_ver}'")
+print("")
+
+# We'll set more vals dynamically below >>
+
+
 # -- Inline extensions -------------------------------------------------------
 # Instead of making an extension for small things, we can just embed inline
 def init_sphinx_repo_mgr_config(app):
-    repo_manager_manifest_path = Path(confdir / ".." / "repo_manifest.yml").resolve()
     print("[conf.py::setup] Setting repo_manager_manifest_path==" + str(repo_manager_manifest_path))
     app.add_config_value("repo_manager_manifest_path", repo_manager_manifest_path, 'env')
 
 
 def process_sphinx_repo_manifest_result(app):
-    global release
-    repo_mgr: SphinxRepoManagerConfig = app.config.sphinx_repo_manager
-
-    if repo_mgr:
-        print(f"[conf.py::setup=>process_sphinx_repo_manifest_result] Setting up ... ")
-    else:
-        print(f"[conf.py::setup=>process_sphinx_repo_manifest_result] !SphinxRepoManagerConfig; skipping.")
-        return
-
-    manifest = repo_mgr["manifest"]
-    manifest_stage = manifest["stage"]  # 'dev_stage' or 'prod_stage'
-    # manifest_stage_is_production = manifest_stage == "prod_stage"
-    manifest_repos = manifest[
-        "repositories"
-    ]
-
-    # { url, tag, symlink_path, branch, active, ... }
-    xbe_static_docs_repo = manifest_repos["xbe_static_docs"]
-    macro_ver = xbe_static_docs_repo["production_stage"]["checkout"]  # eg: "v2024.07.0"
-    print("")
-    print(f"[conf.py::repo_manifest.yml] Manifest num repos found: {len(manifest_repos)}")
-    print(f"[conf.py::repo_manifest.yml] Manifest stage: '{manifest_stage}'")
-    print(f"[conf.py::repo_manifest.yml] Manifest macro ver: '{macro_ver}'")
-    print("")
-
-    # Dynamically set proj vals
-    release = macro_ver
+    """ 
+    - The sphinx_repo_manager has already processed/normalized the manifest
+      and returned results.
+    - (!) At this point, we can't set global vals like `release` 
+    """
+    # repo_mgr: SphinxRepoManagerConfig = app.config.sphinx_repo_manager
 
 
 def setup(app):
@@ -66,9 +68,10 @@ def setup(app):
     ORDER OF OPS:
     1. This def: Set config here via app.add_config_value() to pass data to extensions
     2. This def: Prepare app.connect() events that will be triggered *after* official extensions
-    3. Extensions run "builder-inited"
-    4. This def: Any remaining declared "builder-inited" will run
-    5. Extensions run "build-finished"
+    3. Extensions run "builder-inited" -> Nothing is set in stone, yet
+    4. This def: Any remaining declared "builder-inited" will run, 
+       but global vals like `release` are already set in stone
+    5. Extensions run "build-finished" -> Mostly cleanup/minimizer scripts
     6. This def: Any remaining declared "build-finished" will run 
     """
 
@@ -76,7 +79,7 @@ def setup(app):
     init_sphinx_repo_mgr_config(app)
 
     # Non-config extensions & tools >> Set `app.connect()` for "builder-inited" or "build-finished"
-    app.connect("builder-inited", process_sphinx_repo_manifest_result)
+    # app.connect("builder-inited", process_sphinx_repo_manifest_result)
     app.connect("builder-inited", configure_doxygen_breathe)
     app.connect("build-finished", copy_open_graph_img_to_build)
     print("")
@@ -88,7 +91,7 @@ def setup(app):
 project = "XBE Docs"
 copyright = "Xsolla (USA), Inc. All rights reserved"
 author = "Xsolla"
-release = "0.0.0.0"  # eg: "v2024.08.0"; this will be set @ process_sphinx_repo_manifest_result()
+release = manifest_macro_ver  # eg: "v2024.08.0"; this will be set @ process_sphinx_repo_manifest_result()
 version = release  # Used by some extensions
 html_context = {}  # html_context.update({}) to pass data to extensions & themes
 
