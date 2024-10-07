@@ -14,7 +14,7 @@ services:
         depends_on:
             - sphinx
         volumes:
-            - ..:/app
+            - ../docs/build:/app/docs/build
         env_file:
             - ../.env
         entrypoint: ["make"]

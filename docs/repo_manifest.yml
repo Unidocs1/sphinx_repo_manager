@@ -34,6 +34,11 @@ enable_repo_manager: true
 # - Defaults to true, if omitted
 enable_repo_manager_local: true
 
+# - If false and not on RTD, will add breathe project output files to the exclude_patterns.
+# - Set to false to speed up non-RTD builds. RTD builds ignore this setting
+# - Defaults to false, if omitted.
+enable_breathe_local: true
+
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers.
 #   - Eg; if 3 workers, the 1st 3 log results may be something like: 
@@ -41,7 +46,7 @@ enable_repo_manager_local: true
 #   - TODO: Log revamp to better accommodate async multi-threading
 # - Recommended just 1 if needing *chronological* debugging
 # - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
-max_workers_local: 5
+max_workers_local: 1
 
 # - Max workers for ReadTheDocs deployment for multi-threading
 # - RTD has max 1 for free accts; use just 1 for debugging or free accts
@@ -241,18 +246,27 @@ repositories:
       checkout_type: "tag"
   sdk_csharp:
     url: "https://source.goxbe.io/Core/sdk/sdk_csharp"
+    dev_stage:
+      checkout: "XBND-1391-doxygen-spam"
+      checkout_type: "branch"
     production_stage:
       prev_ver: "v3.0.0"
       checkout: "v4.0.0"
       checkout_type: "tag"
   sdk_nodejs:
     url: "https://source.goxbe.io/Core/sdk/sdk_nodejs"
+    dev_stage:
+      checkout: "XBND-1281-api-docgen"
+      checkout_type: "branch"
     production_stage:
       prev_ver: "v2.0.0"
       checkout: "v2.2.0"
       checkout_type: "tag"
   sdk_unity:
     url: "https://source.goxbe.io/Core/sdk/sdk_unity"
+    dev_stage:
+      checkout: "XBND-1278-api-reference"
+      checkout_type: "branch"
     production_stage:
       prev_ver: "v3.0.0"
       checkout: "v4.0.0"
