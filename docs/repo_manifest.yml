@@ -246,27 +246,18 @@ repositories:
       checkout_type: "tag"
   sdk_csharp:
     url: "https://source.goxbe.io/Core/sdk/sdk_csharp"
-    dev_stage:
-      checkout: "XBND-1391-doxygen-spam"
-      checkout_type: "branch"
     production_stage:
       prev_ver: "v3.0.0"
       checkout: "v4.0.0"
       checkout_type: "tag"
   sdk_nodejs:
     url: "https://source.goxbe.io/Core/sdk/sdk_nodejs"
-    dev_stage:
-      checkout: "XBND-1281-api-docgen"
-      checkout_type: "branch"
     production_stage:
       prev_ver: "v2.0.0"
       checkout: "v2.2.0"
       checkout_type: "tag"
   sdk_unity:
     url: "https://source.goxbe.io/Core/sdk/sdk_unity"
-    dev_stage:
-      checkout: "XBND-1278-api-reference"
-      checkout_type: "branch"
     production_stage:
       prev_ver: "v3.0.0"
       checkout: "v4.0.0"
