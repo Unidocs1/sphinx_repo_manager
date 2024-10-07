@@ -37,7 +37,7 @@ enable_repo_manager_local: true
 # - If false and not on RTD, will add breathe project output files to the exclude_patterns.
 # - Set to false to speed up non-RTD builds. RTD builds ignore this setting
 # - Defaults to false, if omitted.
-enable_breathe_local: true
+enable_breathe_local: false
 
 # - Max workers for local sphinx_repo_manager for multi-threading
 # - (!) Logs will still appear *mostly* chronologically, but in batches of n # of workers.
