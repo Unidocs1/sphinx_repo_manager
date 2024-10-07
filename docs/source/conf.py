@@ -66,6 +66,10 @@ exclude_patterns = [
     "**/venv",
 ]
 
+suppress_warnings = [
+    "toc.excluded",  # If we set `enable_breathe_local: false` in manifest, this suppresses exclusion warnings
+]
+
 html_extra_path = [
     "robots.txt",  # Only index latest ver to crawlers
     "sitemap.xml",  # Show latest ver -> release notes -> feats -> api docs

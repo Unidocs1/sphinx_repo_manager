@@ -1,1 +1,0 @@
-D:/repos/xsolla/xbe_docs-dev/docs/source/_repos-available/account_services--dev/RELEASE_NOTES.rst

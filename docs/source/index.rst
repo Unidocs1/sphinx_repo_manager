@@ -1,9 +1,13 @@
+:orphan:
+:nosearch:
 :og:title: Welcome to Xsolla Backend
 :og:description: Xsolla Backend is a powerful backend engine for building highly-scalable online games and entertainment products - pay only 5% for unlimited support and enterprise features.
 
 .. meta::
    :description: Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment products covering a robust set of features - pay only 5% for unlimited support and enterprise features
    :keywords: xbe, xsolla backend, axr, acceleratxr, backend, backend as a service, gbaas, doc, docs, api docs, api, openapi, xbe docs, xsolla docs, xsolla backend docs
+
+.. TODO: This will eventually be the new index (instead of sphinx_repo_manager), so we orphan+hide until used!
 
 =========================
 Welcome to Xsolla Backend
@@ -102,27 +106,25 @@ Welcome to Xsolla Backend
 .. include:: component_cards-partial.rst
    :start-after: start-marker
 
-.. grid:: 1
+.. grid:: 1 1 2 2
+   :gutter: 2
 
-   .. grid:: 1 1 2 2
-      :gutter: 2
+   .. grid-item::
+      Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
+      products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
+      matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
+
+      .. raw:: html
+
+         <a class="xsui-button xsui-button--appearance-secondary xsui-button--size-sm" href="content/-/welcome/what_is_xbe.html">
+            <div class="xsui-button__wrapper">
+               <div class="xsui-button__content">Learn More</div>
+            </div>
+         </a>
    
-      .. grid-item::
-         Xsolla Backend [XBE] is a powerful backend engine for building highly-scalable online games and entertainment
-         products. XBE's robust set of :doc:`features <content/-/welcome/features>` cover everything you need - from
-         matchmaking and identity to quest systems - enabling you to craft modern online experiences quickly and affordably:
-
-         .. raw:: html
-
-            <a class="xsui-button xsui-button--appearance-secondary xsui-button--size-sm" href="content/-/welcome/what_is_xbe.html">
-               <div class="xsui-button__wrapper">
-                  <div class="xsui-button__content">Learn More</div>
-               </div>
-            </a>
-         
-      .. grid-item::
-         * **Pay only 5%** of gross sales paid
-         * **Free** Hosting
-         * **Source** Available
-         * **Unlimited** Support
-         * **Enterprise** Features
+   .. grid-item::
+      * **Pay only 5%** of gross sales paid
+      * **Free** Hosting
+      * **Source** Available
+      * **Unlimited** Support
+      * **Enterprise** Features
