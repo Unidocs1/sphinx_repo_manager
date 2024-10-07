@@ -33,6 +33,8 @@
     extends: .build_docs_job
     stage: build
     image: docker:latest
+    variables:
+        DOCS_REPO_IMAGE: xbe/docs/doxygen-repo
     services:
         - docker:dind
     script:

@@ -3,14 +3,11 @@
 # 2. Runs docker-compose to build the HTML
 #############################################################
 
-# Save the original location
-$originalLocation = Get-Location
-
 # Get the location of the current script file and project root
 $scriptFile = $MyInvocation.MyCommand.Path
 $fileLocation = Split-Path -Path $scriptFile
 $projRoot = (Resolve-Path -Path "$fileLocation/..").ProviderPath
-Set-Location $projRoot
+Push-Location $projRoot
 
 Write-Host "-----------------------------------"
 Write-Host "Docker Build..."
@@ -29,7 +26,7 @@ try {
     }
 } catch {
     Write-Host "Error: $_" -ForegroundColor Red
-    Set-Location $originalLocation
+    Pop-Location
     exit 1  # Exit with error code 1 to indicate failure
 }
 
@@ -44,9 +41,9 @@ try {
     Write-Host "HTML build completed successfully." -ForegroundColor Green
 } catch {
     Write-Host "Error: $_" -ForegroundColor Red
-    Set-Location $originalLocation
+    Pop-Location
     exit 1  # Exit with error code 1 to indicate failure
 }
 
 Write-Host "-----------------------------------"
-Set-Location $originalLocation
+Pop-Location

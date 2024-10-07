@@ -14,8 +14,8 @@
 
 | Python VENV Helpers | |
 |--------|-------------|
-| [`venv-activate.ps1`](venv-activate.ps1) | Activate a new or existing virtual environment called `venv`. |
-| [`venv-destroy.ps1`](venv-destroy.ps1) | Destroy the virtual environment called `venv`. |
+| [`venv-activate.ps1`](venv-activate.ps1) | Activate a new or existing virtual environment called `xbe-venv`. |
+| [`venv-destroy.ps1`](venv-destroy.ps1) | Destroy the virtual environment called `xbe-venv`. |
 
 | Python Conda Helpers| |
 |--------|-------------|

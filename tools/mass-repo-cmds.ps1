@@ -91,7 +91,7 @@ function Start-RepoCmds {
         [string]$dirPath
     )
 
-    Set-Location $dirPath
+    Push-Location $dirPath
 	
     Write-Output ""
     Write-Output "-------------------------------"
@@ -122,7 +122,7 @@ function Main {
     try {
         # Resolve the full path of the repos directory
         $resolvedReposDir = Resolve-Path $REPOS_AVAIL_DIR
-        Set-Location $resolvedReposDir
+        Push-Location $resolvedReposDir
         Write-Output "BASE DIR: $(pwd)"
 
         # Find all git repositories recursively
@@ -186,7 +186,7 @@ catch {
 }
 finally {
     # Return to the original working directory
-    Set-Location $STARTING_DIR
+    Push-Location $STARTING_DIR
 	
     Write-Output ""
     Write-Output "Done."
