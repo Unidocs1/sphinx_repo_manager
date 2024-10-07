@@ -3,14 +3,11 @@
 # 2. Clears docs folder of all unversioned files
 #############################################################
 
-# Save the original location
-$originalLocation = Get-Location
-
 # Get the location of the current script file and project root
 $scriptFile = $MyInvocation.MyCommand.Path
 $fileLocation = Split-Path -Path $scriptFile
 $projRoot = (Resolve-Path -Path "$fileLocation/..").ProviderPath
-Set-Location $projRoot
+Push-Location $projRoot
 
 Write-Host "-----------------------------------"
 Write-Host "Docker Destroy..."
@@ -26,7 +23,7 @@ try {
     Write-Host "Docker cleanup finished successfully." -ForegroundColor Green
 } catch {
     Write-Host "Error: $_" -ForegroundColor Red
-    Set-Location $originalLocation
+    Pop-Location
     exit 1  # Exit with error code 1 to indicate failure
 }
 
@@ -43,4 +40,4 @@ $process = Start-Process powershell -ArgumentList " -NoProfile -ExecutionPolicy 
 #     exit 1  # Exit with error code 1 to indicate failure
 # }
 
-Set-Location $originalLocation
+Pop-Location

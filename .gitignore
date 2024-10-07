@@ -57,7 +57,8 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-venv
+venv/
+xbe-venv/
 .readthedocs.yaml.bak
 
 # Local symbolic links

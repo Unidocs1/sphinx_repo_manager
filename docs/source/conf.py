@@ -10,11 +10,9 @@
 import os
 import shutil
 import sys
-import git
 from pathlib import Path
 from dotenv import load_dotenv
 import yaml
-from sphinx_repo_manager import SphinxRepoManagerConfig
 
 sys.path.insert(0, os.path.abspath('.'))
 load_dotenv()
@@ -22,188 +20,6 @@ load_dotenv()
 # -- Path setup --------------------------------------------------------------
 # The absolute path to the directory containing conf.py.
 confdir = Path(__file__).parent.resolve()
-
-
-# -- Read ../repo_manifest.yml early -----------------------------------------
-
-repo_manager_manifest_path = Path(confdir / ".." / "repo_manifest.yml").resolve()
-with open(repo_manager_manifest_path, 'r') as file:
-    manifest = yaml.safe_load(file)
-
-manifest_stage = manifest.get("stage")  # 'dev_stage' or 'production_stage'
-manifest_repos = manifest.get("repositories", {})
-
-# { url, tag, symlink_path, branch, active, ... }
-xbe_static_docs_repo = manifest_repos.get("xbe_static_docs", {})
-manifest_macro_ver = xbe_static_docs_repo.get("production_stage", {}).get("checkout", "v0.0.0")
-
-# Summary
-print("")
-print(f"[conf.py::repo_manifest] Manifest num repos found: {len(manifest_repos)}")
-print(f"[conf.py::repo_manifest] Manifest stage: '{manifest_stage}'")
-print(f"[conf.py::repo_manifest] Manifest macro ver: '{manifest_macro_ver}'")
-print("")
-
-# We'll set more vals dynamically below >>
-
-
-# -- Inline extensions -------------------------------------------------------
-# Instead of making an extension for small things, we can just embed inline
-def init_sphinx_repo_mgr_config(app):
-    print("[conf.py::setup] Setting repo_manager_manifest_path==" + str(repo_manager_manifest_path))
-    app.add_config_value("repo_manager_manifest_path", repo_manager_manifest_path, 'env')
-
-
-def process_sphinx_repo_manifest_result(app):
-    """ 
-    - The sphinx_repo_manager has already processed/normalized the manifest
-      and returned results.
-    - (!) At this point, we can't set global vals like `release` 
-    """
-    # repo_mgr: SphinxRepoManagerConfig = app.config.sphinx_repo_manager
-
-
-def setup(app):
-    """ 
-    ORDER OF OPS:
-    1. This def: Set config here via app.add_config_value() to pass data to extensions
-    2. This def: Prepare app.connect() events that will be triggered *after* official extensions
-    3. Extensions run "builder-inited" -> Nothing is set in stone, yet
-    4. This def: Any remaining declared "builder-inited" will run, 
-       but global vals like `release` are already set in stone
-    5. Extensions run "build-finished" -> Mostly cleanup/minimizer scripts
-    6. This def: Any remaining declared "build-finished" will run 
-    """
-
-    # Config 1st >> Set `app.add_config_value(name, val, 'env')`
-    init_sphinx_repo_mgr_config(app)
-
-    # Non-config extensions & tools >> Set `app.connect()` for "builder-inited" or "build-finished"
-    # app.connect("builder-inited", process_sphinx_repo_manifest_result)
-    app.connect("builder-inited", configure_doxygen_breathe)
-    app.connect("build-finished", copy_open_graph_img_to_build)
-    print("")
-
-
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
-project = "XBE Docs"
-copyright = "Xsolla (USA), Inc. All rights reserved"
-author = "Xsolla"
-release = manifest_macro_ver  # eg: "v2024.08.0"
-version = release  # Used by some extensions
-html_context = {}  # html_context.update({}) to pass data to extensions & themes
-
-# Set the project URL and branch from the environment variables
-project_url = os.environ.get("PROJECT_URL", None)
-current_branch = os.environ.get("PROJECT_BRANCH", None)
-project_name = os.environ.get("PROJECT_NAME", "xbe_example")
-
-# If not set, try to get the project URL and branch from the git repo
-if not project_url or not current_branch:
-    try:
-        project_name = "xbe_example"
-        repo = git.Repo(search_parent_directories=True)
-        current_branch = repo.active_branch.name
-        project_url = repo.remotes.origin.url
-    except Exception as e:
-        print(
-            "Please set the `PROJECT_URL` and `PROJECT_BRANCH` environment variables."
-        )
-
-project_brief = "XBE Doxygen Template"
-project_group = "Xsolla"
-project_repo = f"{project_name}"
-api_src_input = "src"
-
-# -- ReadTheDocs (RTD) Config ------------------------------------------------
-
-# Check if we're running on Read the Docs' servers
-is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == "True"
-rtd_version = is_read_the_docs_build and os.environ.get("READTHEDOCS_VERSION")
-
-# Get the version being built
-rtd_version_is_latest = is_read_the_docs_build and rtd_version == "latest"  # Typically the 'master' branch
-
-# Set canonical URL from the Read the Docs Domain
-html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
-html_context["READTHEDOCS"] = is_read_the_docs_build
-
-# --- Breathe configuration ---
-
-breathe_projects = {}
-doxygen_root = "_doxygen"
-
-
-def configure_doxygen_breathe(app):
-    base_dir = Path(app.srcdir, doxygen_root)
-    print(f"\n[conf.py::breathe] Configuring Breathe projects from {base_dir}...")
-    for proj_name in os.listdir(base_dir):
-        path = base_dir.joinpath(proj_name)
-        if os.path.isdir(path):
-            print(
-                f"[conf.py::breathe] Registering Breathe project: '{proj_name}': '{path}'"
-            )
-            breathe_projects[proj_name] = path
-    print("Done.\n")
-
-
-# --- End of Breathe configuration ---
-
-# --- C# domain configuration ---
-sphinx_csharp_test_links = False
-sphinx_csharp_multi_language = True
-sphinx_csharp_ignore_xref = [
-    "xbe.sdk.Source.Interfaces.IUidHandler",
-    "xbe.sdk.IAPIClient",
-    "T",
-    "Task",
-    "Guid",
-    "KeyCollection",
-    "KeyValuePair",
-    "PropertyInfo",
-    "FieldInfo",
-    "DeleteMemberBinder",
-    "GetMemberBinder",
-    "SetMemberBinder",
-    "DateTime",
-    "IDynamicMetaObjectProvider",
-    "HttpClientHandler",
-    "IEquatable",
-    "Callback",
-    "JsonReader",
-    "xbe.sdk.Network.IConnection",
-    "JsonWriter",
-    "HttpResponseMessage",
-    "IAPIClient",
-    "StreamingContext",
-    "HttpMethod",
-    "xbe.sdk.ILogger",
-    "HttpStatusCode",
-    "CancellationToken",
-    "Uri",
-    "JsonConverter",
-    "ClientWebSocket",
-    "Attribute",
-    "DynamicObject",
-    "OnUnknownMessage",
-    "Exception",
-    "SerializationInfo",
-    "ILogger",
-    "Encoding",
-    "HttpClient",
-    "JsonSerializer",
-    "CancellationTokenSource",
-    "ValidationParameters",
-    "OnSocketMessage",
-    "PushMessage",
-    "Vector2",
-    "Vector3",
-    ">",
-]
-# --- End of C# Domain ----
-
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -213,6 +29,8 @@ sphinx_csharp_ignore_xref = [
 extensions = [
     #"sphinx_relative_include",  # Our own custom extension to add :relative: prop to `include` directive 
     "myst_parser",  # recommonmark successor, auto-parsing .md to .rst (skips READMEs)
+    "breathe",  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
+    "sphinx_csharp",  # C# extension for breathe | https://github.com/rogerbarton/sphinx-csharp
     "sphinx_docsearch",  # AI-powered docsearch | https://pypi.org/project/sphinx-docsearch/
     "sphinx_tabs.tabs",  # Add tabs to code blocks | https://sphinx-tabs.readthedocs.io/en/latest
     "sphinx_algolia_crawler",  # Our own custom extension to crawl our build site for our AI-powered search indexing
@@ -229,16 +47,6 @@ extensions = [
     "sphinx_remove_toctrees",  # Remove specific toctrees | https://pypi.org/project/sphinx-remove-toctrees
     "sphinx_openapi",  # Our own custom extension to download and build OpenAPI docs
 ]
-
-if is_read_the_docs_build:
-    print(
-        "[conf.py::extensions] Adding breathe + sphinx_csharp extensions since is_read_the_docs_build (+7m build time)")
-    extensions.append(
-        "breathe")  # Breathe extension for Doxygen XML to Sphinx | https://breathe.readthedocs.io/en/latest/
-    extensions.append("sphinx_csharp")  # C# extension for breathe | https://github.com/rogerbarton/sphinx-csharp
-else:
-    print(
-        "[conf.py::extensions] WARNING: [ breathe, sphinx_csharp ] skipped since not is_read_the_docs_build (saves 7m build time)")
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = [str(confdir / "_templates")]
@@ -268,6 +76,54 @@ tocdepth = 1  # Default :maxdepth:
 # Tell sphinx what the primary language being documented is + code highlighting
 primary_domain = "cpp"
 highlight_language = "cpp"
+
+# -- Read ../repo_manifest.yml early -----------------------------------------
+# NOTE: This next line technically does nothing, since that's the default value
+repo_manager_manifest_path = Path(confdir,  "..", "repo_manifest.yml").resolve()
+
+with open(repo_manager_manifest_path, 'r') as file:
+    manifest = yaml.safe_load(file)
+
+manifest_stage = manifest.get("stage")  # 'dev_stage' or 'production_stage'
+manifest_repos = manifest.get("repositories", {})
+
+# { url, tag, symlink_path, branch, active, ... }
+xbe_static_docs_repo = manifest_repos.get("xbe_static_docs", {})
+manifest_macro_ver = xbe_static_docs_repo.get("production_stage", {}).get("checkout", "v0.0.0")
+
+# Summary
+print("")
+print(f"[conf.py::repo_manifest] Manifest num repos found: {len(manifest_repos)}")
+print(f"[conf.py::repo_manifest] Manifest stage: '{manifest_stage}'")
+print(f"[conf.py::repo_manifest] Manifest macro ver: '{manifest_macro_ver}'")
+print("")
+
+# -- Inline extensions -------------------------------------------------------
+def setup(app: Sphinx):
+    app.connect("build-finished", copy_open_graph_img_to_build)
+
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
+project = "XBE Docs"
+copyright = "Xsolla (USA), Inc. All rights reserved"
+author = "Xsolla"
+release = manifest_macro_ver  # eg: "v2024.08.0"
+version = release  # Used by some extensions
+html_context = {}  # html_context.update({}) to pass data to extensions & themes
+
+
+# -- ReadTheDocs (RTD) Config ------------------------------------------------
+# Check if we're running on Read the Docs' servers
+is_read_the_docs_build = os.environ.get("READTHEDOCS", None) == "True"
+rtd_version = is_read_the_docs_build and os.environ.get("READTHEDOCS_VERSION")
+
+# Get the version being built
+rtd_version_is_latest = is_read_the_docs_build and rtd_version == "latest"  # Typically the 'master' branch
+
+# Set canonical URL from the Read the Docs Domain
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+html_context["READTHEDOCS"] = is_read_the_docs_build
 
 # -- Sphinx Extension: sphinxext-opengraph ----------------------------
 # For embed preview info, such as when link is dropped into Discord/FB.
@@ -299,17 +155,10 @@ ogp_custom_meta_tags = [
     # '<meta name="twitter:image" content="https://external/link.png">',
 ]
 
-
 # [post-build::low priority] If we don't use the open graph image directly (we use a smaller variant in the root index),
 # We need to manually mv it to the build images dir
 def copy_open_graph_img_to_build(app, exception):
-    html_og_image = (
-            Path(app.srcdir)
-            / "_static"
-            / "images"
-            / "_local"
-            / "xbe-banner-og-1200x630.min.png"
-    )
+    html_og_image = Path(app.srcdir, "_static", "images", "_local", "xbe-banner-og-1200x630.min.png")
     build_images_dir = Path(app.outdir) / "_images"
 
     print(
@@ -567,7 +416,6 @@ html_context.update({
 
 # -- MyST configuration ------------------------------------------------------
 # Recommonmark successor to auto-parse .md to .rst
-
 # Configuration for MyST-Parser
 myst_enable_extensions = [
     "amsmath",  # Enable parsing and rendering of AMS math syntax
@@ -583,6 +431,8 @@ myst_enable_extensions = [
     # Ext | https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
     "colon_fence",
 ]
+
+myst_heading_anchors = 3
 
 # -- Feature Flags -----------------------------------------------------------
 # Turn any block of docs on/off - with optional fallbacks. EXAMPLE USE:
@@ -615,3 +465,55 @@ feature_flags = {
 rst_prolog = """
 .. |docs-wip| replace:: :bdg-info-line:`Docs WIP`
 """
+# -- Configure sphinx_csharp -----------------------------------------------------------
+sphinx_csharp_test_links = False
+sphinx_csharp_multi_language = True
+sphinx_csharp_ignore_xref = [
+    "xbe.sdk.Source.Interfaces.IUidHandler",
+    "xbe.sdk.IAPIClient",
+    "T",
+    "Task",
+    "Guid",
+    "KeyCollection",
+    "KeyValuePair",
+    "PropertyInfo",
+    "FieldInfo",
+    "DeleteMemberBinder",
+    "GetMemberBinder",
+    "SetMemberBinder",
+    "DateTime",
+    "IDynamicMetaObjectProvider",
+    "HttpClientHandler",
+    "IEquatable",
+    "Callback",
+    "JsonReader",
+    "xbe.sdk.Network.IConnection",
+    "JsonWriter",
+    "HttpResponseMessage",
+    "IAPIClient",
+    "StreamingContext",
+    "HttpMethod",
+    "xbe.sdk.ILogger",
+    "HttpStatusCode",
+    "CancellationToken",
+    "Uri",
+    "JsonConverter",
+    "ClientWebSocket",
+    "Attribute",
+    "DynamicObject",
+    "OnUnknownMessage",
+    "Exception",
+    "SerializationInfo",
+    "ILogger",
+    "Encoding",
+    "HttpClient",
+    "JsonSerializer",
+    "CancellationTokenSource",
+    "ValidationParameters",
+    "OnSocketMessage",
+    "PushMessage",
+    "Vector2",
+    "Vector3",
+    ">",
+]
+# -- End sphinx_csharp -----------------------------------------------------------

@@ -4,6 +4,7 @@ Xsolla Sphinx Extension: sphinx_repo_manager
 - If you edit this, be sure to re-run `pip -r requirements.txt` from proj root since it's an embedded pkg
 """
 # Core, pathing, ops >>
+from sphinx.application import Sphinx
 import os  # file path ops
 from pathlib import Path  # Path ops
 import re  # regex ops
@@ -61,10 +62,12 @@ class RepositoryManagementError(Exception):
 
 # RepoManager class to handle repository operations
 class SphinxRepoManager:
-    def __init__(self, app):
+    def __init__(self, app: Sphinx):
         self.app = app
         self.confdir = app.confdir
-        self.repo_manager_manifest_path = app.config.repo_manager_manifest_path  # Set @ conf.py
+        
+        # Set @ conf.py
+        self.repo_manager_manifest_path = app.config.repo_manager_manifest_path 
         load_dotenv()
 
         self.source_static_path = None
@@ -87,6 +90,9 @@ class SphinxRepoManager:
         self.shutdown_flag = False  # Flag to handle graceful shutdown
         self.errored_repo_name = None
         signal.signal(signal.SIGINT, self._signal_handler)
+
+        # Initialize the main process
+        self._init_main()
 
     def _signal_handler(self, signum, frame):
         if not self.shutdown_flag:
@@ -1038,7 +1044,7 @@ class SphinxRepoManager:
         time_str = f"{int(minutes)}m{int(seconds)}s"
         logger.info(colorize_success(f"Build time: {brighten(time_str)}"))
 
-    def main(self, app):
+    def _init_main(self):
         """
         Handle the repository cloning and updating process when Sphinx initializes.
         - Read/normalize/validate the manifest

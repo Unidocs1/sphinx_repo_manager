@@ -86,7 +86,7 @@ Welcome to Xsolla Backend
    :hidden:
 
    SDK Overview <content/-/sdk/index>
-   NodeJS SDK Reference <content/nodejs_sdk/api/index>
+   NodeJS SDK Reference <content/sdk_nodejs/api/index>
    C++ SDK Reference <content/sdk_cpp/api/index>
    C# SDK Reference <content/sdk_csharp/api/index>
    Unreal SDK <content/-/sdk/sdk_unreal_ref>

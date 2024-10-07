@@ -9,14 +9,11 @@
 #   . .\conda-destroy.ps1
 ##########################################################################
 
-# Save the original location
-$originalLocation = Get-Location
-
 # Get the location of the current script file and project root
 $scriptFile = $MyInvocation.MyCommand.Path
 $fileLocation = Split-Path -Path $scriptFile
 $projRoot = (Resolve-Path -Path "$fileLocation/..").ProviderPath
-Set-Location $projRoot
+Push-Location $projRoot
 
 Write-Host "-----------------------------------"
 Write-Host "Conda Environment Destroy..."
@@ -42,10 +39,10 @@ try {
     }
 } catch {
     Write-Host "Error: Failed to deactivate or destroy conda environment '$envName'."
-    Set-Location $originalLocation
+    Pop-Location
     exit 1
 }
 
 Write-Host "-----------------------------------"
-Set-Location $originalLocation
+Pop-Location
 
