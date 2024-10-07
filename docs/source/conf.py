@@ -357,7 +357,14 @@ html_theme_options = {
         "navbar-icon-links",
         "article-header-buttons",
     ],
+    "analytics": {
+        "google_analytics_id": "",  # Added below if RTD build
+    }
 }
+
+if is_read_the_docs_build:
+    # Inject analytics from RTD env vars
+    html_theme_options["analytics"]["google_analytics_id"] = os.environ.get("GOOGLE_ANALYTICS_ID", None)
 
 html_sidebars = {
     "**": [
