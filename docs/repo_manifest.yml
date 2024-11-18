@@ -32,7 +32,7 @@ enable_repo_manager: true
 # - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
 # - (!) If you are missing images/blobs, you probably want to set this to true
 # - Defaults to true, if omitted
-enable_repo_manager_local: false
+enable_repo_manager_local: true
 
 # - If false and not on RTD, will add breathe project output files to the exclude_patterns.
 # - Set to false to speed up non-RTD builds. RTD builds ignore this setting
@@ -46,7 +46,7 @@ enable_breathe_local: false
 #   - TODO: Log revamp to better accommodate async multi-threading
 # - Recommended just 1 if needing *chronological* debugging
 # - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
-max_workers_local: 1
+max_workers_local: 5
 
 # - Max workers for ReadTheDocs deployment for multi-threading
 # - RTD has max 1 for free accts; use just 1 for debugging or free accts

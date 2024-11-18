@@ -4,8 +4,15 @@
 !.yarn/releases
 !.yarn/plugins
 
-# JetBrains
-.idea
+# JetBrains Surgical Ignores
+.idea/workspace.xml
+.idea/dataSources/
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/usage.statistics.xml
+.idea/gradle.xml
+.idea/dictionaries/
+.idea/libraries/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
