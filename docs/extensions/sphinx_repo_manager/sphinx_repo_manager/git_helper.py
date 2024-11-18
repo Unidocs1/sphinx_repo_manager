@@ -1,12 +1,18 @@
 import os
-import re  # Regex
+import re
 import shutil
 import subprocess
-import shlex  # CLI helper
+import shlex
 import logging
 from datetime import datetime
 from pathlib import Path
+from subprocess import CompletedProcess
 from .log_styles import *
+from rich.console import Console
+
+console = Console()
+
+GIT_DEBUG = False  # Spammy logs, if True - notably for cloning
 
 GIT_SPARSE_PRESERVED_DIRS_FILES = [
     ".git",
@@ -16,23 +22,24 @@ GIT_SPARSE_PRESERVED_DIRS_FILES = [
     "RELEASE_NOTES.rst",
 ]
 
+STAGES = {
+    "Receiving": "Receiving objects",
+    "Compressing": "Compressing objects",
+    "Resolving": "Resolving deltas",
+}
+
 
 # Configure the logger
 class CustomFormatter(logging.Formatter):
     def format(self, record):
-        # Save the original format
         original_format = self._style._fmt
 
-        # Check if the log level is INFO and adjust the format accordingly
         if record.levelno == logging.INFO:
             self._style._fmt = "%(message)s"
         else:
             self._style._fmt = "(levelname)s: %(message)s"
 
-        # Format the record using the updated format
         result = logging.Formatter.format(self, record)
-
-        # Restore the original format
         self._style._fmt = original_format
 
         return result
@@ -42,32 +49,13 @@ handler = logging.StreamHandler()
 handler.setFormatter(CustomFormatter())
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.ERROR)
 logger.addHandler(handler)
 logger.propagate = False
 
 
-def log_pretty_cli_cmd(cmd_arr, log_entries=None):
-    """Log a pretty CLI command to logs."""
-
-    # Ensure all elements in cmd_arr are strings
-    cmd_arr = [str(arg) for arg in cmd_arr]
-
-    # Join the command array into a pretty command string
-    pretty_cmd = shlex.join(cmd_arr)
-
-    # Prepare the message to log
-    message = colorize_cli_cmd(f"  - CLI: `{brighten(pretty_cmd)}`")
-
-    # Log the message either to the log entries or directly to the logger
-    if log_entries is not None:
-        log_entries.append(message)
-    else:
-        logger.info(f"*[REALTIME] {message}")
-
-
 def redact_url_secret(url):
-    """Redact any credentials in the URL."""
+    """ Redact any credentials in the URL. """
     try:
         url_pattern = re.compile(r"https://([^:/]*:[^@]*)@")
         return url_pattern.sub("https://REDACTED-SECRET@", url)
@@ -80,6 +68,56 @@ def clean_command_array(cmd_arr):
     cmd_arr[:] = [arg for arg in cmd_arr if arg]
 
 
+def run_subprocess_with_progress(cmd, progress_callback=None):
+    """
+    Run a subprocess command and display output in real-time, optionally tracking progress.
+
+    Parameters:
+    * cmd (list): Command to be executed as a list of arguments.
+    * progress_callback (function): Function to handle progress updates, called with each line of output.
+    """
+    try:
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1
+        )
+
+        for line in process.stdout:
+            line = line.strip()
+            if progress_callback:
+                progress_callback(line)
+            if GIT_DEBUG:
+                print(line)
+
+        process.stdout.close()
+        process.wait()
+
+        # Failed?
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(
+                process.returncode, cmd, output="Subprocess error encountered."
+            )
+
+    except FileNotFoundError:
+        raise Exception(f"Command not found: {' '.join(cmd)}")
+    except subprocess.CalledProcessError as e:
+        raise Exception(
+            f"Command failed with return code {e.returncode}.\nCommand: {' '.join(cmd)}\nError: {e.output}"
+        )
+    except Exception as e:
+        raise Exception(f"An unexpected error occurred while running: {' '.join(cmd)}\nError: {str(e)}")
+
+
+def prepare_command(cmd):
+    """
+    Convert all Path objects in a command list to strings for the subprocess.
+    """
+    return [str(part) if isinstance(part, Path) else part for part in cmd]
+
+
 def run_subprocess_cmd(
         cmd_arr,
         check_throw_on_cli_err=True,
@@ -87,14 +125,17 @@ def run_subprocess_cmd(
 ):
     """Run a subprocess command and handle errors."""
     clean_command_array(cmd_arr)
-    redacted_cmd_arr = [redact_url_secret(part) for part in cmd_arr]
-    log_pretty_cli_cmd(redacted_cmd_arr, log_entries)
+    redacted_cmd_arr = [redact_url_secret(str(part)) for part in cmd_arr]  # Ensure every part is a string
 
     try:
-        result = subprocess.run(cmd_arr, capture_output=True, text=True)
+        result = subprocess.run(
+            cmd_arr,
+            capture_output=True, 
+            text=True,
+        )
 
         if result.returncode != 0:
-            error_message = result and result.stderr and result.stderr.strip()
+            error_message = getattr(result, 'stderr', '').strip() if result.stderr else ""
             msg = f"Command failed:\n{brighten(error_message)}"
             if log_entries is not None:
                 log_entries.append(msg)
@@ -124,27 +165,27 @@ class GitHelper:
 
     @staticmethod
     def git_fetch(repo_path, log_entries=None):
-        """Fetch all remote branches and tags *from the repo_path working dir (-C)."""
+        """ Fetch all remote branches and tags from the repo_path working dir (-C). """
         GitHelper._throw_if_path_not_exists(repo_path)
 
         # --force works around the potential `rejected: would clobber existing tag` error
         cmd_arr = ["git", "-C", repo_path, "fetch", "--all", "--tags", "--force"]
         run_subprocess_cmd(
-            cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries
+            cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries,
         )
 
     @staticmethod
     def git_validate_is_git_dir(repo_path, validate_has_other_files):
-        """Check if a directory is a valid Git repository"""
+        """ Check if a directory is a valid Git repository. """
         if not GitHelper.git_dir_exists(repo_path):
             return False
 
-        # Check if it has a .git folder
         git_dir = os.path.join(repo_path, ".git")
         if not os.path.exists(git_dir):
             return False
 
-        # Check if it has other files
         if validate_has_other_files:
             other_files = os.listdir(repo_path)
             if len(other_files) > 1:
@@ -167,7 +208,7 @@ class GitHelper:
 
     @staticmethod
     def get_gitlab_group(repo_url, to_lowercase=True):
-        """Extract the GitLab group from the given repo URL."""
+        """ Extract the GitLab group from the given repo URL. """
         base_url = GitHelper._get_gitlab_base_url(repo_url)
         if base_url:
             escaped_base_url = re.escape(base_url)
@@ -190,8 +231,9 @@ class GitHelper:
     ):
         """
         Clone the repo+branch from the provided URL to the specified path.
-        - preserve_gitlab_group: If you have "https://source.goxbe.io/Core/matchmaking_services",
+        - preserve_gitlab_group; eg: If you have "https://source.goxbe.io/Core/matchmaking_services",
           "Core" dir will be created
+        - (!) Consider git_sparse_clone_with_progress() for docs-only clones
         """
         group_str = str(GitHelper.get_gitlab_group(repo_url_dotgit))
         repo_name_str = str(os.path.basename(repo_url_dotgit).replace(".git", ""))
@@ -210,7 +252,8 @@ class GitHelper:
 
         single_branch_cmd = (
             "--single-branch" if branch_is_tag else None
-        )  # Nones cleaned @ rub_subprocess_cmd
+        )
+        
         git_clone_cmd_arr = [
             "git",
             "clone",
@@ -244,12 +287,9 @@ class GitHelper:
         """
         Clean the root level of the repo_path, leaving only [.git, docs] at root level and sparse_first_level directories.
         """
-        # These dirs/files won't be touched
         preserved_dirs_files = GIT_SPARSE_PRESERVED_DIRS_FILES + [sparse_first_level]
         if log_entries is not None:
-            log_entries.append(
-                colorize_action(f"  - Whitelisted sparse files: {preserved_dirs_files}")
-            )
+            pass  # TODO: Log?
 
         # Add non-preserved dirs to .git/info/exclude before wiping
         # We don't want it to show on git diff -- this is *just* local to us
@@ -257,104 +297,190 @@ class GitHelper:
             repo_path, preserved_dirs_files, log_entries=log_entries
         )
 
-        # Remove all items except preserved_dirs_files
         GitHelper._remove_except(
             repo_path, preserved_dirs_files, log_entries=log_entries
         )
 
     @staticmethod
-    def git_clean_sparse_docs_clone(repo_path, repo_sparse_path, log_entries=None):
+    def git_clean_sparse_docs_after_clone(repo_path, repo_sparse_path, log_entries=None):
         """
         Clean up the repo to only keep the specified sparse checkout paths.
         """
-        # Ensure the path to exclude exists
         full_path = os.path.join(repo_path, repo_sparse_path)
         os.makedirs(full_path, exist_ok=True)
 
-        # Extract the parts of the sparse path
         sparse_parts = Path(repo_sparse_path).parts
         docs_dir = sparse_parts[0]
 
         # Remove everything except [.git, docs, RELEASE_NOTES.rst] at root level
         GitHelper._clean_exclude_root_level(
-            repo_path, docs_dir, log_entries=log_entries
+            repo_path,
+            docs_dir, 
+            log_entries=log_entries,
         )
 
-    def git_sparse_clone(
-            self,
+    @staticmethod
+    def git_clone_with_progress(repo_url, repo_path):
+        """ Clone a Git repository with progress updates. """
+        process = subprocess.Popen(
+            [
+                "git",
+                "clone",
+                repo_url,
+                repo_path,
+                "--progress"
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+            bufsize=1,
+        )
+
+        # Ensure process completes
+        process.stdout.close()
+        process.wait()
+
+        # Display final confirmation
+        if process.returncode != 0:
+            pass  # TODO: Log?
+
+    @staticmethod
+    def git_sparse_clone_with_progress(
             clone_to_path,
             repo_url_dotgit,
-            branch,
+            branch_or_tag,
             branch_is_tag,
             repo_sparse_path,
             stash_and_continue_if_wip,
+            repo_name,
+            worker_task_id,
             log_entries=None,
+            update_obj=None,
     ):
-        """
-        Clone the repo with sparse checkout, only fetching the specified directories.
-        (!) repo_sparse_path is a single string that will be combined into an arr.
-        (!) You may want to call git_clean_sparse_docs_clone() after this to remove unnecessary files.
-        """
-
-        single_branch_cmd = (
-            "--single-branch" if branch_is_tag else None
-        )  # Nones cleaned @ rub_subprocess_cmd
-        git_clone_filter_nocheckout_cmd_arr = [
+        git_clone_cmd = [
             "git",
             "clone",
             "--filter=blob:none",
             "--no-checkout",
             "--branch",
-            branch,
-            single_branch_cmd,
-            "-q",
+            branch_or_tag,
+            "--progress",
             repo_url_dotgit,
             clone_to_path,
         ]
 
-        run_subprocess_cmd(
-            git_clone_filter_nocheckout_cmd_arr,
-            check_throw_on_cli_err=True,
+        if branch_is_tag:
+            git_clone_cmd.insert(len(git_clone_cmd) - 2, "--single-branch")
+
+        git_clone_cmd = prepare_command(git_clone_cmd)
+
+        # Define cloning stages
+        total_stages = len(STAGES)  # Total stage count to track (3)
+        stage_progress = {stage: 0 for stage in STAGES}  # Initialize stage progress tracking
+        current_stage_index = 0  # Track the current stage index
+        cumulative_progress = 0  # Initialize cumulative progress
+
+        def update_progress(line):
+            nonlocal cumulative_progress, current_stage_index, total_stages
+
+            is_new_stage = False  # Flag to indicate if we entered a new stage
+
+            # Detect the current stage based on the line
+            for short_name, full_name in STAGES.items():
+                if full_name in line:
+                    match = re.search(r"(\d+)%", line)
+                    if match:
+                        percentage = int(match.group(1))
+                        if percentage > stage_progress[short_name]:
+                            stage_progress[short_name] = percentage
+                            cumulative_progress = (current_stage_index * 100 + percentage) // total_stages
+
+                            # Entered a new stage?
+                            new_stage_index = list(STAGES.keys()).index(short_name)
+                            if current_stage_index < new_stage_index:
+                                current_stage_index = new_stage_index
+                                is_new_stage = True
+
+                            if update_obj:
+                                update_obj(
+                                    worker_task_id,
+                                    progress=cumulative_progress,  # Progress %
+                                    description=f"{repo_name} [cyan]→ Cloning → {short_name}",
+                                    is_new_stage=is_new_stage,
+                                )
+
+                    # Print spammy CLI output only if GIT_DEBUG is True
+                    if GIT_DEBUG:
+                        print(line)
+
+                    break
+
+            return is_new_stage
+
+        # Run clone command with progress updates
+        run_subprocess_with_progress(git_clone_cmd, update_progress)
+
+        GitHelper.git_sparse_checkout(
+            clone_to_path,
+            repo_sparse_path,
+            branch_or_tag,
+            branch_is_tag,
+            stash_and_continue_if_wip,
             log_entries=log_entries,
         )
 
-        sparse_checkout_init_cmd_arr = [
-            "git",
-            "-C",
+    @staticmethod
+    def git_sparse_checkout(
             clone_to_path,
-            "sparse-checkout",
-            "init",
-            "--cone",
-        ]
+            repo_sparse_path,
+            branch_or_tag,
+            branch_is_tag,
+            stash_and_continue_if_wip,
+            log_entries=None,
+    ):
+        """ Perform a sparse checkout on the specified paths. """
+        # Initialize sparse checkout
+        sparse_checkout_init_cmd_arr = prepare_command([
+            "git", "-C", clone_to_path, "sparse-checkout", "init", "--cone"
+        ])
         run_subprocess_cmd(
             sparse_checkout_init_cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
         )
 
-        sparse_checkout_set_cmd_arr = [
-            "git",
-            "-C",
-            clone_to_path,
-            "sparse-checkout",
-            "set",
-            repo_sparse_path,
-        ]
+        # Set sparse checkout path
+        sparse_checkout_set_cmd_arr = prepare_command([
+            "git", "-C", clone_to_path, "sparse-checkout", "set", repo_sparse_path
+        ])
         run_subprocess_cmd(
             sparse_checkout_set_cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
         )
 
-        self.git_checkout(
-            clone_to_path, branch, stash_and_continue_if_wip, log_entries=log_entries
-        )
+        # !Tag can just switch branches
+        if not branch_is_tag:
+            GitHelper.git_switch_branch(
+                clone_to_path,
+                branch_or_tag,
+                stash_and_continue_if_wip,
+                log_entries=log_entries,
+            )
+        else:
+            # Tag needs to checkout the branch
+            GitHelper.git_checkout_tag(
+                clone_to_path,
+                branch_or_tag,
+                stash_and_continue_if_wip,
+                log_entries=log_entries,
+            )
 
     @staticmethod
     def git_check_is_dirty(repo_path, log_entries=None):
         """
         Check if the working directory is dirty (has WIP changes).
-        :returns is_dirty
+        - Returns is_dirty
         """
         try:
             GitHelper._throw_if_path_not_exists(repo_path)
@@ -380,13 +506,20 @@ class GitHelper:
         Reset the working directory to the last commit, removing all new/untracked files.
         """
         GitHelper._throw_if_path_not_exists(repo_path)
+        
         cmd_arr = ["git", "-C", repo_path, "reset", "--hard"]
         run_subprocess_cmd(
-            cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries
+            cmd_arr, 
+            check_throw_on_cli_err=True, 
+            log_entries=log_entries,
         )
 
     @staticmethod
-    def git_stash(repo_path, stash_message=None, log_entries=None):
+    def git_stash(
+            repo_path,
+            stash_message=None,
+            log_entries=None,
+    ):
         """
         Stash the working directory. Includes new/untracked files.
         -C == working git dir
@@ -407,23 +540,17 @@ class GitHelper:
 
     @staticmethod
     def git_dir_exists(repo_path):
-        """Check if a .git directory exists within repo_path."""
+        """ Check if a .git directory exists within repo_path. """
         git_dir = os.path.join(repo_path, ".git")
         return os.path.exists(git_dir)
 
     @staticmethod
     def git_pull(repo_path, stash_and_continue_if_wip, log_entries=None):
-        """Pull the latest changes from the remote repository."""
+        """ Pull the latest changes from the remote repository. """
         GitHelper._throw_if_path_not_exists(repo_path)
         if GitHelper.git_check_is_dirty(repo_path, log_entries=log_entries):
             if stash_and_continue_if_wip:
-                msg = colorize_action(
-                    f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'..."
-                )
-                if log_entries is not None:
-                    log_entries.append(msg)
-                else:
-                    logger.info(msg)
+                # TODO: Log?
                 GitHelper.git_stash(repo_path, log_entries=log_entries)
             else:
                 raise Exception(
@@ -432,24 +559,25 @@ class GitHelper:
 
         cmd_arr = ["git", "-C", repo_path, "pull"]
         run_subprocess_cmd(
-            cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries
+            cmd_arr, 
+            check_throw_on_cli_err=True, 
+            log_entries=log_entries,
         )
 
     @staticmethod
-    def git_checkout(
-            repo_path, tag_or_branch, stash_and_continue_if_wip, log_entries=None
+    def git_checkout_tag(
+            repo_path,
+            tag,
+            stash_and_continue_if_wip=True,
+            log_entries=None,
     ):
-        """Checkout the specified tag/branch in the repository, considering `stash_and_continue_if_wip`."""
+        """
+        Switch to a tagged branch. Technically you can do this without a tag, but you should use git_switch for that.
+        """
         if GitHelper.git_dir_exists(repo_path):
             if GitHelper.git_check_is_dirty(repo_path, log_entries=log_entries):
                 if stash_and_continue_if_wip:
-                    msg = colorize_action(
-                        f"  - Stashing WIP changes for repo: '{brighten(repo_path)}'..."
-                    )
-                    if log_entries is not None:
-                        log_entries.append(msg)
-                    else:
-                        logger.info(msg)
+                    # TODO: Log?
                     GitHelper.git_stash(repo_path, log_entries=log_entries)
                 else:
                     raise Exception(
@@ -457,13 +585,41 @@ class GitHelper:
                         f"'{brighten(repo_path)}'"
                     )
 
-        cmd_arr = ["git", "-C", repo_path, "checkout"]
-        has_tag_or_branch = (tag_or_branch is not None) and (tag_or_branch != "")
-        if has_tag_or_branch:
-            cmd_arr += [tag_or_branch]
+        cmd_arr = ["git", "-C", repo_path, "checkout", tag]
+        run_subprocess_cmd(
+            cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries,
+        )
+
+    @staticmethod
+    def git_switch_branch(
+            repo_path,
+            tag_or_branch,
+            stash_and_continue_if_wip=True,
+            log_entries=None,
+    ):
+        """ Switch to a non-tagged branch. """
+        if not tag_or_branch:
+            raise Exception("tag_or_branch is required")
+
+        if GitHelper.git_dir_exists(repo_path):
+            if GitHelper.git_check_is_dirty(repo_path, log_entries=log_entries):
+                if stash_and_continue_if_wip:
+                    # TODO: Log?
+                    GitHelper.git_stash(repo_path, log_entries=log_entries)
+                else:
+                    raise Exception(
+                        f"Working directory is dirty and !stash_and_continue_if_wip: "
+                        f"'{brighten(repo_path)}'"
+                    )
+
+        cmd_arr = ["git", "-C", repo_path, "switch", tag_or_branch]
 
         run_subprocess_cmd(
-            cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries
+            cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries,
         )
 
     @staticmethod
@@ -471,10 +627,7 @@ class GitHelper:
         """
         Uses git update-index to prevent git from tracking changes to all paths except the preserved ones.
         """
-        # Get all items in the base path
         all_items = os.listdir(rel_base_path)
-
-        # Create a list of items to exclude (all items except the preserved ones)
         items_to_exclude = [item for item in all_items if item not in preserved_dirs]
 
         # Use git update-index to exclude these items
@@ -491,7 +644,9 @@ class GitHelper:
                         str(sub_item),  # Absolute paths only
                     ]
                     run_subprocess_cmd(
-                        cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries
+                        cmd_arr, 
+                        check_throw_on_cli_err=True, 
+                        log_entries=log_entries,
                     )
             else:
                 cmd_arr = [
@@ -503,12 +658,17 @@ class GitHelper:
                     str(abs_path),
                 ]
                 run_subprocess_cmd(
-                    cmd_arr, check_throw_on_cli_err=True, log_entries=log_entries
+                    cmd_arr, 
+                    check_throw_on_cli_err=True,
+                    log_entries=log_entries
                 )
 
     @staticmethod
     def git_get_latest_tag_ver(
-            working_dir_repo_path, version_regex_pattern=None, quiet=False, log_entries=None
+            working_dir_repo_path, 
+            version_regex_pattern=None, 
+            quiet=False, 
+            log_entries=None,
     ):
         """
         Retrieves the latest tag version from the specified Git repository, optionally ignoring
@@ -559,7 +719,11 @@ class GitHelper:
 
     @staticmethod
     def _git_submodule_cmd(
-            cmd, working_dir_repo_path, quiet, check_throw_on_cli_err=True, log_entries=None
+            cmd,
+            working_dir_repo_path,
+            quiet,
+            check_throw_on_cli_err=True,
+            log_entries=None,
     ):
         """
         Run a git command in the specified sub-repo path, ensuring it's run from that working dir.
@@ -588,6 +752,6 @@ class GitHelper:
 
     @staticmethod
     def _throw_if_path_not_exists(path):
-        """Throw an exception if the specified path does not exist."""
+        """ Throw an exception if the specified path does not exist. """
         if not os.path.exists(path):
             raise Exception(f"Path does not exist: '{brighten(path)}'")
