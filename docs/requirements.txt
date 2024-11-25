@@ -15,10 +15,10 @@ matplotlib>=3.9.2           # Adds social card generation to sphinxext-opengraph
 sphinx-docsearch>=0.0.7     # AI-powered DocSearch | (!) 0.0.7 bottlenecks to Sphinx <=7.3.7 | https://pypi.org/project/sphinx-docsearch
 sphinxcontrib-sass>=0.3.4   # SASS/SCSS -> CSS | https://pypi.org/project/sphinxcontrib-sass
 sphinx-design>=0.6.1        # Adds FontAwesome and more | https://sphinx-design.readthedocs.io/en/latest/get_started.html
-sphinx-remove-toctrees>=1.0.0  # Remove specific toctrees at conf.py; can use wildcards | https://pypi.org/project/sphinx-remove-toctrees
+sphinx-remove-toctrees>=1.0.0.post1  # Remove specific toctrees at conf.py; can use wildcards | https://pypi.org/project/sphinx-remove-toctrees
 
 # Local extensions (with mode to be editable without reinstalling) | TODO: Import this from xbe_static_docs later
--e ./docs/extensions/sphinx_repo_manager    # Automates multi-repo doc management
+-e ./extensions/sphinx_repo_manager    # Automates multi-repo doc management
 
 # Git extensions | TODO: Port to PyPI
 git+https://source.goxbe.io/Core/docs/sphinx_feature_flags.git#egg=sphinx_feature_flags  # Our own `feature-flag` directive to hide/show content
@@ -29,5 +29,5 @@ git+https://source.goxbe.io/Core/docs/sphinx_algolia_crawler.git#egg=sphinx_algo
 
 # Doxygen and Breathe requirements
 # Assists breath extension in parsing C# code in doxygen directives
-exhale>=0.3.0               # Breathe extension for Doxygen | https://pypi.org/project/exhale
+exhale>=0.3.7               # Breathe extension for Doxygen | https://pypi.org/project/exhale
 git+https://github.com/rogerbarton/sphinx-csharp.git # C# Domain for Sphinx
