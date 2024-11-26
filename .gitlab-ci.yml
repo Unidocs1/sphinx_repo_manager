@@ -1,6 +1,0 @@
-include:
-    - local: ".gitlab/xbe-docs.yml"
-
-build_docs_main:
-    stage: build
-    extends: .build_docs_main

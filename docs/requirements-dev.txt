@@ -1,8 +1,0 @@
-# for testing the master branch
-# git+git://github.com/svenevs/exhale.git#egg=exhale
-# See: https://exhale.readthedocs.io/en/latest/#exhale-version-compatibility-with-python-sphinx-and-breathe
-# 
-# For tools/production_prep
-pytest  
-rich  # Fancy logging
-ruamel.yaml  # Allows surgical changes to yaml without breaking formatting
