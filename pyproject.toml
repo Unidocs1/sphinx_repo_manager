@@ -5,11 +5,7 @@ authors = [
     { name = "Dylan Hunt", email = "d.hunt@xsolla.com" },
     { name = "Thomas Buscaglia", email = "t.buscaglia@xsolla.com" },
 ]
-description = """
-This Sphinx extension by Xsolla Backend (XBE) automates the management of multiple documentation repositories as 
-part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of 
-external repositories specified in a YAML manifest file before Sphinx builds.
-"""
+description = "This Sphinx extension by Xsolla Backend [XBE] automates the management of multiple documentation repositories as part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds."
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
@@ -25,11 +21,7 @@ Issues = "https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/issues"
 [tool.poetry]
 name = "sphinx_repo_manager"
 version = "1.0.1"
-description = """
-This Sphinx extension by Xsolla Backend (XBE) automates the management of multiple documentation repositories as 
-part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of 
-external repositories specified in a YAML manifest file before Sphinx builds.
-"""
+description = "This Sphinx extension by Xsolla Backend [XBE] automates the management of multiple documentation repositories as part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds."
 authors = ["Xsolla Backend <xbe@xsolla.com>"]
 license = "MIT"
 
