@@ -84,10 +84,10 @@ docs/source/_static/images/*
 docs/source/_static/blobs/*
 docs/source/_doxygen/*
 docs/source/_static/styles/css/*
+
 !docs/source/_static/styles/css/README*
 !docs/source/_doxygen/README.txt
 !docs/source/_static/images/_local
 !docs/source/_static/images/_local/*
-!docs/source/_static/images/blobs
-!docs/source/_static/images/blobs/*
-docs/source/_static/specs
+!docs/source/_static/blobs/_local
+!docs/source/_static/blobs/_local/*
