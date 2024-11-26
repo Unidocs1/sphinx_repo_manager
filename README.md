@@ -6,7 +6,7 @@ This Sphinx extension by [Xsolla Backend (XBE)](https://docs.goxbe.io) automates
 documentation repositories as part of building a larger, unified documentation system. It facilitates multi-threaded
 cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds.
 
-![Demo (GIF)](./docs/images/clone-example.gif)
+![Demo (GIF)](https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/raw/master/docs/images/clone-example.gif)
 
 📜 See the Xsolla Backend (XBE) [source code](https://source.goxbe.io/Core/docs/xbe_static_docs)
 and [demo](https://source.goxbe.io/Core/docs/xbe_static_docs) production site heavily making use of this extension.
@@ -19,7 +19,7 @@ Here, you may also find tips for how to utilize this extension to its greatest c
 3. Ensure the [prerequisites](#prerequisites) (below) are met, such as having a Python env with `make`.
 4. Within `docs/` -> Open terminal and `make html`.
 
-❗ If editing the manifest, delete your `docs/source/_repos-available` and `docs/source/content` dirs to wipe cache
+(!) If editing the manifest, delete your `docs/source/_repos-available` and `docs/source/content` dirs to wipe cache
 
 ## How it Works
 
