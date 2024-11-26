@@ -1,6 +1,6 @@
 [project]
 name = "sphinx_repo_manager"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
     { name = "Dylan Hunt", email = "d.hunt@xsolla.com" },
     { name = "Thomas Buscaglia", email = "t.buscaglia@xsolla.com" },
