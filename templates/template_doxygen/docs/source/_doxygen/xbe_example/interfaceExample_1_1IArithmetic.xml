@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="interfaceExample_1_1IArithmetic" kind="interface" language="C#" prot="public">
+    <compoundname>Example::IArithmetic</compoundname>
+    <derivedcompoundref refid="classExample_1_1Calculator" prot="public" virt="non-virtual">Example.Calculator</derivedcompoundref>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="interfaceExample_1_1IArithmetic_1a58d02bd7979509df7a853219de3224c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int Example.IArithmetic.Add</definition>
+        <argsstring>(int a, int b)</argsstring>
+        <name>Add</name>
+        <qualifiedname>Example.IArithmetic.Add</qualifiedname>
+        <reimplementedby refid="classExample_1_1Calculator_1a9119fc919af4ca910b39396f79e5d7a2">Add</reimplementedby>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>Adds two integers. This method takes two integers as input and returns their sum. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First integer.</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second integer.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Sum of the two integers.</para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="csharp/example.cs" line="37" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="interfaceExample_1_1IArithmetic_1a00f190c64fe347706c20248c10fa7478" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int Example.IArithmetic.Multiply</definition>
+        <argsstring>(int a, int b)</argsstring>
+        <name>Multiply</name>
+        <qualifiedname>Example.IArithmetic.Multiply</qualifiedname>
+        <reimplementedby refid="classExample_1_1Calculator_1aad8bcd24ad400f7fa1741623f24b7293">Multiply</reimplementedby>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>Multiplies two integers. This method takes two integers as input and returns their product. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First integer.</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second integer.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Product of the two integers.</para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="csharp/example.cs" line="46" column="13"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Interface for arithmetic operations. This interface defines methods for basic arithmetic operations. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Example.IArithmetic</label>
+        <link refid="interfaceExample_1_1IArithmetic"/>
+      </node>
+      <node id="2">
+        <label>Example.Calculator</label>
+        <link refid="classExample_1_1Calculator"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="csharp/example.cs" line="28" column="22" bodyfile="csharp/example.cs" bodystart="29" bodyend="47"/>
+    <listofallmembers>
+      <member refid="interfaceExample_1_1IArithmetic_1a58d02bd7979509df7a853219de3224c4" prot="public" virt="non-virtual"><scope>Example::IArithmetic</scope><name>Add</name></member>
+      <member refid="interfaceExample_1_1IArithmetic_1a00f190c64fe347706c20248c10fa7478" prot="public" virt="non-virtual"><scope>Example::IArithmetic</scope><name>Multiply</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

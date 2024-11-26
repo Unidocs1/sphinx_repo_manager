@@ -1,0 +1,46 @@
+[project]
+name = "sphinx_repo_manager"
+version = "1.0.1"
+authors = [
+    { name = "Dylan Hunt", email = "d.hunt@xsolla.com" },
+    { name = "Thomas Buscaglia", email = "t.buscaglia@xsolla.com" },
+]
+description = """
+This Sphinx extension by Xsolla Backend (XBE) automates the management of multiple documentation repositories as 
+part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of 
+external repositories specified in a YAML manifest file before Sphinx builds.
+"""
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://source.goxbe.io/Core/docs/sphinx_repo_manage"
+Issues = "https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/issues"
+
+[tool.poetry]
+name = "sphinx_repo_manager"
+version = "1.0.1"
+description = """
+This Sphinx extension by Xsolla Backend (XBE) automates the management of multiple documentation repositories as 
+part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of 
+external repositories specified in a YAML manifest file before Sphinx builds.
+"""
+authors = ["Xsolla Backend <xbe@xsolla.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+sphinx = ">=7.3.7"  # (!) Sphinx 8 is untested
+colorama = ">=0.4.6"
+python-dotenv = ">=1.0.1"
+PyYAML = ">=6.0.2"  # [Optional] This could be swapped with ruamel.yaml for full 1.2 support, but slower
+rich = ">=13.9.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

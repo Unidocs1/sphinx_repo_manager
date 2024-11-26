@@ -1,0 +1,9 @@
+include:
+    - local: "docs/gitlab/.docs-ci.yml"
+
+stages:
+    - build
+    - deploy
+
+docs_doxygen:
+    extends: .build_docs_doxygen

@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classexample_1_1IArithmetic" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>example::IArithmetic</compoundname>
+    <derivedcompoundref refid="classexample_1_1Calculator" prot="public" virt="non-virtual">example::Calculator</derivedcompoundref>
+    <includes refid="example_8h" local="no">example.h</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classexample_1_1IArithmetic_1a42de4b13501045c3ab62df362cf36e72" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual example::IArithmetic::~IArithmetic</definition>
+        <argsstring>()</argsstring>
+        <name>~IArithmetic</name>
+        <qualifiedname>example::IArithmetic::~IArithmetic</qualifiedname>
+        <briefdescription>
+<para>Virtual destructor for <ref refid="classexample_1_1IArithmetic" kindref="compound">IArithmetic</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="38" column="17" bodyfile="cpp/example.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classexample_1_1IArithmetic_1a7e780e1a784de41d929046f020b75a90" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int example::IArithmetic::add</definition>
+        <argsstring>(int a, int b)=0</argsstring>
+        <name>add</name>
+        <qualifiedname>example::IArithmetic::add</qualifiedname>
+        <reimplementedby refid="classexample_1_1Calculator_1a2022936af1928a0d31e564220e9d5c93">add</reimplementedby>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>Adds two integers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method takes two integers as input and returns their sum.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First integer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second integer. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Sum of the two integers. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="49" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classexample_1_1IArithmetic_1a2d83ace5dd2372e70b8ee4e5c50ffe14" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int example::IArithmetic::multiply</definition>
+        <argsstring>(int a, int b)=0</argsstring>
+        <name>multiply</name>
+        <qualifiedname>example::IArithmetic::multiply</qualifiedname>
+        <reimplementedby refid="classexample_1_1Calculator_1a3ee26c063152848367ef3e0f70a3cd63">multiply</reimplementedby>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>Multiplies two integers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method takes two integers as input and returns their product.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First integer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second integer. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Product of the two integers. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="cpp/example.h" line="60" column="21"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Interface for arithmetic operations. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This interface defines methods for basic arithmetic operations. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>example::Calculator</label>
+        <link refid="classexample_1_1Calculator"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>example::IArithmetic</label>
+        <link refid="classexample_1_1IArithmetic"/>
+      </node>
+    </inheritancegraph>
+    <location file="cpp/example.h" line="32" column="5" bodyfile="cpp/example.h" bodystart="33" bodyend="61"/>
+    <listofallmembers>
+      <member refid="classexample_1_1IArithmetic_1a7e780e1a784de41d929046f020b75a90" prot="public" virt="pure-virtual"><scope>example::IArithmetic</scope><name>add</name></member>
+      <member refid="classexample_1_1IArithmetic_1a2d83ace5dd2372e70b8ee4e5c50ffe14" prot="public" virt="pure-virtual"><scope>example::IArithmetic</scope><name>multiply</name></member>
+      <member refid="classexample_1_1IArithmetic_1a42de4b13501045c3ab62df362cf36e72" prot="public" virt="virtual"><scope>example::IArithmetic</scope><name>~IArithmetic</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

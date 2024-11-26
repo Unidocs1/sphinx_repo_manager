@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="example_8cs" kind="file" language="C#">
+    <compoundname>example.cs</compoundname>
+    <innerclass refid="interfaceExample_1_1IArithmetic" prot="public">Example::IArithmetic</innerclass>
+    <innerclass refid="classExample_1_1Calculator" prot="public">Example::Calculator</innerclass>
+    <innernamespace refid="namespaceExample">Example</innernamespace>
+    <innernamespace refid="namespaceSystem">System</innernamespace>
+    <briefdescription>
+<para>This file contains the definition of the <ref refid="namespaceExample" kindref="compound">Example</ref> namespace, which includes an enumeration for arithmetic operations, an interface for arithmetic methods, and a simple calculator class that implements these methods. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This file contains a program class that demonstrates the usage of the Calculator class. The Calculator class is defined in the <ref refid="namespaceExample" kindref="compound">Example</ref> namespace.</para>
+    </detaileddescription>
+    <location file="csharp/example.cs"/>
+  </compounddef>
+</doxygen>

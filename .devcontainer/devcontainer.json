@@ -1,7 +1,7 @@
 {
     "name": "DevContainer",
     "build": {
-        "dockerfile": "Dockerfile.dev",
+        "dockerfile": "../docker/Dockerfile.sphinx",
         "context": ".."
     },
     "mounts": ["type=cache,target=/app"],

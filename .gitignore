@@ -4,8 +4,15 @@
 !.yarn/releases
 !.yarn/plugins
 
-# JetBrains
-.idea
+# JetBrains Surgical Ignores
+.idea/workspace.xml
+.idea/dataSources/
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/usage.statistics.xml
+.idea/gradle.xml
+.idea/dictionaries/
+.idea/libraries/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -57,7 +64,8 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-venv
+venv/
+xbe-venv/
 .readthedocs.yaml.bak
 
 # Local symbolic links
@@ -69,8 +77,17 @@ docs/source/content
 
 # Env var handling for when RTD has no access to private repos
 .env
+!docker/.env
 
 # Ignore all expected _static symlinks at docs/source/_static/ (except _local)
 docs/source/_static/images/*
+docs/source/_static/blobs/*
+docs/source/_doxygen/*
+docs/source/_static/styles/css/*
+
+!docs/source/_static/styles/css/README*
+!docs/source/_doxygen/README.txt
 !docs/source/_static/images/_local
 !docs/source/_static/images/_local/*
+!docs/source/_static/blobs/_local
+!docs/source/_static/blobs/_local/*

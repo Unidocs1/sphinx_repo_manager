@@ -1,7 +1,20 @@
+# XBE Default Editorconfig
 # no tabs, only spaces
 # 4 spaces per indent level
-
+# double quotes for strings
+# lf unix line endings
 [*]
 indent_style = space
 indent_size = 4
 tab_width = 4
+quote_type = double
+end_of_line = lf
+
+# special case files that require
+# crlf windows line endings
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# requires tabs
+[Makefile]
+indent_style = tab

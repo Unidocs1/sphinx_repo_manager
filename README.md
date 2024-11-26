@@ -1,230 +1,128 @@
-# xbe_docs (docs.goxbe.io)
+# Sphinx Extension: Repository Manager
 
-Master doc to create help docs from other repos with `make html` (`sphinx-build`). 
+## About
 
-This guide focuses on Windows 11 instructions, but supports other OS (bash, Ubuntu, etc).
+This Sphinx extension by [Xsolla Backend (XBE)](https://docs.goxbe.io) automates the management of multiple
+documentation repositories as part of building a larger, unified documentation system. It facilitates multi-threaded
+cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds.
 
-## Quickstart
+![Demo (GIF)](./docs/images/clone-example.gif)
 
-1. Configure `docs/repo_manifest.yaml` (ok to leave defaults)
-2. Copy `.env.template` -> to `.env` and set `GITLAB_ACCESS_TOKEN`
-3. Run `start-docker.ps1` (or `make html` at `docs/`)
-4. Upon success, your browser will launch with `index.html` and~~~~ stop the Docker instance.
+📜 See the Xsolla Backend (XBE) [source code](https://source.goxbe.io/Core/docs/xbe_static_docs)
+and [demo](https://source.goxbe.io/Core/docs/xbe_static_docs) production site heavily making use of this extension.
+Here, you may also find tips for how to utilize this extension to its greatest capabilities.
+
+## Getting Started
+
+1. Copy the `templates/repo_manifest.template.yml` to a project `docs/repo_manifest.yml`.
+2. Ensure each repository listed in the manifest minimally includes a `url`.
+3. Ensure the [prerequisites](#prerequisites) (below) are met, such as having a Python env with `make`.
+4. Within `docs/` -> Open terminal and `make html`.
+
+❗ If editing the manifest, delete your `docs/source/_repos-available` and `docs/source/content` dirs to wipe cache
+
+## How it Works
+
+1. `repo_manifest.yml` lists repositories with their respective clone URLs [and optional rules].
+2. `docs/source/` creates `_repos-available` (src repos) and `content` (symlinked) dirs.
+3. Upon running `sphinx-build` (commonly via `make html`), the extension either clones or updates each repo defined
+   within the manifest.
+4. Source clones will [sparse checkout](https://git-scm.com/docs/git-sparse-checkout) and symlink to the `content` 
+   dir, allowing for flexibility such as custom entry points and custom names (such as for shorter url slugs).
+5. All repos in the manifest will be organized in a monolithic doc. 
+
+💡 If you want to store *local* content (eg, static `.rst`), add it to `source/_source_docs/`
+
+💡 The only RST file expected for your monolithic repo is the `index.rst` file (next to your `conf.py`), which can
+simply be an [include](https://docutils.sourceforge.io/docs/ref/rst/directives.html#include) or 
+[toctree](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree) 
+directive to your symlinked `docs/source/content/*.rst`.
+
+⌛ 5 local workers (default) will take only ~50s to process 30 repos with default manifest settings
+
+### Demo
+
+If you cloned this repo (rather than just using it as a sphinx extension), see [docs/](docs) 
+for a ready-to-go template! We recommend you move `docs/` to a separate repo after testing, leaving this extension 
+to simply be imported.
+
+After prerequisite setup, simply `make html` within `docs/` -> the manifest is setup to pull a sample doc repo
+at [templates/](templates).
+
+___
 
 ## Prerequisites
 
-1. Prepare your gitlab access key.
+### Required
 
-You may either run via Docker (recommended) or locally (legacy):
+This guide assumes you have a basic understanding of [Sphinx](https://www.sphinx-doc.org/en/master/) and
+[RST](https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html)
 
-### Docker Prereqs (Recommended)
+#### Python
 
-2. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+Ensure `Python >= 3.10` is installed
 
-### Local Prereqs (Legacy)
+#### Unlock Max Char Paths
 
-2. [Chocolatey](https://chocolatey.org/) CLI tool
-	- Once you have Choco, install `make` in an **ADMIN** terminal:
-	  ```powershell
-      choco install make --yes
-      ```
+> **Note:**
+> As a repo manager, there may be deeply-nested directories and may need to unlock the 256-char limit in some envs
 
-3. [Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5)
-	- See a recommended path to installing Python [below](#python-install-path)
+With **elevated** privileges:
 
-4. Run `tools/requirements-install.ps1`
-		
-## Setup
+#### requirements.txt
 
-1. Configure `docs/repo_manifest.yml` to configure repos/prefs: Defaults are ok, but note the top-level `stage`
-* **For local testing:** Setup `.env` prop `GITLAB_ACCESS_KEY` (for local testing only)
-* **For ReadTheDocs (RTD) Deployment:**
-  1. [create a RTD account](https://about.readthedocs.com/?ref=readthedocs.org)
-  2. At RTD web dashboard, create a new env var named `GITLAB_ACCESS_TOKEN`
-  3. (⚠️ Be aware this _may_ log your access token on bad configurations; this will be fixed later)
-  4. [Deprecated step] Update the `.readthedocs.yaml` -> `$READTHEDOCS_PROJECT` name
+Add the following:
 
-## Build
-
-❗If you recently updated your `repo_manifest.yml` file, you may want to 1st wipe these `source/` dirs
-to ensure a clean build:
-
-1. `_repos-available`
-2. `content`
-
-### Docker (Recommended)
-
-1. Run `start-docker.ps1`
-
-### Local Build (Legacy)
-
-1. Run `tools/requirements-install.ps1`
-2. Run `docs/start.ps1`
-
-### Speedy Rebuild
-
-If you _just_ updated and want to build without going through `sphinx_repo_manager`, set either
-`repo_manifest.yml` field: 
-
-1. `enable_repo_manager` to `false` to disable for all repos
-2. OR set individual repo `active` to false (notably useful for actively updating the `xbe_static_docs` repo).
-
-### Debugging a Build
-
-1. Slow down the logs and ensure chronological stability: Set the `max_workers_local` of `repo_manifest.yml` to `1` (default `5`).
-2. Set `debug_mode` of `repo_manifest` to `true` (default `false`).
-3. Comment out all repositories in your `repo_manifest` except 1 or 2.
-
-## Typical Structure
-
-### Main Doc
-
-In this repo, we want to merge multiple docs into a single doc:
-
-Open the built index via `build/html/index.html`
-
-### Single Doc
-
-Source repo docs/  layout tree should be structured as follows, with example content:
-
-```
-- .git
-- RELEASE_NOTES.rst
-- <repo root>/docs/
-   - source/
-      - _extensions/
-	    - sphinx_repo_manager/
-      - _static/
-         - images/
-            - foo.png
-         - css/
-            - someStyle.css
-      - _templates/
-      - content/
-         - foo.rst (pointed to from index.rst)
-      - RELEASE_NOTES.rst (symlink to root)
-      - conf.py (entry point setup)
-	  - index.rst (entry point)
+```dotenv
+# Sphinx Repo Manager by Xsolla Backend (XBE)
+git+https://source.goxbe.io/Core/docs/sphinx_repo_manager.git#egg=sphinx_repo_manager
 ```
 
-## Apps & Extensions
+💡 This will later be available via [PyPi](https://pypi.org)
 
-To describe what is installed, including extensions:
+Then install: `pip install -r requirements.txt`
 
-The `requirements.txt` file includes dependencies necessary for building and managing the documentation of our project
-using Sphinx. **Overview:**
+### conf.py
 
-### Sphinx
+Add the extension (already within `docs/`):
 
-- **Purpose**: [`sphinx`] Powerful doc generator that converts reStructuredText (.rst) files into HTML websites and other formats. It is highly customizable and supports numerous extensions.
-- **Documentation**: [Sphinx Documentation](https://www.sphinx-doc.org/en/master/)
+```py
+extensions = [
+    "sphinx_repo_manager",  # Xsolla Backend (XBE)'s extension to manage repos via repo_manifest.yml
+]
+```
 
-### Sphinx Read The Docs Theme
+### Optional
 
-- **Purpose**: [`sphinx_rtd_theme`] Popular theme for Sphinx provided by Read the Docs. It offers a clean, mobile-friendly, and well-structured layout for documentation.
-- **Documentation**: [sphinx_rtd_theme on GitHub](https://github.com/readthedocs/sphinx_rtd_theme)
+#### [Optional] Auth Token
 
-### MyST-Parser
+**Using a git host auth token?** Copy `docs/.env.template` -> to `docs/.env`, then minimally set `REPO_AUTH_TOKEN`.
 
-- **Purpose**: [`myst_parser`] Spiritual successor to recommonmark: Extended Markdown parser for Sphinx, allowing the use of Markdown with Sphinx documentation. It supports all Markdown features and provides additional syntax for roles and directives typically available in reStructuredText, making it a robust choice for Sphinx-based documentation projects that prefer Markdown.
-- **Installation**: 
-- **Documentation**: [MyST-Parser on GitHub](https://github.com/executablebooks/MyST-Parser)
+💡 Deploying to [RTD](https://www.readthedocs.com)? Don't forget to dupe these `.env` vals to your RTD project settings!
 
-### Sphinx Tabs
+#### [Optional] Doxygen Support
 
-- **Purpose**: [`sphinx_tabs`] Sphinx extension that enables tabbed content in your documentation. This can be useful for separating content into different context-specific tabs on the same page without clutter.
-- **Documentation**: [sphinx_tabs on GitHub](https://github.com/djungelorm/sphinx-tabs)
+Want to build API docs from OpenAPI? We natively support that! Docs coming soon.
 
-### PyYAML
+💡 **Can't wait?** Check out our [xbe_static_docs](https://source.goxbe.io/Core/docs/xbe_static_docs) repo for
+integration examples
 
-- **Purpose**: [`PyYAML`] YAML parser and emitter for Python. It is used to handle YAML-formatted files within your documentation project, which can be useful for configuration files or other data-driven content.
-- **Documentation**: [PyYAML on PyPI](https://pypi.org/project/PyYAML/)
+## Build Requirements
 
-### sphinx-copybutton
+Build requirements for [sphinx-build](https://www.sphinx-doc.org/en/master/man/sphinx-build.html) falls outside the
+scope of this guide. However, some high-level instructions follow:
 
-- **Purpose**: [`sphinx-copybutton`] Sphinx extension that adds a copy button to code blocks in your documentation. This allows users to easily copy code snippets to their clipboard with a single click.
-- **Documentation**: [sphinx-copybutton on PyPI](https://pypi.org/project/sphinx-copybutton)
+* If Windows, install `make`; perhaps with [choco](https://community.chocolatey.org/packages/make)
+* Remember to `pip install -r requirements.txt` within `docs/` before `make html`.
+* Our [xbe_static_docs](https://source.goxbe.io/Core/docs/xbe_static_docs) repo contains containerized Docker
+  examples and tooling to expand upon building.
 
-### sphinx-new-tab-lnk
+## Tested in
 
-- **Purpose**: [`sphinx-new-tab-lnk`] Sphinx extension that adds a target="_blank" attribute to external links in your documentation. This ensures that external links open in a new tab by default, preventing users from navigating away from your site.
-- **Documentation**: [sphinx-new-tab-lnk on PyPI](https://pypi.org/project/sphinx-new-tab-lnk)
-
-## Troubleshooting
-
-### Known Issues
-
-`sphinx_rtd_theme` versions `2.0.0` and `2.1.0rc1` has known issues, confirmed by switching themes that do not
-seem to have these issues:
-
-1. 1/4 second visual glitch on navbar (toctree) click when changing to *new* doc pages
-2. Bottom-right background color change for desktop resolutions
-
-### Legacy Additional Troubleshooting
-
-#### Clearing Cache
-
-Delete these to regenerate them when you build again:
-
-1. Delete `build` (or `make clean` via CLI)
-2. Delete `source/content` (symlinks from `source/_repos-available`)
-3. Delete `source/_repos-available` (for use with `repo_manager`)
-4. Delete `source/_static/<any repo symlinks>` (for use with `repo_manager`)
-
-#### Python Install Path (Legacy - Without Docker)
-
-As this can easily get error-prone, especially for new Python users, see below to install Python 3.10 from scratch:
-
-1. Open PowerShell in ADMIN
-2. Install from:
-	- Choco:
-		- Should work, but not covered in this guide
-		- ⚠️ Does not auto-alias `python` to `python3`
-		- ⚠️ May handle PATHs differently
-		- **TODO:** Update this part, if someone finds a good way
-		
-	- Windows Store - Either:
-		- Install via the [Microsoft Store GUI]([Python 3.10](https://apps.microsoft.com/detail/9pjpw5ldxlz5))
-		- Install via `winget` CLI:
-		```powershell
-		winget install "Python 3.10" --accept-package-agreements
-		```
-	
-3. Verify installation:
-	```powershell
-	python --version
-	pip --version
-	```
-	
-4. Add Python `/Scripts` to env PATH (`pip` installs tools here)
-	```powershell
-	# Get the installation path of Python 3.10
-	$pythonPath = (Get-Command python.exe).Source
-
-	# Set the PYTHON_SCRIPTS_HOME environment variable
-	$env:PYTHON_SCRIPTS_HOME = Join-Path $pythonPath "Scripts"
-
-	# Add the Scripts directory to the user's PATH
-	$env:Path += ";$env:PYTHON_SCRIPTS_HOME"
-
-	# Display a message
-	Write-Host "PYTHON_SCRIPTS_HOME set to: $env:PYTHON_SCRIPTS_HOME"
-	Write-Host "Scripts directory added to PATH."
-	```
-
-## Tools
-
-### Template Doc
-
-See tools/[template-doc](tools/template-doc). Be sure to replace the `%PLACEHOLDERS%` (either via a script or manually) at:
-
-* docs/README.md
-* docs/source/conf.py
-
-### More Tools
-
-See tools/[README.md](tools/README.md)
+- Windows 11 via PowerShell 7
+- Windows 11 via WSL2 (bash)
+- Ubuntu 22.04 via ReadTheDocs (RTD) CI
 
 ## License
 
-TODO
+[MIT](LICENSE)
