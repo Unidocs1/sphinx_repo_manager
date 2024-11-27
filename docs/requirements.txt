@@ -1,2 +1,7 @@
-# TODO: Port to PyPI
-../
+sphinx_repo_manager  # https://pypi.org/project/sphinx-repo-manager
+
+######################################################################################
+# (!) sphinx_repo_manager src code developer?
+# 1. Comment out the PyPi pkg above ^
+# 2. Uncomment the line below to test live changes -> force reinstall requirements.txt:
+#../ 

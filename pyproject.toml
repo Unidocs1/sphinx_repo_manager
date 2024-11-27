@@ -1,37 +1,37 @@
-[project]
+[tool.poetry]
 name = "sphinx_repo_manager"
-version = "1.0.3"
-authors = [
-    { name = "Dylan Hunt", email = "d.hunt@xsolla.com" },
-    { name = "Thomas Buscaglia", email = "t.buscaglia@xsolla.com" },
-]
+version = "1.0.13"
 description = "This Sphinx extension by Xsolla Backend [XBE] automates the management of multiple documentation repositories as part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds."
+authors = [
+    "Xsolla Backend <xbe@xsolla.com>>",
+]
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Version Control",
+    "Framework :: Sphinx :: Extension"
 ]
-
-[project.urls]
-Homepage = "https://source.goxbe.io/Core/docs/sphinx_repo_manage"
-Issues = "https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/issues"
-
-[tool.poetry]
-name = "sphinx_repo_manager"
-version = "1.0.3"
-description = "This Sphinx extension by Xsolla Backend [XBE] automates the management of multiple documentation repositories as part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds."
-authors = ["Xsolla Backend <xbe@xsolla.com>"]
-license = "MIT"
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-sphinx = ">=7.3.7"  # (!) Sphinx 8 is untested
+sphinx = ">=7.3.7"  # Confirmed working in 8.1.3
 colorama = ">=0.4.6"
 python-dotenv = ">=1.0.1"
 PyYAML = ">=6.0.2"  # [Optional] This could be swapped with ruamel.yaml for full 1.2 support, but slower
 rich = ">=13.9.4"
+
+[tool.poetry.urls]
+Homepage = "https://source.goxbe.io/Core/docs/sphinx_repo_manage"
+Issues = "https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/issues"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
