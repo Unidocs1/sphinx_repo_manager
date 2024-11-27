@@ -31,6 +31,7 @@ extensions = [
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
     "_repos-available",  # We'll be using the symlinked `content` dir, instead
+    "_static-docs",  # We'll be using the symlinked `content` dir, instead
     "**/_build",
     "**/build",
     "**/.DS_Store",
