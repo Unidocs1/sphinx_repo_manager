@@ -47,13 +47,16 @@ This guide assumes you have a basic understanding of [Sphinx](https://www.sphinx
 Once setup, sphinx-build as normal (typically via `make html` next to your `Makefile`)!
 
 ### Tips
-
-- Editing the manifest? Consider purging your `docs/source/_repos-available` and `docs/source/content` dirs.
 - For Windows users, you may want to unlock your max char paths (admin):
 
   ```powershell
   Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled"
   ```
+
+- Editing the manifest?
+   - Consider purging your `docs/source/_repos-available` and `docs/source/content` dirs
+- Looking to speedily build without checking for repo updates?
+   - Temporarily set manifest `enable_repo_manager_local: false`
 
 ___
 
