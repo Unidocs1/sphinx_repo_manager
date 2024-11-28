@@ -55,8 +55,8 @@ Once setup, sphinx-build as normal (typically via `make html` next to your `Make
 
 - Editing the manifest?
    - Consider purging your `docs/source/_repos-available` and `docs/source/content` dirs
-- Looking to speedily build without checking for repo updates?
-   - Temporarily set manifest `enable_repo_manager_local: false`
+- Want speedier build iterations?
+   - Test bumping up your `max_workers_local` counts - even *significantly* higher - for high-end machines!
 
 ___
 

@@ -1,3 +1,4 @@
 # For PyPi deployment/upload
-build
-twine
+build  # dist builder: `python -m build`
+twine  # build parser + PyPi deployer
+bump2version  # Semantic git tag versioner: `bump2version patch`; see .bumpversion.cfg; increments .toml ver
