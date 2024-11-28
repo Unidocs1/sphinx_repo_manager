@@ -91,3 +91,5 @@ docs/source/_static/styles/css/*
 !docs/source/_static/images/_local/*
 !docs/source/_static/blobs/_local
 !docs/source/_static/blobs/_local/*
+.idea/vcs.xml
+.idea/.name
