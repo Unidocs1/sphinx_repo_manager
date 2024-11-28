@@ -32,7 +32,7 @@ function Lint-With-Twine {
     Write-Host "`nChecking distribution files with Twine..." -ForegroundColor Yellow
     twine check dist/*
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Error: Twine check failed. Exiting." -ForegroundColor Red
+        Write-Host "Error: Twine check failed. Exiting.`n" -ForegroundColor Red
         Restore-WorkingDirectory
         exit $LASTEXITCODE
     }

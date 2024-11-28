@@ -49,9 +49,9 @@ function Deploy-To-TestPyPI {
     Write-Host "`nDeploying to Test PyPI @ $PYPI_DEPLOYMENT_URL..." -ForegroundColor Yellow
     twine upload --repository-url $PYPI_DEPLOYMENT_URL -u __token__ -p $ApiKey dist/*
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "Deployment to Test PyPI was successful!" -ForegroundColor Green
+        Write-Host "Deployment to Test PyPI was successful!`n" -ForegroundColor Green
     } else {
-        Write-Host "Error: Deployment to Test PyPI failed. Exiting." -ForegroundColor Red
+        Write-Host "Error: Deployment to Test PyPI failed. Exiting.`n" -ForegroundColor Red
         Restore-WorkingDirectory
         exit $LASTEXITCODE
     }
