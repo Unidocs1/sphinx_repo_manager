@@ -123,6 +123,7 @@ class RepoTask:
         self.cloned = False
         self.already_stashed = False
         self.current_git_stage_num = 0
+        self.is_done = False
 
     def get_selected_checkout_branch_or_tag_name(self):
         repo_stage_info = self.repo_info[self.stage]
@@ -701,6 +702,10 @@ class SphinxRepoManager:
 
             self.run_repo_git_ops(repo_task)
             self.repo_add_symlinks(repo_task)
+            
+            # While thread may not yet be done, await self.is_done
+            while not repo_task.is_done:
+                time.sleep(0.1)  # Only affects this thread
 
             log_queue.put((f"Completed {repo_name}", repo_name))
 
@@ -1079,6 +1084,7 @@ class SphinxRepoManager:
         )
 
         repo_task.current_git_stage_num += 1
+        repo_task.is_done = True
 
     def try_git_pull(self, repo_task):
         """ git pull wrapper. """
