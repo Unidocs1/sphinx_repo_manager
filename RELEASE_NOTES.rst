@@ -1,6 +1,11 @@
 Sphinx Repo Manager Release Notes
 =================================
 
+v1.0.16
+-------
+
+* Potentially fixed a bug that would show a progress bar not reaching 'done' before continuing.
+
 v1.0.15
 -------
 
