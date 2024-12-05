@@ -1,4 +1,3 @@
-# source/extensions/sphinx_repo_manager/sphinx_repo_manager/__init__.py
 from sphinx.application import Sphinx
 from sphinx.config import Config
 from .sphinx_repo_manager import SphinxRepoManager

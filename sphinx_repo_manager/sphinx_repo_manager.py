@@ -50,6 +50,7 @@ DEFAULT_DOTENV_THROW_ON_MISSING_AUTH_TOKEN = True
 DEFAULT_REPOSITORIES = {}
 DEFAULT_SKIP_REPO_UPDATES = False
 DEFAULT_STATIC_DOCS_SYMLINKED_CONTENT_DIR_NAME = '-'
+DEFAULT_REPO_STAGE_CHECKOUT_TYPE = "branch"
 
 # Options
 THROW_ON_REPO_ERROR = True  # Recommended True
@@ -387,7 +388,7 @@ class SphinxRepoManager:
         default_branch = manifest["default_branch"]
         fallback_stage_info = {
             "checkout": default_branch or "",  # Could be None
-            "checkout_type": "branch",
+            "checkout_type": DEFAULT_REPO_STAGE_CHECKOUT_TYPE,
         }
         repo_info.setdefault("dev_stage", fallback_stage_info)
         repo_info.setdefault("production_stage", fallback_stage_info)
@@ -395,10 +396,8 @@ class SphinxRepoManager:
         stage = manifest["stage"]  # 'dev_stage' or 'production_stage'
         selected_repo_stage_info = repo_info[stage]
         selected_repo_stage_info.setdefault("checkout", fallback_stage_info["checkout"])
-        selected_repo_stage_info.setdefault(
-            "checkout_type", fallback_stage_info["checkout_type"]
-        )
-
+        selected_repo_stage_info.setdefault("checkout_type", fallback_stage_info["checkout_type"])
+        
         if selected_repo_stage_info["checkout"]:
             # This could be 'None'
             selected_repo_stage_info["checkout"] = selected_repo_stage_info["checkout"].replace("\\", "/")
