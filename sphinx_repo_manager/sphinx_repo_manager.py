@@ -50,6 +50,7 @@ DEFAULT_DOTENV_THROW_ON_MISSING_AUTH_TOKEN = True
 DEFAULT_REPOSITORIES = {}
 DEFAULT_SKIP_REPO_UPDATES = False
 DEFAULT_STATIC_DOCS_SYMLINKED_CONTENT_DIR_NAME = '-'
+DEFAULT_REPO_STAGE_CHECKOUT_TYPE = "branch"
 
 # Options
 THROW_ON_REPO_ERROR = True  # Recommended True
@@ -387,7 +388,7 @@ class SphinxRepoManager:
         default_branch = manifest["default_branch"]
         fallback_stage_info = {
             "checkout": default_branch or "",  # Could be None
-            "checkout_type": "branch",
+            "checkout_type": DEFAULT_REPO_STAGE_CHECKOUT_TYPE,
         }
         repo_info.setdefault("dev_stage", fallback_stage_info)
         repo_info.setdefault("production_stage", fallback_stage_info)
@@ -395,10 +396,8 @@ class SphinxRepoManager:
         stage = manifest["stage"]  # 'dev_stage' or 'production_stage'
         selected_repo_stage_info = repo_info[stage]
         selected_repo_stage_info.setdefault("checkout", fallback_stage_info["checkout"])
-        selected_repo_stage_info.setdefault(
-            "checkout_type", fallback_stage_info["checkout_type"]
-        )
-
+        selected_repo_stage_info.setdefault("checkout_type", fallback_stage_info["checkout_type"])
+        
         if selected_repo_stage_info["checkout"]:
             # This could be 'None'
             selected_repo_stage_info["checkout"] = selected_repo_stage_info["checkout"].replace("\\", "/")
@@ -739,9 +738,13 @@ class SphinxRepoManager:
         else:
             formatted_repo_url = repo_task.repo_url_dotgit
 
+        colored_repo_name = self.get_colored_repo_name(repo_task)
+        colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
+        cloning = "[cyan]→ Cloning"
+
         self.progress.update(
             repo_task.worker_task_id,
-            description=f"[bold blue]{repo_task.repo_name} [cyan]→ Cloning",
+            description=f"{colored_repo_name} {colored_branch_name} {cloning}",
         )
 
         # Prep the progress bar update callback
@@ -1052,9 +1055,13 @@ class SphinxRepoManager:
 
     def try_git_fetch(self, repo_task):
         try:
+            colored_repo_name = self.get_colored_repo_name(repo_task)
+            colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
+            cloning = "[cyan]→ Fetching"
+            
             self.progress.update(
                 repo_task.worker_task_id,
-                description=f"[bold blue]{repo_task.repo_name} [cyan]→ Fetching",
+                description=f"{colored_repo_name} {colored_branch_name} {cloning}",
             )
 
             GitHelper.git_fetch(
@@ -1075,11 +1082,23 @@ class SphinxRepoManager:
             repo_task.worker_task_id,
             advance=1,
         )
+    
+    @staticmethod
+    def get_colored_repo_name(repo_task):
+        return f"[bold blue]{repo_task.repo_name}[/bold blue]"
+    
+    @staticmethod
+    def get_colored_branch_name_or_default_in_parentheses(repo_task):
+        return f"[blue]({repo_task.checkout_branch_or_tag_name or 'default'})"
 
     def set_repo_task_done(self, repo_task):
+        colored_repo_name = self.get_colored_repo_name(repo_task)
+        colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
+        colored_done = f"[green]→ Done"
+        
         self.progress.update(
             repo_task.worker_task_id,
-            description=f"[bold blue]{repo_task.repo_name} [green]→ Done",
+            description=f"{colored_repo_name} {colored_branch_name} {colored_done}",
             completed=repo_task.progress_total,
         )
 
@@ -1089,9 +1108,13 @@ class SphinxRepoManager:
     def try_git_pull(self, repo_task):
         """ git pull wrapper. """
         try:
+            colored_repo_name = self.get_colored_repo_name(repo_task)
+            colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
+            pulling = "[cyan]→ Pulling"
+            
             self.progress.update(
                 repo_task.worker_task_id,
-                description=f"[bold blue]{repo_task.repo_name} [cyan]→ Pulling",
+                description=f"{colored_repo_name} {colored_branch_name} {pulling}",
             )
 
             GitHelper.git_pull(
