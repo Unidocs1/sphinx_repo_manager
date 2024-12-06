@@ -738,9 +738,13 @@ class SphinxRepoManager:
         else:
             formatted_repo_url = repo_task.repo_url_dotgit
 
+        colored_repo_name = self.get_colored_repo_name(repo_task)
+        colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
+        cloning = "[cyan]→ Cloning"
+
         self.progress.update(
             repo_task.worker_task_id,
-            description=f"[bold blue]{repo_task.repo_name} [cyan]→ Cloning",
+            description=f"{colored_repo_name} {colored_branch_name} {cloning}",
         )
 
         # Prep the progress bar update callback
@@ -1051,9 +1055,13 @@ class SphinxRepoManager:
 
     def try_git_fetch(self, repo_task):
         try:
+            colored_repo_name = self.get_colored_repo_name(repo_task)
+            colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
+            cloning = "[cyan]→ Fetching"
+            
             self.progress.update(
                 repo_task.worker_task_id,
-                description=f"[bold blue]{repo_task.repo_name} [cyan]→ Fetching",
+                description=f"{colored_repo_name} {colored_branch_name} {cloning}",
             )
 
             GitHelper.git_fetch(
@@ -1074,15 +1082,23 @@ class SphinxRepoManager:
             repo_task.worker_task_id,
             advance=1,
         )
+    
+    @staticmethod
+    def get_colored_repo_name(repo_task):
+        return f"[bold blue]{repo_task.repo_name}[/bold blue]"
+    
+    @staticmethod
+    def get_colored_branch_name_or_default_in_parentheses(repo_task):
+        return f"[blue]({repo_task.checkout_branch_or_tag_name or 'default'})"
 
     def set_repo_task_done(self, repo_task):
-        colored_repo_name = f"[bold blue]{repo_task.repo_name}[/bold blue]"
-        colored_branch_name = f"[blue]({repo_task.checkfout_branch_or_tag_name})" if repo_task.has_branch else ""
+        colored_repo_name = self.get_colored_repo_name(repo_task)
+        colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
         colored_done = f"[green]→ Done"
         
         self.progress.update(
             repo_task.worker_task_id,
-            description=f"{colored_repo_name} {colored_branch_name}{colored_done}",
+            description=f"{colored_repo_name} {colored_branch_name} {colored_done}",
             completed=repo_task.progress_total,
         )
 
@@ -1092,9 +1108,13 @@ class SphinxRepoManager:
     def try_git_pull(self, repo_task):
         """ git pull wrapper. """
         try:
+            colored_repo_name = self.get_colored_repo_name(repo_task)
+            colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
+            pulling = "[cyan]→ Pulling"
+            
             self.progress.update(
                 repo_task.worker_task_id,
-                description=f"[bold blue]{repo_task.repo_name} [cyan]→ Pulling",
+                description=f"{colored_repo_name} {colored_branch_name} {pulling}",
             )
 
             GitHelper.git_pull(
