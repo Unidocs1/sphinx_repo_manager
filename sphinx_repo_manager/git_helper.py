@@ -87,78 +87,6 @@ def clean_command_array(cmd_arr):
     cmd_arr[:] = [arg for arg in cmd_arr if arg]
 
 
-def run_subprocess_with_progress(
-        cmd_arr,
-        progress_callback=None,
-        realtime_log=False,
-):
-    """
-    Run a subprocess command and display output in real-time, optionally tracking progress.
-
-    Parameters:
-    * cmd (list): Command to be executed as a list of arguments.
-    * progress_callback (function): Function to handle progress updates, called with each line of output.
-    """
-    if not cmd_arr:
-        raise Exception("No command provided.")
-
-    debug_extra_logs = realtime_log or GIT_DEBUG
-    clean_command_array(cmd_arr)
-
-    # Prep redacted version for logs (and ensure every element is a str)
-    redacted_cmd_arr = [redact_url_secret(str(part)) for part in cmd_arr]
-    if realtime_log:
-        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
-        print(f"- [debug_mode] CLI: '{colored_cmd_str}'")
-
-    output_lines = []
-    try:
-        process = subprocess.Popen(
-            cmd_arr,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            bufsize=1
-        )
-
-        for line in process.stdout:
-            line = line.strip()
-            if progress_callback:
-                progress_callback(line)
-            if GIT_DEBUG_VERBOSE_PROGRESS:
-                print(line)
-            output_lines.append(line)
-
-        process.stdout.close()
-        process.wait()
-
-        # Failed?
-        if process.returncode != 0:
-            sanitized_output_lines_str = sanitize_git_help('\n'.join(output_lines))
-            raise subprocess.CalledProcessError(
-                process.returncode,
-                cmd_arr,
-                output=f"Git error(s): \n{sanitized_output_lines_str}",
-            )
-
-    except FileNotFoundError:
-        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
-        raise Exception(f"{brighten('Command not found:')} '{colored_cmd_str}'")
-    except subprocess.CalledProcessError as e:
-        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
-        raise Exception(
-            f"{colorize_error(f'Command failed with return code {e.returncode}:')}\n"
-            f"{brighten('  - Cli cmd:')} '{colored_cmd_str}'\n"
-            f"  - {e.output.strip() or 'No additional details available.'}"
-        ) from None
-    except Exception as e:
-        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
-        raise Exception(
-            f"  - {brighten('Unexpected error while running:')} '{colored_cmd_str}'\n"
-            f"  - {str(e)}"
-        ) from None
-
-
 def sanitize_git_help(output):
     """
     Sanitizes Git error output by keeping lines up to and including 'usage: git',
@@ -241,6 +169,78 @@ def run_subprocess_cmd(
         raise Exception(f"Command not found: {pretty_cmd}\nError: '{brighten(e)}'")
 
 
+def run_subprocess_with_progress(
+        cmd_arr,
+        progress_callback=None,
+        realtime_log=False,
+):
+    """
+    Run a subprocess command and display output in real-time, optionally tracking progress.
+
+    Parameters:
+    * cmd (list): Command to be executed as a list of arguments.
+    * progress_callback (function): Function to handle progress updates, called with each line of output.
+    """
+    if not cmd_arr:
+        raise Exception("No command provided.")
+
+    debug_extra_logs = realtime_log or GIT_DEBUG
+    clean_command_array(cmd_arr)
+
+    # Prep redacted version for logs (and ensure every element is a str)
+    redacted_cmd_arr = [redact_url_secret(str(part)) for part in cmd_arr]
+    if realtime_log:
+        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
+        print(f"- [debug_mode] CLI: '{colored_cmd_str}'")
+
+    output_lines = []
+    try:
+        process = subprocess.Popen(
+            cmd_arr,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1
+        )
+
+        for line in process.stdout:
+            line = line.strip()
+            if progress_callback:
+                progress_callback(line)
+            if GIT_DEBUG_VERBOSE_PROGRESS:
+                print(line)
+            output_lines.append(line)
+
+        process.stdout.close()
+        process.wait()
+
+        # Failed?
+        if process.returncode != 0:
+            sanitized_output_lines_str = sanitize_git_help('\n'.join(output_lines))
+            raise subprocess.CalledProcessError(
+                process.returncode,
+                cmd_arr,
+                output=f"Git error(s): \n{sanitized_output_lines_str}",
+            )
+
+    except FileNotFoundError:
+        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
+        raise Exception(f"{brighten('Command not found:')} '{colored_cmd_str}'")
+    except subprocess.CalledProcessError as e:
+        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
+        raise Exception(
+            f"{colorize_error(f'Command failed with return code {e.returncode}:')}\n"
+            f"{brighten('  - Cli cmd:')} '{colored_cmd_str}'\n"
+            f"  - {e.output.strip() or 'No additional details available.'}"
+        ) from None
+    except Exception as e:
+        colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
+        raise Exception(
+            f"  - {brighten('Unexpected error while running:')} '{colored_cmd_str}'\n"
+            f"  - {str(e)}"
+        ) from None
+
+
 class GitHelper:
     def __init__(self):
         pass
@@ -255,7 +255,10 @@ class GitHelper:
         GitHelper._throw_if_path_not_exists(repo_path)
 
         # --force works around the potential `rejected: would clobber existing tag` error
-        cmd_arr = ["git", "-C", repo_path, "fetch", "--all", "--tags", "--force"]
+        cmd_arr = [
+            "git", "-C", repo_path,
+            "fetch", "--all", "--tags", "--force",
+        ]
         run_subprocess_cmd(
             cmd_arr,
             check_throw_on_cli_err=True,
@@ -342,13 +345,10 @@ class GitHelper:
         single_branch_cmd = ["--single-branch"] if branch_is_tag else []  # Include if branch_is_tag is True
 
         git_clone_cmd_arr = [
-            "git",
-            "clone",
+            "git", "clone",
             *branch_cmd,  # Unpack arr elements, if present
             *single_branch_cmd,
-            "-q",
-            repo_url_dotgit,
-            rel_base_clone_path,
+            "-q", repo_url_dotgit, rel_base_clone_path,
         ]
 
         run_subprocess_cmd(
@@ -524,6 +524,7 @@ class GitHelper:
             branch_is_tag,
             stash_and_continue_if_wip,
             log_entries=log_entries,
+            debug_extra_logs=debug_extra_logs,
         )
 
     @staticmethod
@@ -539,7 +540,8 @@ class GitHelper:
         """ Perform a sparse checkout on the specified paths. """
         # Initialize sparse checkout
         sparse_checkout_init_cmd_arr = prepare_command([
-            "git", "-C", clone_to_path, "sparse-checkout", "init", "--cone"
+            "git", "-C", clone_to_path,
+            "sparse-checkout", "init", "--cone",
         ])
         run_subprocess_cmd(
             sparse_checkout_init_cmd_arr,
@@ -550,7 +552,8 @@ class GitHelper:
 
         # Set sparse checkout path
         sparse_checkout_set_cmd_arr = prepare_command([
-            "git", "-C", clone_to_path, "sparse-checkout", "set", repo_sparse_path
+            "git", "-C", clone_to_path,
+            "sparse-checkout", "set", repo_sparse_path,
         ])
         run_subprocess_cmd(
             sparse_checkout_set_cmd_arr,
@@ -591,7 +594,11 @@ class GitHelper:
         """
         try:
             GitHelper._throw_if_path_not_exists(repo_path)
-            cmd_arr = ["git", "-C", repo_path, "status", "--porcelain"]
+            cmd_arr = [
+                "git", "-C", repo_path,
+                "status", "--porcelain",
+            ]
+
             output = run_subprocess_cmd(
                 cmd_arr,
                 check_throw_on_cli_err=True,
@@ -621,7 +628,11 @@ class GitHelper:
         """
         GitHelper._throw_if_path_not_exists(repo_path)
 
-        cmd_arr = ["git", "-C", repo_path, "reset", "--hard"]
+        cmd_arr = [
+            "git", "-C", repo_path,
+            "reset", "--hard",
+        ]
+
         run_subprocess_cmd(
             cmd_arr,
             check_throw_on_cli_err=True,
@@ -649,7 +660,11 @@ class GitHelper:
         if stash_message is None:
             stash_message = f"repo_mgr_wip-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
 
-        cmd_arr = ["git", "-C", repo_path, "stash", "push", "-u", "-m", stash_message]
+        cmd_arr = [
+            "git", "-C", repo_path,
+            "stash", "push", "-u", "-m", stash_message,
+        ]
+
         run_subprocess_cmd(
             cmd_arr,
             check_throw_on_cli_err=True,
@@ -716,7 +731,11 @@ class GitHelper:
                         f"'{brighten(repo_path)}'"
                     )
 
-        cmd_arr = ["git", "-C", repo_path, "checkout", tag]
+        cmd_arr = [
+            "git", "-C", repo_path,
+            "checkout", tag,
+        ]
+
         run_subprocess_cmd(
             cmd_arr,
             check_throw_on_cli_err=True,
@@ -747,7 +766,10 @@ class GitHelper:
                         f"'{brighten(repo_path)}'"
                     )
 
-        cmd_arr = ["git", "-C", repo_path, "switch", tag_or_branch]
+        cmd_arr = [
+            "git", "-C", repo_path,
+            "switch", tag_or_branch,
+        ]
 
         run_subprocess_cmd(
             cmd_arr,
@@ -775,13 +797,11 @@ class GitHelper:
             if abs_path.is_dir():
                 for sub_item in abs_path.rglob("*"):
                     cmd_arr = [
-                        "git",
-                        "-C",
-                        rel_base_path,
-                        "update-index",
-                        "--assume-unchanged",
+                        "git", "-C", rel_base_path,
+                        "update-index", "--assume-unchanged",
                         str(sub_item),  # Absolute paths only
                     ]
+
                     run_subprocess_cmd(
                         cmd_arr,
                         check_throw_on_cli_err=True,
@@ -790,13 +810,11 @@ class GitHelper:
                     )
             else:
                 cmd_arr = [
-                    "git",
-                    "-C",
-                    rel_base_path,
-                    "update-index",
-                    "--assume-unchanged",
+                    "git", "-C", rel_base_path,
+                    "update-index", "--assume-unchanged",
                     str(abs_path),
                 ]
+
                 run_subprocess_cmd(
                     cmd_arr,
                     check_throw_on_cli_err=True,

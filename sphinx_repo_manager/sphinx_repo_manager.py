@@ -1076,9 +1076,13 @@ class SphinxRepoManager:
         )
 
     def set_repo_task_done(self, repo_task):
+        colored_repo_name = f"[bold blue]{repo_task.repo_name}[/bold blue]"
+        colored_branch_name = f"[blue]({repo_task.checkfout_branch_or_tag_name})" if repo_task.has_branch else ""
+        colored_done = f"[green]→ Done"
+        
         self.progress.update(
             repo_task.worker_task_id,
-            description=f"[bold blue]{repo_task.repo_name} [green]→ Done",
+            description=f"{colored_repo_name} {colored_branch_name}{colored_done}",
             completed=repo_task.progress_total,
         )
 
