@@ -16,7 +16,7 @@ console = Console()
 GIT_DEBUG = False  # Extra logs, such as CLI output
 GIT_DEBUG_VERBOSE_PROGRESS = GIT_DEBUG and False  # (!) VERY spammy, but useful for debugging large repos
 
-# Supports *wildcards*
+# If using *wildcards*, parse this through expand_wildcards()
 GIT_SPARSE_PRESERVED_DIRS_FILES = [
     ".git*",
     "README*",
@@ -362,7 +362,7 @@ class GitHelper:
 
     @staticmethod
     def _remove_except(
-            base_path, 
+            base_path,
             exclude_dirs_files,
             log_entries=None,
             debug_extra_logs=False,
@@ -391,18 +391,21 @@ class GitHelper:
         if log_entries is not None:
             pass  # TODO: Log?
 
+        # Expand wildcards to match actual files/directories
+        expanded_preserved_files = GitHelper.expand_wildcards(repo_path, preserved_dirs_files)
+
         # Add non-preserved dirs to .git/info/exclude before wiping
         # We don't want it to show on git diff -- this is *just* local to us
         GitHelper.git_add_to_exclude(
-            repo_path, 
-            preserved_dirs_files,
+            repo_path,
+            expanded_preserved_files,
             log_entries=log_entries,
             debug_extra_logs=debug_extra_logs,
         )
 
         GitHelper._remove_except(
             repo_path,
-            preserved_dirs_files,
+            expanded_preserved_files,
             log_entries=log_entries,
             debug_extra_logs=debug_extra_logs,
         )
@@ -813,15 +816,15 @@ class GitHelper:
         Supports *wildcards* in preserved_dirs.
         """
         all_items = os.listdir(rel_base_path)
-    
+
         # Match all preserved items with wildcards
         preserved_items = []
         for pattern in preserved_dirs:
             preserved_items.extend(fnmatch.filter(all_items, pattern))
-    
+
         # Find items to exclude
         items_to_exclude = [item for item in all_items if item not in preserved_items]
-    
+
         # Use git update-index to exclude these items
         for item in items_to_exclude:
             abs_path = (Path(rel_base_path) / item).resolve()
@@ -832,7 +835,7 @@ class GitHelper:
                         "update-index", "--assume-unchanged",
                         str(sub_item),
                     ]
-    
+
                     run_subprocess_cmd(
                         cmd_arr,
                         check_throw_on_cli_err=True,
@@ -845,7 +848,7 @@ class GitHelper:
                     "update-index", "--assume-unchanged",
                     str(abs_path),
                 ]
-    
+
                 run_subprocess_cmd(
                     cmd_arr,
                     check_throw_on_cli_err=True,
@@ -942,6 +945,26 @@ class GitHelper:
                 stderr=result.stderr,
             )
         return result.stdout, result.stderr
+
+    @staticmethod
+    def expand_wildcards(base_path, patterns):
+        """
+        Expands wildcard patterns to match actual files/directories in the base_path.
+    
+        Args:
+            base_path (str): The directory to search for matching patterns.
+            patterns (list): A list of wildcard patterns to match (e.g., '*.txt', 'README*').
+    
+        Returns:
+            list: A list of expanded file and directory names matching the patterns.
+        """
+        expanded_files = []
+        all_items = os.listdir(base_path)  # List all items in the directory
+
+        for pattern in patterns:
+            expanded_files.extend(fnmatch.filter(all_items, pattern))
+
+        return expanded_files
 
     @staticmethod
     def _throw_if_path_not_exists(path):

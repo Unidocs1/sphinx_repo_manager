@@ -4,8 +4,7 @@ Sphinx Repo Manager
 Hello World
 -----------
 
-Table of Contents
------------------
+Table of Contents: 
 
 .. toctree::
    :maxdepth: 2
@@ -37,6 +36,13 @@ As long as you declare a ``.. start-marker`` directive right above where your co
 Resources
 ---------
 
-* `Source code <https://gitlab.acceleratxr.com/Core/xbe_docs>`_
-* Production-grade `implementation demo <https://source.goxbe.io/Core/docs/xbe_static_docs>`_
-* Questions? Ask us in `Discord <https://discord.gg/xsollabackend>`_
+* sphinx_repo_manager `source code <https://source.goxbe.io/Core/docs/sphinx_repo_manager>`__
+
+   * Note ``/docs`` if inspecting this build demo
+
+* (This) demo_doc `source code <https://source.goxbe.io/Core/docs/demo_doc>`__
+* Production-grade `implementation demo <https://source.goxbe.io/Core/docs/xbe_static_docs>`__
+
+   * Note ``docs/repo_manifest.yml`` for an *advanced* manifest demo
+
+* Questions? Ask us in `Discord <https://discord.gg/xsollabackend>`__
