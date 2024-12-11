@@ -17,7 +17,7 @@ $projRoot = (Resolve-Path -Path "$fileLocation/..").ProviderPath
 Push-Location $projRoot
 
 
-$envName = "xbe-docs"
+$envName = "sphinx-repo-mgr"
 $pythonVersion = "3.10"
 
 Write-Host "-----------------------------------"
