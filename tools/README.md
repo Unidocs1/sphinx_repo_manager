@@ -15,7 +15,9 @@
 
 ### Build & Deploy
 
-* `1_bump-ver.ps1` - Utilizes `bump2version`, bumping your git tag version up with a *patch*, by default
+* `1_bump-ver.ps1` - Utilizes `bump2version`, bumping your git tag *and* `.toml` version up with a *patch*, by default
+   * **Optional Args:** `major`, `minor`, `patch` (default) 
+   * Associated with `../.bumpversion.cfg`
 * `2_build-lint.ps1` - Builds the project with `python -m build`, then lints with `twine`
 * `3a_deploy.ps1` - Deploys the project with `twine` to PyPi **dev** environment
 * `3b_deploy.ps1` - Deploys the project with `twine` to PyPi **prod** environment

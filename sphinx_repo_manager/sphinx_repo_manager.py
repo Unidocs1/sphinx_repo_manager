@@ -806,7 +806,7 @@ class SphinxRepoManager:
         if repo_task.should_clone_repo:
             # Sparse cloning will also change the branch to the correct one
             self.try_git_sparse_clone(repo_task)  # Sets repo_task.cloned
-            self.try_git_clean_sparse_docs_after_clone(repo_task)
+            self.try_git_clean_sparse_docs_after_clone(repo_task, self.debug_mode)
         else:
             if repo_task.has_tag:
                 self.try_git_fetch(repo_task)  # Forces to get new tags
@@ -980,12 +980,17 @@ class SphinxRepoManager:
             pass
 
     @staticmethod
-    def try_git_clean_sparse_docs_after_clone(repo_task):
+    def try_git_clean_sparse_docs_after_clone(
+            repo_task,
+            debug_mode,
+            debug_extra_logs,
+    ):
         try:
             GitHelper.git_clean_sparse_docs_after_clone(
                 repo_task.abs_tag_versioned_clone_src_path,
                 repo_task.rel_selected_repo_sparse_path,
                 log_entries=repo_task.log_entries,
+                debug_extra_logs=debug_extra_logs,
             )
         except Exception as e:
             additional_info = f"Error cleaning up sparse clone '{brighten(repo_task.repo_name)}':\n- {str(e)}"
