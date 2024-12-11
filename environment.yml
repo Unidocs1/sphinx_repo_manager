@@ -1,0 +1,10 @@
+# Conda env
+name: sphinx-repo-manager
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - -r docs/requirements.txt
+      - -r requirements-dev.txt
