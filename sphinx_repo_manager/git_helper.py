@@ -1,3 +1,4 @@
+import fnmatch
 import os
 import re
 import shutil
@@ -19,7 +20,7 @@ GIT_SPARSE_PRESERVED_DIRS_FILES = [
     ".git",
     ".gitignore",
     ".gitlab",
-    "README.md",
+    "README*",
     "RELEASE_NOTES.rst",
 ]
 
@@ -787,9 +788,17 @@ class GitHelper:
     ):
         """
         Uses git update-index to prevent git from tracking changes to all paths except the preserved ones.
+        Supports wildcards in preserved_dirs.
         """
         all_items = os.listdir(rel_base_path)
-        items_to_exclude = [item for item in all_items if item not in preserved_dirs]
+
+        # Match all preserved items with wildcards
+        preserved_items = []
+        for pattern in preserved_dirs:
+            preserved_items.extend(fnmatch.filter(all_items, pattern))
+
+        # Find items to exclude
+        items_to_exclude = [item for item in all_items if item not in preserved_items]
 
         # Use git update-index to exclude these items
         for item in items_to_exclude:
@@ -799,7 +808,7 @@ class GitHelper:
                     cmd_arr = [
                         "git", "-C", rel_base_path,
                         "update-index", "--assume-unchanged",
-                        str(sub_item),  # Absolute paths only
+                        str(sub_item),
                     ]
 
                     run_subprocess_cmd(
