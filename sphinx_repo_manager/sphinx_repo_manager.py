@@ -671,7 +671,7 @@ class SphinxRepoManager:
             repo_info["base_clone_path_root_symlink_src_override"] = str(
                 repo_info["base_clone_path_root_symlink_src_override"]
             ).replace("{repo_sparse_path}", str(rel_selected_repo_sparse_path))
-            rel_base_clone_path_root_symlink_src_override = repo_info["base_clone_path_root_symlink_src_override"]
+            rel_base_clone_path_root_symlink_src_override = Path(repo_info["base_clone_path_root_symlink_src_override"])
 
         rel_selected_clone_path_root_symlink_src = Path(
             rel_base_clone_path_root_symlink_src_override if has_base_clone_path_root_symlink_src_override \
@@ -980,11 +980,7 @@ class SphinxRepoManager:
             pass
 
     @staticmethod
-    def try_git_clean_sparse_docs_after_clone(
-            repo_task,
-            debug_mode,
-            debug_extra_logs,
-    ):
+    def try_git_clean_sparse_docs_after_clone(repo_task, debug_extra_logs):
         try:
             GitHelper.git_clean_sparse_docs_after_clone(
                 repo_task.abs_tag_versioned_clone_src_path,
