@@ -16,12 +16,13 @@ console = Console()
 GIT_DEBUG = False  # Extra logs, such as CLI output
 GIT_DEBUG_VERBOSE_PROGRESS = GIT_DEBUG and False  # (!) VERY spammy, but useful for debugging large repos
 
+# Supports *wildcards*
 GIT_SPARSE_PRESERVED_DIRS_FILES = [
-    ".git",
-    ".gitignore",
-    ".gitlab",
+    ".git*",
     "README*",
-    "RELEASE_NOTES.rst",
+    "RELEASE_NOTES*",
+    "CONTRIBUTORS",
+    "LICENSE*",
 ]
 
 STAGES = {
@@ -126,7 +127,7 @@ def run_subprocess_cmd(
         cmd_arr,
         check_throw_on_cli_err=True,
         log_entries=None,
-        realtime_log=False,
+        debug_realtime_log=False,
 ):
     """Run a subprocess command and handle errors."""
     clean_command_array(cmd_arr)
@@ -135,7 +136,7 @@ def run_subprocess_cmd(
         for part in cmd_arr
     ]  # Ensure every part is a string
 
-    if realtime_log:
+    if debug_realtime_log:
         colored_cmd_str = colorize_cli_cmd(' '.join(redacted_cmd_arr))
         print(f"- [debug_mode] CLI: '{colored_cmd_str}'")
     try:
@@ -264,7 +265,7 @@ class GitHelper:
             cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
     @staticmethod
@@ -356,11 +357,16 @@ class GitHelper:
             git_clone_cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
     @staticmethod
-    def _remove_except(base_path, exclude_dirs_files, log_entries=None):
+    def _remove_except(
+            base_path, 
+            exclude_dirs_files,
+            log_entries=None,
+            debug_extra_logs=False,
+    ):
         """
         Remove all items in the base_path except those in exclude_dirs.
         """
@@ -373,7 +379,11 @@ class GitHelper:
                     os.remove(item_path)
 
     @staticmethod
-    def _clean_exclude_root_level(repo_path, sparse_first_level, log_entries=None):
+    def _clean_exclude_root_level(
+            repo_path,
+            sparse_first_level,
+            log_entries=None,
+            debug_extra_logs=False):
         """
         Clean the root level of the repo_path, leaving only [.git, docs] at root level and sparse_first_level directories.
         """
@@ -384,15 +394,26 @@ class GitHelper:
         # Add non-preserved dirs to .git/info/exclude before wiping
         # We don't want it to show on git diff -- this is *just* local to us
         GitHelper.git_add_to_exclude(
-            repo_path, preserved_dirs_files, log_entries=log_entries
+            repo_path, 
+            preserved_dirs_files,
+            log_entries=log_entries,
+            debug_extra_logs=debug_extra_logs,
         )
 
         GitHelper._remove_except(
-            repo_path, preserved_dirs_files, log_entries=log_entries
+            repo_path,
+            preserved_dirs_files,
+            log_entries=log_entries,
+            debug_extra_logs=debug_extra_logs,
         )
 
     @staticmethod
-    def git_clean_sparse_docs_after_clone(repo_path, repo_sparse_path, log_entries=None):
+    def git_clean_sparse_docs_after_clone(
+            repo_path,
+            repo_sparse_path,
+            log_entries=None,
+            debug_extra_logs=False,
+    ):
         """
         Clean up the repo to only keep the specified sparse checkout paths.
         """
@@ -407,6 +428,7 @@ class GitHelper:
             repo_path,
             docs_dir,
             log_entries=log_entries,
+            debug_extra_logs=debug_extra_logs,
         )
 
     @staticmethod
@@ -548,7 +570,7 @@ class GitHelper:
             sparse_checkout_init_cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
         # Set sparse checkout path
@@ -560,7 +582,7 @@ class GitHelper:
             sparse_checkout_set_cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
         if not branch_or_tag:
@@ -604,7 +626,7 @@ class GitHelper:
                 cmd_arr,
                 check_throw_on_cli_err=True,
                 log_entries=log_entries,
-                realtime_log=debug_extra_logs,
+                debug_realtime_log=debug_extra_logs,
             )
             is_dirty = bool(output and output.strip())
             return is_dirty
@@ -638,7 +660,7 @@ class GitHelper:
             cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
     @staticmethod
@@ -670,7 +692,7 @@ class GitHelper:
             cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
     @staticmethod
@@ -707,7 +729,7 @@ class GitHelper:
             cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
     @staticmethod
@@ -741,7 +763,7 @@ class GitHelper:
             cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
     @staticmethod
@@ -776,7 +798,7 @@ class GitHelper:
             cmd_arr,
             check_throw_on_cli_err=True,
             log_entries=log_entries,
-            realtime_log=debug_extra_logs,
+            debug_realtime_log=debug_extra_logs,
         )
 
     @staticmethod
@@ -788,18 +810,18 @@ class GitHelper:
     ):
         """
         Uses git update-index to prevent git from tracking changes to all paths except the preserved ones.
-        Supports wildcards in preserved_dirs.
+        Supports *wildcards* in preserved_dirs.
         """
         all_items = os.listdir(rel_base_path)
-
+    
         # Match all preserved items with wildcards
         preserved_items = []
         for pattern in preserved_dirs:
             preserved_items.extend(fnmatch.filter(all_items, pattern))
-
+    
         # Find items to exclude
         items_to_exclude = [item for item in all_items if item not in preserved_items]
-
+    
         # Use git update-index to exclude these items
         for item in items_to_exclude:
             abs_path = (Path(rel_base_path) / item).resolve()
@@ -810,12 +832,12 @@ class GitHelper:
                         "update-index", "--assume-unchanged",
                         str(sub_item),
                     ]
-
+    
                     run_subprocess_cmd(
                         cmd_arr,
                         check_throw_on_cli_err=True,
                         log_entries=log_entries,
-                        realtime_log=debug_extra_logs,
+                        debug_realtime_log=debug_extra_logs,
                     )
             else:
                 cmd_arr = [
@@ -823,12 +845,12 @@ class GitHelper:
                     "update-index", "--assume-unchanged",
                     str(abs_path),
                 ]
-
+    
                 run_subprocess_cmd(
                     cmd_arr,
                     check_throw_on_cli_err=True,
                     log_entries=log_entries,
-                    realtime_log=debug_extra_logs,
+                    debug_realtime_log=debug_extra_logs,
                 )
 
     @staticmethod
