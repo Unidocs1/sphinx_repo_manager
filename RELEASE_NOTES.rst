@@ -1,6 +1,13 @@
 Sphinx Repo Manager Release Notes
 =================================
 
+v1.0.18
+-------
+
+* feat: Git sparse checkout whitelist now supports wildcards; notably whitelisting ``README*`` (instead of just .md)
+* feat(tool): ``environment.yml`` and ``tools/conda-activate.ps1``
+* docs(tool): Initialized a ``tools/README.md``
+
 v1.0.17
 -------
 
