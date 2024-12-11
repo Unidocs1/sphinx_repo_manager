@@ -3,14 +3,15 @@
 ## Global Setup
 
 1. To utilize the deployment tools: copy `.env.template` -> `.env` and set the values.
-2. [Optional] Run `conda-activate.ps1` before any CLI
+2. [Optional] Run `conda-activate.ps1` before any CLI. **Skip step 3.**
 3. Run `pip install -r ../requirements-dev.txt` to install the necessary dependencies
 
 ## Scripts
 
 ### Environment
 
-* `conda-activate.ps1` - Activates (or creates) the `sphinx-repo-manager` conda environment.
+* `conda-activate.ps1` - Activates (or creates) the `sphinx-repo-manager` conda environment (using Python `3.10`).
+   * Associated with `../environment.yml` 
 
 ### Build & Deploy
 
