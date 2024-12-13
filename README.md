@@ -44,6 +44,9 @@ This guide assumes you have a basic understanding of [Sphinx](https://www.sphinx
    [docs/repo_manifest.yml](https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/blob/master/docs/repo_manifest.yml)
    (example template) next to your `Makefile`
 
+   * 💡 Optionally, set the manifest `max_workers_local` to a higher number for faster local builds 
+     [even `30` is ok for high-end machines!]
+
 Once setup, sphinx-build as normal (typically via `make html` next to your `Makefile`)!
 
 ### Tips
