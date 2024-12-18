@@ -74,7 +74,7 @@ base_clone_path: "_repos-available"
 # - If repository omits "branch", this will be the fallback 
 # - Defaults to "" (use default branch), if null or omitted
 # - Tag will be prioritized over branch, if set
-default_branch: ""
+default_branch: "dev"
 
 # - Default path to individual repo dirs we [mostly] want to 
 #   clone - instead of the entire repo 
