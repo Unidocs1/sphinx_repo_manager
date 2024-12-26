@@ -1,40 +1,38 @@
-import shutil
-from pathlib import Path
 import os
-import pytest
-from sphinx.application import Sphinx
 import shutil
 from pathlib import Path
+from sphinx.application import Sphinx
+from dotenv import load_dotenv
+import pytest
 
 
-@pytest.fixture(scope='function')
-def run_sphinx(tmpdir):
-    """Fixture to run Sphinx builds using the real conf.py and repo_manifest.yml."""
-    src = tmpdir.mkdir('src')
-    out = tmpdir.mkdir('out')
+@pytest.fixture(scope="function")
+def run_sphinx(tmpdir, monkeypatch):
+    """Fixture to run Sphinx builds using the real conf.py, repo_manifest.yml, and .env."""
+    src = tmpdir.join("src")
+    out = tmpdir.join("out")
 
-    # Path to the real conf.py and repo_manifest.yml
-    project_root = Path(__file__).parent.parent  # Adjust based on your structure
-    shutil.copy(project_root / "docs" / "source" / "conf.py", src.join('conf.py').strpath)
+    # Ensure src and out directories exist
+    if not src.check():
+        src.mkdir()
+    if not out.check():
+        out.mkdir()
 
-    # Copy repo_manifest.yml directly into the test directory
-    shutil.copy(project_root / "docs" / "repo_manifest.yml", tmpdir.join('repo_manifest.yml').strpath)
+    # Load environment variables from {root}/docs/.env
+    project_root = Path(__file__).parent.parent
+    load_dotenv(dotenv_path=project_root / "docs" / ".env")
 
-    # Create a basic index.rst for the test
-    src.join('index.rst').write_text("""
-    Hello Sphinx!
-    =============
-
-    This is a test page.
-    """, encoding='utf-8')
+    # Mock environment variables in the test environment
+    for key, value in os.environ.items():
+        monkeypatch.setenv(key, value)
 
     def run():
         Sphinx(
-            srcdir=src.strpath,
-            confdir=src.strpath,
-            outdir=out.strpath,
-            doctreedir=out.join('.doctrees').strpath,
-            buildername='html'
+            srcdir=str(src),
+            confdir=str(src),
+            outdir=str(out),
+            doctreedir=str(tmpdir.join("doctrees")),
+            buildername="html",
         ).build()
 
     return run
@@ -42,26 +40,48 @@ def run_sphinx(tmpdir):
 
 def test_basic_build(run_sphinx, tmpdir):
     """Test that a basic build succeeds with the real conf.py."""
+    src = tmpdir.join("src")
+    if not src.check():
+        src.mkdir()
+
+    # Copy conf.py and repo_manifest.yml
+    project_root = Path(__file__).parent.parent
+    shutil.copy(project_root / "docs" / "source" / "conf.py", src.join("conf.py").strpath)
+    shutil.copy(project_root / "docs" / "repo_manifest.yml", src.join("repo_manifest.yml").strpath)
+
+    # Run Sphinx build
     run_sphinx()
-    assert tmpdir.join('out', 'index.html').check(), "HTML output was not generated."
+    assert tmpdir.join("out", "index.html").check(), "HTML output not generated."
 
 
 def test_extension_loaded(run_sphinx, tmpdir):
     """Test that the extension is loaded properly."""
-    src = tmpdir.mkdir('src') if not tmpdir.join('src').check() else tmpdir.join('src')
+    src = tmpdir.join("src")
+    if not src.check():
+        src.mkdir()
 
-    conf_py = """
-    extensions = ['sphinx_repo_manager']
-    """
-    src.join('conf.py').write_text(conf_py, encoding='utf-8')
+    # Write conf.py to src directory
+    conf_py = """\
+extensions = ['sphinx_repo_manager']
+"""
+    src.join("conf.py").write_text(conf_py, encoding="utf-8")
 
-    src.join('index.rst').write_text("""
-    Hello Sphinx!
-    =============
+    # Write index.rst to src directory
+    src.join("index.rst").write_text(
+        """\
+Hello Sphinx!
+=============
 
-    This is a test page for the extension.
-    """, encoding='utf-8')
+This is a test page for the extension.
+""",
+        encoding="utf-8",
+    )
 
+    # Copy repo_manifest.yml
+    project_root = Path(__file__).parent.parent
+    shutil.copy(project_root / "docs" / "repo_manifest.yml", src.join("repo_manifest.yml").strpath)
+
+    # Run Sphinx build
     run_sphinx()
-    html = tmpdir.join('out', 'index.html').read()
+    html = tmpdir.join("out", "index.html").read_text()
     assert "Hello Sphinx!" in html, "Expected content not found in the output HTML."
