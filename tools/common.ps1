@@ -4,9 +4,7 @@
 #####################################################################
 
 # Store the initial working directory (only once when this script is loaded)
-if (-not $global:InitialWorkingDir) {
-    $global:InitialWorkingDir = Get-Location
-}
+$global:InitialWorkingDir = Get-Location
 
 function Set-WorkingDirectory {
     $ScriptDir = $PSScriptRoot
