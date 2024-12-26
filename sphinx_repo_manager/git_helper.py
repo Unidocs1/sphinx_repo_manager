@@ -805,6 +805,26 @@ class GitHelper:
         )
 
     @staticmethod
+    def git_set_origin(
+        repo_path,
+        new_origin_url,
+        log_entries=None,
+        debug_extra_logs=False,
+    ):
+        """ Set the origin URL for the Git repository. """
+        cmd_arr = [
+            "git", "-C", repo_path,
+            "remote", "set-url", "origin", new_origin_url,
+        ]
+
+        run_subprocess_cmd(
+            cmd_arr,
+            check_throw_on_cli_err=True,
+            log_entries=log_entries,
+            debug_realtime_log=debug_extra_logs,
+        )
+
+    @staticmethod
     def git_add_to_exclude(
             rel_base_path,
             preserved_dirs,
