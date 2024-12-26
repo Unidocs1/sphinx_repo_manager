@@ -34,3 +34,7 @@ Issues = "https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/issues"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--cov=sphinx_repo_manager --cov-report=term --cov-report=xml --cov-report=html"
+testpaths = ["tests"]

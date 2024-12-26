@@ -4,3 +4,12 @@ bump2version
 # For PyPi deployment/upload
 build  # dist builder: `python -m build`
 twine  # build parser + PyPi deployer
+
+# Test suite
+dotenv
+pytest
+pytest-cov
+sphinx
+jinja2
+pyyaml
+beautifulsoup4
