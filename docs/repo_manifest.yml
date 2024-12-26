@@ -74,7 +74,7 @@ base_clone_path: "_repos-available"
 # - If repository omits "branch", this will be the fallback 
 # - Defaults to "" (use default branch), if null or omitted
 # - Tag will be prioritized over branch, if set
-default_branch: ""
+default_branch: "dev"
 
 # - Default path to individual repo dirs we [mostly] want to 
 #   clone - instead of the entire repo 
@@ -104,7 +104,7 @@ throw_on_missing_auth_token: true  # If true, will throw err if missing; default
 repositories:
   # Static docs containing most !repo content >>
   demo_doc:
-    url: "https://source.goxbe.io/Core/docs/demo_doc"
+    url: "https://source.goxbe.io/Core/docs/sphinx_demo_doc"
 #    base_clone_path_root_symlink_src_override: "docs"  # Overrides symlinked content path depth; affects url slugs!
 #    dev_stage:
 #      checkout: "dev"  # Overrides `default_branch`
