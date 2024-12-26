@@ -1,9 +1,10 @@
 # Sphinx Repo Manager Release Notes
 
-## v1.0.19
+## v1.0.24
 
 * Injected auth via headers instead of URL params for git operations for a more-sanitized approach
 * Added `tools/admin-enable-long-file-paths.ps1`
+* Tweaked tool stability
 
 ## v1.0.18
 
