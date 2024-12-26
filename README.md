@@ -44,15 +44,15 @@ This guide assumes you have a basic understanding of [Sphinx](https://www.sphinx
    [docs/repo_manifest.yml](https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/blob/master/docs/repo_manifest.yml)
    (example template) next to your `Makefile`
 
+   * 💡 Optionally, set the manifest `max_workers_local` to a higher number for faster local builds 
+     [even `30` is ok for high-end machines!]
+
 Once setup, sphinx-build as normal (typically via `make html` next to your `Makefile`)!
 
 ### Tips
-- For Windows users, you may want to unlock your max char paths (admin):
 
-  ```powershell
-  Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled"
-  ```
-
+- **Windows user?** You may want to *unlock your max char paths* by running `tools/admin-enable-long-file-paths.ps1` 
+  *as admin*
 - Editing the manifest?
    - Consider purging your `docs/source/_repos-available` and `docs/source/content` dirs
 - Want speedier build iterations?
