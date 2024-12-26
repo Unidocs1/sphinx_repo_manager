@@ -11,8 +11,8 @@ Table of Contents:
    :caption: Contents:
 
    content/-/index
-   content/demo_doc/index
-   content/demo_doc/RELEASE_NOTES
+   content/sphinx_demo_doc/index
+   content/sphinx_demo_doc/RELEASE_NOTES
 
 Included Content Demo
 ~~~~~~~~~~~~~~~~~~~~~
@@ -25,12 +25,12 @@ Included Content Demo
 
 .. code-block::
 
-   .. include:: content/demo_doc/index.rst
+   .. include:: content/sphinx_demo_doc/index.rst
       :start-after: start-marker
 
 As long as you declare a ``.. start-marker`` directive right above where your content starts.
 
-.. include:: content/demo_doc/index.rst
+.. include:: content/sphinx_demo_doc/index.rst
    :start-after: start-marker
 
 Resources
@@ -40,7 +40,7 @@ Resources
 
    * Note ``/docs`` if inspecting this build demo
 
-* (This) demo_doc `source code <https://source.goxbe.io/Core/docs/demo_doc>`__
+* (This) sphinx_demo_doc `source code <https://source.goxbe.io/Core/docs/sphinx_demo_doc>`__
 * Production-grade `implementation demo <https://source.goxbe.io/Core/docs/xbe_static_docs>`__
 
    * Note ``docs/repo_manifest.yml`` for an *advanced* manifest demo
