@@ -726,17 +726,28 @@ class SphinxRepoManager:
                 logger.info(entry)
                 log_queue.put((entry, repo_name))  # Queue individual log entries for progress tracking
 
-    def try_git_sparse_clone(self, repo_task):
-        # TODO: Log?
-
+    def get_formatted_repo_url(self, repo_task):
         is_file_url = repo_task.repo_url_dotgit_is_local_file
         if not is_file_url and self.has_env_repo_auth_token:
             # Inject auth
-            formatted_repo_url = repo_task.repo_url_dotgit.replace(
+            return repo_task.repo_url_dotgit.replace(
                 "://",
                 f"://{self.env_repo_auth_user}:{self.env_repo_auth_token}@")
         else:
-            formatted_repo_url = repo_task.repo_url_dotgit
+            return repo_task.repo_url_dotgit
+
+    def try_git_configure_repo(self, repo_task):
+        formatted_repo_url = self.get_formatted_repo_url(repo_task)
+        GitHelper.git_set_origin(
+            repo_task.abs_tag_versioned_clone_src_path,
+            formatted_repo_url,
+            log_entries=repo_task.log_entries,
+            debug_extra_logs=self.debug_mode,
+        )
+
+    def try_git_sparse_clone(self, repo_task):
+        # TODO: Log?
+        formatted_repo_url = self.get_formatted_repo_url(repo_task)
 
         colored_repo_name = self.get_colored_repo_name(repo_task)
         colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
@@ -808,6 +819,8 @@ class SphinxRepoManager:
             self.try_git_sparse_clone(repo_task)  # Sets repo_task.cloned
             self.try_git_clean_sparse_docs_after_clone(repo_task, self.debug_mode)
         else:
+            # Repo exists, first attempt to configure it in case of new credentials
+            self.try_git_configure_repo(repo_task)
             if repo_task.has_tag:
                 self.try_git_fetch(repo_task)  # Forces to get new tags
                 self.try_git_checkout_for_tag_updates(repo_task)  # Failure to switch won't affect success
