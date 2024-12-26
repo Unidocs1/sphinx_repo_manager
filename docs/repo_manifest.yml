@@ -51,7 +51,7 @@ enable_breathe_local: false
 #   - TODO: Log revamp to better accommodate async multi-threading
 # - Recommended just 1 if needing *chronological* debugging
 # - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
-max_workers_local: 5
+max_workers_local: 10
 
 # - Max workers for ReadTheDocs deployment for multi-threading
 # - RTD has max 1 for free accts; use just 1 for debugging or free accts
