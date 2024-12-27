@@ -1,5 +1,13 @@
 # Sphinx Repo Manager Release Notes
 
+## v1.0.25
+
+* Improved `__init__.py` stability, typings, eliminate warnings
+* Minimally init `tests/`
+* Added minimal MyST support (to auto-parse `.md`)
+   * This indirectly fixed `RELEASE_NOTES.md` symlinking
+* Fixed consistency with `sphinx_demo_doc` renames (from `demo_doc`)
+
 ## v1.0.24
 
 * Injected auth via headers instead of URL params for git operations for a more-sanitized approach
