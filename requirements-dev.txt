@@ -1,16 +1,14 @@
+# Normal, non-dev reqs
+-r docs/requirements.txt
+
 # Semantic git tag versioner: `bump2version patch`; see .bumpversion.cfg; increments .toml ver
 bump2version
 
-# For PyPi deployment/upload
+# PyPi deployment/upload
 build  # dist builder: `python -m build`
 twine  # build parser + PyPi deployer
 
-# Test suite
-dotenv
+# Test suite (no coverage due to being a Sphinx ext)
+python-dotenv
 pytest
 pytest-order
-pytest-cov
-sphinx
-jinja2
-pyyaml
-beautifulsoup4
