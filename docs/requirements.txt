@@ -1,3 +1,4 @@
+myst-parser  # Auto-converts .md to .rst
 sphinx_repo_manager  # https://pypi.org/project/sphinx-repo-manager
 
 ######################################################################################

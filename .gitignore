@@ -93,3 +93,27 @@ docs/source/_static/styles/css/*
 !docs/source/_static/blobs/_local/*
 .idea/vcs.xml
 .idea/.name
+
+# Pytest coverage outputs
+htmlcov/
+coverage.xml
+
+# Pytest cache
+.pytest_cache/
+
+# Temporary files created by tests
+tests/__pycache__/
+tests/*.tmp
+tests/*.log
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+htmlcov/
+.pytest_cache/
+
+# Release note symlinks 
+source/**/RELEASE_NOTES.*

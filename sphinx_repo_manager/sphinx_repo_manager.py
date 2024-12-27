@@ -853,9 +853,17 @@ class SphinxRepoManager:
         )
 
     def repo_add_symlink2_release_notes(self, repo_task):
-        # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst'
-        abs_existing_nonsym_release_notes_file_path = (
-            Path(repo_task.abs_tag_versioned_clone_src_path).joinpath("RELEASE_NOTES.rst").resolve()
+        # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst' (or .md)
+        candidate_files = ["RELEASE_NOTES.rst", "RELEASE_NOTES.md"]
+        
+        # Find the first existing RELEASE_NOTES.* file, prioritizing rst
+        abs_existing_nonsym_release_notes_file_path = next(
+            (
+                Path(repo_task.abs_tag_versioned_clone_src_path).joinpath(name).resolve()
+                for name in candidate_files
+                if Path(repo_task.abs_tag_versioned_clone_src_path).joinpath(name).exists()
+            ),
+            None,  # Default value if no file exists
         )
 
         # OPTIONAL target symlink creation path

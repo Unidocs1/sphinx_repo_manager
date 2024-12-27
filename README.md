@@ -67,7 +67,7 @@ ___
 1. Clone the [source repo](https://source.goxbe.io/Core/docs/sphinx_repo_manager) for a demo:
 
 - Minimal build architecture begins at at `docs/`
-- `repo_manifest.yml` contains a minimal [demo_doc](https://source.goxbe.io/Core/docs/demo_doc) repo to be cloned
+- `repo_manifest.yml` contains a minimal [sphinx_demo_doc](https://source.goxbe.io/Core/docs/sphinx_demo_doc) repo to be cloned
 
 ### Production Demo
 

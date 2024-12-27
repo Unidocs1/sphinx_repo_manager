@@ -24,6 +24,7 @@ confdir = Path(__file__).parent.resolve()
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     "sphinx_repo_manager",  # Xsolla Backend (XBE)'s extension to manage repos via repo_manifest.yml
+    "myst_parser",  # Auto-converts .md to .rst
 ]
 
 # List of patterns, relative to source directory, that match files and
@@ -40,6 +41,10 @@ exclude_patterns = [
     "**/Thumbs.db",
     "**/venv",
 ]
+
+# -- Extensions Setup --------------------------------------------------------
+
+source_suffix = [".rst", ".md"]  # Use MyST to auto-convert .md
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
