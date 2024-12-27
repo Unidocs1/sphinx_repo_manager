@@ -8,7 +8,8 @@ import shutil
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CONF_SRC = PROJECT_ROOT / "docs" / "source" / "conf.py"
 MANIFEST_SRC = PROJECT_ROOT / "docs" / "repo_manifest.yml"
-ENV_SRC = PROJECT_ROOT / "docs" / ".env"  # Add .env file path
+ENV_SRC = PROJECT_ROOT / "docs" / ".env"
+INDEX_SRC = PROJECT_ROOT / "docs" / "source" / "index.rst"
 
 # Directory structure relative to tmpdir
 DOCS_RELATIVE = Path("docs")
@@ -21,22 +22,20 @@ DOCTREE_RELATIVE = Path("doctrees")
 def test_debug_paths():
     """Show these logs by appending `-s` arg to pytest."""
     print()
-    print()
     print("-- PATHS ------------------------------------------------------------------------------------")
-    print()
     print(f"- PROJECT_ROOT: '{PROJECT_ROOT}'")
     print(f"- CONF_SRC: '{CONF_SRC}'")
     print(f"- MANIFEST_SRC: '{MANIFEST_SRC}'")
     print(f"- ENV_SRC: '{ENV_SRC}'")
-    print()
+    print(f"- INDEX_SRC: '{INDEX_SRC}'")
     print(f"- DOCS_RELATIVE: '{DOCS_RELATIVE}'")
     print(f"- SRC_RELATIVE: '{SRC_RELATIVE}'")
+    print(f"- OUT_RELATIVE: '{OUT_RELATIVE}'")
     print(f"- DOCTREE_RELATIVE: '{DOCTREE_RELATIVE}'")
-    print()
-    print(f"-- ENV VARIABLES --------------------------------------------------------------------------")
+    print("-- ENV VARIABLES --------------------------------------------------------------------------")
     print(f"- REPO_AUTH_USER (optional; falls back to 'oauth2'): '{os.getenv('REPO_AUTH_USER')}'")
     print(f"- REPO_AUTH_TOKEN (exists?): '{bool(os.getenv('REPO_AUTH_TOKEN'))}'")
-    print(f"-- /PATHS -----------------------------------------------------------------------------------")
+    print("-- /PATHS -----------------------------------------------------------------------------------")
     print()
 
 
@@ -48,7 +47,7 @@ def run_sphinx(tmpdir, monkeypatch):
         run: Callable to run the Sphinx build.
         docs: Path to the docs directory.
         src: Path to the Sphinx source directory.
-        out: Path to the Sphinx output directory
+        out: Path to the Sphinx output directory.
     """
     # Centralized absolute paths for the test dirs
     docs = Path(tmpdir) / DOCS_RELATIVE
@@ -60,9 +59,11 @@ def run_sphinx(tmpdir, monkeypatch):
     for path in [docs, src, out, doctree]:
         path.mkdir(parents=True, exist_ok=True)
 
-    # Copy over the .env + repo_manifest.yml files
+    # Copy over the .env + repo_manifest.yml + index.rst files
+    shutil.copy(CONF_SRC, src / "conf.py")
     shutil.copy(MANIFEST_SRC, docs / "repo_manifest.yml")
-    shutil.copy(ENV_SRC, docs / ".env")  # Place .env file in docs
+    shutil.copy(ENV_SRC, docs / ".env")
+    shutil.copy(INDEX_SRC, src / "index.rst")
 
     def run():
         # Set the working dir to mimic the Sphinx source dir
@@ -84,20 +85,16 @@ def test_basic_build(run_sphinx, tmpdir):
     """Test that a basic build succeeds with the real conf.py."""
     sphinx_runner, docs, src, out = run_sphinx
 
-    shutil.copy(CONF_SRC, src / "conf.py")
-
-    index_src = PROJECT_ROOT / "docs" / "source" / "index.rst"
-    shutil.copy(index_src, src / "index.rst")
-
+    # Run Sphinx build
     sphinx_runner()
     assert (out / "index.html").exists(), "HTML output not generated."
 
 
 def test_extension_loaded(run_sphinx, tmpdir):
     """Test that the extension is loaded properly."""
-    run_sphinx, docs, src, out = run_sphinx
+    sphinx_runner, docs, src, out = run_sphinx
 
-    # Write conf.py to src directory
+    # Write a minimal conf.py to src directory
     conf_py = """\
 extensions = ['sphinx_repo_manager']
 """
@@ -115,6 +112,29 @@ Test extension page.
     )
 
     # Run Sphinx build
-    run_sphinx()
+    sphinx_runner()
     html = (out / "index.html").read_text()
     assert "Hello Sphinx!" in html, "Expected content not found in the output HTML."
+
+
+def test_extension_registration():
+    """Test that the sphinx_repo_manager extension is registered correctly."""
+    docs_dir = Path("docs")
+    src_dir = docs_dir / "source"
+    out_dir = Path("out")
+    doctree_dir = Path("doctrees")
+
+    # Create a mock Sphinx application
+    app = Sphinx(
+        srcdir=str(src_dir),
+        confdir=str(src_dir),
+        outdir=str(out_dir),
+        doctreedir=str(doctree_dir),
+        buildername="html"
+    )
+
+    from sphinx_repo_manager import setup
+    setup(app)
+
+    # Ensure the extension is registered
+    assert "sphinx_repo_manager" in app.extensions, "Extension not registered"
