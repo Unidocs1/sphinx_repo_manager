@@ -114,3 +114,6 @@ nosetests.xml
 coverage.xml
 htmlcov/
 .pytest_cache/
+
+# Release note symlinks 
+source/**/RELEASE_NOTES.*
