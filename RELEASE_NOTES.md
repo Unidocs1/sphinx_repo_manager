@@ -1,5 +1,9 @@
 # Sphinx Repo Manager Release Notes
 
+## v1.0.27
+
+* Revert auth header change from earlier after later discovering instability under certain conditions
+
 ## v1.0.25
 
 * Improved `__init__.py` stability, typings, eliminate warnings
