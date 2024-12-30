@@ -726,28 +726,17 @@ class SphinxRepoManager:
                 logger.info(entry)
                 log_queue.put((entry, repo_name))  # Queue individual log entries for progress tracking
 
-    def get_formatted_repo_url(self, repo_task):
+    def try_git_sparse_clone(self, repo_task):
+        # TODO: Log?
+
         is_file_url = repo_task.repo_url_dotgit_is_local_file
         if not is_file_url and self.has_env_repo_auth_token:
             # Inject auth
-            return repo_task.repo_url_dotgit.replace(
+            formatted_repo_url = repo_task.repo_url_dotgit.replace(
                 "://",
                 f"://{self.env_repo_auth_user}:{self.env_repo_auth_token}@")
         else:
-            return repo_task.repo_url_dotgit
-
-    def try_git_configure_repo(self, repo_task):
-        formatted_repo_url = self.get_formatted_repo_url(repo_task)
-        GitHelper.git_set_origin(
-            repo_task.abs_tag_versioned_clone_src_path,
-            formatted_repo_url,
-            log_entries=repo_task.log_entries,
-            debug_extra_logs=self.debug_mode,
-        )
-
-    def try_git_sparse_clone(self, repo_task):
-        # TODO: Log?
-        formatted_repo_url = self.get_formatted_repo_url(repo_task)
+            formatted_repo_url = repo_task.repo_url_dotgit
 
         colored_repo_name = self.get_colored_repo_name(repo_task)
         colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
@@ -819,8 +808,6 @@ class SphinxRepoManager:
             self.try_git_sparse_clone(repo_task)  # Sets repo_task.cloned
             self.try_git_clean_sparse_docs_after_clone(repo_task, self.debug_mode)
         else:
-            # Repo exists, first attempt to configure it in case of new credentials
-            self.try_git_configure_repo(repo_task)
             if repo_task.has_tag:
                 self.try_git_fetch(repo_task)  # Forces to get new tags
                 self.try_git_checkout_for_tag_updates(repo_task)  # Failure to switch won't affect success
@@ -853,17 +840,9 @@ class SphinxRepoManager:
         )
 
     def repo_add_symlink2_release_notes(self, repo_task):
-        # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst' (or .md)
-        candidate_files = ["RELEASE_NOTES.rst", "RELEASE_NOTES.md"]
-        
-        # Find the first existing RELEASE_NOTES.* file, prioritizing rst
-        abs_existing_nonsym_release_notes_file_path = next(
-            (
-                Path(repo_task.abs_tag_versioned_clone_src_path).joinpath(name).resolve()
-                for name in candidate_files
-                if Path(repo_task.abs_tag_versioned_clone_src_path).joinpath(name).exists()
-            ),
-            None,  # Default value if no file exists
+        # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst'
+        abs_existing_nonsym_release_notes_file_path = (
+            Path(repo_task.abs_tag_versioned_clone_src_path).joinpath("RELEASE_NOTES.rst").resolve()
         )
 
         # OPTIONAL target symlink creation path

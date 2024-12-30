@@ -1,8 +1,6 @@
 myst-parser  # Auto-converts .md to .rst
-sphinx_repo_manager  # https://pypi.org/project/sphinx-repo-manager
 
-######################################################################################
-# (!) sphinx_repo_manager src code developer?
-# 1. Comment out the PyPi pkg above ^
-# 2. Uncomment the line below to test live changes -> force reinstall requirements.txt:
-#../ 
+# If ../sphinx_repo_manager exists, install it using `pip install -e ../sphinx_repo_manager`
+# Otherwise, install the package from PyPI
+../  # Outside this demo, you'd replace this with `sphinx_repo_manager`
+#sphinx_repo_manager
