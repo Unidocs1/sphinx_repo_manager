@@ -9,7 +9,7 @@ This Sphinx extension by [Xsolla Backend [XBE]](https://docs.goxbe.io) automates
 documentation repositories as part of building a larger, unified documentation system. It facilitates multithreaded
 cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds.
 
-![Demo (GIF)](https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/raw/master/docs/images/clone-example.gif)
+![Demo (GIF)](https://github.com/Unidocs1/sphinx_repo_manager/blob/main/docs/images/clone-example.gif)
 
 📜 See the XBE [docgen source code](https://source.goxbe.io/Core/docs/xbe_static_docs)
 and [demo](https://docs.goxbe.io) doc production site heavily making use of this extension.
@@ -31,7 +31,7 @@ This guide assumes you have a basic understanding of [Sphinx](https://www.sphinx
    ```
 
 2. Add extension to your project's
-   [docs/source/conf.py](https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/blob/master/docs/source/conf.py)
+   [docs/source/conf.py](https://github.com/Unidocs1/sphinx_repo_manager/blob/master/docs/source/conf.py)
    (example template):
 
    ```python
@@ -41,7 +41,7 @@ This guide assumes you have a basic understanding of [Sphinx](https://www.sphinx
 3. Ensure a `docs/.env` file exists next to your `Makefile` -> set `REPO_AUTH_TOKEN=`
 
 4. Create a 
-   [docs/repo_manifest.yml](https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/blob/master/docs/repo_manifest.yml)
+   [docs/repo_manifest.yml](https://github.com/Unidocs1/sphinx_repo_manager/blob/master/docs/repo_manifest.yml)
    (example template) next to your `Makefile`
 
    * 💡 Optionally, set the manifest `max_workers_local` to a higher number for faster local builds 
@@ -64,10 +64,10 @@ ___
 
 ### Minimal Demo
 
-1. Clone the [source repo](https://source.goxbe.io/Core/docs/sphinx_repo_manager) for a demo:
+1. Clone the [source repo](https://github.com/Unidocs1/sphinx_repo_manager) for a demo:
 
 - Minimal build architecture begins at at `docs/`
-- `repo_manifest.yml` contains a minimal [sphinx_demo_doc](https://source.goxbe.io/Core/docs/sphinx_demo_doc) repo to be cloned
+- `repo_manifest.yml` contains a minimal [sphinx_demo_doc](https://github.com/Unidocs1/sphinx_demo_doc) repo to be cloned
 
 ### Production Demo
 

@@ -36,11 +36,11 @@ As long as you declare a ``.. start-marker`` directive right above where your co
 Resources
 ---------
 
-* sphinx_repo_manager `source code <https://source.goxbe.io/Core/docs/sphinx_repo_manager>`__
+* sphinx_repo_manager `source code <https://github.com/Unidocs1/sphinx_repo_manager>`__
 
    * Note ``/docs`` if inspecting this build demo
 
-* (This) sphinx_demo_doc `source code <https://source.goxbe.io/Core/docs/sphinx_demo_doc>`__
+* (This) sphinx_demo_doc `source code <https://github.com/Unidocs1/sphinx_demo_doc>`__
 * Production-grade `implementation demo <https://source.goxbe.io/Core/docs/xbe_static_docs>`__
 
    * Note ``docs/repo_manifest.yml`` for an *advanced* manifest demo

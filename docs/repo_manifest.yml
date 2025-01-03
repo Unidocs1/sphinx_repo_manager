@@ -104,7 +104,7 @@ throw_on_missing_auth_token: true  # If true, will throw err if missing; default
 repositories:
   # Static docs containing most !repo content >>
   sphinx_demo_doc:
-    url: "https://source.goxbe.io/Core/docs/sphinx_demo_doc"
+    url: "https://github.com/Unidocs1/sphinx_demo_doc"
 #    base_clone_path_root_symlink_src_override: "docs"  # Overrides symlinked content path depth; affects url slugs!
 #    dev_stage:
 #      checkout: "dev"  # Overrides `default_branch`
