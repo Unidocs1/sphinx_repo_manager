@@ -1,5 +1,9 @@
 # Sphinx Repo Manager Release Notes
 
+## v1.0.28
+
+* Fix `RELEASE_NOTES.md` symlink regression bug
+
 ## v1.0.27
 
 * Revert auth header change from earlier after later discovering instability under certain conditions

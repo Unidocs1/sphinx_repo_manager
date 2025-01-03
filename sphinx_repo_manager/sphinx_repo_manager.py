@@ -31,6 +31,7 @@ from rich.progress import (
 )
 
 # Constants for default settings
+CANDIDATE_RELEASE_NOTE_FILE_NAMES = ["RELEASE_NOTES.md", "RELEASE_NOTES.rst"]
 STATIC_DOCS_DIR_NAME = "_static-docs"  # Static .rst content goes here, to be symlinked to DEFAULT_BASE_SYMLINK_PATH
 DEFAULT_STAGE = "dev_stage"  # 'dev_stage' or 'production_stage'
 DEFAULT_MAX_WORKERS_LOCAL = 5
@@ -397,7 +398,7 @@ class SphinxRepoManager:
         selected_repo_stage_info = repo_info[stage]
         selected_repo_stage_info.setdefault("checkout", fallback_stage_info["checkout"])
         selected_repo_stage_info.setdefault("checkout_type", fallback_stage_info["checkout_type"])
-        
+
         if selected_repo_stage_info["checkout"]:
             # This could be 'None'
             selected_repo_stage_info["checkout"] = selected_repo_stage_info["checkout"].replace("\\", "/")
@@ -701,7 +702,7 @@ class SphinxRepoManager:
 
             self.run_repo_git_ops(repo_task)
             self.repo_add_symlinks(repo_task)
-            
+
             # While thread may not yet be done, await self.is_done
             while not repo_task.is_done:
                 time.sleep(0.1)  # Only affects this thread
@@ -839,21 +840,30 @@ class SphinxRepoManager:
             repo_task.log_entries,  # New symlink to be created at dir path
         )
 
-    def repo_add_symlink2_release_notes(self, repo_task):
-        # Existing real file path; eg: 'source/_repos-available/account_services-v2.1.0/RELEASE_NOTES.rst'
-        abs_existing_nonsym_release_notes_file_path = (
-            Path(repo_task.abs_tag_versioned_clone_src_path).joinpath("RELEASE_NOTES.rst").resolve()
+    def repo_add_symlink2_release_notes(self, repo_task):        
+        # Locate the first existing file
+        release_notes_file_name = next(
+            (name for name in CANDIDATE_RELEASE_NOTE_FILE_NAMES
+             if Path(repo_task.abs_tag_versioned_clone_src_path, name).exists()),
+            None
         )
-
-        # OPTIONAL target symlink creation path
-        if not abs_existing_nonsym_release_notes_file_path.exists():
+        
+        # Resolve the absolute path if a file was found
+        abs_existing_nonsym_release_notes_file_path = (
+            Path(repo_task.abs_tag_versioned_clone_src_path, release_notes_file_name).resolve()
+            if release_notes_file_name else None
+        )
+        
+        # Validate
+        if abs_existing_nonsym_release_notes_file_path is None:
             return
 
         # Check if the source existing "real" file exists before attempting to create a symlink
-        # Target symlink path to create: "source/content/account_services/RELEASE_NOTES.rst"
+        # Target symlink path to create; eg: "source/content/account_services/RELEASE_NOTES.[rst|.md]"
         abs_symlinked_repo_path = self.abs_confdir.joinpath(repo_task.abs_symlinked_repo_path)
-        abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath("RELEASE_NOTES.rst")
+        abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath(release_notes_file_name)
 
+        # Create the symlink
         self.create_symlink(
             abs_existing_nonsym_release_notes_file_path,
             abs_new_symlink_release_notes_path,
@@ -959,7 +969,7 @@ class SphinxRepoManager:
         - (!) In Windows, symlinking is the *opposite* src and destination of Unix
           - symlink_src_path     # eg: "source/_repos-available/account_services-v2.1.0/docs/source"
           - symlink_target_path  # eg: "source/content/account_services"
-                                 # eg: "source/content/account_services/RELEASE_NOTES.rst"
+                                 # eg: "source/content/account_services/RELEASE_NOTES.md"
         """
         if not src_existing_nonsym_path:
             raise SymlinkError("!symlink_src_existing_real")
@@ -1059,7 +1069,7 @@ class SphinxRepoManager:
             colored_repo_name = self.get_colored_repo_name(repo_task)
             colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
             cloning = "[cyan]→ Fetching"
-            
+
             self.progress.update(
                 repo_task.worker_task_id,
                 description=f"{colored_repo_name} {colored_branch_name} {cloning}",
@@ -1083,11 +1093,11 @@ class SphinxRepoManager:
             repo_task.worker_task_id,
             advance=1,
         )
-    
+
     @staticmethod
     def get_colored_repo_name(repo_task):
         return f"[bold blue]{repo_task.repo_name}[/bold blue]"
-    
+
     @staticmethod
     def get_colored_branch_name_or_default_in_parentheses(repo_task):
         return f"[blue]({repo_task.checkout_branch_or_tag_name or 'default'})"
@@ -1096,7 +1106,7 @@ class SphinxRepoManager:
         colored_repo_name = self.get_colored_repo_name(repo_task)
         colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
         colored_done = f"[green]→ Done"
-        
+
         self.progress.update(
             repo_task.worker_task_id,
             description=f"{colored_repo_name} {colored_branch_name} {colored_done}",
@@ -1112,7 +1122,7 @@ class SphinxRepoManager:
             colored_repo_name = self.get_colored_repo_name(repo_task)
             colored_branch_name = self.get_colored_branch_name_or_default_in_parentheses(repo_task)
             pulling = "[cyan]→ Pulling"
-            
+
             self.progress.update(
                 repo_task.worker_task_id,
                 description=f"{colored_repo_name} {colored_branch_name} {pulling}",
