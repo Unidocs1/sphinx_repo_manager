@@ -1,8 +1,12 @@
 # Sphinx Repo Manager Release Notes
 
-## v1.0.28
+## v1.0.30
 
 * Fix `RELEASE_NOTES.md` symlink regression bug
+
+## v1.0.29
+
+* Move to GitHub to be independently run @ https://source.goxbe.io/Core/docs
 
 ## v1.0.27
 
