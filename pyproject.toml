@@ -28,8 +28,8 @@ PyYAML = ">=6.0.2"  # [Optional] This could be swapped with ruamel.yaml for full
 rich = ">=13.9.4"
 
 [tool.poetry.urls]
-Homepage = "https://source.goxbe.io/Core/docs/sphinx_repo_manage"
-Issues = "https://source.goxbe.io/Core/docs/sphinx_repo_manager/-/issues"
+Homepage = "https://github.com/Unidocs1/sphinx_repo_manage"
+Issues = "https://github.com/Unidocs1/sphinx_repo_manager/issues"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

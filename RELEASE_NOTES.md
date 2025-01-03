@@ -1,5 +1,9 @@
 # Sphinx Repo Manager Release Notes
 
+## v1.0.29
+
+* Move to GitHub to be independently run @ https://source.goxbe.io/Core/docs
+
 ## v1.0.27
 
 * Revert auth header change from earlier after later discovering instability under certain conditions
