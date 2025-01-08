@@ -56,6 +56,7 @@ class SphinxRepoManagerConfig:
         Args:
             repo_manager (SphinxRepoManager): The repository manager to extract values from.
         """
+        self.repo_manager_manifest_path = repo_manager.debug_stop_build_on_extension_done
         self.repo_manager_manifest_path = repo_manager.repo_manager_manifest_path
         self.read_the_docs_build = repo_manager.read_the_docs_build
         self.source_static_path = repo_manager.source_static_path
