@@ -1,5 +1,9 @@
 # Sphinx Repo Manager Release Notes
 
+## v1.0.31
+
+* feat(manifest): debug_stop_build_on_extension_done
+
 ## v1.0.30
 
 * Fix `RELEASE_NOTES.md` symlink regression bug
