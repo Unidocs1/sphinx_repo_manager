@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinx_repo_manager"
-version = "1.0.31"
+version = "1.0.30"
 description = "This Sphinx extension by Xsolla Backend [XBE] automates the management of multiple documentation repositories as part of building a larger, unified documentation system. It facilitates multi-threaded cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds."
 authors = ["Xsolla Backend <xbe@xsolla.com>", "Dylan Hunt <d.hunt@xsolla.com>"]
 readme = "README.md"
