@@ -19,29 +19,33 @@
 ###################################################################################################
 
 # - More-verbose logging or debugging, including dumping CLI args for git ops like cloning
-# - Throws arbitrary err on extension done, if local (stops sphinx-build, warning spam, other extensions, etc)
-# - Defaults to false, if omitted
+# - Unlocks more `debug_` options below
+# - Default==false
 debug_mode: false
+
+# - If debug_mode and this are both true, stops the sphinx-build on extension done by throwing an arbitrary err
+# - Default==false
+debug_stop_build_on_extension_done: false
 
 # - Determines which repo info to use for git checkout
 # - Choices: "dev_stage", "production_stage"
-# - Defaults to "dev_stage", if omitted
+# - Default=="dev_stage"Default==
 stage: "dev_stage"
 
 # - (!) DANGEROUS: If false, will skip this extension both locally + on ReadTheDocs (RTD)
 # - Useful if you 100% know all repos are up-to-date for faster iterations
-# - Defaults to true, if omitted
+# - Default==trueDefault==
 enable_repo_manager: true
 
 # - If enable_repo_manager && false, will skip this extension locally
 # - Useful if you 100% know all repos are up-to-date for faster iterations *locally only*
 # - (!) If you are missing images/blobs, you probably want to set this to true
-# - Defaults to true, if omitted
+# - Default==trueDefault==
 enable_repo_manager_local: true
 
 # - If false and not on RTD, will add breathe project output files to the exclude_patterns.
 # - Set to false to speed up non-RTD builds. RTD builds ignore this setting
-# - Defaults to false, if omitted.
+# - Default==falseDefault==.
 enable_breathe_local: false
 
 # - Max workers for local sphinx_repo_manager for multi-threading
@@ -50,29 +54,29 @@ enable_breathe_local: false
   #   Repo2{a,b,c}, Repo3{a,b,c}, Repo1{a,b,c}
 #   - TODO: Log revamp to better accommodate async multi-threading
 # - Recommended just 1 if needing *chronological* debugging
-# - Defaults to 1 (later 5, once git_helper logs handle async), if omitted
+# - Default==1 (later 5, once git_helper logs handle async)Default==
 max_workers_local: 10
 
 # - Max workers for ReadTheDocs deployment for multi-threading
 # - RTD has max 1 for free accts; use just 1 for debugging or free accts
-# - Defaults to 2, if omitted
+# - Default==2Default==
 max_workers_rtd: 1
 
 # - If true, will stash and continue if working directory is dirty
-# - Else throws err (stops); defaults to true, if omitted
+# - Else throws err (stops); Default==trueDefault==
 stash_and_continue_if_wip: true
 
 # - Default base path for cloning repos relative to this file 
 # - Normalizes "os/path/slashes"
-# - Defaults to "content", if omitted
+# - Default=="content"Default==
 base_symlink_path: "content"
 
 # - Default base for cloning; normalizes "os/path/slashes"
-# - Defaults to source/_repos-available, if omitted
+# - Default==source/_repos-availableDefault==
 base_clone_path: "_repos-available"
 
 # - If repository omits "branch", this will be the fallback 
-# - Defaults to "" (use default branch), if null or omitted
+# - Default=="" (use default branch), if null or omitted
 # - Tag will be prioritized over branch, if set
 default_branch: "dev"
 
@@ -81,14 +85,14 @@ default_branch: "dev"
 # - *Try* to be consistent between all repos, but can override via individual 
 # - Repository `repo_sparse_path` override; normalizes "explicit/forward/slashes" 
 # - The parent dirs outside this will be 99% empty
-# - Default to "docs", if omitted
+# - Default to "docs"Default==
 repo_sparse_path: "docs"
 
 # - Supports {repo_sparse_path} template
 # - When we symlink from base_clone_path, we may want to set the src deeper
 # - Nested than what we cloned; normalizes "os/path/slashes"
 # - If kept default, you can access static content, like images, via `../_static/{repo_name}/images/`
-# - Defaults to "docs/source/content", if omitted
+# - Default=="docs/source/content"Default==
 # - TODO: Support {repo_sparse_path} replacement; if repo_sparse_path isn't "docs", this will fail
 base_clone_path_root_symlink_src: "{repo_sparse_path}/source/content"
 
@@ -96,7 +100,7 @@ base_clone_path_root_symlink_src: "{repo_sparse_path}/source/content"
 # TODO: Add optional, per-repo `dotenv_repo_auth_[user|token]` overrides
 dotenv_repo_auth_user_key_name: "REPO_AUTH_USER"  # Likely "oauth2" if using access token
 dotenv_repo_auth_token_key_name: "REPO_AUTH_TOKEN"
-throw_on_missing_auth_token: true  # If true, will throw err if missing; defaults to true, if omitted
+throw_on_missing_auth_token: true  # If true, will throw err if missing; Default==trueDefault==
 
 # ------------------------------------------------------------------------------
 # - (!) SEE MOCK REPO EXAMPLE @ BOTTOM, CONTAINING ALL [HEAVILY-COMMENTED] OPTIONS
@@ -144,20 +148,20 @@ repositories:
 ## - Path to individual repo dirs we [mostly] want to clone - instead of the entire repo
 ## - Normalizes "explicit/forward/slashes"
 ## - The parent dirs outside this will be 99% empty
-## - Default to {repo_sparse_path}, if omitted; see sdk_unity for use-example
+## - Default to {repo_sparse_path}Default==; see sdk_unity for use-example
 #repo_sparse_path_override: "docs"
 #
 ## - Supports {repo_sparse_path} template - will take override ver if present
 ## - If true, overrides base_clone_path_root_symlink_src
-## - Defaults to {base_clone_path_root_symlink_src}, if omitted; see sdk_unity for use-example
+## - Default=={base_clone_path_root_symlink_src}Default==; see sdk_unity for use-example
 #base_clone_path_root_symlink_src_override: "docs"
 #
-## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+## False would be as if you didn't add the repo entry at all (or commented it out); default trueDefault==
 #active: true  
-## False would be as if you didn't add the repo entry at all (or commented it out); default true, if omitted
+## False would be as if you didn't add the repo entry at all (or commented it out); default trueDefault==
 #active: true
 #
 ## - Useful for testing multi-repo WIP without having it be stashed away or require a commit
 ## - Still pulls from `_static/images/{repo_name}/`
-## - Default false, if omitted
+## - Default falseDefault==
 #skip_repo_updates: false

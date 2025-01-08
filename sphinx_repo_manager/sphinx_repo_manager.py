@@ -184,6 +184,7 @@ class SphinxRepoManager:
         self.raw_manifest = {}
         self.manifest = {}
         self.debug_mode = False  # If True: +logs and stops build after ext is done (via arbitrary error)
+        self.debug_stop_build_on_extension_done = False  # Allows for speedier iterations when debugging this extension
 
         # Multi-threading >>
         self.lock = threading.Lock()  # Allows thread-safe logging
@@ -1027,7 +1028,7 @@ class SphinxRepoManager:
 
             self.manage_repositories(manifest)
 
-            if self.debug_mode and not self.read_the_docs_build:
+            if not self.read_the_docs_build and self.debug_mode and self.debug_stop_build_on_extension_done:
                 raise RepositoryManagementError("\nManifest 'debug_mode' flag enabled: Stopping build for log review.")
         except Exception as e:
             self.shutdown_flag = True
