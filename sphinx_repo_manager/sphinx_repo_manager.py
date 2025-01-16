@@ -164,6 +164,8 @@ class SphinxRepoManager:
         self.source_doxygen_path = None
         self.base_symlink_path = DEFAULT_BASE_SYMLINK_PATH  # Eg: "content"
 
+        self.dotenv_repo_auth_user_key_name = None
+        self.dotenv_repo_auth_token_key_name = None
         self.env_repo_auth_user = None
         self.env_repo_auth_token = None
         self.has_env_repo_auth_token = False
@@ -264,17 +266,25 @@ class SphinxRepoManager:
         self.manifest = self.validate_normalize_manifest_set_meta(self.manifest)
         self.debug_mode = self.manifest["debug_mode"]
 
+        debug_log_prefix1 = "   - 💡 | [debug_mode]"
         if self.debug_mode:
             self.debug_stop_build_on_extension_done = self.manifest.get("debug_stop_build_on_extension_done", False)
             self.debug_skip_secret_sanitizing_local = not self.read_the_docs_build and self.manifest.get(
                 "debug_skip_secret_sanitizing_local", False)
 
-            print(f"   - 💡 | [debug_mode] .env REPO_AUTH_USER={os.getenv('REPO_AUTH_USER')}")
+            debug_log_prefix2 = "       -"
+            print(f"{debug_log_prefix1} .env REPO_AUTH_USER={os.getenv('REPO_AUTH_USER')}")
 
             if self.debug_stop_build_on_extension_done:
-                print(f"     - debug_stop_build_on_extension_done")
+                print(f"{debug_log_prefix2} debug_stop_build_on_extension_done")
+            
             if self.debug_skip_secret_sanitizing_local:
-                print(f"     - debug_skip_secret_sanitizing_local")
+                print(f"{debug_log_prefix2} debug_skip_secret_sanitizing_local")
+                print(f"{debug_log_prefix1}[debug_skip_secret_sanitizing_local] .env "
+                      f"{self.dotenv_path}='{self.env_repo_auth_token}'")
+        else:
+            masked_token = '*' * len(self.env_repo_auth_token) if self.has_env_repo_auth_token else "None"
+            print(f"{debug_log_prefix1} .env {self.dotenv_repo_auth_token_key_name}='{masked_token}'")
 
         rel_repo_sparse_path = self.manifest["repo_sparse_path"]
         logger.info(colorize_path(f"   - repo_sparse_path: '{brighten(rel_repo_sparse_path)}'"))
@@ -293,6 +303,8 @@ class SphinxRepoManager:
         manifest.setdefault('max_workers_local', DEFAULT_MAX_WORKERS_LOCAL)
         manifest.setdefault('max_workers_rtd', DEFAULT_MAX_WORKERS_RTD)
         manifest.setdefault('debug_mode', DEFAULT_DEBUG_MODE)
+        manifest.setdefault('debug_stop_build_on_extension_done', DEFAULT_DEBUG_MODE)
+        manifest.setdefault('debug_skip_secret_sanitizing_local', DEFAULT_DEBUG_MODE)
         manifest.setdefault('stash_and_continue_if_wip', DEFAULT_STASH_AND_CONTINUE_IF_WIP)
         manifest.setdefault('default_branch', DEFAULT_DEFAULT_BRANCH)
         manifest.setdefault('base_clone_path', DEFAULT_BASE_CLONE_PATH)
@@ -332,24 +344,31 @@ class SphinxRepoManager:
 
         # Get the repo env auth key *names* (not the key val) from the manifest
         # (!) This will be None if RTD, but will fallback to DEFAULT_DOTENV_REPO_AUTH_TOKEN_KEY_NAME, etc
-        dotenv_repo_auth_user_key_name = manifest['dotenv_repo_auth_user_key_name']  # Default: 'REPO_AUTH_USER'
-        dotenv_repo_auth_token_key_name = manifest['dotenv_repo_auth_token_key_name']  # Default: 'REPO_AUTH_TOKEN'
+        self.dotenv_repo_auth_user_key_name = manifest['dotenv_repo_auth_user_key_name'] # Default: 'REPO_AUTH_USER'
+        self.dotenv_repo_auth_token_key_name = manifest['dotenv_repo_auth_token_key_name']  # Default: 'REPO_AUTH_TOKEN'
 
         # Get env by key name -- the user will *only* be injected into the url if the token is also present
-        self.env_repo_auth_user = os.getenv(dotenv_repo_auth_user_key_name, DEFAULT_DOTENV_REPO_AUTH_USER_NAME)
-        self.env_repo_auth_token = os.getenv(dotenv_repo_auth_token_key_name)
+        self.env_repo_auth_user = os.getenv(self.dotenv_repo_auth_user_key_name, DEFAULT_DOTENV_REPO_AUTH_USER_NAME)
+        self.env_repo_auth_token = os.getenv(self.dotenv_repo_auth_token_key_name)
+        
+        # Strip whitespace
+        if self.dotenv_repo_auth_user_key_name:
+            self.dotenv_repo_auth_user_key_name = self.dotenv_repo_auth_user_key_name.strip()
+        if self.dotenv_repo_auth_token_key_name:
+            self.dotenv_repo_auth_token_key_name = self.dotenv_repo_auth_token_key_name.strip()
+        if self.env_repo_auth_user:
+            self.env_repo_auth_user = self.env_repo_auth_user.strip()
+        if self.env_repo_auth_token:
+            self.env_repo_auth_token = self.env_repo_auth_token.strip()
 
         # Sanity check - does the env have the commonly-required auth token val?
         self.has_env_repo_auth_token = bool(self.env_repo_auth_token)
         if not self.has_env_repo_auth_token:
             throw_on_missing_auth_token = self.manifest["throw_on_missing_auth_token"]
-            logger.warning(f"   - ⚠️ WARNING: Missing '{dotenv_repo_auth_token_key_name}' env key "
+            logger.warning(f"   - ⚠️ WARNING: Missing '{self.dotenv_repo_auth_token_key_name}' env key "
                            f"(throw_on_missing_auth_token={throw_on_missing_auth_token})")
             if throw_on_missing_auth_token:
-                raise RepositoryManagementError(f"\nMissing required env key '{dotenv_repo_auth_token_key_name}'")
-        else:
-            masked_token = '*' * len(self.env_repo_auth_token) if self.has_env_repo_auth_token else "None"
-            print(f"   - 💡 | [debug_mode] .env {dotenv_repo_auth_token_key_name}={masked_token}")
+                raise RepositoryManagementError(f"\nMissing required env key '{self.dotenv_repo_auth_token_key_name}'")
 
         manifest['repo_sparse_path'] = Path(repo_sparse_path)
 
@@ -731,7 +750,9 @@ class SphinxRepoManager:
                     f"  - Git Stage: {repo_task.current_git_stage_num + 1}/{repo_task.total_num_git_stages}\n"
             )
 
-            sanitized_err_msg = self.redact_url_secret(error_message)
+            sanitized_err_msg = self.redact_url_secret(error_message) \
+                if not self.debug_skip_secret_sanitizing_local else error_message
+
             raise RepositoryManagementError(sanitized_err_msg) from e
         finally:
             # Log all collected log entries for the repo

@@ -1,5 +1,10 @@
 # Sphinx Repo Manager Release Notes
 
+## v1.0.32
+
+* feat(manifest): debug_skip_secret_sanitizing_local
+* fix(manifest): debug_stop_build_on_extension_done
+
 ## v1.0.31
 
 * feat(manifest): debug_stop_build_on_extension_done
