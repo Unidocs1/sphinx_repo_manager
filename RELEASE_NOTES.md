@@ -1,5 +1,9 @@
 # Sphinx Repo Manager Release Notes
 
+## v1.0.33
+
+* fix: Impr symlink stability
+
 ## v1.0.32
 
 * feat(manifest): debug_skip_secret_sanitizing_local

@@ -101,7 +101,7 @@ class RepoTask:
         self.repo_name = repo_name
         self.tag_versioned_clone_src_repo_name = tag_versioned_clone_src_repo_name
         self.abs_tag_versioned_clone_src_path = abs_tag_versioned_clone_src_path
-        self.abs_symlinked_repo_path = abs_symlinked_repo_path
+        self.abs_symlinked_repo_path = Path(abs_symlinked_repo_path)
         self.stash_and_continue_if_wip = stash_and_continue_if_wip
         self.rel_selected_repo_sparse_path = rel_selected_repo_sparse_path
         self.rel_selected_clone_path_root_symlink_src = rel_selected_clone_path_root_symlink_src
@@ -893,8 +893,7 @@ class SphinxRepoManager:
 
         # Check if the source existing "real" file exists before attempting to create a symlink
         # Target symlink path to create; eg: "source/content/account_services/RELEASE_NOTES.[rst|.md]"
-        abs_symlinked_repo_path = self.abs_confdir.joinpath(repo_task.abs_symlinked_repo_path)
-        abs_new_symlink_release_notes_path = abs_symlinked_repo_path.joinpath(release_notes_file_name)
+        abs_new_symlink_release_notes_path = Path(repo_task.abs_symlinked_repo_path, release_notes_file_name)
 
         # Create the symlink
         self.create_symlink(
@@ -997,30 +996,47 @@ class SphinxRepoManager:
             log_entries,
     ):
         """
-        - Create or update a symlink using relative paths. 
-        - Creates dirs leading up to symlink_target_new_sym_path if !exists
-        - (!) In Windows, symlinking is the *opposite* src and destination of Unix
-          - symlink_src_path     # eg: "source/_repos-available/account_services-v2.1.0/docs/source"
-          - symlink_target_path  # eg: "source/content/account_services"
-                                 # eg: "source/content/account_services/RELEASE_NOTES.md"
+        Create or update a symlink only if the source and destination are valid.
+        Handles cases where the source or destination might not exist.
         """
-        if not src_existing_nonsym_path:
-            raise SymlinkError("!symlink_src_existing_real")
-        if not new_symlink_target_path:
-            raise SymlinkError("!symlink_target_new_sym_path")
-
-        # Ensure directories leading up to the symlink target exist
         try:
-            target_dir = os.path.dirname(new_symlink_target_path)
-            if not os.path.exists(target_dir):
-                os.makedirs(target_dir)
-
-            os.symlink(src_existing_nonsym_path, new_symlink_target_path)
+            # Normalize paths
+            normalized_src = Path(src_existing_nonsym_path).resolve()
+            normalized_dst = Path(new_symlink_target_path).resolve()
+    
+            # Check if the source exists
+            if not normalized_src.exists():
+                if self.debug_mode:
+                    log_entries.append(f"[debug_mode::create_symlink] Source does not exist: {normalized_src}")
+                return
+    
+            # Ensure the parent directory for the destination exists
+            normalized_dst.parent.mkdir(parents=True, exist_ok=True)
+    
+            # Check if the destination already exists
+            if normalized_dst.exists():
+                if not normalized_dst.is_symlink():
+                    if self.debug_mode:
+                        log_entries.append(f"[debug_mode::create_symlink] Target exists but is not a symlink: {normalized_dst}")
+                    return
+                # If the symlink exists but points to the wrong source, remove it
+                if normalized_dst.resolve() != normalized_src:
+                    normalized_dst.unlink()
+                    if self.debug_mode:
+                        log_entries.append(f"[debug_mode::create_symlink] Removed conflicting symlink: {normalized_dst}")
+                else:
+                    if self.debug_mode:
+                        log_entries.append(f"[debug_mode::create_symlink] Symlink already correct: {normalized_dst} -> {normalized_src}")
+                    return
+    
+            # Create the symlink
+            os.symlink(normalized_src, normalized_dst)
+            if self.debug_mode:
+                log_entries.append(f"[debug_mode::create_symlink] Created symlink: {normalized_dst} -> {normalized_src}")
+    
         except Exception as e:
-            # raise SymlinkError(f"Error creating symlink: {str(e)}\n"
-            #                    f"- symlink_src_existing_real_path: {src_existing_nonsym_path}\n"
-            #                    f"- symlink_target_new_sym_path: {new_symlink_target_path}") from None
-            pass
+            log_entries.append(f"[debug_mode::create_symlink] Error creating symlink: {e}")
+            raise
 
     @staticmethod
     def try_git_clean_sparse_docs_after_clone(repo_task, debug_extra_logs):
