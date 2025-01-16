@@ -186,6 +186,7 @@ class SphinxRepoManager:
         self.manifest = {}
         self.debug_mode = False  # If True: +logs and stops build after ext is done (via arbitrary error)
         self.debug_stop_build_on_extension_done = False  # Allows for speedier iterations when debugging this extension
+        self.debug_skip_secret_sanitizing_local = False  # Allows for local debugging
 
         # Multi-threading >>
         self.lock = threading.Lock()  # Allows thread-safe logging
@@ -265,10 +266,16 @@ class SphinxRepoManager:
 
         if self.debug_mode:
             self.debug_stop_build_on_extension_done = self.manifest.get("debug_stop_build_on_extension_done", False)
+            self.debug_skip_secret_sanitizing_local = not self.read_the_docs_build and self.manifest.get(
+                "debug_skip_secret_sanitizing_local", False)
+
             print(f"   - 💡 | [debug_mode] .env REPO_AUTH_USER={os.getenv('REPO_AUTH_USER')}")
 
             if self.debug_stop_build_on_extension_done:
                 print(f"     - debug_stop_build_on_extension_done")
+            if self.debug_skip_secret_sanitizing_local:
+                print(f"     - debug_skip_secret_sanitizing_local")
+
         rel_repo_sparse_path = self.manifest["repo_sparse_path"]
         logger.info(colorize_path(f"   - repo_sparse_path: '{brighten(rel_repo_sparse_path)}'"))
 
