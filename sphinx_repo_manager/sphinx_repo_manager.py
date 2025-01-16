@@ -16,6 +16,7 @@ import queue
 import signal
 import yaml
 from dotenv import load_dotenv
+
 from .log_styles import *
 from .git_helper import GitHelper
 from sphinx.util import logging
@@ -263,8 +264,11 @@ class SphinxRepoManager:
         self.debug_mode = self.manifest["debug_mode"]
 
         if self.debug_mode:
+            self.debug_stop_build_on_extension_done = self.manifest.get("debug_stop_build_on_extension_done", False)
             print(f"   - 💡 | [debug_mode] .env REPO_AUTH_USER={os.getenv('REPO_AUTH_USER')}")
 
+            if self.debug_stop_build_on_extension_done:
+                print(f"     - debug_stop_build_on_extension_done")
         rel_repo_sparse_path = self.manifest["repo_sparse_path"]
         logger.info(colorize_path(f"   - repo_sparse_path: '{brighten(rel_repo_sparse_path)}'"))
 
@@ -841,20 +845,20 @@ class SphinxRepoManager:
             repo_task.log_entries,  # New symlink to be created at dir path
         )
 
-    def repo_add_symlink2_release_notes(self, repo_task):        
+    def repo_add_symlink2_release_notes(self, repo_task):
         # Locate the first existing file
         release_notes_file_name = next(
             (name for name in CANDIDATE_RELEASE_NOTE_FILE_NAMES
              if Path(repo_task.abs_tag_versioned_clone_src_path, name).exists()),
             None
         )
-        
+
         # Resolve the absolute path if a file was found
         abs_existing_nonsym_release_notes_file_path = (
             Path(repo_task.abs_tag_versioned_clone_src_path, release_notes_file_name).resolve()
             if release_notes_file_name else None
         )
-        
+
         # Validate
         if abs_existing_nonsym_release_notes_file_path is None:
             return
