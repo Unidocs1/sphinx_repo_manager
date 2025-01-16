@@ -21,7 +21,7 @@
 # - More-verbose logging or debugging, including dumping CLI args for git ops like cloning
 # - Unlocks more `debug_` options below
 # - Default==false
-debug_mode: true
+debug_mode: false
 
 # - If debug_mode and this are both true, stops the sphinx-build on extension done by throwing an arbitrary err
 # - Default==false
