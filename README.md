@@ -9,7 +9,7 @@ This Sphinx extension by [Xsolla Backend [XBE]](https://docs.goxbe.io) automates
 documentation repositories as part of building a larger, unified documentation system. It facilitates multithreaded
 cloning and updating of external repositories specified in a YAML manifest file before Sphinx builds.
 
-![Demo (GIF)](https://github.com/Unidocs1/sphinx_repo_manager/blob/main/docs/images/clone-example.gif)
+![Demo (GIF)](https://raw.githubusercontent.com/Unidocs1/sphinx_repo_manager/main/docs/images/clone-example.gif)
 
 📜 See the XBE [docgen source code](https://source.goxbe.io/Core/docs/xbe_static_docs)
 and [demo](https://docs.goxbe.io) doc production site heavily making use of this extension.
